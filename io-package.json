@@ -1,0 +1,65 @@
+{
+  "common": {
+    "name": "ring",
+    "version": "0.0.1",
+    "title": "Ring Video Doorbell",
+    "news": {
+      "0.0.1": {
+        "en": "First version",
+        "de": "Erste Version"
+      }
+    },
+    "titleLang": {
+      "en": "Ring Video Doorbell",
+      "de": "Ring Video Doorbell",
+      "ru": "изобилующий раковинами",
+      "pt": "Ring Video Doorbell",
+      "nl": "schaalachtig",
+      "fr": "Ring Video Doorbell",
+      "it": "Ring Video Doorbell",
+      "es": "Ring Video Doorbell",
+      "pl": "Ring Video Doorbell"
+    },
+    "desc": {
+      "en": "Ring Video Doorbell Adapter",
+      "de": "Ring Video Doorbell Adapter",
+      "ru": "Шестигранный адаптер",
+      "pt": "Adaptador Ring Video Doorbell",
+      "nl": "Ring Video Doorbell-adapter",
+      "fr": "Adaptateur Ring Video Doorbell",
+      "it": "Adattatore Ring Video Doorbell",
+      "es": "Adaptador Ring Video Doorbell",
+      "pl": "Adapter Ring Video Doorbell"
+    },
+    "license": "MIT",
+    "authors": [
+      "Thorsten Stueben <thorsten@stueben.de>"
+    ],
+    "platform": "Javascript/Node.js",
+    "mode": "daemon",
+    "messagebox": true,
+    "stopBeforeUpdate": true,
+    "subscribe": "messagebox",
+    "icon": "ring.png",
+    "materialize": true,
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/schmupu/ioBroker.ring/master/admin/ring.png",
+    "keywords": [
+      "ring"
+    ],
+    "readme": "https://github.com/schmupu/ioBroker.ring/blob/master/README.md",
+    "loglevel": "info",
+    "type": "logic",
+    "restartAdapters": []
+  },
+  "native": {
+    "bind": "0.0.0.0",
+    "port": 1882,
+    "password": "mqttuser",
+    "user": "mqttuser"
+  },
+  "objects": [],
+  "instanceObjects": [
+    {}
+  ]
+}
