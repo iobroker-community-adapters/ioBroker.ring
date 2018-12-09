@@ -2,6 +2,8 @@
 
 const utils = require(__dirname + '/lib/utils'); // Get common adapter utils
 let adapter = new utils.Adapter('ring');
+let Doorbell = require(__dirname + '/lib/doorbell');
+
 
 function decrypt(key, value) {
   let result = '';
@@ -65,5 +67,7 @@ adapter.on('ready', () => {
 // *****************************************************************************************************
 function main() {
 
+  let ring  = new Doorbell(adapter);
+  ring.test();
 
 }

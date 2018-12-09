@@ -45,7 +45,7 @@
 
       if (!settings) return;
       if (settings.password === undefined) settings.password = '';
-      if (settings.user === undefined) settings.user = '';
+      if (settings.email === undefined) settings.email = '';
 
       g_onChange = onChange;
 
@@ -291,8 +291,8 @@
 
     <div class="row">
       <div class="input-field col s12 m6 l4">
-        <input id="user" type="text" size="30" class="value" />
-        <label class="translate" for="user">User</label>
+        <input id="email" type="text" size="30" class="value" />
+        <label class="translate" for="email">Email</label>
       </div>
     </div>
 

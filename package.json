@@ -25,7 +25,8 @@
   "dependencies": {
     "node-schedule": "1.3.0",
     "request": "^2.85.0",
-    "doorbot": "^5.4.0"
+    "doorbot": "^5.4.0",
+    "ring-api": "github:dgreif/ring-api"
   },
   "devDependencies": {
     "gulp": "^3.9.1",

@@ -53,10 +53,10 @@
     "restartAdapters": []
   },
   "native": {
-    "bind": "0.0.0.0",
-    "port": 1882,
+    "email": "email@foo.com",
     "password": "mqttuser",
-    "user": "mqttuser"
+    "timeout": 5,
+    "pollsec": 1
   },
   "objects": [],
   "instanceObjects": [
