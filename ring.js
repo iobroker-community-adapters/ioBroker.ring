@@ -5,7 +5,6 @@ let adapter = new utils.Adapter('ring');
 let Doorbell2 = require(__dirname + '/lib/doorbell2');
 let Doorbell = require(__dirname + '/lib/doorbell');
 
-
 function decrypt(key, value) {
   let result = '';
   for (let i = 0; i < value.length; ++i) {
@@ -77,33 +76,55 @@ function main() {
   let dingdong = ring.dingDong();
   dingdong();
   events.on('dingdong', (ding) => {
-    adapter.log.info(JSON.stringify(ding));
+    for (let i in sip) {
+      adapter.log.info("Ding Dong " + JSON.stringify(ding[i]));
+    }
   });
 
-  /*
-  ring.getLiveStream()().then((urls) => {
-    adapter.log.info(JSON.stringify(urls));
+
+  ring.getLiveStream()().then((sip) => {
+    for (let i in sip) {
+      adapter.log.info("LiveStream: " + i + " = " + JSON.stringify(sip[i]));
+    }
   }).catch((error) => {
   });
 
   ring.getHealthSummarie()().then((healths) => {
-    adapter.log.info(JSON.stringify(healths));
+    for (let i in healths) {
+      adapter.log.info("Healths: " + i + " = " + JSON.stringify(healths[i]));
+    }
   }).catch((error) => {
   });
-  */
 
-  let actions = [
-    () => ring.getLiveStream()(),
-    () => ring.getHealthSummarie()(),
-    () => ring.getHistory()(),
-    () => ring.getLastVideos()() 
-    
-  ];
-  let promise = Promise.resolve();
-  let results = [];
-  for (let action of actions) {
-    promise = promise.then(action).then((r) => results.push(r));
-  }
-  promise.then(() => adapter.log.info("Done with results " + JSON.stringify(results)));
+
+  ring.getHistory()().then((history) => {
+    for (let i in history) {
+      adapter.log.info("History: " + i + " = " + JSON.stringify(history[i]));
+    }
+  }).catch((error) => {
+  });
+
+  ring.getLastVideos()().then((urls) => {
+    for (let i in urls) {
+      adapter.log.info("Url: " + i + " = " + JSON.stringify(urls[i]));
+    }
+  }).catch((error) => {
+  });
+
+  /*
+    let actions = [
+      () => ring.getLiveStream()(),
+      () => ring.getHealthSummarie()(),
+      () => ring.getHistory()(),
+      () => ring.getLastVideos()() 
+      
+    ];
+    let promise = Promise.resolve();
+    let results = [];
+    for (let action of actions) {
+      promise = promise.then(action).then((r) => results.push(r));
+    }
+    promise.then(() => adapter.log.info("Done with results " + JSON.stringify(results)));
+  */
 
 }
