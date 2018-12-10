@@ -62,6 +62,22 @@ adapter.on('ready', () => {
 });
 
 
+function startRing(ring, callback) {
+
+  if (ring) {
+
+    ring.getDevices()().then((devices) => {
+      adapter.log.info("Starting Ring");
+      callback && callback();
+    }).catch((error) => {
+      adapter.log.error("Error starting Ring!");
+    });
+
+  }
+
+
+}
+
 // *****************************************************************************************************
 // Main
 // *****************************************************************************************************
@@ -71,60 +87,65 @@ function main() {
   //ring2.test();
 
   let ring = new Doorbell(adapter);
-  let events = ring.getEvent();
 
-  let dingdong = ring.dingDong();
-  dingdong();
-  events.on('dingdong', (ding) => {
-    for (let i in sip) {
-      adapter.log.info("Ding Dong " + JSON.stringify(ding[i]));
-    }
+  startRing(ring, () => {
+
+    let events = ring.getEvent();
+
+    let dingdong = ring.dingDong();
+    dingdong();
+    events.on('dingdong', (ding) => {
+      for (let i in sip) {
+        adapter.log.info("Ding Dong " + JSON.stringify(ding[i]));
+      }
+    });
+
+
+    ring.getLiveStream()().then((sip) => {
+      for (let i in sip) {
+        adapter.log.info("LiveStream: " + i + " = " + JSON.stringify(sip[i]));
+      }
+    }).catch((error) => {
+    });
+
+    ring.getHealthSummarie()().then((healths) => {
+      for (let i in healths) {
+        adapter.log.info("Healths: " + i + " = " + JSON.stringify(healths[i]));
+      }
+    }).catch((error) => {
+    });
+
+
+    ring.getHistory()().then((history) => {
+      for (let i in history) {
+        adapter.log.info("History: " + i + " = " + JSON.stringify(history[i]));
+      }
+    }).catch((error) => {
+    });
+
+    ring.getLastVideos()().then((urls) => {
+      for (let i in urls) {
+        adapter.log.info("Url: " + i + " = " + JSON.stringify(urls[i]));
+      }
+    }).catch((error) => {
+    });
+
+    /*
+      let actions = [
+        () => ring.getLiveStream()(),
+        () => ring.getHealthSummarie()(),
+        () => ring.getHistory()(),
+        () => ring.getLastVideos()() 
+        
+      ];
+      let promise = Promise.resolve();
+      let results = [];
+      for (let action of actions) {
+        promise = promise.then(action).then((r) => results.push(r));
+      }
+      promise.then(() => adapter.log.info("Done with results " + JSON.stringify(results)));
+    */
+
   });
-
-
-  ring.getLiveStream()().then((sip) => {
-    for (let i in sip) {
-      adapter.log.info("LiveStream: " + i + " = " + JSON.stringify(sip[i]));
-    }
-  }).catch((error) => {
-  });
-
-  ring.getHealthSummarie()().then((healths) => {
-    for (let i in healths) {
-      adapter.log.info("Healths: " + i + " = " + JSON.stringify(healths[i]));
-    }
-  }).catch((error) => {
-  });
-
-
-  ring.getHistory()().then((history) => {
-    for (let i in history) {
-      adapter.log.info("History: " + i + " = " + JSON.stringify(history[i]));
-    }
-  }).catch((error) => {
-  });
-
-  ring.getLastVideos()().then((urls) => {
-    for (let i in urls) {
-      adapter.log.info("Url: " + i + " = " + JSON.stringify(urls[i]));
-    }
-  }).catch((error) => {
-  });
-
-  /*
-    let actions = [
-      () => ring.getLiveStream()(),
-      () => ring.getHealthSummarie()(),
-      () => ring.getHistory()(),
-      () => ring.getLastVideos()() 
-      
-    ];
-    let promise = Promise.resolve();
-    let results = [];
-    for (let action of actions) {
-      promise = promise.then(action).then((r) => results.push(r));
-    }
-    promise.then(() => adapter.log.info("Done with results " + JSON.stringify(results)));
-  */
 
 }
