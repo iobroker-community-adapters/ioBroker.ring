@@ -68,7 +68,7 @@ function startRing(ring, callback) {
 
     ring.getDevices()().then((devices) => {
       adapter.log.info("Starting Ring");
-      callback && callback();
+      callback && callback(devices);
     }).catch((error) => {
       adapter.log.error("Error starting Ring!");
     });
@@ -88,42 +88,47 @@ function main() {
 
   let ring = new Doorbell(adapter);
 
-  startRing(ring, () => {
+  startRing(ring, (devices) => {
+
+
+    for (let i in devices) {
+      adapter.log.info("Devices " + i + " = " + JSON.stringify(devices[i]));
+    }
 
     let events = ring.getEvent();
-
     let dingdong = ring.dingDong();
-    dingdong();
+    let huhu = dingdong();
     events.on('dingdong', (ding) => {
       for (let i in ding) {
         adapter.log.info("Ding Dong " + i + " = " + JSON.stringify(ding[i]));
       }
     });
 
-
+    /*
     ring.getLiveStream()().then((sip) => {
       for (let i in sip) {
         adapter.log.info("LiveStream: " + i + " = " + JSON.stringify(sip[i]));
       }
     }).catch((error) => {
     });
+    */
 
-    ring.getHealthSummarie()().then((healths) => {
+    ring.getLiveStream()().then((sip) => {
+      for (let i in sip) {
+        adapter.log.info("LiveStream: " + i + " = " + JSON.stringify(sip[i]));
+      }
+      return ring.getHealthSummarie()();
+    }).then((healths) => {
       for (let i in healths) {
         adapter.log.info("Healths: " + i + " = " + JSON.stringify(healths[i]));
       }
-    }).catch((error) => {
-    });
-
-
-    ring.getHistory()().then((history) => {
+      return ring.getHistory()();
+    }).then((history) => {
       for (let i in history) {
         adapter.log.info("History: " + i + " = " + JSON.stringify(history[i]));
       }
-    }).catch((error) => {
-    });
-
-    ring.getLastVideos()().then((urls) => {
+      return ring.getLastVideos()();
+    }).then((urls) => {
       for (let i in urls) {
         adapter.log.info("Url: " + i + " = " + JSON.stringify(urls[i]));
       }
