@@ -96,7 +96,7 @@ function main() {
     dingdong();
     events.on('dingdong', (ding) => {
       for (let i in ding) {
-        adapter.log.info("Ding Dong " + JSON.stringify(ding[i]));
+        adapter.log.info("Ding Dong " + i + " = " + JSON.stringify(ding[i]));
       }
     });
 
