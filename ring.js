@@ -95,7 +95,7 @@ function main() {
     let dingdong = ring.dingDong();
     dingdong();
     events.on('dingdong', (ding) => {
-      for (let i in sip) {
+      for (let i in ding) {
         adapter.log.info("Ding Dong " + JSON.stringify(ding[i]));
       }
     });
