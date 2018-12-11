@@ -90,32 +90,37 @@ function main() {
 
   (async () => {
 
-
-    let id = '17877585';
     let test = await new doorbell.Test(adapter);
     let devices = await test.getDevices();
     let dbids = await test.getDoorbells();
-    let doorb = await test.getDoorbell(id);
-    let livestream = await test.getLiveStream(id);
-    let health = await test.getHealthSummarie(id);
-    let history = await test.getHistory(id);
-    let urls = await test.getLastVideos(id);
-    let events = await test.dingDong(id);
 
-    adapter.log.info("LiveStream: " + JSON.stringify(livestream));
-    adapter.log.info("Health: " + JSON.stringify(health));
 
-    for (let i in history) {
-      adapter.log.info("History: " + i + " = " + JSON.stringify(history[i]));
+    for (let j in dbids) {
+
+      let id = dbids[j].id;
+      let doorb = await test.getDoorbell(id);
+      let livestream = await test.getLiveStream(id);
+      let health = await test.getHealthSummarie(id);
+      let history = await test.getHistory(id);
+      let urls = await test.getLastVideos(id);
+      let events = await test.dingDong(id);
+
+      adapter.log.info("LiveStream: " + JSON.stringify(livestream));
+      adapter.log.info("Health: " + JSON.stringify(health));
+
+      for (let i in history) {
+        adapter.log.info("History: " + i + " = " + JSON.stringify(history[i]));
+      }
+
+      for (let i in urls) {
+        adapter.log.info("Url: " + i + " = " + JSON.stringify(urls[i]));
+      }
+
+      events.on('dingdong', (ding) => {
+        adapter.log.info("Ding Dong for Id " + id + JSON.stringify(ding));
+      });
+
     }
-
-    for (let i in urls) {
-      adapter.log.info("Url: " + i + " = " + JSON.stringify(urls[i]));
-    }
-
-    events.on('dingdong', (ding) => {
-      adapter.log.info("Ding Dong " + JSON.stringify(ding));
-    });
 
 
   })();
