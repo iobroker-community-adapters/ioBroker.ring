@@ -2,9 +2,12 @@
 
 const utils = require(__dirname + '/lib/utils'); // Get common adapter utils
 let adapter = new utils.Adapter('ring');
-let Doorbell2 = require(__dirname + '/lib/doorbell2');
 let doorbell = require(__dirname + '/lib/doorbell');
 
+
+// *****************************************************************************************************
+// Password decrypt
+// *****************************************************************************************************
 function decrypt(key, value) {
   let result = '';
   for (let i = 0; i < value.length; ++i) {
@@ -12,9 +15,6 @@ function decrypt(key, value) {
   }
   return result;
 }
-
-
-
 
 // *****************************************************************************************************
 // is called when adapter shuts down - callback has to be called under any circumstances!
@@ -45,150 +45,59 @@ adapter.on('message', (msg) => {
 // start here!
 // *****************************************************************************************************
 adapter.on('ready', () => {
-
   adapter.getForeignObject('system.config', (err, obj) => {
     if (adapter.config.password) {
       if (obj && obj.native && obj.native.secret) {
-        //noinspection JSUnresolvedVariable
         adapter.config.password = decrypt(obj.native.secret, adapter.config.password);
       } else {
-        //noinspection JSUnresolvedVariable
         adapter.config.password = decrypt('Zgfr56gFe87jJOM', adapter.config.password);
       }
     }
     main();
   });
-
 });
 
-
-function startRing(ring, callback) {
-
-  if (ring) {
-
-    ring.getDevices()().then((devices) => {
-      adapter.log.info("Starting Ring");
-      callback && callback(devices);
-    }).catch((error) => {
-      adapter.log.error("Error starting Ring!");
-    });
-
-  }
-
-
-}
 
 // *****************************************************************************************************
 // Main
 // *****************************************************************************************************
 function main() {
-
-  //let ring2  = new Doorbell2(adapter);
-  //ring2.test();
-
-  let ring = new doorbell.Doorbell(adapter);
-
+  // Pronise function 
   (async () => {
 
-    let test = await new doorbell.Test(adapter);
-    let devices = await test.getDevices();
-    let dbids = await test.getDoorbells();
+    try {
+      let ring = await new doorbell.Doorbell(adapter);
+      let devices = await ring.getDevices();
+      let dbids = await ring.getDoorbells();
+
+      for (let j in dbids) {
+
+        let id = dbids[j].id;
+        let doorb = await ring.getDoorbell(id);
+        let livestream = await ring.getLiveStream(id);
+        let health = await ring.getHealthSummarie(id);
+        let history = await ring.getHistory(id);
+        let urls = await ring.getLastVideos(id);
+        let events = await ring.dingDong(id);
+
+        adapter.log.info("LiveStream: " + JSON.stringify(livestream));
+        adapter.log.info("Health: " + JSON.stringify(health));
+
+        for (let i in history) {
+          adapter.log.info("History: " + i + " = " + JSON.stringify(history[i]));
+        }
+        for (let i in urls) {
+          adapter.log.info("Url: " + i + " = " + JSON.stringify(urls[i]));
+        }
 
 
-    for (let j in dbids) {
+        events.on('dingdong', (ding) => {
+          adapter.log.info("Ding Dong for Id " + id + JSON.stringify(ding));
+        });
 
-      let id = dbids[j].id;
-      let doorb = await test.getDoorbell(id);
-      let livestream = await test.getLiveStream(id);
-      let health = await test.getHealthSummarie(id);
-      let history = await test.getHistory(id);
-      let urls = await test.getLastVideos(id);
-      let events = await test.dingDong(id);
-
-      adapter.log.info("LiveStream: " + JSON.stringify(livestream));
-      adapter.log.info("Health: " + JSON.stringify(health));
-
-      for (let i in history) {
-        adapter.log.info("History: " + i + " = " + JSON.stringify(history[i]));
       }
-
-      for (let i in urls) {
-        adapter.log.info("Url: " + i + " = " + JSON.stringify(urls[i]));
-      }
-
-      events.on('dingdong', (ding) => {
-        adapter.log.info("Ding Dong for Id " + id + JSON.stringify(ding));
-      });
-
+    } catch (error) {
+      adapter.log.error("Error: " + error);
     }
-
-
   })();
-
-  /*
-   startRing(ring, (devices) => {
- 
- 
-     for (let i in devices) {
-       adapter.log.info("Devices " + i + " = " + JSON.stringify(devices[i]));
-     }
- 
-     let events = ring.getEvent();
-     let dingdong = ring.dingDong();
-     let huhu = dingdong();
-     events.on('dingdong', (ding) => {
-       for (let i in ding) {
-         adapter.log.info("Ding Dong " + i + " = " + JSON.stringify(ding[i]));
-       }
-     });
- */
-  /*
-  ring.getLiveStream()().then((sip) => {
-    for (let i in sip) {
-      adapter.log.info("LiveStream: " + i + " = " + JSON.stringify(sip[i]));
-    }
-  }).catch((error) => {
-  });
-  */
-  /*
-  ring.getLiveStream()().then((sip) => {
-    for (let i in sip) {
-      adapter.log.info("LiveStream: " + i + " = " + JSON.stringify(sip[i]));
-    }
-    return ring.getHealthSummarie()();
-  }).then((healths) => {
-    for (let i in healths) {
-      adapter.log.info("Healths: " + i + " = " + JSON.stringify(healths[i]));
-    }
-    return ring.getHistory()();
-  }).then((history) => {
-    for (let i in history) {
-      adapter.log.info("History: " + i + " = " + JSON.stringify(history[i]));
-    }
-    return ring.getLastVideos()();
-  }).then((urls) => {
-    for (let i in urls) {
-      adapter.log.info("Url: " + i + " = " + JSON.stringify(urls[i]));
-    }
-  }).catch((error) => {
-  });
-
-
-    let actions = [
-      () => ring.getLiveStream()(),
-      () => ring.getHealthSummarie()(),
-      () => ring.getHistory()(),
-      () => ring.getLastVideos()() 
-      
-    ];
-    let promise = Promise.resolve();
-    let results = [];
-    for (let action of actions) {
-      promise = promise.then(action).then((r) => results.push(r));
-    }
-    promise.then(() => adapter.log.info("Done with results " + JSON.stringify(results)));
-  */
-
-  //  });
-
 }
