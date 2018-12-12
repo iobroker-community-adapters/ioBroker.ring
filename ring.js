@@ -92,7 +92,11 @@ function main() {
           adapter.log.info("Url: " + i + " = " + JSON.stringify(urls[i]));
         }
         */
-       
+
+        setInterval((async () => {
+          health = await ring.getHealthSummarie(id);
+        }), 60 * 1000);
+
         events.on('dingdong', (ding) => {
           adapter.log.info("Ding Dong for Id " + id + JSON.stringify(ding));
         });
