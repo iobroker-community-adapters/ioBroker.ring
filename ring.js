@@ -63,6 +63,7 @@ adapter.on('ready', () => {
 // *****************************************************************************************************
 function main() {
   // Pronise function 
+ 
   (async () => {
 
     try {
@@ -80,6 +81,7 @@ function main() {
         let urls = await ring.getLastVideos(id);
         let events = await ring.dingDong(id);
 
+        /*
         adapter.log.info("LiveStream: " + JSON.stringify(livestream));
         adapter.log.info("Health: " + JSON.stringify(health));
 
@@ -89,11 +91,12 @@ function main() {
         for (let i in urls) {
           adapter.log.info("Url: " + i + " = " + JSON.stringify(urls[i]));
         }
-
-
+        */
+       
         events.on('dingdong', (ding) => {
           adapter.log.info("Ding Dong for Id " + id + JSON.stringify(ding));
         });
+      
 
       }
     } catch (error) {
