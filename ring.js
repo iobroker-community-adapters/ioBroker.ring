@@ -260,6 +260,7 @@ async function setDingDong(ring, id, ding) {
 async function setHistory(ring, id) {
 
   let history = await ring.getHistory(id);
+  let videos = await ring.getLastVideos(id);
   let deviceId = adapter.namespace + '.RING_' + id;
   let channelId = deviceId + '.History';
 
@@ -289,10 +290,11 @@ async function setHistory(ring, id) {
     let value = null;
     switch (i) {
       case 'history_url':
-        value = history[counter].apiUri || null;
+        value = videos && videos[counter] || null;
+        // value = history[counter].apiUri || null;
         break;
       default:
-        value = history[counter][i] || null;
+        value = history && history[counter][i] || null;
     }
     let stateId = channelId + '.' + i;
     let common = info[i];
@@ -303,6 +305,16 @@ async function setHistory(ring, id) {
   }
 
   objectHelper.processObjectQueue(() => { });
+
+}
+
+function poolHealth(ring, id) {
+
+  setTimeout((async () => {
+    await setHealth(ring, id);
+    await setHistory(ring, id);
+    poolHealth(ring, id);
+  }), 60 * 1000);
 
 }
 
@@ -330,6 +342,7 @@ function main() {
         await setLivestream(ring, id);
         await setDingDong(ring, id);
         await setHistory(ring, id);
+        await poolHealth(ring, id)
         // let livestream = await ring.getLiveStream(id);
         // let health = await ring.getHealthSummarie(id);
         // let history = await ring.getHistory(id);
@@ -346,14 +359,16 @@ function main() {
         for (let i in urls) {
           adapter.log.info("Url: " + i + " = " + JSON.stringify(urls[i]));
         }
-        */
+        
 
+      
         setInterval((async () => {
           await setHealth(ring, id);
           await setHistory(ring, id);
           // health = await ring.getHealthSummarie(id);
         }), 60 * 1000);
-
+        */
+       
         events.on('dingdong', (ding) => {
           adapter.log.info("Ding Dong for Id " + id + JSON.stringify(ding));
           (async () => {
