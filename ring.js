@@ -1,8 +1,10 @@
 'use strict';
 
 const utils = require(__dirname + '/lib/utils'); // Get common adapter utils
-let adapter = new utils.Adapter('ring');
-let doorbell = require(__dirname + '/lib/doorbell');
+const adapter = new utils.Adapter('ring');
+const objectHelper = require(__dirname + '/lib/objectHelper');
+const doorbell = require(__dirname + '/lib/doorbell');
+const datapoints = require(__dirname + '/lib/datapoints');
 
 
 // *****************************************************************************************************
@@ -59,12 +61,184 @@ adapter.on('ready', () => {
 
 
 // *****************************************************************************************************
+// Add objects
+// *****************************************************************************************************
+async function setInfo(ring, id) {
+
+  let doorb = await ring.getDoorbell(id); // Info
+  let deviceId = adapter.namespace + '.RING_' + id;
+  let channelId = deviceId + '.Info';
+
+  // Create Deivce
+  objectHelper.setOrUpdateObject(deviceId, {
+    type: 'device',
+    common: {
+      name: 'Device ' + id
+    },
+    native: {}
+  }, ['name']);
+
+  // Create Channel
+  objectHelper.setOrUpdateObject(channelId, {
+    type: 'channel',
+    common: {
+      name: 'Info'
+    },
+    native: {
+
+    }
+  }, ['name']);
+
+  let info = datapoints.getObjectByName('info');
+  for (let i in info) {
+    let value = doorb[i] || null;
+    let stateId = channelId + '.' + i;
+    let common = info[i];
+    objectHelper.setOrUpdateObject(stateId, {
+      type: 'state',
+      common: common
+    }, ['name'], value);
+  }
+
+  objectHelper.processObjectQueue(() => { });
+
+}
+
+// *****************************************************************************************************
+// Add objects
+// *****************************************************************************************************
+async function setHealth(ring, id) {
+
+  let health = await ring.getHealthSummarie(id); // health
+  let deviceId = adapter.namespace + '.RING_' + id;
+  let channelId = deviceId + '.Info';
+
+  // Create Deivce
+  objectHelper.setOrUpdateObject(deviceId, {
+    type: 'device',
+    common: {
+      name: 'Device ' + id
+    },
+    native: {}
+  }, ['name']);
+
+  // Create Channel
+  objectHelper.setOrUpdateObject(channelId, {
+    type: 'channel',
+    common: {
+      name: 'Info'
+    },
+    native: {
+
+    }
+  }, ['name']);
+
+  let info = datapoints.getObjectByName('health');
+  for (let i in info) {
+    let value = health[i] || null;
+    let stateId = channelId + '.' + i;
+    let common = info[i];
+    objectHelper.setOrUpdateObject(stateId, {
+      type: 'state',
+      common: common
+    }, ['name'], value);
+  }
+
+  objectHelper.processObjectQueue(() => { });
+
+}
+
+async function setLivestream(ring, id) {
+
+  let livestream = await ring.getLiveStream(id);
+  let deviceId = adapter.namespace + '.RING_' + id;
+  let channelId = deviceId + '.Livestream';
+
+  // Create Deivce
+  objectHelper.setOrUpdateObject(deviceId, {
+    type: 'device',
+    common: {
+      name: 'Device ' + id
+    },
+    native: {}
+  }, ['name']);
+
+  // Create Channel
+  objectHelper.setOrUpdateObject(channelId, {
+    type: 'channel',
+    common: {
+      name: 'Info'
+    },
+    native: {
+
+    }
+  }, ['name']);
+
+  let info = datapoints.getObjectByName('livestream');
+  for (let i in info) {
+    let value = livestream[i] || null;
+    let stateId = channelId + '.' + i;
+    let common = info[i];
+    objectHelper.setOrUpdateObject(stateId, {
+      type: 'state',
+      common: common
+    }, ['name'], value);
+  }
+
+  objectHelper.processObjectQueue(() => { });
+
+}
+
+async function setDingDong(ring, id, ding) {
+
+  let deviceId = adapter.namespace + '.RING_' + id;
+  let channelId = deviceId;
+
+  // Create Deivce
+  objectHelper.setOrUpdateObject(deviceId, {
+    type: 'device',
+    common: {
+      name: 'Device ' + id
+    },
+    native: {}
+  }, ['name']);
+
+  // Create Channel
+  objectHelper.setOrUpdateObject(channelId, {
+    type: 'channel',
+    common: {
+      name: 'Info'
+    },
+    native: {
+
+    }
+  }, ['name']);
+
+  let info = datapoints.getObjectByName('livestream');
+  for (let i in info) {
+    let value = null;
+    if (ding && ding[i]) value = ding[i];
+    let stateId = channelId + '.' + i;
+    let common = info[i];
+    objectHelper.setOrUpdateObject(stateId, {
+      type: 'state',
+      common: common
+    }, ['name'], value);
+  }
+
+  objectHelper.processObjectQueue(() => { });
+
+}
+
+// *****************************************************************************************************
 // Main
 // *****************************************************************************************************
 function main() {
   // Pronise function 
- 
+
   (async () => {
+
+    objectHelper.init(adapter);
 
     try {
       let ring = await new doorbell.Doorbell(adapter);
@@ -74,11 +248,15 @@ function main() {
       for (let j in dbids) {
 
         let id = dbids[j].id;
-        let doorb = await ring.getDoorbell(id);
-        let livestream = await ring.getLiveStream(id);
-        let health = await ring.getHealthSummarie(id);
-        let history = await ring.getHistory(id);
-        let urls = await ring.getLastVideos(id);
+        // let doorb = await ring.getDoorbell(id); // Info
+        await setInfo(ring, id);
+        await setHealth(ring, id);
+        await setLivestream(ring, id);
+        await setDingDong(ring, id);
+        // let livestream = await ring.getLiveStream(id);
+        // let health = await ring.getHealthSummarie(id);
+        // let history = await ring.getHistory(id);
+        // let urls = await ring.getLastVideos(id);
         let events = await ring.dingDong(id);
 
         /*
@@ -94,13 +272,16 @@ function main() {
         */
 
         setInterval((async () => {
-          health = await ring.getHealthSummarie(id);
+          await setHealth(ring, id);
+          // health = await ring.getHealthSummarie(id);
         }), 60 * 1000);
 
         events.on('dingdong', (ding) => {
           adapter.log.info("Ding Dong for Id " + id + JSON.stringify(ding));
+          (async () => {
+            await setDingDong(ring, id, ding);
+          })();
         });
-      
 
       }
     } catch (error) {

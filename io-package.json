@@ -59,7 +59,5 @@
     "pollsec": 1
   },
   "objects": [],
-  "instanceObjects": [
-    {}
-  ]
+  "instanceObjects": []
 }
