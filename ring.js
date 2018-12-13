@@ -285,23 +285,31 @@ async function setHistory(ring, id) {
   }, ['name']);
 
   let info = datapoints.getObjectByName('history');
-  let counter = 0;
-  for (let i in info) {
-    let value = null;
-    switch (i) {
-      case 'history_url':
-        value = videos && videos[counter] || null;
-        // value = history[counter].apiUri || null;
-        break;
-      default:
-        value = history && history[counter][i] || null;
+  let counter = null;
+  for (let i in history) {
+    if (history[i].kind == 'motion' || history[i].kind == 'ding') {
+      counter = i;
+      break;
     }
-    let stateId = channelId + '.' + i;
-    let common = info[i];
-    objectHelper.setOrUpdateObject(stateId, {
-      type: 'state',
-      common: common
-    }, ['name'], value);
+  }
+  if (counter >= 0) {
+    for (let i in info) {
+      let value = null;
+      switch (i) {
+        case 'history_url':
+          value = videos && videos[counter] || null;
+          // value = history[counter].apiUri || null;
+          break;
+        default:
+          value = history && history[counter][i] || null;
+      }
+      let stateId = channelId + '.' + i;
+      let common = info[i];
+      objectHelper.setOrUpdateObject(stateId, {
+        type: 'state',
+        common: common
+      }, ['name'], value);
+    }
   }
 
   objectHelper.processObjectQueue(() => { });
@@ -368,7 +376,7 @@ function main() {
           // health = await ring.getHealthSummarie(id);
         }), 60 * 1000);
         */
-       
+
         events.on('dingdong', (ding) => {
           adapter.log.info("Ding Dong for Id " + id + JSON.stringify(ding));
           (async () => {
