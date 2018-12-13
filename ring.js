@@ -51,6 +51,7 @@ adapter.on('objectChange', (id, obj) => {
 });
 
 
+
 // *****************************************************************************************************
 // Listen for sendTo messages
 // *****************************************************************************************************
@@ -256,6 +257,55 @@ async function setDingDong(ring, id, ding) {
 
 }
 
+async function setHistory(ring, id) {
+
+  let history = await ring.getHistory(id);
+  let deviceId = adapter.namespace + '.RING_' + id;
+  let channelId = deviceId + '.History';
+
+  // Create Deivce
+  objectHelper.setOrUpdateObject(deviceId, {
+    type: 'device',
+    common: {
+      name: 'Device ' + id
+    },
+    native: {}
+  }, ['name']);
+
+  // Create Channel
+  objectHelper.setOrUpdateObject(channelId, {
+    type: 'channel',
+    common: {
+      name: 'History'
+    },
+    native: {
+
+    }
+  }, ['name']);
+
+  let info = datapoints.getObjectByName('history');
+  let counter = 0;
+  for (let i in info) {
+    let value = null;
+    switch (i) {
+      case 'history_url':
+        value = history[counter].apiUri || null;
+        break;
+      default:
+        value = history[counter][i] || null;
+    }
+    let stateId = channelId + '.' + i;
+    let common = info[i];
+    objectHelper.setOrUpdateObject(stateId, {
+      type: 'state',
+      common: common
+    }, ['name'], value);
+  }
+
+  objectHelper.processObjectQueue(() => { });
+
+}
+
 // *****************************************************************************************************
 // Main
 // *****************************************************************************************************
@@ -279,6 +329,7 @@ function main() {
         await setHealth(ring, id);
         await setLivestream(ring, id);
         await setDingDong(ring, id);
+        await setHistory(ring, id);
         // let livestream = await ring.getLiveStream(id);
         // let health = await ring.getHealthSummarie(id);
         // let history = await ring.getHistory(id);
@@ -299,6 +350,7 @@ function main() {
 
         setInterval((async () => {
           await setHealth(ring, id);
+          await setHistory(ring, id);
           // health = await ring.getHealthSummarie(id);
         }), 60 * 1000);
 
@@ -306,6 +358,7 @@ function main() {
           adapter.log.info("Ding Dong for Id " + id + JSON.stringify(ding));
           (async () => {
             await setDingDong(ring, id, ding);
+            await setHistory(ring, id);
           })();
         });
 
