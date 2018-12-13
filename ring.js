@@ -5,7 +5,7 @@ const adapter = new utils.Adapter('ring');
 const objectHelper = require(__dirname + '/lib/objectHelper');
 const doorbell = require(__dirname + '/lib/doorbell');
 const datapoints = require(__dirname + '/lib/datapoints');
-
+let ring = null;
 
 // *****************************************************************************************************
 // Password decrypt
@@ -41,6 +41,32 @@ adapter.on('message', (msg) => {
 
 });
 
+// *****************************************************************************************************
+// Listen for sendTo messages
+// *****************************************************************************************************
+adapter.on('objectChange', (id, obj) => {
+
+  adapter.sendTo("Change ID " + id);
+
+});
+
+
+// *****************************************************************************************************
+// Listen for sendTo messages
+// *****************************************************************************************************
+adapter.on('stateChange', (id, state) => {
+  adapter.sendTo("Change ID " + id + " = " + state.val);
+  let regex = /ring.+.RING_(.+).Livestream.livestreamrequest/gm;
+  let m;
+  if ((m = regex.exec(id)) !== null) {
+    let rId = m[1] || null;
+    if (rId && state.val == true) {
+      (async () => {
+        await setLivestream(ring, rId);
+      })();
+    }
+  }
+});
 
 // *****************************************************************************************************
 // is called when databases are connected and adapter received configuration.
@@ -214,7 +240,7 @@ async function setDingDong(ring, id, ding) {
     }
   }, ['name']);
 
-  let info = datapoints.getObjectByName('livestream');
+  let info = datapoints.getObjectByName('dingdong');
   for (let i in info) {
     let value = null;
     if (ding && ding[i]) value = ding[i];
@@ -241,7 +267,7 @@ function main() {
     objectHelper.init(adapter);
 
     try {
-      let ring = await new doorbell.Doorbell(adapter);
+      ring = await new doorbell.Doorbell(adapter);
       let devices = await ring.getDevices();
       let dbids = await ring.getDoorbells();
 
@@ -282,6 +308,8 @@ function main() {
             await setDingDong(ring, id, ding);
           })();
         });
+
+        adapter.subscribeStates(adapter.namespace + ".*.Livestream.livestreamrequest");
 
       }
     } catch (error) {
