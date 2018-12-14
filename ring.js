@@ -127,6 +127,7 @@ async function setInfo(ring, id) {
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
     adapter.log.error("Error: " + error);
+    throw(error);
   }
 }
 
@@ -175,6 +176,7 @@ async function setHealth(ring, id) {
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
     adapter.log.info("Error: " + error);
+    throw(error);
   }
 }
 
@@ -263,6 +265,7 @@ async function setLivestream(ring, id, init) {
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
     adapter.log.error("Error: " + error);
+    throw(error);
   }
 }
 
@@ -411,7 +414,10 @@ async function setHistory(ring, id) {
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
-    !history && adapter.log.error("Error: " + error);
+    if(!history) {
+      dapter.log.error("Error: " + error);
+      throw(error);
+    }
   }
 }
 
