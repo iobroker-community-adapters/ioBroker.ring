@@ -1,6 +1,6 @@
 {
   "name": "iobroker.ring",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Ring Video Doorbell",
   "author": {
     "name": "Thorsten Stueben",
@@ -23,7 +23,6 @@
     "url": "https://github.com/schmupu/ioBroker.ring"
   },
   "dependencies": {
-    "doorbot": "^5.4.0",
     "events": "^3.0.0",
     "node-schedule": "1.3.0",
     "request": "^2.85.0",

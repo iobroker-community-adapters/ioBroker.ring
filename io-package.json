@@ -1,10 +1,10 @@
 {
   "common": {
     "name": "ring",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "title": "Ring Video Doorbell",
     "news": {
-      "0.0.1": {
+      "0.1.0": {
         "en": "First version",
         "de": "Erste Version"
       }
@@ -53,10 +53,10 @@
     "restartAdapters": []
   },
   "native": {
-    "email": "email@foo.com",
-    "password": "mqttuser",
+    "email": "email@test.foo",
+    "password": "password",
     "timeout": 5,
-    "pollsec": 1
+    "pollsec": 15
   },
   "objects": [],
   "instanceObjects": []

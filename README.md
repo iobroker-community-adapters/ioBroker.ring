@@ -2,7 +2,6 @@
 
 # Ring Video Doorbell Adapter
 
-
 [![Travis CI Build Status](https://travis-ci.org/schmupu/ioBroker.ring.svg?branch=master)](https://travis-ci.org/schmupu/ioBroker.ring)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/schmupu/ioBroker.ring?branch=master&svg=true)](https://ci.appveyor.com/project/schmupu/ioBroker-ring/)
 [![NPM version](http://img.shields.io/npm/v/ioBroker.ring.svg)](https://www.npmjs.com/package/ioBroker.ring)
@@ -10,7 +9,12 @@
 
 [![NPM](https://nodei.co/npm/ioBroker.ring.png?downloads=true)](https://nodei.co/npm/ioBroker.ring/)
 
-...
+Requires node.js 8.0 or higher and Admin v3!
+
+The Ring Video Doorbell adapter shows the status of your Ring in ioBroker. You can see the last history entry for moitions or door rings. If you have the ring.com cloud solution the last recorded video will be supported as link too.
+If somenone rings or a motion is detected it will be shown as status    
+
+An unofficial, friendly Javascript API for ring doorbells, cameras, etc.
 
 ## Install & Configuration
 
@@ -18,7 +22,7 @@
 
 ## Changelog
 
-### 0.0.1 (07.12.2018)
+### 0.1.0 (14.12.2018)
 * (Stübi) First Version
 
 

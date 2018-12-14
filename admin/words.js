@@ -35,17 +35,17 @@ systemDictionary = {
     "es": "en el adaptador de guardar se reinicia con nueva configuración de inmediato",
     "pl": "on save adapter restarts with new config immediately"
   },
-  "shellydescription": {
-    "en": "Shelly devices must be in the same subnet as ioBroker for working with ioBroker. ioBroker finds Shelly devices  by his own. If there are not recognized, please reboot Shelly devices once.",
-    "de": "Shelly Device muss sich im gleichen Subnetz wie ioBroker befinden. Die Shelly Devices werden automatisch von ioBroker erkannt. Sollte das nicht der Fall sein, bitte Shelly Device rebooten.",
-    "ru": "Shelly Device muss sich im gleichen Subnetz wie ioBroker befinden. Устройства Die Shelly были автоматизированы. Sollte das nicht der Fall sein, bitte Shelly Gerät rebooten.",
-    "pt": "Shelly Device deve ser substituído por Subnetz wie ioBroker befinden. Die Shelly Devices é um automatismo automático. Sollte das coisas do outono, bitte Shelly Gerät rebooten.",
-    "nl": "Shelly Device muss sich im gleichen Subnetz wie ioBroker befinden. Die Shelly Devices were automatisch erkannt. Sollte das nicht der Fall sein, bitte Shelly Gerät rebooten.",
-    "fr": "Shelly Device muss sich im gleichen Subnetz wie ioBroker befinden. Die Shelly Devices werden automatisch erkannt. Sollte dicht nicht der Fall sein, bitte Shelly Gerät rebooten.",
-    "it": "Dispositivo Shelly muss sich im gleichen Subnetz wie ioBroker befinden. Die Shelly Devices werden automatisch erkannt. Sollte das nicht der Fall sein, bitte Shelly Gerät rebooten.",
-    "es": "Shelly Device muss sich im gleichen Subnetz wie ioBroker befinden. Die Shelly Devices werden automatisch erkannt. Sollte das nicht der Fall sein, bitte Shelly Gerät reiniciado.",
-    "pl": "Shelly Device muss sich im gleichen Subnetz wie ioBroker befinden. Urządzenia Die Shelly werden automatisch erkannt. Sollte das nicht der Fall sein, bitte Shelly Gerät rebooten."
-  },
+  "ringdescription": {
+    "en": "Username and password of your ring.com account!",
+    "de": "Benutzername und Passwort Ihres ring.com Kontos!",
+    "ru": "Имя пользователя и пароль вашей учетной записи ring.com!",
+    "pt": "Nome de usuário e senha da sua conta do ring.com!",
+    "nl": "Gebruikersnaam en wachtwoord van uw ring.com account!",
+    "fr": "Nom d'utilisateur et mot de passe de votre compte ring.com!",
+    "it": "Username e password del tuo account ring.com!",
+    "es": "Nombre de usuario y contraseña de su cuenta de ring.com!",
+    "pl": "Nazwa użytkownika i hasło do konta ring.com!"
+   },
   "User": {
     "en": "User",
     "de": "Benutzer",
