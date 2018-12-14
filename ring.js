@@ -435,7 +435,7 @@ async function ringer() {
         // let doorb = await ring.getDoorbell(id); // Info
         await setInfo(ring, id, true);
         await setHealth(ring, id);
-        await setLivestream(ring, id);
+        await setLivestream(ring, id, true);
         await setDingDong(ring, id, null);
         await setHistory(ring, id);
         await poolHealth(ring, id)

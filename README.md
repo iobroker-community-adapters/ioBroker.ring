@@ -11,14 +11,19 @@
 
 Requires node.js 8.0 or higher and Admin v3!
 
-The Ring Video Doorbell adapter shows the status of your Ring in ioBroker. You can see the last history entry for moitions or door rings. If you have the ring.com cloud solution the last recorded video will be supported as link too.
-If somenone rings or a motion is detected it will be shown as status    
-
-An unofficial, friendly Javascript API for ring doorbells, cameras, etc.
+The Ring Video Doorbell adapter shows if somenone rings the doorbell or if motion is detected. 
 
 ## Install & Configuration
 
-...
+After installing the Adapter you have to enter your Email and Password of your ring.com Account. 
+
+'''
+on({id: "ring.0.RING_4711.kind"/*Kind*/},  (obj) => {
+  if(obj.state.val == 'ding')   console.log("Someone is at the door");
+  if(obj.state.val == 'motion') console.log("Motion detected");
+});
+
+'''
 
 ## Changelog
 
