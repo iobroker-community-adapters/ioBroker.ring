@@ -30,7 +30,6 @@ adapter.on('unload', (callback) => {
     adapter.log.info('Closing Adapter');
     callback();
   } catch (e) {
-    // adapter.log.error('Error');
     callback();
   }
 });
@@ -47,7 +46,7 @@ adapter.on('message', (msg) => {
 // Listen for object Changes
 // *****************************************************************************************************
 adapter.on('objectChange', (id, obj) => {
-  adapter.log.info("objectChange for id  " + id);
+  // adapter.log.info("objectChange for id  " + id);
 });
 
 
@@ -175,7 +174,7 @@ async function setHealth(ring, id) {
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
-    adapter.log.info("Error: " + error);
+    adapter.log.error("Error: " + error);
     throw(error);
   }
 }
@@ -463,7 +462,7 @@ async function ringer() {
         await poolHealth(ring, id)
 
         await ring.event(id, (ding) => {
-          adapter.log.info("Ding Dong for Id " + id + JSON.stringify(ding));
+          adapter.log.debug("Ding Dong for Id " + id + JSON.stringify(ding));
           (async () => {
             await setDingDong(ring, id, ding);
             await setHistory(ring, id);

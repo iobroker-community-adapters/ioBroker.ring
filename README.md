@@ -4,10 +4,10 @@
 
 [![Travis CI Build Status](https://travis-ci.org/schmupu/ioBroker.ring.svg?branch=master)](https://travis-ci.org/schmupu/ioBroker.ring)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/schmupu/ioBroker.ring?branch=master&svg=true)](https://ci.appveyor.com/project/schmupu/ioBroker-ring/)
-[![NPM version](http://img.shields.io/npm/v/ioBroker.ring.svg)](https://www.npmjs.com/package/ioBroker.ring)
-[![Downloads](https://img.shields.io/npm/dm/ioBroker.ring.svg)](https://www.npmjs.com/package/ioBroker.ring)
+[![NPM version](http://img.shields.io/npm/v/ioBroker.ring.svg)](https://www.npmjs.com/package/iobroker.ring)
+[![Downloads](https://img.shields.io/npm/dm/ioBroker.ring.svg)](https://www.npmjs.com/package/iobroker.ring)
 
-[![NPM](https://nodei.co/npm/ioBroker.ring.png?downloads=true)](https://nodei.co/npm/ioBroker.ring/)
+[![NPM](https://nodei.co/npm/ioBroker.ring.png?downloads=true)](https://nodei.co/npm/iobroker.ring/)
 
 Requires node.js 8.0 or higher and Admin v3!
 

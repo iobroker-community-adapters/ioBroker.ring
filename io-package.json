@@ -1,12 +1,16 @@
 {
   "common": {
     "name": "ring",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "title": "Ring Video Doorbell",
     "news": {
       "0.1.0": {
         "en": "First version",
         "de": "Erste Version"
+      },
+      "0.1.1": {
+        "en": "A few updates",
+        "de": "Kleine Änderungen"
       }
     },
     "titleLang": {
@@ -49,7 +53,7 @@
     ],
     "readme": "https://github.com/schmupu/ioBroker.ring/blob/master/README.md",
     "loglevel": "info",
-    "type": "logic",
+    "type": "hardware",
     "restartAdapters": []
   },
   "native": {
