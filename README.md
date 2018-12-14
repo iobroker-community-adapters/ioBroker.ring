@@ -32,6 +32,9 @@ on({id: "ring.0.RING_4711.kind"/*Kind*/},  (obj) => {
 
 ## Changelog
 
+### 0.1.1 (15.12.2018)
+* (Stübi) Improvements
+
 ### 0.1.0 (14.12.2018)
 * (Stübi) First Version
 
