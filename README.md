@@ -17,13 +17,12 @@ The Ring Video Doorbell adapter shows if somenone rings the doorbell or if motio
 
 After installing the Adapter you have to enter your Email and Password of your ring.com Account. 
 
-'''
+```
 on({id: "ring.0.RING_4711.kind"/*Kind*/},  (obj) => {
   if(obj.state.val == 'ding')   console.log("Someone is at the door");
   if(obj.state.val == 'motion') console.log("Motion detected");
 });
-
-'''
+```
 
 ## Changelog
 
