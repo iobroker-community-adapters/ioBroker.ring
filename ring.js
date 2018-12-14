@@ -9,6 +9,7 @@ let ring = null;
 let ringdevices = {};
 let timerDingDong;
 let timerLiveStream;
+let states = {};
 
 // *****************************************************************************************************
 // Password decrypt
@@ -114,10 +115,13 @@ async function setInfo(ring, id) {
       let value = doorb[i] || null;
       let stateId = channelId + '.' + i;
       let common = info[i];
-      objectHelper.setOrUpdateObject(stateId, {
-        type: 'state',
-        common: common
-      }, ['name'], value);
+      if (states[stateId] != value) {
+        objectHelper.setOrUpdateObject(stateId, {
+          type: 'state',
+          common: common
+        }, ['name'], value);
+      }
+      states[stateId] = value;
     }
 
     objectHelper.processObjectQueue(() => { });
@@ -160,10 +164,13 @@ async function setHealth(ring, id) {
       let value = health[i] || null;
       let stateId = channelId + '.' + i;
       let common = info[i];
-      objectHelper.setOrUpdateObject(stateId, {
-        type: 'state',
-        common: common
-      }, ['name'], value);
+      if (states[stateId] != value) {
+        objectHelper.setOrUpdateObject(stateId, {
+          type: 'state',
+          common: common
+        }, ['name'], value);
+      }
+      states[stateId] = value;
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
@@ -244,10 +251,14 @@ async function setLivestream(ring, id, init) {
         };
       }
 
-      objectHelper.setOrUpdateObject(stateId, {
-        type: 'state',
-        common: common
-      }, ['name'], value, controlFunction);
+      if (states[stateId] != value) {
+        objectHelper.setOrUpdateObject(stateId, {
+          type: 'state',
+          common: common
+        }, ['name'], value, controlFunction);
+      }
+      states[stateId] = value;
+
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
@@ -388,10 +399,15 @@ async function setHistory(ring, id) {
       }
       let stateId = channelId + '.' + i;
       let common = info[i];
-      objectHelper.setOrUpdateObject(stateId, {
-        type: 'state',
-        common: common
-      }, ['name'], value);
+
+      if (states[stateId] != value) {
+        objectHelper.setOrUpdateObject(stateId, {
+          type: 'state',
+          common: common
+        }, ['name'], value);
+      }
+      states[stateId] = value;
+
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
@@ -461,6 +477,7 @@ async function ringer() {
   } catch (error) {
     // if, erro we will get a new ring connection
     ringdevices = {};
+    states = {};
     ring = null; // we start from beginning
     adapter.log.error("Error: " + error);
   }
