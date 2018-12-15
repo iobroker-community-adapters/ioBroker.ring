@@ -10,6 +10,7 @@ let ringdevices = {};
 let timerDingDong;
 let timerLiveStream;
 let states = {};
+let devprefix = 'doorbot_';
 
 // *****************************************************************************************************
 // Password decrypt
@@ -63,6 +64,7 @@ adapter.on('stateChange', (id, state) => {
 // start here!
 // *****************************************************************************************************
 adapter.on('ready', () => {
+
   adapter.getForeignObject('system.config', (err, obj) => {
     if (adapter.config.password) {
       if (obj && obj.native && obj.native.secret) {
@@ -71,11 +73,14 @@ adapter.on('ready', () => {
         adapter.config.password = decrypt('Zgfr56gFe87jJOM', adapter.config.password);
       }
     }
+
     // adapter.subscribeStates(adapter.namespace + '.*.Livestream.livestreamrequest');
     adapter.subscribeStates('*');
     objectHelper.init(adapter);
     main();
+
   });
+
 });
 
 
@@ -86,7 +91,7 @@ async function setInfo(ring, id) {
   let doorb;
   try {
     doorb = await ring.getDoorbell(id); // Info
-    let deviceId = 'RING_' + id;
+    let deviceId = devprefix + id;
     let channelId = deviceId + '.Info';
 
     // Create Deivce
@@ -102,7 +107,7 @@ async function setInfo(ring, id) {
     objectHelper.setOrUpdateObject(channelId, {
       type: 'channel',
       common: {
-        name: 'Info'
+        name: 'Info ' + id
       },
       native: {
 
@@ -114,19 +119,18 @@ async function setInfo(ring, id) {
       let value = doorb[i] || null;
       let stateId = channelId + '.' + i;
       let common = info[i];
-      if (states[stateId] != value) {
-        objectHelper.setOrUpdateObject(stateId, {
-          type: 'state',
-          common: common
-        }, ['name'], value);
-      }
+      // if (states[stateId] != value) {
+      objectHelper.setOrUpdateObject(stateId, {
+        type: 'state',
+        common: common
+      }, ['name'], value);
+      // }
       states[stateId] = value;
     }
 
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
-    adapter.log.error("Error: " + error);
-    throw(error);
+    throw (error);
   }
 }
 
@@ -136,7 +140,7 @@ async function setInfo(ring, id) {
 async function setHealth(ring, id) {
   try {
     let health = await ring.getHealthSummarie(id); // health
-    let deviceId = 'RING_' + id;
+    let deviceId = devprefix + id;
     let channelId = deviceId + '.Info';
 
     // Create Deivce
@@ -152,7 +156,7 @@ async function setHealth(ring, id) {
     objectHelper.setOrUpdateObject(channelId, {
       type: 'channel',
       common: {
-        name: 'Info'
+        name: 'Info ' + id
       },
       native: {
 
@@ -164,18 +168,17 @@ async function setHealth(ring, id) {
       let value = health[i] || null;
       let stateId = channelId + '.' + i;
       let common = info[i];
-      if (states[stateId] != value) {
-        objectHelper.setOrUpdateObject(stateId, {
-          type: 'state',
-          common: common
-        }, ['name'], value);
-      }
+      // if (states[stateId] != value) {
+      objectHelper.setOrUpdateObject(stateId, {
+        type: 'state',
+        common: common
+      }, ['name'], value);
+      // }
       states[stateId] = value;
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
-    adapter.log.error("Error: " + error);
-    throw(error);
+    throw (error);
   }
 }
 
@@ -185,7 +188,7 @@ async function setHealth(ring, id) {
 async function setLivestream(ring, id, init) {
   try {
     let livestream = !init ? await ring.getLiveStream(id) : {};
-    let deviceId = 'RING_' + id;
+    let deviceId = devprefix + id;
     let channelId = deviceId + '.Livestream';
 
     // Create Deivce
@@ -201,7 +204,7 @@ async function setLivestream(ring, id, init) {
     objectHelper.setOrUpdateObject(channelId, {
       type: 'channel',
       common: {
-        name: 'Info'
+        name: 'Livestream ' + id
       },
       native: {
 
@@ -246,25 +249,28 @@ async function setLivestream(ring, id, init) {
         controlFunction = function (value) {
           if (value == true) {
             (async () => {
-              await setLivestream(ring, id);
+              try {
+                await setLivestream(ring, id);
+              } catch (error) {
+                adapter.log.error("Error: " + error);
+              }
             })();
           }
         };
       }
 
-      if (states[stateId] != value) {
-        objectHelper.setOrUpdateObject(stateId, {
-          type: 'state',
-          common: common
-        }, ['name'], value, controlFunction);
-      }
+      // if (states[stateId] != value) {
+      objectHelper.setOrUpdateObject(stateId, {
+        type: 'state',
+        common: common
+      }, ['name'], value, controlFunction);
+      // }
       states[stateId] = value;
 
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
-    adapter.log.error("Error: " + error);
-    throw(error);
+    throw (error);
   }
 }
 
@@ -272,75 +278,77 @@ async function setLivestream(ring, id, init) {
 // Ring and Motions infos
 // *****************************************************************************************************
 async function setDingDong(ring, id, ding, init) {
+  try {
+    let deviceId = devprefix + id;
+    let channelId = deviceId;
 
-  let deviceId = 'RING_' + id;
-  let channelId = deviceId;
+    // Create Deivce
+    objectHelper.setOrUpdateObject(deviceId, {
+      type: 'device',
+      common: {
+        name: 'Device ' + id
+      },
+      native: {}
+    }, ['name']);
 
-  // Create Deivce
-  objectHelper.setOrUpdateObject(deviceId, {
-    type: 'device',
-    common: {
-      name: 'Device ' + id
-    },
-    native: {}
-  }, ['name']);
+    // Create Channel
+    objectHelper.setOrUpdateObject(channelId, {
+      type: 'channel',
+      common: {
+        name: 'Info ' + id
+      },
+      native: {
 
-  // Create Channel
-  objectHelper.setOrUpdateObject(channelId, {
-    type: 'channel',
-    common: {
-      name: 'Info'
-    },
-    native: {
-
-    }
-  }, ['name']);
-
-  let info = datapoints.getObjectByName('dingdong');
-  for (let i in info) {
-    let controlFunction;
-    let value = null;
-    if (ding && ding[i]) {
-      value = ding[i];
-    }
-    if (init) {
-      // let type = typeof value;
-      let type = info[i].type;
-      switch (type) {
-        case 'number':
-          value = 0;
-          break;
-        case 'object':
-          value = {};
-          break;
-        default:
-          value = '';
       }
-    }
-    let stateId = channelId + '.' + i;
-    let common = info[i];
-    if (i == 'expires_in') {
-      /*
-      controlFunction = function (value) {
-        if (value) {
-          clearTimeout(timerDingDong);
-          timerDingDong = setTimeout(() => {
-            (async () => {
-              await setDingDong(ring, id, ding, true);
-            })();
-          }, value * 1000);
+    }, ['name']);
+
+    let info = datapoints.getObjectByName('dingdong');
+    for (let i in info) {
+      let controlFunction;
+      let value = null;
+      if (ding && ding[i]) {
+        value = ding[i];
+      }
+      if (init) {
+        // let type = typeof value;
+        let type = info[i].type;
+        switch (type) {
+          case 'number':
+            value = 0;
+            break;
+          case 'object':
+            value = {};
+            break;
+          default:
+            value = '';
         }
-      };
-      */
+      }
+      let stateId = channelId + '.' + i;
+      let common = info[i];
+      if (i == 'expires_in') {
+        /*
+        controlFunction = function (value) {
+          if (value) {
+            clearTimeout(timerDingDong);
+            timerDingDong = setTimeout(() => {
+              (async () => {
+                await setDingDong(ring, id, ding, true);
+              })();
+            }, value * 1000);
+          }
+        };
+        */
+      }
+      objectHelper.setOrUpdateObject(stateId, {
+        type: 'state',
+        common: common
+      }, ['name'], value, controlFunction);
+
     }
-    objectHelper.setOrUpdateObject(stateId, {
-      type: 'state',
-      common: common
-    }, ['name'], value, controlFunction);
-
+    objectHelper.processObjectQueue(() => { });
+  } catch (error) {
+    throw (error);
   }
-  objectHelper.processObjectQueue(() => { });
-
 }
 
 // *****************************************************************************************************
@@ -352,7 +360,7 @@ async function setHistory(ring, id) {
   try {
     history = await ring.getHistory(id);
     videos = await ring.getLastVideos(id);
-    let deviceId = 'RING_' + id;
+    let deviceId = devprefix + id;
     let channelId = deviceId + '.History';
 
     // Create Deivce
@@ -402,20 +410,19 @@ async function setHistory(ring, id) {
       let stateId = channelId + '.' + i;
       let common = info[i];
 
-      if (states[stateId] != value) {
-        objectHelper.setOrUpdateObject(stateId, {
-          type: 'state',
-          common: common
-        }, ['name'], value);
-      }
+      // if (states[stateId] != value) {
+      objectHelper.setOrUpdateObject(stateId, {
+        type: 'state',
+        common: common
+      }, ['name'], value);
+      // }
       states[stateId] = value;
 
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
-    if(!history) {
-      dapter.log.error("Error: " + error);
-      throw(error);
+    if (!history) {
+      throw (error);
     }
   }
 }
@@ -423,17 +430,16 @@ async function setHistory(ring, id) {
 // *****************************************************************************************************
 // Polling Health every x seconds
 // *****************************************************************************************************
-function poolHealth(ring, id) {
+async function pollHealth(ring, id) {
 
   setTimeout((async () => {
     try {
       await setHealth(ring, id);
       await setHistory(ring, id);
-      poolHealth(ring, id);
     } catch (error) {
       adapter.log.error("Error: " + error);
-      poolHealth(ring, id);
     }
+    await pollHealth(ring, id);
   }), adapter.config.pollsec * 1000);
 
 }
@@ -448,30 +454,32 @@ async function ringer() {
     let dbids = await ring.getDoorbells();
 
     for (let j in dbids) {
-
       let id = dbids[j].id;
-
+      // If device exist skipp function!
       if (!ringdevices[id]) {
-
         // let doorb = await ring.getDoorbell(id); // Info
         await setInfo(ring, id, true);
         await setHealth(ring, id);
         await setLivestream(ring, id, true);
         await setDingDong(ring, id, null);
         await setHistory(ring, id);
-        await poolHealth(ring, id)
+        await pollHealth(ring, id)
 
+        // On Event ding or motion do something
         await ring.event(id, (ding) => {
           adapter.log.debug("Ding Dong for Id " + id + JSON.stringify(ding));
           (async () => {
-            await setDingDong(ring, id, ding);
-            await setHistory(ring, id);
+            try {
+              await setDingDong(ring, id, ding);
+              await setHistory(ring, id);
+            } catch (error) {
+              adapter.log.error("Error: " + error);
+            }
           })();
         })
-
-        ringdevices[id] = true;
+        ringdevices[id] = true; // add Device to Array
       } else {
-        let deviceId = 'RING_' + id;
+        let deviceId = devprefix + id;
         adapter.getObject(deviceId, (err, object) => {
           if (err || !object) {
             delete ringdevices[id];
@@ -493,6 +501,7 @@ async function ringer() {
 // Main
 // *****************************************************************************************************
 function main() {
+
   function poll_ringer() {
     (async () => {
       await ringer();
@@ -502,4 +511,5 @@ function main() {
     })();
   }
   poll_ringer();
+
 }
