@@ -1,3 +1,9 @@
+/* jshint -W097 */
+/* jshint -W030 */
+/* jshint strict:true */
+/* jslint node: true */
+/* jslint esversion: 6 */
+
 'use strict';
 
 const utils = require(__dirname + '/lib/utils'); // Get common adapter utils
@@ -256,7 +262,7 @@ async function setLivestream(ring, id, init) {
               }
             })();
           }
-        };
+        }
       }
 
       // if (states[stateId] != value) {
