@@ -29,6 +29,34 @@ function decrypt(key, value) {
   return result;
 }
 
+
+// *****************************************************************************************************
+// Build Error Message
+// *****************************************************************************************************
+function errorMessage(text, error) {
+  if (Array.isArray(error)) {
+    error.push(text);
+    return error;
+  } else {
+    return [error, text];
+  }
+}
+
+
+// *****************************************************************************************************
+// Build Error Message
+// *****************************************************************************************************
+function printErrorMessage(error) {
+  if (error) {
+    if (!Array.isArray(error)) {
+      error = [error];
+    }
+    for (let i in error) {
+      adapter.log.warn(error[i]);
+    }
+  }
+}
+
 // *****************************************************************************************************
 // is called when adapter shuts down - callback has to be called under any circumstances!
 // *****************************************************************************************************
@@ -258,7 +286,8 @@ async function setLivestream(ring, id, init) {
               try {
                 await setLivestream(ring, id);
               } catch (error) {
-                adapter.log.error("Error: " + error);
+                printErrorMessage(error);
+                // adapter.log.error("Error: " + error);
               }
             })();
           }
@@ -443,7 +472,8 @@ async function pollHealth(ring, id) {
       await setHealth(ring, id);
       await setHistory(ring, id);
     } catch (error) {
-      adapter.log.error("Error: " + error);
+      printErrorMessage(error);
+      // adapter.log.error("Error: " + error);
     }
     await pollHealth(ring, id);
   }), adapter.config.pollsec * 1000);
@@ -479,7 +509,8 @@ async function ringer() {
               await setDingDong(ring, id, ding);
               await setHistory(ring, id);
             } catch (error) {
-              adapter.log.error("Error: " + error);
+              // adapter.log.error("Error: " + error);
+              printErrorMessage(error);
             }
           })();
         })
@@ -498,7 +529,8 @@ async function ringer() {
     ringdevices = {};
     states = {};
     ring = null; // we start from beginning
-    adapter.log.error("Error: " + error);
+    // adapter.log.error("Error: " + error);
+    printErrorMessage(error);
   }
 }
 
@@ -507,7 +539,6 @@ async function ringer() {
 // Main
 // *****************************************************************************************************
 function main() {
-
   function poll_ringer() {
     (async () => {
       await ringer();

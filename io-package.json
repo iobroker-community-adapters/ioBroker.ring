@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "ring",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "title": "Ring Video Doorbell",
     "news": {
       "0.1.0": {
@@ -11,6 +11,10 @@
       "0.1.1": {
         "en": "A few updates",
         "de": "Kleine Änderungen"
+      },
+      "0.1.2": {
+        "en": "Update error handlinge",
+        "de": "Anpassung Fehlererkennung"
       }
     },
     "titleLang": {

@@ -32,6 +32,9 @@ on({id: "ring.0.doorbot_4711.kind"/*Kind*/},  (obj) => {
 
 ## Changelog
 
+### 0.1.2 (17.12.2018)
+* (Stübi) Update error handling
+
 ### 0.1.1 (15.12.2018)
 * (Stübi) Improvements
 
