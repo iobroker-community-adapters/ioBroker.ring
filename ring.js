@@ -29,20 +29,6 @@ function decrypt(key, value) {
   return result;
 }
 
-
-// *****************************************************************************************************
-// Build Error Message
-// *****************************************************************************************************
-function errorMessage(text, error) {
-  if (Array.isArray(error)) {
-    error.push(text);
-    return error;
-  } else {
-    return [error, text];
-  }
-}
-
-
 // *****************************************************************************************************
 // Build Error Message
 // *****************************************************************************************************
@@ -52,7 +38,7 @@ function printErrorMessage(error) {
       error = [error];
     }
     for (let i in error) {
-      adapter.log.warn(error[i]);
+      adapter.log.info(error[i]);
     }
   }
 }
@@ -286,8 +272,7 @@ async function setLivestream(ring, id, init) {
               try {
                 await setLivestream(ring, id);
               } catch (error) {
-                printErrorMessage(error);
-                // adapter.log.error("Error: " + error);
+                adapter.log.info(error);
               }
             })();
           }
@@ -472,8 +457,7 @@ async function pollHealth(ring, id) {
       await setHealth(ring, id);
       await setHistory(ring, id);
     } catch (error) {
-      printErrorMessage(error);
-      // adapter.log.error("Error: " + error);
+      adapter.log.info(error);
     }
     await pollHealth(ring, id);
   }), adapter.config.pollsec * 1000);
@@ -486,13 +470,14 @@ async function pollHealth(ring, id) {
 async function ringer() {
   try {
     ring = ring || await new doorbell.Doorbell(adapter);
-    let devices = await ring.getDevices();
+    // let devices = await ring.getDevices();
     let dbids = await ring.getDoorbells();
 
     for (let j in dbids) {
       let id = dbids[j].id;
       // If device exist skipp function!
       if (!ringdevices[id]) {
+        adapter.log.info("Starting Ring Device for Id " + id); 
         // let doorb = await ring.getDoorbell(id); // Info
         await setInfo(ring, id, true);
         await setHealth(ring, id);
@@ -503,14 +488,14 @@ async function ringer() {
 
         // On Event ding or motion do something
         await ring.event(id, (ding) => {
+          adapter.log.info(ding + " for Id " + id);
           adapter.log.debug("Ding Dong for Id " + id + JSON.stringify(ding));
           (async () => {
             try {
               await setDingDong(ring, id, ding);
               await setHistory(ring, id);
             } catch (error) {
-              // adapter.log.error("Error: " + error);
-              printErrorMessage(error);
+              adapter.log.info(error);
             }
           })();
         })
@@ -529,8 +514,7 @@ async function ringer() {
     ringdevices = {};
     states = {};
     ring = null; // we start from beginning
-    // adapter.log.error("Error: " + error);
-    printErrorMessage(error);
+    adapter.log.info(error);
   }
 }
 
