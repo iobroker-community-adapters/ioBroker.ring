@@ -488,7 +488,7 @@ async function ringer() {
 
         // On Event ding or motion do something
         await ring.event(id, (ding) => {
-          adapter.log.info("Ding Dongfor Id " + id + "(" + ding.kind + ", " + ding.state + ")");
+          adapter.log.info("Ding Dong for Id " + id + " (" + ding.kind + ", " + ding.state + ")");
           adapter.log.debug("Ding Dong for Id " + id + JSON.stringify(ding));
           (async () => {
             try {
