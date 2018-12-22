@@ -6,9 +6,9 @@
 
 'use strict';
 
-const utils = require(__dirname + '/lib/utils'); // Get common adapter utils
+const utils   = require('@iobroker/adapter-core'); 
+const objectHelper = require('@apollon/iobroker-tools').objectHelper; // Get common adapter utils
 const adapter = new utils.Adapter('ring');
-const objectHelper = require(__dirname + '/lib/objectHelper');
 const doorbell = require(__dirname + '/lib/doorbell');
 const datapoints = require(__dirname + '/lib/datapoints');
 let ring = null;
