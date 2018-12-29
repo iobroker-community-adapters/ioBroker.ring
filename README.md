@@ -32,6 +32,9 @@ on({id: "ring.0.doorbot_4711.kind"/*Kind*/},  (obj) => {
 
 ## Changelog
 
+### 0.1.4 (27.12.2018)
+* (Stübi) Add camera device
+
 ### 0.1.3 (20.12.2018)
 * (Stübi) Update error handling
 

@@ -1,9 +1,13 @@
 {
   "common": {
     "name": "ring",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "title": "Ring Video Doorbell",
     "news": {
+      "0.1.4": {
+        "en": "Add new Device, Ring Camera",
+        "de": "Ring Camera unterstützung"
+      },
       "0.1.3": {
         "en": "Update",
         "de": "Anpassung Fehlererkennung"

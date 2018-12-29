@@ -6,7 +6,7 @@
 
 'use strict';
 
-const utils   = require('@iobroker/adapter-core'); 
+const utils = require('@iobroker/adapter-core');
 const objectHelper = require('@apollon/iobroker-tools').objectHelper; // Get common adapter utils
 const adapter = new utils.Adapter('ring');
 const doorbell = require(__dirname + '/lib/doorbell');
@@ -16,7 +16,6 @@ let ringdevices = {};
 let timerDingDong;
 let timerLiveStream;
 let states = {};
-let devprefix = 'doorbot_';
 
 // *****************************************************************************************************
 // Password decrypt
@@ -110,8 +109,9 @@ adapter.on('ready', () => {
 async function setInfo(ring, id) {
   let doorb;
   try {
-    doorb = await ring.getDoorbell(id); // Info
-    let deviceId = devprefix + id;
+    // doorb = await ring.getDoorbell(id); // Info
+    doorb = await ring.getAllRingsDevice(id);
+    let deviceId = ring.getKind(id) + '_' + id;
     let channelId = deviceId + '.Info';
 
     // Create Deivce
@@ -160,7 +160,7 @@ async function setInfo(ring, id) {
 async function setHealth(ring, id) {
   try {
     let health = await ring.getHealthSummarie(id); // health
-    let deviceId = devprefix + id;
+    let deviceId = ring.getKind(id) + '_' + id;
     let channelId = deviceId + '.Info';
 
     // Create Deivce
@@ -208,7 +208,7 @@ async function setHealth(ring, id) {
 async function setLivestream(ring, id, init) {
   try {
     let livestream = !init ? await ring.getLiveStream(id) : {};
-    let deviceId = devprefix + id;
+    let deviceId = ring.getKind(id) + '_' + id;
     let channelId = deviceId + '.Livestream';
 
     // Create Deivce
@@ -299,7 +299,7 @@ async function setLivestream(ring, id, init) {
 // *****************************************************************************************************
 async function setDingDong(ring, id, ding, init) {
   try {
-    let deviceId = devprefix + id;
+    let deviceId = ring.getKind(id) + '_' + id;
     let channelId = deviceId;
 
     // Create Deivce
@@ -379,8 +379,9 @@ async function setHistory(ring, id) {
   let videos;
   try {
     history = await ring.getHistory(id);
+
     videos = await ring.getLastVideos(id);
-    let deviceId = devprefix + id;
+    let deviceId = ring.getKind(id) + '_' + id;
     let channelId = deviceId + '.History';
 
     // Create Deivce
@@ -440,6 +441,7 @@ async function setHistory(ring, id) {
 
     }
     objectHelper.processObjectQueue(() => { });
+
   } catch (error) {
     if (!history) {
       throw (error);
@@ -471,13 +473,14 @@ async function ringer() {
   try {
     ring = ring || await new doorbell.Doorbell(adapter);
     // let devices = await ring.getDevices();
-    let dbids = await ring.getDoorbells();
+    // let dbids = await ring.getDoorbells();
+    let dbids = await ring.getAllRingsDevices();
 
     for (let j in dbids) {
       let id = dbids[j].id;
       // If device exist skipp function!
       if (!ringdevices[id]) {
-        adapter.log.info("Starting Ring Device for Id " + id); 
+        adapter.log.info("Starting Ring Device for Id " + id);
         // let doorb = await ring.getDoorbell(id); // Info
         await setInfo(ring, id, true);
         await setHealth(ring, id);
@@ -501,7 +504,7 @@ async function ringer() {
         })
         ringdevices[id] = true; // add Device to Array
       } else {
-        let deviceId = devprefix + id;
+        let deviceId = ring.getKind(id) + '_' + id;
         adapter.getObject(deviceId, (err, object) => {
           if (err || !object) {
             delete ringdevices[id];
