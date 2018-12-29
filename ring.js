@@ -111,7 +111,8 @@ async function setInfo(ring, id) {
   try {
     // doorb = await ring.getDoorbell(id); // Info
     doorb = await ring.getAllRingsDevice(id);
-    let deviceId = ring.getKind(id) + '_' + id;
+    let kind = ring.getKind(id);
+    let deviceId = kind + '_' + id;
     let channelId = deviceId + '.Info';
 
     // Create Deivce
@@ -139,12 +140,15 @@ async function setInfo(ring, id) {
       let value = doorb[i] || null;
       let stateId = channelId + '.' + i;
       let common = info[i];
+      let controlFunction;
       // if (states[stateId] != value) {
+
       objectHelper.setOrUpdateObject(stateId, {
         type: 'state',
         common: common
-      }, ['name'], value);
+      }, ['name'], value, controlFunction);
       // }
+
       states[stateId] = value;
     }
 
@@ -299,7 +303,8 @@ async function setLivestream(ring, id, init) {
 // *****************************************************************************************************
 async function setDingDong(ring, id, ding, init) {
   try {
-    let deviceId = ring.getKind(id) + '_' + id;
+    let kind = ring.getKind(id);
+    let deviceId = kind + '_' + id;
     let channelId = deviceId;
 
     // Create Deivce
@@ -359,6 +364,25 @@ async function setDingDong(ring, id, ding, init) {
         };
         */
       }
+
+      if (kind != 'camera' && i == 'light') {
+        continue;
+       } 
+
+      if (i == 'light') {
+        controlFunction = function (value) {
+          if (value == true) {
+            (async () => {
+              try {
+                await ring.setLight(id, value);
+              } catch (error) {
+                adapter.log.info(error);
+              }
+            })();
+          }
+        }
+      }
+
       objectHelper.setOrUpdateObject(stateId, {
         type: 'state',
         common: common
