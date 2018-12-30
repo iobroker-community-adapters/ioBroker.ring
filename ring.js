@@ -365,7 +365,7 @@ async function setDingDong(ring, id, ding, init) {
         */
       }
 
-      if (kind != 'camera' && i == 'light') {
+      if (kind != 'cameras' && i == 'light') {
         continue;
        } 
 
