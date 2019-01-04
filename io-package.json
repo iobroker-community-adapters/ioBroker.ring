@@ -1,11 +1,11 @@
 {
   "common": {
     "name": "ring",
-    "version": "0.1.4",
-    "title": "Ring Video Doorbell",
+    "version": "1.0.0",
+    "title": "Ring",
     "news": {
-      "0.1.4": {
-        "en": "Add new Device, Ring Camera",
+      "1.0.0": {
+        "en": "Add Ring Camera as new device",
         "de": "Ring Camera unterstützung"
       },
       "0.1.3": {
@@ -26,26 +26,26 @@
       }
     },
     "titleLang": {
-      "en": "Ring Video Doorbell",
-      "de": "Ring Video Doorbell",
+      "en": "Ring",
+      "de": "Ring",
       "ru": "изобилующий раковинами",
-      "pt": "Ring Video Doorbell",
+      "pt": "Ring",
       "nl": "schaalachtig",
-      "fr": "Ring Video Doorbell",
-      "it": "Ring Video Doorbell",
-      "es": "Ring Video Doorbell",
-      "pl": "Ring Video Doorbell"
+      "fr": "Ring",
+      "it": "Ring",
+      "es": "Ring",
+      "pl": "Ring"
     },
     "desc": {
-      "en": "Ring Video Doorbell Adapter",
-      "de": "Ring Video Doorbell Adapter",
+      "en": "Ring Adapter",
+      "de": "Ring Adapter",
       "ru": "Шестигранный адаптер",
-      "pt": "Adaptador Ring Video Doorbell",
-      "nl": "Ring Video Doorbell-adapter",
-      "fr": "Adaptateur Ring Video Doorbell",
-      "it": "Adattatore Ring Video Doorbell",
-      "es": "Adaptador Ring Video Doorbell",
-      "pl": "Adapter Ring Video Doorbell"
+      "pt": "Adaptador Ring",
+      "nl": "Ring adapter",
+      "fr": "Adaptateur Ring",
+      "it": "Adattatore Ring",
+      "es": "Adaptador Ring",
+      "pl": "Adapter Ring"
     },
     "license": "MIT",
     "authors": [

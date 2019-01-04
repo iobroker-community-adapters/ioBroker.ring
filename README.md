@@ -1,6 +1,6 @@
 ![Logo](admin/ring.png)
 
-# Ring Video Doorbell Adapter
+# Ring Adapter
 
 [![Travis CI Build Status](https://travis-ci.org/schmupu/ioBroker.ring.svg?branch=master)](https://travis-ci.org/schmupu/ioBroker.ring)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/schmupu/ioBroker.ring?branch=master&svg=true)](https://ci.appveyor.com/project/schmupu/ioBroker-ring/)
@@ -11,7 +11,7 @@
 
 Requires node.js 8.0 or higher and Admin v3!
 
-The Ring Video Doorbell adapter shows if somenone rings the doorbell or if motion is detected. The Ring Video Doorbell does not send a videostream if a motion or door bell ist detected. Instead SIP Information for a SIP Video Conference will be provided. 
+The Ring adapter works with Ring devices like the Ring Video Doorbell and Ring Cam and shows if somenone rings the doorbell or if motion is detected. The Ring Video Doorbell or Cam does not send a videostream if a motion or door bell ist detected. Instead SIP Information for a SIP Video Conference will be provided. 
 You can use for example the Blink SIP client on [http://icanblink.com/](http://icanblink.com/). To get video working go into Blink's Preferences and under "Accounts", switch the tab to "Media" and deselect "Encrypt audio and video" under "RTP Options". Be careful the SIP information expire after a few seconds!
 Hopefully I will able to support a video stream soon. Unfortunatly [ring.com](https://ring.com) does not have an official API that support this feature. 
 If you press livestreamrequest button you get new SIP Information for building up a SIP Video Call session. If you are using the [ring.com](https://ring.com) cloud you find under history a http link to your last motion / door bell recorded video. 
@@ -23,7 +23,7 @@ After installing the Adapter you have to enter your Email and Password of your [
 
 An example to get changes if a motion or door ring is detected: 
 ```
-on({id: "ring.0.doorbot_4711.kind"/*Kind*/},  (obj) => {
+on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
   if(obj.state.val == 'ding')   console.log("Someone is at the door");
   if(obj.state.val == 'motion') console.log("Motion detected");
 });
@@ -32,8 +32,8 @@ on({id: "ring.0.doorbot_4711.kind"/*Kind*/},  (obj) => {
 
 ## Changelog
 
-### 0.1.4 (27.12.2018)
-* (Stübi) Add camera device
+### 1.0.0 (04.01.2018)
+* (Stübi) Add camera device. For this reason, the device name changed from doorbot to doorbell.
 
 ### 0.1.3 (20.12.2018)
 * (Stübi) Update error handling

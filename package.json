@@ -1,7 +1,7 @@
 {
   "name": "iobroker.ring",
-  "version": "0.1.4",
-  "description": "Ring Video Doorbell",
+  "version": "1.0.0",
+  "description": "Ring",
   "author": {
     "name": "Thorsten Stueben",
     "email": "thorsten@stueben.de"

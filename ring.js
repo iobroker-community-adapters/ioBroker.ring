@@ -13,8 +13,8 @@ const doorbell = require(__dirname + '/lib/doorbell');
 const datapoints = require(__dirname + '/lib/datapoints');
 let ring = null;
 let ringdevices = {};
-let timerDingDong;
-let timerLiveStream;
+let errorcountmax = 10;
+let errorcounter = 0;
 let states = {};
 
 // *****************************************************************************************************
@@ -101,6 +101,16 @@ adapter.on('ready', () => {
   });
 
 });
+
+
+// *****************************************************************************************************
+// Restart Adapter
+// *****************************************************************************************************
+function restartAdapter() {
+  adapter.getForeignObject('system.adapter.' + adapter.namespace, (err, obj) => {
+    if (obj) adapter.setForeignObject('system.adapter.' + adapter.namespace, obj);
+  });
+} // endFunctionRestartAdapter
 
 
 // *****************************************************************************************************
@@ -367,7 +377,7 @@ async function setDingDong(ring, id, ding, init) {
 
       if (kind != 'cameras' && i == 'light') {
         continue;
-       } 
+      }
 
       if (i == 'light') {
         controlFunction = function (value) {
@@ -478,7 +488,7 @@ async function setHistory(ring, id) {
 // *****************************************************************************************************
 async function pollHealth(ring, id) {
 
-  setTimeout((async () => {
+  let healthtimeout = setTimeout((async () => {
     try {
       await setHealth(ring, id);
       await setHistory(ring, id);
@@ -488,6 +498,7 @@ async function pollHealth(ring, id) {
     await pollHealth(ring, id);
   }), adapter.config.pollsec * 1000);
 
+  return  healthtimeout;
 }
 
 // *****************************************************************************************************
@@ -499,6 +510,7 @@ async function ringer() {
     // let devices = await ring.getDevices();
     // let dbids = await ring.getDoorbells();
     let dbids = await ring.getAllRingsDevices();
+    let healthtimeout;
 
     for (let j in dbids) {
       let id = dbids[j].id;
@@ -511,7 +523,7 @@ async function ringer() {
         await setLivestream(ring, id, true);
         await setDingDong(ring, id, null);
         await setHistory(ring, id);
-        await pollHealth(ring, id)
+        // healthtimeout = await pollHealth(ring, id);
 
         // On Event ding or motion do something
         await ring.event(id, (ding) => {
@@ -528,6 +540,8 @@ async function ringer() {
         })
         ringdevices[id] = true; // add Device to Array
       } else {
+        await setHealth(ring, id);
+        await setHistory(ring, id);
         let deviceId = ring.getKind(id) + '_' + id;
         adapter.getObject(deviceId, (err, object) => {
           if (err || !object) {
@@ -536,12 +550,18 @@ async function ringer() {
         });
       }
     }
+    errorcounter = 0;
   } catch (error) {
     // if, erro we will get a new ring connection
+    errorcounter++;
     ringdevices = {};
     states = {};
     ring = null; // we start from beginning
     adapter.log.info(error);
+    if(errorcounter >= errorcountmax) {
+      adapter.log.error('To many connection errors, restarting adapter');
+      restartAdapter();
+    }
   }
 }
 
@@ -551,11 +571,16 @@ async function ringer() {
 // *****************************************************************************************************
 function main() {
   function poll_ringer() {
+    let pollsec = adapter.config.pollsec;
+    if(errorcounter > 0) {
+        let wait = 60;
+        pollsec = adapter.config.pollsec > wait ? adapter.config.pollsec : wait;
+    }
     (async () => {
       await ringer();
       setTimeout(() => {
         poll_ringer();
-      }, adapter.config.pollsec * 1000);
+      }, pollsec * 1000);
     })();
   }
   poll_ringer();
