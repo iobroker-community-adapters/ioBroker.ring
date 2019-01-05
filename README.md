@@ -32,6 +32,9 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 
 ## Changelog
 
+### 1.0.1 (05.01.2018)
+* (Stübi) Compact mode support
+
 ### 1.0.0 (04.01.2018)
 * (Stübi) Add camera device. For this reason, the device name changed from doorbot to doorbell.
 

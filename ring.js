@@ -8,7 +8,6 @@
 
 const utils = require('@iobroker/adapter-core');
 const objectHelper = require('@apollon/iobroker-tools').objectHelper; // Get common adapter utils
-const adapter = new utils.Adapter('ring');
 const doorbell = require(__dirname + '/lib/doorbell');
 const datapoints = require(__dirname + '/lib/datapoints');
 let ring = null;
@@ -16,6 +15,77 @@ let ringdevices = {};
 let errorcountmax = 10;
 let errorcounter = 0;
 let states = {};
+
+const adapterName = require('./package.json').name.split('.').pop();
+let adapter;
+
+function startAdapter(options) {
+  options = options || {};
+  options.name = adapterName;
+  adapter = new utils.Adapter(options);
+
+  // *****************************************************************************************************
+  // is called when adapter shuts down - callback has to be called under any circumstances!
+  // *****************************************************************************************************
+  adapter.on('unload', (callback) => {
+    try {
+      adapter.log.info('Closing Adapter');
+      callback();
+    } catch (e) {
+      callback();
+    }
+  });
+
+
+  // *****************************************************************************************************
+  // Listen for sendTo messages
+  // *****************************************************************************************************
+  adapter.on('message', (msg) => {
+    adapter.sendTo(msg.from, msg.command, "Execute command " + msg.command, msg.callback);
+  });
+
+  // *****************************************************************************************************
+  // Listen for object Changes
+  // *****************************************************************************************************
+  adapter.on('objectChange', (id, obj) => {
+    // adapter.log.info("objectChange for id  " + id);
+  });
+
+
+
+  // *****************************************************************************************************
+  // Listen State chnages
+  // *****************************************************************************************************
+  adapter.on('stateChange', (id, state) => {
+    objectHelper.handleStateChange(id, state);
+  });
+
+  // *****************************************************************************************************
+  // is called when databases are connected and adapter received configuration.
+  // start here!
+  // *****************************************************************************************************
+  adapter.on('ready', () => {
+
+    adapter.getForeignObject('system.config', (err, obj) => {
+      if (adapter.config.password) {
+        if (obj && obj.native && obj.native.secret) {
+          adapter.config.password = decrypt(obj.native.secret, adapter.config.password);
+        } else {
+          adapter.config.password = decrypt('Zgfr56gFe87jJOM', adapter.config.password);
+        }
+      }
+
+      // adapter.subscribeStates(adapter.namespace + '.*.Livestream.livestreamrequest');
+      adapter.subscribeStates('*');
+      objectHelper.init(adapter);
+      main();
+
+    });
+
+  });
+
+  return adapter;
+}
 
 // *****************************************************************************************************
 // Password decrypt
@@ -41,67 +111,6 @@ function printErrorMessage(error) {
     }
   }
 }
-
-// *****************************************************************************************************
-// is called when adapter shuts down - callback has to be called under any circumstances!
-// *****************************************************************************************************
-adapter.on('unload', (callback) => {
-  try {
-    adapter.log.info('Closing Adapter');
-    callback();
-  } catch (e) {
-    callback();
-  }
-});
-
-
-// *****************************************************************************************************
-// Listen for sendTo messages
-// *****************************************************************************************************
-adapter.on('message', (msg) => {
-  adapter.sendTo(msg.from, msg.command, "Execute command " + msg.command, msg.callback);
-});
-
-// *****************************************************************************************************
-// Listen for object Changes
-// *****************************************************************************************************
-adapter.on('objectChange', (id, obj) => {
-  // adapter.log.info("objectChange for id  " + id);
-});
-
-
-
-// *****************************************************************************************************
-// Listen State chnages
-// *****************************************************************************************************
-adapter.on('stateChange', (id, state) => {
-  objectHelper.handleStateChange(id, state);
-});
-
-// *****************************************************************************************************
-// is called when databases are connected and adapter received configuration.
-// start here!
-// *****************************************************************************************************
-adapter.on('ready', () => {
-
-  adapter.getForeignObject('system.config', (err, obj) => {
-    if (adapter.config.password) {
-      if (obj && obj.native && obj.native.secret) {
-        adapter.config.password = decrypt(obj.native.secret, adapter.config.password);
-      } else {
-        adapter.config.password = decrypt('Zgfr56gFe87jJOM', adapter.config.password);
-      }
-    }
-
-    // adapter.subscribeStates(adapter.namespace + '.*.Livestream.livestreamrequest');
-    adapter.subscribeStates('*');
-    objectHelper.init(adapter);
-    main();
-
-  });
-
-});
-
 
 // *****************************************************************************************************
 // Restart Adapter
@@ -498,7 +507,7 @@ async function pollHealth(ring, id) {
     await pollHealth(ring, id);
   }), adapter.config.pollsec * 1000);
 
-  return  healthtimeout;
+  return healthtimeout;
 }
 
 // *****************************************************************************************************
@@ -558,7 +567,7 @@ async function ringer() {
     states = {};
     ring = null; // we start from beginning
     adapter.log.info(error);
-    if(errorcounter >= errorcountmax) {
+    if (errorcounter >= errorcountmax) {
       adapter.log.error('To many connection errors, restarting adapter');
       restartAdapter();
     }
@@ -572,9 +581,9 @@ async function ringer() {
 function main() {
   function poll_ringer() {
     let pollsec = adapter.config.pollsec;
-    if(errorcounter > 0) {
-        let wait = 60;
-        pollsec = adapter.config.pollsec > wait ? adapter.config.pollsec : wait;
+    if (errorcounter > 0) {
+      let wait = 60;
+      pollsec = adapter.config.pollsec > wait ? adapter.config.pollsec : wait;
     }
     (async () => {
       await ringer();
@@ -585,4 +594,12 @@ function main() {
   }
   poll_ringer();
 
+}
+
+// If started as allInOne mode => return function to create instance
+if (typeof module !== undefined && module.parent) {
+  module.exports = startAdapter;
+} else {
+  // or start the instance directly
+  startAdapter();
 }
