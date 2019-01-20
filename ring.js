@@ -10,6 +10,7 @@ const utils = require('@iobroker/adapter-core');
 const objectHelper = require('@apollon/iobroker-tools').objectHelper; // Get common adapter utils
 const doorbell = require(__dirname + '/lib/doorbell');
 const datapoints = require(__dirname + '/lib/datapoints');
+const semver = require('semver');
 let ring = null;
 let ringdevices = {};
 let errorcountmax = 10;
@@ -17,6 +18,7 @@ let errorcounter = 0;
 let states = {};
 
 const adapterName = require('./package.json').name.split('.').pop();
+const adapterNodeVer = require('./package.json').engines.node;
 let adapter;
 
 function startAdapter(options) {
@@ -276,17 +278,17 @@ async function setLivestream(ring, id, init) {
       let common = info[i];
       if (i == 'expires_in') {
         /*
-        controlFunction = function (value) {
-          if (value) {
-            clearTimeout(timerLiveStream);
-            timerLiveStream = setTimeout(() => {
-              (async () => {
-                await setLivestream(ring, id, true);
-              })();
-            }, value * 1000);
-          }
-        };
-        */
+				controlFunction = function (value) {
+				  if (value) {
+					clearTimeout(timerLiveStream);
+					timerLiveStream = setTimeout(() => {
+					  (async () => {
+						await setLivestream(ring, id, true);
+					  })();
+					}, value * 1000);
+				  }
+				};
+				*/
       }
       if (i == 'livestreamrequest') {
         controlFunction = function (value) {
@@ -299,7 +301,7 @@ async function setLivestream(ring, id, init) {
               }
             })();
           }
-        }
+        };
       }
 
       // if (states[stateId] != value) {
@@ -371,17 +373,17 @@ async function setDingDong(ring, id, ding, init) {
       let common = info[i];
       if (i == 'expires_in') {
         /*
-        controlFunction = function (value) {
-          if (value) {
+          controlFunction = function (value) {
+            if (value) {
             clearTimeout(timerDingDong);
             timerDingDong = setTimeout(() => {
               (async () => {
-                await setDingDong(ring, id, ding, true);
+              await setDingDong(ring, id, ding, true);
               })();
             }, value * 1000);
-          }
-        };
-        */
+            }
+          };
+          */
       }
 
       if (kind != 'cameras' && i == 'light') {
@@ -399,7 +401,7 @@ async function setDingDong(ring, id, ding, init) {
               }
             })();
           }
-        }
+        };
       }
 
       objectHelper.setOrUpdateObject(stateId, {
@@ -519,7 +521,6 @@ async function ringer() {
     // let devices = await ring.getDevices();
     // let dbids = await ring.getDoorbells();
     let dbids = await ring.getAllRingsDevices();
-    let healthtimeout;
 
     for (let j in dbids) {
       let id = dbids[j].id;
@@ -546,7 +547,7 @@ async function ringer() {
               adapter.log.info(error);
             }
           })();
-        })
+        });
         ringdevices[id] = true; // add Device to Array
       } else {
         await setHealth(ring, id);
@@ -579,6 +580,13 @@ async function ringer() {
 // Main
 // *****************************************************************************************************
 function main() {
+
+  adapter.log.info("Starting Adapter " + adapter.namespace + " in version " + adapter.version);
+  if (!semver.satisfies(process.version, adapterNodeVer)) {
+    adapter.log.error(`Required node version ${adapterNodeVer} not satisfied with current version ${process.version}.`);
+    return;
+  }
+
   function poll_ringer() {
     let pollsec = adapter.config.pollsec;
     if (errorcounter > 0) {
