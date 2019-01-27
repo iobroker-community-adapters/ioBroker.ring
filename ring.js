@@ -43,14 +43,14 @@ function startAdapter(options) {
   // Listen for sendTo messages
   // *****************************************************************************************************
   adapter.on('message', (msg) => {
-    adapter.sendTo(msg.from, msg.command, "Execute command " + msg.command, msg.callback);
+    adapter.sendTo(msg.from, msg.command, 'Execute command ' + msg.command, msg.callback);
   });
 
   // *****************************************************************************************************
   // Listen for object Changes
   // *****************************************************************************************************
   adapter.on('objectChange', (id, obj) => {
-    // adapter.log.info("objectChange for id  " + id);
+    // adapter.log.info('objectChange for id  ' + id);
   });
 
 
@@ -526,7 +526,7 @@ async function ringer() {
       let id = dbids[j].id;
       // If device exist skipp function!
       if (!ringdevices[id]) {
-        adapter.log.info("Starting Ring Device for Id " + id);
+        adapter.log.info('Starting Ring Device for Id ' + id);
         // let doorb = await ring.getDoorbell(id); // Info
         await setInfo(ring, id, true);
         await setHealth(ring, id);
@@ -537,8 +537,8 @@ async function ringer() {
 
         // On Event ding or motion do something
         await ring.event(id, (ding) => {
-          adapter.log.info("Ding Dong for Id " + id + " (" + ding.kind + ", " + ding.state + ")");
-          adapter.log.debug("Ding Dong for Id " + id + JSON.stringify(ding));
+          adapter.log.info('Ding Dong for Id ' + id + ' (' + ding.kind + ', ' + ding.state + ')');
+          adapter.log.debug('Ding Dong for Id ' + id + JSON.stringify(ding));
           (async () => {
             try {
               await setDingDong(ring, id, ding);
@@ -581,7 +581,7 @@ async function ringer() {
 // *****************************************************************************************************
 function main() {
 
-  adapter.log.info("Starting Adapter " + adapter.namespace + " in version " + adapter.version);
+  adapter.log.info('Starting Adapter ' + adapter.namespace + ' in version ' + adapter.version);
   if (!semver.satisfies(process.version, adapterNodeVer)) {
     adapter.log.error(`Required node version ${adapterNodeVer} not satisfied with current version ${process.version}.`);
     return;
@@ -605,7 +605,7 @@ function main() {
 }
 
 // If started as allInOne mode => return function to create instance
-if (typeof module !== "undefined" && module.parent) {
+if (typeof module !== 'undefined' && module.parent) {
   module.exports = startAdapter;
 } else {
   // or start the instance directly
