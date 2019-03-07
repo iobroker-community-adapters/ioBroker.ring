@@ -23,7 +23,7 @@
     "url": "https://github.com/schmupu/ioBroker.ring"
   },
   "dependencies": {
-    "@apollon/iobroker-tools": "^0.1.0",
+    "@apollon/iobroker-tools": "git+https://github.com/schmupu/iobroker-tools",
     "@iobroker/adapter-core": "^1.0.3",
     "events": "^3.0.0",
     "node-schedule": "1.3.0",
