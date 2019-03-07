@@ -580,7 +580,7 @@ async function ringer() {
 // Main
 // *****************************************************************************************************
 function main() {
-
+ 
   adapter.log.info('Starting Adapter ' + adapter.namespace + ' in version ' + adapter.version);
   if (!semver.satisfies(process.version, adapterNodeVer)) {
     adapter.log.error(`Required node version ${adapterNodeVer} not satisfied with current version ${process.version}.`);
