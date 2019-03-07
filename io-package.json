@@ -1,9 +1,13 @@
 {
   "common": {
     "name": "ring",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "title": "Ring",
     "news": {
+      "1.0.2": {
+        "en": "More debug information",
+        "de": "Debug Ansicht erweiteret"
+      },
       "1.0.1": {
         "en": "Support of compact mode",
         "de": "Compact mode Unterstützung"

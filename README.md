@@ -32,7 +32,10 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 
 ## Changelog
 
-### 1.0.1 (05.01.2018)
+### 1.0.2 (01.02.2019)
+* (Stübi) More debug information 
+
+### 1.0.1 (05.01.2019)
 * (Stübi) Support js-controller compact mode 
 
 ### 1.0.0 (04.01.2018)

@@ -291,15 +291,13 @@ async function setLivestream(ring, id, init) {
 				*/
       }
       if (i == 'livestreamrequest') {
-        controlFunction = function (value) {
+        controlFunction = async (value) => {
           if (value == true) {
-            (async () => {
-              try {
-                await setLivestream(ring, id);
-              } catch (error) {
-                adapter.log.info(error);
-              }
-            })();
+            try {
+              await setLivestream(ring, id);
+            } catch (error) {
+              adapter.log.info(error);
+            }
           }
         };
       }
@@ -391,15 +389,13 @@ async function setDingDong(ring, id, ding, init) {
       }
 
       if (i == 'light') {
-        controlFunction = function (value) {
+        controlFunction = async (value) => {
           if (value == true) {
-            (async () => {
-              try {
-                await ring.setLight(id, value);
-              } catch (error) {
-                adapter.log.info(error);
-              }
-            })();
+            try {
+              await ring.setLight(id, value);
+            } catch (error) {
+              adapter.log.info(error);
+            }
           }
         };
       }
@@ -518,6 +514,7 @@ async function pollHealth(ring, id) {
 async function ringer() {
   try {
     ring = ring || await new doorbell.Doorbell(adapter);
+    adapter.log.debug('Ring ' + JSON.stringify(ring));
     // let devices = await ring.getDevices();
     // let dbids = await ring.getDoorbells();
     let dbids = await ring.getAllRingsDevices();
@@ -536,17 +533,15 @@ async function ringer() {
         // healthtimeout = await pollHealth(ring, id);
 
         // On Event ding or motion do something
-        await ring.event(id, (ding) => {
+        await ring.event(id, async (ding) => {
           adapter.log.info('Ding Dong for Id ' + id + ' (' + ding.kind + ', ' + ding.state + ')');
           adapter.log.debug('Ding Dong for Id ' + id + JSON.stringify(ding));
-          (async () => {
-            try {
-              await setDingDong(ring, id, ding);
-              await setHistory(ring, id);
-            } catch (error) {
-              adapter.log.info(error);
-            }
-          })();
+          try {
+            await setDingDong(ring, id, ding);
+            await setHistory(ring, id);
+          } catch (error) {
+            adapter.log.info(error);
+          }
         });
         ringdevices[id] = true; // add Device to Array
       } else {
@@ -580,28 +575,23 @@ async function ringer() {
 // Main
 // *****************************************************************************************************
 function main() {
-
   adapter.log.info('Starting Adapter ' + adapter.namespace + ' in version ' + adapter.version);
   if (!semver.satisfies(process.version, adapterNodeVer)) {
     adapter.log.error(`Required node version ${adapterNodeVer} not satisfied with current version ${process.version}.`);
     return;
   }
-
-  function poll_ringer() {
+  async function poll_ringer() {
     let pollsec = adapter.config.pollsec;
     if (errorcounter > 0) {
       let wait = 60;
       pollsec = adapter.config.pollsec > wait ? adapter.config.pollsec : wait;
     }
-    (async () => {
-      await ringer();
-      setTimeout(() => {
-        poll_ringer();
-      }, pollsec * 1000);
-    })();
+    await ringer();
+    setTimeout(async () => {
+      await poll_ringer();
+    }, pollsec * 1000);
   }
   poll_ringer();
-
 }
 
 // If started as allInOne mode => return function to create instance
