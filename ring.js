@@ -9,6 +9,7 @@
 const utils = require('@iobroker/adapter-core');
 const objectHelper = require('@apollon/iobroker-tools').objectHelper; // Get common adapter utils
 const doorbell = require(__dirname + '/lib/doorbell');
+const doorbot = require(__dirname + '/lib/doorbot');
 const datapoints = require(__dirname + '/lib/datapoints');
 const semver = require('semver');
 let ring = null;
@@ -174,6 +175,9 @@ async function setInfo(ring, id) {
     }
 
     objectHelper.processObjectQueue(() => { });
+
+
+
   } catch (error) {
     throw (error);
   }
@@ -513,7 +517,8 @@ async function pollHealth(ring, id) {
 // *****************************************************************************************************
 async function ringer() {
   try {
-    ring = ring || await new doorbell.Doorbell(adapter);
+    // ring = ring || await new doorbell.Doorbell(adapter);
+    ring = ring || new doorbot.Doorbell(adapter);
     adapter.log.debug('Ring ' + JSON.stringify(ring));
     // let devices = await ring.getDevices();
     // let dbids = await ring.getDoorbells();
@@ -580,7 +585,11 @@ function main() {
     adapter.log.error(`Required node version ${adapterNodeVer} not satisfied with current version ${process.version}.`);
     return;
   }
+
   async function poll_ringer() {
+
+    // await doorbot.main(adapter);
+
     let pollsec = adapter.config.pollsec;
     if (errorcounter > 0) {
       let wait = 60;

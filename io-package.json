@@ -1,9 +1,13 @@
 {
   "common": {
     "name": "ring",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "title": "Ring",
     "news": {
+      "1.0.3": {
+        "en": "Changing ring API. Old one did not work anymore",
+        "de": "Wechsel der ring.com API"
+      },
       "1.0.2": {
         "en": "More debug information",
         "de": "Debug Ansicht erweiteret"
