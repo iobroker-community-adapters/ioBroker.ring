@@ -321,6 +321,25 @@ async function setLivestream(ring, id, init) {
   }
 }
 
+async function snapshot(id, image) {
+  let kind = ring.getKind(id);
+  let deviceId = kind + '_' + id;
+  let stateId = deviceId + '.snapshot';
+  let snapshotfile = __dirname + '/../' + this.adapter.namespace + '.snapshot.jpg';
+  await adapter.setObjectNotExistsAsync(stateId, {
+    _id: stateId,
+    type: 'meta',
+    common: {
+      name: 'Snapshot File',
+      role: 'meta.user'
+    },
+    native: {}
+  });
+  if (image) {
+    await adapter.writeFileAsync(adapter.namespace, id + '/snapshot.jpg', image);
+  }
+}
+
 // *****************************************************************************************************
 // Ring and Motions infos
 // *****************************************************************************************************
@@ -392,6 +411,10 @@ async function setDingDong(ring, id, ding, init) {
         continue;
       }
 
+      if (i === 'snapshot') {
+        // await snapshot(id, value);
+      }
+      /*
       if (i == 'light') {
         controlFunction = async (value) => {
           if (value == true) {
@@ -403,18 +426,18 @@ async function setDingDong(ring, id, ding, init) {
           }
         };
       }
-
+      */
       objectHelper.setOrUpdateObject(stateId, {
         type: 'state',
         common: common
       }, ['name'], value, controlFunction);
-
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
     throw (error);
   }
 }
+
 
 // *****************************************************************************************************
 // set History Infos. Only Motion and Dings will be shown
