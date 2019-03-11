@@ -10,4 +10,3 @@ test
 appveyor.yml
 .DS_Store
 .vscode
-snapshot/*
