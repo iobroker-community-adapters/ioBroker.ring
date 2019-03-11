@@ -560,15 +560,12 @@ async function ringer() {
   try {
     switch (adapter.config.api) {
       case 'ring-api':
-        adapter.log.info('Using follwoing API: ' + adapter.config.api);
         ring = ring || await new doorbell.Doorbell(adapter);
         break;
       case 'doorbot':
-        adapter.log.info('Using follwoing API: ' + adapter.config.api);
         ring = ring || await new doorbot.Doorbell(adapter);
         break;
       default:
-        adapter.log.info('Using follwoing API: ring-api (*)');
         ring = ring || await new doorbell.Doorbell(adapter);
         break;
     }
