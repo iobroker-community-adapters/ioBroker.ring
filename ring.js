@@ -12,6 +12,8 @@ const doorbell = require(__dirname + '/lib/doorbell');
 const doorbot = require(__dirname + '/lib/doorbot');
 const datapoints = require(__dirname + '/lib/datapoints');
 const semver = require('semver');
+const fs = require('fs');
+
 let ring = null;
 let ringdevices = {};
 let errorcountmax = 10;
@@ -321,13 +323,12 @@ async function setLivestream(ring, id, init) {
   }
 }
 
-async function snapshot(id, image) {
+async function snapshot(ring, id, image) {
   let kind = ring.getKind(id);
   let deviceId = kind + '_' + id;
   let stateId = deviceId + '.snapshot';
-  let snapshotfile = __dirname + '/../' + this.adapter.namespace + '.snapshot.jpg';
+  let snapshotfile = ring.getSnapshotFilename();
   await adapter.setObjectNotExistsAsync(stateId, {
-    _id: stateId,
     type: 'meta',
     common: {
       name: 'Snapshot File',
@@ -335,8 +336,14 @@ async function snapshot(id, image) {
     },
     native: {}
   });
+  if (!image) {
+    let doorbot = await ring.getAllRingsDevice(id);
+    image = await ring.getSnapshot(doorbot);
+  }
   if (image) {
-    await adapter.writeFileAsync(adapter.namespace, id + '/snapshot.jpg', image);
+    await adapter.writeFileAsync(adapter.namespace, deviceId + '/snapshot.jpg', image);
+    fs.writeFileSync(snapshotfile, image);
+    // let image2 = await adapter.readFileAsync(adapter.namespace, deviceId + '/snapshot.jpg', id);
   }
 }
 
@@ -392,41 +399,44 @@ async function setDingDong(ring, id, ding, init) {
       }
       let stateId = channelId + '.' + i;
       let common = info[i];
-      if (i == 'expires_in') {
-        /*
-          controlFunction = function (value) {
-            if (value) {
-            clearTimeout(timerDingDong);
-            timerDingDong = setTimeout(() => {
-              (async () => {
-              await setDingDong(ring, id, ding, true);
-              })();
-            }, value * 1000);
-            }
-          };
-          */
-      }
 
       if (kind != 'cameras' && i == 'light') {
         continue;
       }
 
-      if (i === 'snapshot') {
-        // await snapshot(id, value);
-      }
-      /*
-      if (i == 'light') {
-        controlFunction = async (value) => {
-          if (value == true) {
-            try {
-              await ring.setLight(id, value);
-            } catch (error) {
-              adapter.log.info(error);
+      switch (i) {
+        case 'snapshot':
+          await snapshot(ring, id, value);
+          break;
+        case 'light':
+          controlFunction = async (value) => {
+            if (value == true) {
+              try {
+                await ring.setLight(ring, id, value);
+              } catch (error) {
+                adapter.log.info(error);
+              }
             }
-          }
-        };
+          };
+          break;
+        case 'expires_in':
+          /*
+            controlFunction = function (value) {
+              if (value) {
+                clearTimeout(timerDingDong);
+                timerDingDong = setTimeout(() => {
+                  (async () => {
+                    await setDingDong(ring, id, ding, true);
+                  })();
+                }, value * 1000);
+              }
+            };
+            */
+          break;
+        default:
+          break;
       }
-      */
+
       objectHelper.setOrUpdateObject(stateId, {
         type: 'state',
         common: common
@@ -539,14 +549,31 @@ async function pollHealth(ring, id) {
 // Main Function for ring
 // *****************************************************************************************************
 async function ringer() {
+  let dbids;
   try {
     // ring = ring || await new doorbell.Doorbell(adapter);
     ring = ring || new doorbot.Doorbell(adapter);
     adapter.log.debug('Ring ' + JSON.stringify(ring));
     // let devices = await ring.getDevices();
     // let dbids = await ring.getDoorbells();
-    let dbids = await ring.getAllRingsDevices();
+    dbids = await ring.getAllRingsDevices();
 
+    errorcounter = 0;
+  } catch (error) {
+    // if, error we will get a new ring connection
+    errorcounter++;
+    ringdevices = {};
+    states = {};
+    ring = null; // we start from beginning
+    adapter.log.info(error);
+    if (errorcounter >= errorcountmax) {
+      adapter.log.error('To many connection errors, restarting adapter');
+      restartAdapter();
+    }
+    return;
+  }
+
+  try {
     for (let j in dbids) {
       let id = dbids[j].id;
       // If device exist skipp function!
@@ -583,18 +610,8 @@ async function ringer() {
         });
       }
     }
-    errorcounter = 0;
   } catch (error) {
-    // if, erro we will get a new ring connection
-    errorcounter++;
-    ringdevices = {};
-    states = {};
-    ring = null; // we start from beginning
     adapter.log.info(error);
-    if (errorcounter >= errorcountmax) {
-      adapter.log.error('To many connection errors, restarting adapter');
-      restartAdapter();
-    }
   }
 }
 
