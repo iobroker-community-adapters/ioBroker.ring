@@ -333,7 +333,9 @@ async function setSnapshot(ring, id, image) {
       type: 'meta',
       common: {
         name: 'Snapshot File',
-        role: 'meta.user'
+        role: 'meta.user',
+        read: true,
+        write: false
       },
       native: {}
     });
@@ -342,6 +344,8 @@ async function setSnapshot(ring, id, image) {
       image = await ring.getSnapshot(doorbot);
     }
     if (image) {
+      // http://<ip-iobroker>:<port-vis>/<instanz>/<device>.snapshot/snapshot.jpg 
+      // http://192.168.1.10:8082/ring.0/doorbell_4711.snapshot/snapshot.jpg
       await adapter.writeFileAsync(adapter.namespace, deviceId + '.snapshot/snapshot.jpg', image);
       fs.writeFileSync(snapshotfile, image);
     }
@@ -554,8 +558,9 @@ async function pollHealth(ring, id) {
 async function ringer() {
   let dbids;
   try {
-    // ring = ring || await new doorbell.Doorbell(adapter);
-    ring = ring || new doorbot.Doorbell(adapter);
+    adapter.log.info('Using follwoing API: ' + adapter.config.api);
+    if(adapter.config.api === 'ring-api') ring = ring || await new doorbell.Doorbell(adapter);
+    if(adapter.config.api === 'doorbot') ring = ring || await new doorbot.Doorbell(adapter);
     adapter.log.debug('Ring ' + JSON.stringify(ring));
     // let devices = await ring.getDevices();
     // let dbids = await ring.getDoorbells();

@@ -85,7 +85,8 @@
     "email": "email@test.foo",
     "password": "password",
     "timeout": 5,
-    "pollsec": 15
+    "pollsec": 15,
+    "api": "doorbot"
   },
   "objects": [],
   "instanceObjects": []
