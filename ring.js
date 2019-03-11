@@ -324,26 +324,30 @@ async function setLivestream(ring, id, init) {
 }
 
 async function snapshot(ring, id, image) {
-  let kind = ring.getKind(id);
-  let deviceId = kind + '_' + id;
-  let stateId = deviceId + '.snapshot';
-  let snapshotfile = ring.getSnapshotFilename();
-  await adapter.setObjectNotExistsAsync(stateId, {
-    type: 'meta',
-    common: {
-      name: 'Snapshot File',
-      role: 'meta.user'
-    },
-    native: {}
-  });
-  if (!image) {
-    let doorbot = await ring.getAllRingsDevice(id);
-    image = await ring.getSnapshot(doorbot);
-  }
-  if (image) {
-    await adapter.writeFileAsync(adapter.namespace, deviceId + '/snapshot.jpg', image);
-    fs.writeFileSync(snapshotfile, image);
-    // let image2 = await adapter.readFileAsync(adapter.namespace, deviceId + '/snapshot.jpg', id);
+  try {
+    let kind = ring.getKind(id);
+    let deviceId = kind + '_' + id;
+    let stateId = deviceId + '.snapshot';
+    let snapshotfile = ring.getSnapshotFilename();
+    await adapter.setObjectNotExistsAsync(stateId, {
+      type: 'meta',
+      common: {
+        name: 'Snapshot File',
+        role: 'meta.user'
+      },
+      native: {}
+    });
+    if (!image) {
+      let doorbot = await ring.getAllRingsDevice(id);
+      image = await ring.getSnapshot(doorbot);
+    }
+    if (image) {
+      await adapter.writeFileAsync(adapter.namespace, deviceId + '/snapshot.jpg', image);
+      fs.writeFileSync(snapshotfile, image);
+      // let image2 = await adapter.readFileAsync(adapter.namespace, deviceId + '/snapshot.jpg', id);
+    }
+  } catch (error) {
+    throw (error);
   }
 }
 
@@ -580,28 +584,24 @@ async function ringer() {
       if (!ringdevices[id]) {
         adapter.log.info('Starting Ring Device for Id ' + id);
         // let doorb = await ring.getDoorbell(id); // Info
-        await setInfo(ring, id, true);
-        await setHealth(ring, id);
-        await setLivestream(ring, id, true);
-        await setDingDong(ring, id, null);
-        await setHistory(ring, id);
+        try { await setInfo(ring, id, true); } catch (error) { adapter.log.info(error); }
+        try { await setHealth(ring, id); } catch (error) { adapter.log.info(error); }
+        try { await setLivestream(ring, id, true); } catch (error) { adapter.log.info(error); }
+        try { await setDingDong(ring, id, null); } catch (error) { adapter.log.info(error); }
+        try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); }
         // healthtimeout = await pollHealth(ring, id);
 
         // On Event ding or motion do something
         await ring.event(id, async (ding) => {
           adapter.log.info('Ding Dong for Id ' + id + ' (' + ding.kind + ', ' + ding.state + ')');
           adapter.log.debug('Ding Dong for Id ' + id + JSON.stringify(ding));
-          try {
-            await setDingDong(ring, id, ding);
-            await setHistory(ring, id);
-          } catch (error) {
-            adapter.log.info(error);
-          }
+          try { await setDingDong(ring, id, ding); } catch (error) { adapter.log.info(error); }
+          try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); }
         });
         ringdevices[id] = true; // add Device to Array
       } else {
-        await setHealth(ring, id);
-        await setHistory(ring, id);
+        try { await setHealth(ring, id); } catch (error) { adapter.log.info(error); }
+        try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); }
         let deviceId = ring.getKind(id) + '_' + id;
         adapter.getObject(deviceId, (err, object) => {
           if (err || !object) {
