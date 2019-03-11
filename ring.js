@@ -558,9 +558,20 @@ async function pollHealth(ring, id) {
 async function ringer() {
   let dbids;
   try {
-    adapter.log.info('Using follwoing API: ' + adapter.config.api);
-    if(adapter.config.api === 'ring-api') ring = ring || await new doorbell.Doorbell(adapter);
-    if(adapter.config.api === 'doorbot') ring = ring || await new doorbot.Doorbell(adapter);
+    switch (adapter.config.api) {
+      case 'ring-api':
+        adapter.log.info('Using follwoing API: ' + adapter.config.api);
+        ring = ring || await new doorbell.Doorbell(adapter);
+        break;
+      case 'doorbot':
+        adapter.log.info('Using follwoing API: ' + adapter.config.api);
+        ring = ring || await new doorbot.Doorbell(adapter);
+        break;
+      default:
+        adapter.log.info('Using follwoing API: ring-api (*)');
+        ring = ring || await new doorbell.Doorbell(adapter);
+        break;
+    }
     adapter.log.debug('Ring ' + JSON.stringify(ring));
     // let devices = await ring.getDevices();
     // let dbids = await ring.getDoorbells();
