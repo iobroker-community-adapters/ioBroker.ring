@@ -26,6 +26,7 @@
     "@apollon/iobroker-tools": "git+https://github.com/schmupu/iobroker-tools.git",
     "@iobroker/adapter-core": "^1.0.3",
     "@schmupu/doorbot": "git+https://github.com/schmupu/doorbot.git",
+    "doorbot": "git+https://github.com/davglass/doorbot.git",
     "events": "^3.0.0",
     "node-schedule": "1.3.0",
     "request": "^2.85.0",

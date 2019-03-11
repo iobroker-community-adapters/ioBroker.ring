@@ -323,12 +323,12 @@ async function setLivestream(ring, id, init) {
   }
 }
 
-async function snapshot(ring, id, image) {
+async function setSnapshot(ring, id, image) {
   try {
     let kind = ring.getKind(id);
     let deviceId = kind + '_' + id;
     let stateId = deviceId + '.snapshot';
-    let snapshotfile = ring.getSnapshotFilename();
+    let snapshotfile = ring.getSnapshotFilename(id);
     await adapter.setObjectNotExistsAsync(stateId, {
       type: 'meta',
       common: {
@@ -342,12 +342,11 @@ async function snapshot(ring, id, image) {
       image = await ring.getSnapshot(doorbot);
     }
     if (image) {
-      await adapter.writeFileAsync(adapter.namespace, deviceId + '/snapshot.jpg', image);
+      await adapter.writeFileAsync(adapter.namespace, deviceId + '.snapshot/snapshot.jpg', image);
       fs.writeFileSync(snapshotfile, image);
-      // let image2 = await adapter.readFileAsync(adapter.namespace, deviceId + '/snapshot.jpg', id);
     }
   } catch (error) {
-    throw (error);
+    throw ('Error setSanpshot): ' + error);
   }
 }
 
@@ -410,7 +409,7 @@ async function setDingDong(ring, id, ding, init) {
 
       switch (i) {
         case 'snapshot':
-          await snapshot(ring, id, value);
+          await setSnapshot(ring, id, value);
           break;
         case 'light':
           controlFunction = async (value) => {
@@ -448,7 +447,7 @@ async function setDingDong(ring, id, ding, init) {
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
-    throw (error);
+    throw ('Error setDingDong(): ' + error);
   }
 }
 
@@ -578,36 +577,41 @@ async function ringer() {
   }
 
   try {
-    for (let j in dbids) {
-      let id = dbids[j].id;
-      // If device exist skipp function!
-      if (!ringdevices[id]) {
-        adapter.log.info('Starting Ring Device for Id ' + id);
-        // let doorb = await ring.getDoorbell(id); // Info
-        try { await setInfo(ring, id, true); } catch (error) { adapter.log.info(error); }
-        try { await setHealth(ring, id); } catch (error) { adapter.log.info(error); }
-        try { await setLivestream(ring, id, true); } catch (error) { adapter.log.info(error); }
-        try { await setDingDong(ring, id, null); } catch (error) { adapter.log.info(error); }
-        try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); }
-        // healthtimeout = await pollHealth(ring, id);
+    if (ring && dbids) {
+      for (let j in dbids) {
+        let id = dbids[j].id;
+        // If device exist skipp function!
+        if (id) {
+          if (!ringdevices[id]) {
+            adapter.log.info('Starting Ring Device for Id ' + id);
+            // let doorb = await ring.getDoorbell(id); // Info
+            try { await setInfo(ring, id, true); } catch (error) { adapter.log.info(error); }
+            try { await setHealth(ring, id); } catch (error) { adapter.log.info(error); }
+            try { await setLivestream(ring, id, true); } catch (error) { adapter.log.info(error); }
+            try { await setDingDong(ring, id, null); } catch (error) { adapter.log.info(error); }
+            try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); }
+            // healthtimeout = await pollHealth(ring, id);
 
-        // On Event ding or motion do something
-        await ring.event(id, async (ding) => {
-          adapter.log.info('Ding Dong for Id ' + id + ' (' + ding.kind + ', ' + ding.state + ')');
-          adapter.log.debug('Ding Dong for Id ' + id + JSON.stringify(ding));
-          try { await setDingDong(ring, id, ding); } catch (error) { adapter.log.info(error); }
-          try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); }
-        });
-        ringdevices[id] = true; // add Device to Array
-      } else {
-        try { await setHealth(ring, id); } catch (error) { adapter.log.info(error); }
-        try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); }
-        let deviceId = ring.getKind(id) + '_' + id;
-        adapter.getObject(deviceId, (err, object) => {
-          if (err || !object) {
-            delete ringdevices[id];
+            // On Event ding or motion do something
+            await ring.event(id, async (ding) => {
+              adapter.log.info('Ding Dong for Id ' + id + ' (' + ding.kind + ', ' + ding.state + ')');
+              adapter.log.debug('Ding Dong for Id ' + id + JSON.stringify(ding));
+              try { await setDingDong(ring, id, ding); } catch (error) { adapter.log.info(error); }
+              try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); }
+            });
+            ringdevices[id] = true; // add Device to Array
+          } else {
+            try { await setHealth(ring, id); } catch (error) { adapter.log.info(error); }
+            try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); }
+            // try { await setSnapshot(ring, id); } catch (error) { adapter.log.info(error); }
+            let deviceId = ring.getKind(id) + '_' + id;
+            adapter.getObject(deviceId, (err, object) => {
+              if (err || !object) {
+                delete ringdevices[id];
+              }
+            });
           }
-        });
+        }
       }
     }
   } catch (error) {
