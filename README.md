@@ -29,14 +29,10 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 });
 ```
 
-If you like to use the snapshot (for example in VIS) you can open it by link: http://<ip-iobroker>:<port-vis>/<instanz>/<device>.snapshot/snapshot.jpg 
-For example:  http://192.168.1.10:8082/ring.0/doorbell_4711.snapshot/snapshot.jpg
-
 ## Changelog
 
 ### 1.0.3 (09.03.2019)
 * (Stübi) Major change! I had to change the used ring.com API to an other API. The old one did not work anymore. For this reason, a lot has to be redesigned.  
-* (Stübi) New Status snapshot. This will be filled at rings and motions
 
 ### 1.0.2 (01.02.2019)
 * (Stübi) More debug information 

@@ -23,10 +23,10 @@
     "url": "https://github.com/schmupu/ioBroker.ring"
   },
   "dependencies": {
-    "@apollon/iobroker-tools": "git+https://github.com/schmupu/iobroker-tools.git",
+    "@apollon/iobroker-tools": "^0.1.0",
     "@iobroker/adapter-core": "^1.0.3",
-    "@schmupu/doorbot": "git+https://github.com/schmupu/doorbot.git",
-    "doorbot": "git+https://github.com/davglass/doorbot.git",
+    "@schmupu/doorbot": "^5.4.1",
+    "doorbot": "^5.4.0",
     "events": "^3.0.0",
     "node-schedule": "1.3.0",
     "request": "^2.85.0",
