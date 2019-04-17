@@ -569,7 +569,7 @@ async function ringer() {
         ring = ring || await new doorbell.Doorbell(adapter);
         break;
     }
-    adapter.log.debug('Ring ' + JSON.stringify(ring));
+    adapter.log.debug('Ring: ' + JSON.stringify(ring));
     // let devices = await ring.getDevices();
     // let dbids = await ring.getDoorbells();
     dbids = await ring.getAllRingsDevices();
@@ -632,32 +632,30 @@ async function ringer() {
   }
 }
 
+async function poll_ringer() {
+  // await doorbot.main(adapter);
+  let pollsec = adapter.config.pollsec;
+  if (errorcounter > 0) {
+    let wait = 60;
+    pollsec = adapter.config.pollsec > wait ? adapter.config.pollsec : wait;
+  }
+  await ringer();
+  setTimeout(async () => {
+    await poll_ringer();
+  }, pollsec * 1000);
+}
 
-// *****************************************************************************************************
-// Main
-// *****************************************************************************************************
-function main() {
+/**
+ * Main
+ */
+async function main() {
   adapter.log.info('Starting Adapter ' + adapter.namespace + ' in version ' + adapter.version);
+  adapter.log.info('Ring adapter uses API: ' + adapter.config.api);
   if (!semver.satisfies(process.version, adapterNodeVer)) {
     adapter.log.error(`Required node version ${adapterNodeVer} not satisfied with current version ${process.version}.`);
     return;
   }
-
-  async function poll_ringer() {
-
-    // await doorbot.main(adapter);
-
-    let pollsec = adapter.config.pollsec;
-    if (errorcounter > 0) {
-      let wait = 60;
-      pollsec = adapter.config.pollsec > wait ? adapter.config.pollsec : wait;
-    }
-    await ringer();
-    setTimeout(async () => {
-      await poll_ringer();
-    }, pollsec * 1000);
-  }
-  poll_ringer();
+  await poll_ringer();
 }
 
 // If started as allInOne mode => return function to create instance

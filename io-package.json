@@ -1,9 +1,13 @@
 {
   "common": {
     "name": "ring",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "title": "Ring",
     "news": {
+      "1.0.4": {
+        "en": "Bugfixing for Ring Pro",
+        "de": "Fehlerbehebung Ring Pro"
+      },
       "1.0.3": {
         "en": "Changing ring API. Old one did not work anymore",
         "de": "Wechsel der ring.com API"
@@ -86,7 +90,7 @@
     "password": "password",
     "timeout": 5,
     "pollsec": 15,
-    "api": "doorbot"
+    "api": "ring-api"
   },
   "objects": [],
   "instanceObjects": []

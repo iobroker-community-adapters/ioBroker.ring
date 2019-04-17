@@ -89,5 +89,17 @@ systemDictionary = {
     "it": "Accedi con password",
     "es": "Iniciar sesión con contraseña",
     "pl": "Zaloguj się za pomocą hasła"
+  },
+  "ring-api": {
+    "en": "RING-API (Default)",
+    "de": "RING-API (Stanard Einstellung)",
+    "ru": "RING-API (по умолчанию)",
+    "pt": "RING-API (padrão)",
+    "nl": "RING-API (standaard)",
+    "fr": "RING-API (par défaut)",
+    "it": "RING-API (predefinito)",
+    "es": "RING-API (por defecto)",
+    "pl": "RING-API (domyślnie)",
+    "zh-cn": "RING-API（默认）"
   }
 };
