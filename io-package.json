@@ -1,9 +1,13 @@
 {
   "common": {
     "name": "ring",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "title": "Ring",
     "news": {
+      "1.0.5": {
+        "en": "Bugfixing",
+        "de": "Fehlerbehebung"
+      },
       "1.0.4": {
         "en": "Bugfixing for Ring Pro",
         "de": "Fehlerbehebung Ring Pro"
@@ -90,7 +94,7 @@
     "password": "password",
     "timeout": 5,
     "pollsec": 15,
-    "api": "ring-api"
+    "api": "ring-api-client"
   },
   "objects": [],
   "instanceObjects": []

@@ -10,6 +10,7 @@ const utils = require('@iobroker/adapter-core');
 const objectHelper = require('@apollon/iobroker-tools').objectHelper; // Get common adapter utils
 const doorbell = require(__dirname + '/lib/doorbell');
 const doorbot = require(__dirname + '/lib/doorbot');
+const ringapiclient = require(__dirname + '/lib/ringapiclient');
 const datapoints = require(__dirname + '/lib/datapoints');
 const semver = require('semver');
 const fs = require('fs');
@@ -165,8 +166,8 @@ async function setInfo(ring, id) {
       let stateId = channelId + '.' + i;
       let common = info[i];
       let controlFunction;
-      // if (states[stateId] != value) {
 
+      // if (!states.hasOwnProperty(stateId) || states[stateId] !== value) {
       objectHelper.setOrUpdateObject(stateId, {
         type: 'state',
         common: common
@@ -209,9 +210,7 @@ async function setHealth(ring, id) {
       common: {
         name: 'Info ' + id
       },
-      native: {
-
-      }
+      native: {}
     }, ['name']);
 
     let info = datapoints.getObjectByName('health');
@@ -219,7 +218,7 @@ async function setHealth(ring, id) {
       let value = health[i] || null;
       let stateId = channelId + '.' + i;
       let common = info[i];
-      // if (states[stateId] != value) {
+      // if (!states.hasOwnProperty(stateId) || states[stateId] !== value) {
       objectHelper.setOrUpdateObject(stateId, {
         type: 'state',
         common: common
@@ -257,9 +256,7 @@ async function setLivestream(ring, id, init) {
       common: {
         name: 'Livestream ' + id
       },
-      native: {
-
-      }
+      native: {}
     }, ['name']);
 
     let info = datapoints.getObjectByName('livestream');
@@ -308,7 +305,7 @@ async function setLivestream(ring, id, init) {
         };
       }
 
-      // if (states[stateId] != value) {
+      // if (!states.hasOwnProperty(stateId) || states[stateId] !== value) {
       objectHelper.setOrUpdateObject(stateId, {
         type: 'state',
         common: common
@@ -357,7 +354,7 @@ async function setSnapshot(ring, id, image) {
 // *****************************************************************************************************
 // Ring and Motions infos
 // *****************************************************************************************************
-async function setDingDong(ring, id, ding, init) {
+async function setDingDong(ring, id, ding) {
   try {
     let kind = ring.getKind(id);
     let deviceId = kind + '_' + id;
@@ -371,38 +368,12 @@ async function setDingDong(ring, id, ding, init) {
       },
       native: {}
     }, ['name']);
-
-    // Create Channel
-    objectHelper.setOrUpdateObject(channelId, {
-      type: 'channel',
-      common: {
-        name: 'Info ' + id
-      },
-      native: {
-
-      }
-    }, ['name']);
-
     let info = datapoints.getObjectByName('dingdong');
     for (let i in info) {
       let controlFunction;
       let value = null;
-      if (ding && ding[i]) {
+      if (ding && ding.hasOwnProperty(i)) {
         value = ding[i];
-      }
-      if (init) {
-        // let type = typeof value;
-        let type = info[i].type;
-        switch (type) {
-          case 'number':
-            value = 0;
-            break;
-          case 'object':
-            value = {};
-            break;
-          default:
-            value = '';
-        }
       }
       let stateId = channelId + '.' + i;
       let common = info[i];
@@ -410,7 +381,6 @@ async function setDingDong(ring, id, ding, init) {
       if (kind != 'cameras' && i == 'light') {
         continue;
       }
-
       switch (i) {
         case 'snapshot':
           await setSnapshot(ring, id, value);
@@ -443,11 +413,12 @@ async function setDingDong(ring, id, ding, init) {
         default:
           break;
       }
-
+      // if (!states.hasOwnProperty(stateId) || states[stateId] !== value) {
       objectHelper.setOrUpdateObject(stateId, {
         type: 'state',
         common: common
       }, ['name'], value, controlFunction);
+      // }
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
@@ -516,7 +487,7 @@ async function setHistory(ring, id) {
       let stateId = channelId + '.' + i;
       let common = info[i];
 
-      // if (states[stateId] != value) {
+      // if (!states.hasOwnProperty(stateId) || states[stateId] !== value) {
       objectHelper.setOrUpdateObject(stateId, {
         type: 'state',
         common: common
@@ -565,6 +536,10 @@ async function ringer() {
       case 'doorbot':
         ring = ring || await new doorbot.Doorbell(adapter);
         break;
+      case 'ring-api-client':
+        ring = ring || new ringapiclient.RingApiClient(adapter);
+        // await ring.getLiveStreamRTP(17877585);
+        break;
       default:
         ring = ring || await new doorbell.Doorbell(adapter);
         break;
@@ -601,10 +576,9 @@ async function ringer() {
             try { await setInfo(ring, id, true); } catch (error) { adapter.log.info(error); }
             try { await setHealth(ring, id); } catch (error) { adapter.log.info(error); }
             try { await setLivestream(ring, id, true); } catch (error) { adapter.log.info(error); }
-            try { await setDingDong(ring, id, null); } catch (error) { adapter.log.info(error); }
+            try { await setDingDong(ring, id); } catch (error) { adapter.log.info(error); }
             try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); }
             // healthtimeout = await pollHealth(ring, id);
-
             // On Event ding or motion do something
             await ring.event(id, async (ding) => {
               adapter.log.info('Ding Dong for Id ' + id + ' (' + ding.kind + ', ' + ding.state + ')');
@@ -645,10 +619,14 @@ async function poll_ringer() {
   }, pollsec * 1000);
 }
 
+
+
+
 /**
  * Main
  */
 async function main() {
+
   adapter.log.info('Starting Adapter ' + adapter.namespace + ' in version ' + adapter.version);
   adapter.log.info('Ring adapter uses API: ' + adapter.config.api);
   if (!semver.satisfies(process.version, adapterNodeVer)) {
