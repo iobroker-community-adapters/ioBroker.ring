@@ -544,7 +544,7 @@ async function ringer() {
         ring = ring || await new doorbell.Doorbell(adapter);
         break;
     }
-    adapter.log.debug('Ring: ' + JSON.stringify(ring));
+    // adapter.log.debug('Ring: ' + JSON.stringify(ring));
     // let devices = await ring.getDevices();
     // let dbids = await ring.getDoorbells();
     dbids = await ring.getAllRingsDevices();
