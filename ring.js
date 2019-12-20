@@ -236,8 +236,21 @@ async function setHealth(ring, id) {
 // set Livestream 
 // *****************************************************************************************************
 async function setLivestream(ring, id, init) {
+  let livestream = {};
   try {
-    let livestream = !init ? await ring.getLiveStream(id) : {};
+    switch (init) {
+      case true:
+        livestream = {};
+        break;
+      case false:
+      case undefined:
+      case null:
+        livestream = await ring.getLiveStream(id);
+        break;
+      default:
+        livestream = init;
+        break;
+    }
     let deviceId = ring.getKind(id) + '_' + id;
     let channelId = deviceId + '.Livestream';
 
@@ -263,7 +276,7 @@ async function setLivestream(ring, id, init) {
     for (let i in info) {
       let controlFunction;
       let value = livestream[i] || null;
-      if (init) {
+      if (init === true) {
         // let type = typeof value;
         let type = info[i].type;
         switch (type) {
@@ -528,6 +541,7 @@ async function pollHealth(ring, id) {
 // *****************************************************************************************************
 async function ringer() {
   let dbids;
+  adapter.config.api = 'ring-api-client';
   try {
     switch (adapter.config.api) {
       case 'ring-api':
@@ -538,10 +552,10 @@ async function ringer() {
         break;
       case 'ring-api-client':
         ring = ring || new ringapiclient.RingApiClient(adapter);
-        // await ring.getLiveStreamRTP(17877585);
+        // await ring.getLiveStreamRTP(9999999);
         break;
       default:
-        ring = ring || await new doorbell.Doorbell(adapter);
+        ring = ring || new ringapiclient.RingApiClient(adapter);
         break;
     }
     // adapter.log.debug('Ring: ' + JSON.stringify(ring));
@@ -585,6 +599,7 @@ async function ringer() {
               adapter.log.debug('Ding Dong for Id ' + id + JSON.stringify(ding));
               try { await setDingDong(ring, id, ding); } catch (error) { adapter.log.info(error); }
               try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); }
+              try { await setLivestream(ring, id, ding); } catch (error) { adapter.log.info(error); }
             });
             ringdevices[id] = true; // add Device to Array
           } else {

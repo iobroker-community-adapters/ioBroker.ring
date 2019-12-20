@@ -1,6 +1,6 @@
 {
   "name": "iobroker.ring",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Ring",
   "author": {
     "name": "Thorsten Stueben",
@@ -34,7 +34,7 @@
     "node-schedule": "1.3.0",
     "request": "^2.85.0",
     "ring-api": "^3.0.7",
-    "ring-client-api": "5.5.1",
+    "ring-client-api": "^5.10.0",
     "rtsp-streaming-server": "^2.0.5",
     "rxjs": "^6.5.3",
     "semver": "^5.7.1"
@@ -43,7 +43,7 @@
     "@iobroker/testing": "^1.1.10",
     "chai": "^4.1.2",
     "eslint": "^5.16.0",
-    "eslint-plugin-react": "^7.15.0",
+    "eslint-plugin-react": "^7.17.0",
     "gulp": "^3.9.1",
     "mocha": "^4.1.0"
   },
