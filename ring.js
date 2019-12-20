@@ -351,7 +351,7 @@ async function setSnapshot(ring, id, image) {
     });
     if (!image) {
       let doorbot = await ring.getAllRingsDevice(id);
-      image = await ring.getSnapshot(doorbot);
+      image = await ring.getSnapshot(id);
     }
     if (image) {
       // http://<ip-iobroker>:<port-vis>/<instanz>/<device>.snapshot/snapshot.jpg 
@@ -600,6 +600,7 @@ async function ringer() {
               try { await setDingDong(ring, id, ding); } catch (error) { adapter.log.info(error); }
               try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); }
               try { await setLivestream(ring, id, ding); } catch (error) { adapter.log.info(error); }
+              try { await setSnapshot(ring, id); } catch (error) { adapter.log.info(error); }
             });
             ringdevices[id] = true; // add Device to Array
           } else {
