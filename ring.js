@@ -314,7 +314,7 @@ async function setDingDong(ring, id, ding) {
           type = 'meta';
           break;
         case 'snapshot_url':
-          vis = await adapter.getForeignObjectAsync('system.adapter.web');
+          vis = await adapter.getForeignObjectAsync('system.adapter.web.0');
           if (vis && vis.native && vis.native.port) {
             value = 'http://' + adapter.host + ':' + vis.native.port + '/' + adapter.namespace + '/' + deviceId + '.snapshot/' + adapter.config.filename_snapshot;
           }
@@ -326,7 +326,7 @@ async function setDingDong(ring, id, ding) {
           type = 'meta';
           break;
         case 'livestream_url':
-          vis = await adapter.getForeignObjectAsync('system.adapter.web');
+          vis = await adapter.getForeignObjectAsync('system.adapter.web.0');
           if (vis && vis.native && vis.native.port) {
             value = 'http://' + adapter.host + ':' + vis.native.port + '/' + adapter.namespace + '/' + deviceId + '.livestream/' + adapter.config.filename_livestream;
           }
