@@ -6,4 +6,5 @@ admin/i18n/flat.txt
 admin/i18n/*/flat.txt
 .DS_Store
 package-lock.json
-snapshot/*.jpg
+aring.0
+aring.0/*
