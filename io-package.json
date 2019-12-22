@@ -97,8 +97,7 @@
     "email": "email@test.foo",
     "password": "password",
     "timeout": 5,
-    "pollsec": 15,
-    "api": "ring-api-client"
+    "pollsec": 15
   },
   "objects": [],
   "instanceObjects": []
