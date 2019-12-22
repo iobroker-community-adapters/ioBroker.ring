@@ -212,7 +212,7 @@ async function setHealth(ring, id) {
       native: {}
     }, ['name']);
 
-    let info = datapoints.getObjectByName('health');
+    let info = datapoints.getObjectByName('heal th');
     for (let i in info) {
       let value = health[i] || null;
       let stateId = channelId + '.' + i;
@@ -237,17 +237,67 @@ async function setHealth(ring, id) {
  * @param {*} id 
  * @param {*} image 
  */
-async function setSnapshot(ring, id) {
+async function setSnapshot(ring, id, init) {
   try {
     let kind = ring.getKind(id);
     let deviceId = kind + '_' + id;
-    let filename = adapter.config.filename_snapshot;
-    let image = await ring.getSnapshot(id);
-    if (image) {
-      // http://<ip-iobroker>:<port-vis>/<ring-instanz>/<device>.snapshot/snapshot.jpg 
-      // http://192.168.1.10:8082/ring.0/doorbell_4711.snapshot/snapshot.jpg
-      await adapter.writeFileAsync(adapter.namespace, deviceId + '.snapshot/' + filename, image);
+    let channelId = deviceId;
+    let snapshot = init ? undefined : await ring.getSnapshot(id);
+    let info = datapoints.getObjectByName('snapshot');
+    let vis;
+    // Create Deivce
+    objectHelper.setOrUpdateObject(deviceId, {
+      type: 'device',
+      common: {
+        name: 'Device ' + id
+      },
+      native: {}
+    }, ['name']);
+    for (let i in info) {
+      let controlFunction;
+      let value = null;
+      let stateId = channelId + '.' + i;
+      let common = info[i];
+      let type = 'state';
+      switch (i) {
+        case 'snapshot':
+          type = 'meta';
+          // http://<ip-iobroker>:<port-vis>/<ring-instanz>/<device>.snapshot/snapshot.jpg 
+          // http://192.168.1.10:8082/ring.0/doorbell_4711.snapshot/snapshot.jpg
+          if (snapshot) await adapter.writeFileAsync(adapter.namespace, deviceId + '.snapshot/' + snapshot.filename, snapshot.image);
+          break;
+        case 'snapshot_url':
+          value = '';
+          vis = await adapter.getForeignObjectAsync('system.adapter.web.0');
+          if (vis && vis.native && vis.native.port) {
+            if (snapshot) value = 'http://' + adapter.host + ':' + vis.native.port + '/' + adapter.namespace + '/' + deviceId + '.snapshot/' + snapshot.filename;
+          }
+          break;
+        case 'snapshot_file':
+          value = '';
+          if (snapshot) value = path.join(snapshot.pathname, snapshot.filename);
+          break;
+        case 'snapshotrequest':
+          controlFunction = async (value) => {
+            if (value == true) {
+              try {
+                await setSnapshot(ring, id);
+              } catch (error) {
+                adapter.log.info(error);
+              }
+            }
+          };
+          break;
+        default:
+          break;
+      }
+      objectHelper.setOrUpdateObject(stateId, {
+        type: type,
+        common: common
+      }, ['name'], value, controlFunction);
+      // }
     }
+    objectHelper.processObjectQueue(() => { });
   } catch (error) {
     throw ('Error setSanpshot): ' + error);
   }
@@ -259,17 +309,67 @@ async function setSnapshot(ring, id) {
  * @param {*} id 
  * @param {*} image 
  */
-async function setLivetream(ring, id) {
+async function setLivetream(ring, id, init) {
   try {
     let kind = ring.getKind(id);
     let deviceId = kind + '_' + id;
-    let filename = adapter.config.filename_livestream;
-    let video = await ring.getLiveStream(id);
-    if (video) {
-      // http://<ip-iobroker>:<port-vis>/<ring-instanz>/<device>.livestream/livestream.jpg 
-      // http://192.168.1.10:8082/ring.0/doorbell_4711.livestream/livestream.jpg
-      await adapter.writeFileAsync(adapter.namespace, deviceId + '.livestream/' + filename, video);
+    let channelId = deviceId;
+    let livestream = init ? undefined : await ring.getLiveStream(id);
+    let info = datapoints.getObjectByName('livestream');
+    let vis;
+    // Create Deivce
+    objectHelper.setOrUpdateObject(deviceId, {
+      type: 'device',
+      common: {
+        name: 'Device ' + id
+      },
+      native: {}
+    }, ['name']);
+    for (let i in info) {
+      let controlFunction;
+      let value = null;
+      let stateId = channelId + '.' + i;
+      let common = info[i];
+      let type = 'state';
+      switch (i) {
+        case 'livestream':
+          type = 'meta';
+          // http://<ip-iobroker>:<port-vis>/<ring-instanz>/<device>.livestream/livestream.jpg 
+          // http://192.168.1.10:8082/ring.0/doorbell_4711.livestream/livestream.jpg
+          if (livestream) await adapter.writeFileAsync(adapter.namespace, deviceId + '.livestream/' + livestream.filename, livestream.video);
+          break;
+        case 'livestream_url':
+          value = '';
+          vis = await adapter.getForeignObjectAsync('system.adapter.web.0');
+          if (vis && vis.native && vis.native.port) {
+            if (livestream) value = 'http://' + adapter.host + ':' + vis.native.port + '/' + adapter.namespace + '/' + deviceId + '.livestream/' + livestream.filename;
+          }
+          break;
+        case 'livestream_file':
+          value = '';
+          if (livestream) value = path.join(livestream.pathname, livestream.filename);
+          break;
+        case 'livestreamrequest':
+          controlFunction = async (value) => {
+            if (value == true) {
+              try {
+                await setLivetream(ring, id);
+              } catch (error) {
+                adapter.log.info(error);
+              }
+            }
+          };
+          break;
+        default:
+          break;
+      }
+      objectHelper.setOrUpdateObject(stateId, {
+        type: type,
+        common: common
+      }, ['name'], value, controlFunction);
+      // }
     }
+    objectHelper.processObjectQueue(() => { });
   } catch (error) {
     throw ('Error setLivetream): ' + error);
   }
@@ -305,62 +405,15 @@ async function setDingDong(ring, id, ding) {
       let stateId = channelId + '.' + i;
       let common = info[i];
       let type = 'state';
-      let vis;
       if (kind != 'cameras' && i == 'light') {
         continue;
       }
       switch (i) {
-        case 'snapshot':
-          type = 'meta';
-          break;
-        case 'snapshot_url':
-          vis = await adapter.getForeignObjectAsync('system.adapter.web.0');
-          if (vis && vis.native && vis.native.port) {
-            value = 'http://' + adapter.host + ':' + vis.native.port + '/' + adapter.namespace + '/' + deviceId + '.snapshot/' + adapter.config.filename_snapshot;
-          }
-          break;
-        case 'snapshot_file':
-          value = path.join(adapter.config.path, adapter.config.filename_snapshot);
-          break;
-        case 'livestream':
-          type = 'meta';
-          break;
-        case 'livestream_url':
-          vis = await adapter.getForeignObjectAsync('system.adapter.web.0');
-          if (vis && vis.native && vis.native.port) {
-            value = 'http://' + adapter.host + ':' + vis.native.port + '/' + adapter.namespace + '/' + deviceId + '.livestream/' + adapter.config.filename_livestream;
-          }
-          break;
-        case 'livestream_file':
-          value = path.join(adapter.config.path, adapter.config.filename_livestream);
-          break;
-        case 'snapshotrequest':
-          controlFunction = async (value) => {
-            if (value == true) {
-              try {
-                await setSnapshot(ring, id);
-              } catch (error) {
-                adapter.log.info(error);
-              }
-            }
-          };
-          break;
         case 'light':
           controlFunction = async (value) => {
             if (value == true) {
               try {
                 await ring.setLight(ring, id, value);
-              } catch (error) {
-                adapter.log.info(error);
-              }
-            }
-          };
-          break;
-        case 'livestreamrequest':
-          controlFunction = async (value) => {
-            if (value == true) {
-              try {
-                await setLivetream(ring, id);
               } catch (error) {
                 adapter.log.info(error);
               }
@@ -407,11 +460,9 @@ async function setHistory(ring, id) {
   let videos;
   try {
     history = await ring.getHistory(id);
-
     videos = await ring.getLastVideos(id);
     let deviceId = ring.getKind(id) + '_' + id;
     let channelId = deviceId + '.History';
-
     // Create Deivce
     objectHelper.setOrUpdateObject(deviceId, {
       type: 'device',
@@ -431,16 +482,14 @@ async function setHistory(ring, id) {
 
       }
     }, ['name']);
-
     let info = datapoints.getObjectByName('history');
     let counter = null;
     for (let i in history) {
-      if (history[i].kind == 'motion' || history[i].kind == 'ding' || history[i].kind == 'ringing') {
+      if (history[i].kind == 'motion' || history[i].kind == 'ding' || history[i].kind == 'ringing' || history[i].kind == 'on_demand') {
         counter = i;
         break;
       }
     }
-
     for (let i in info) {
       let value = null;
       if (counter != null) {
@@ -529,19 +578,27 @@ async function ringer() {
           if (!ringdevices[id]) {
             adapter.log.info('Starting Ring Device for Id ' + id);
             // let doorb = await ring.getDoorbell(id); // Info
-            try { await setInfo(ring, id, true); } catch (error) { adapter.log.info(error); }
-            try { await setHealth(ring, id); } catch (error) { adapter.log.info(error); }
-            try { await setDingDong(ring, id); } catch (error) { adapter.log.info(error); }
-            try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); }
+            try { setInfo(ring, id, true); } catch (error) { adapter.log.info(error); }
+            try { setHealth(ring, id); } catch (error) { adapter.log.info(error); }
+            try { setDingDong(ring, id, true); } catch (error) { adapter.log.info(error); }
+            try { setHistory(ring, id); } catch (error) { adapter.log.info(error); }
+            try { setSnapshot(ring, id, true); } catch (error) { adapter.log.info(error); }
+            try { setLivetream(ring, id, true); } catch (error) { adapter.log.info(error); }
             // healthtimeout = await pollHealth(ring, id);
             // On Event ding or motion do something
-            await ring.event(id, async (ding) => {
+            await ring.eventOnNewDing(id, async (ding) => {
               adapter.log.info('Ding Dong for Id ' + id + ' (' + ding.kind + ', ' + ding.state + ')');
               adapter.log.debug('Ding Dong for Id ' + id + JSON.stringify(ding));
-              try { await setSnapshot(ring, id); } catch (error) { adapter.log.info(error); }
-              try { await setLivetream(ring, id); } catch (error) { adapter.log.info(error); }
               try { await setDingDong(ring, id, ding); } catch (error) { adapter.log.info(error); }
               try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); }
+              if (ding.kind != 'on_demand') {
+                try { setSnapshot(ring, id); } catch (error) { adapter.log.info(error); }
+                try { setLivetream(ring, id); } catch (error) { adapter.log.info(error); }
+              }
+            });
+            await ring.eventOnSnapshot(id, async (data) => {
+            });
+            await ring.eventOnLivestream(id, async (data) => {
             });
             ringdevices[id] = true; // add Device to Array
           } else {
@@ -582,7 +639,7 @@ async function poll_ringer() {
  */
 async function main() {
   adapter.log.info('Starting Adapter ' + adapter.namespace + ' in version ' + adapter.version);
-  adapter.config.recordtime_livestream = adapter.config.recordtime_livestream || 30;
+  adapter.config.recordtime_livestream = adapter.config.recordtime_livestream || 15;
   adapter.config.path = adapter.config.path || path.join(adapter.adapterDir, adapter.namespace, 'snapshot'); // '/Users/thorsten.stueben/Downloads/public'
   adapter.config.filename_snapshot = adapter.config.filename_snapshot || 'snapshot.jpg';
   adapter.config.filename_livestream = adapter.config.filename_livestream || 'livestream.mp4';
