@@ -45,7 +45,7 @@ systemDictionary = {
     "it": "Username e password del tuo account ring.com!",
     "es": "Nombre de usuario y contraseña de su cuenta de ring.com!",
     "pl": "Nazwa użytkownika i hasło do konta ring.com!"
-   },
+  },
   "User": {
     "en": "User",
     "de": "Benutzer",
@@ -101,5 +101,53 @@ systemDictionary = {
     "es": "RING-API (por defecto)",
     "pl": "RING-API (domyślnie)",
     "zh-cn": "RING-API（默认）"
+  },
+  "Filename Snapshot": {
+    "en": "Filename Snapshot",
+    "de": "Dateiname Schnappschuss",
+    "ru": "Снимок имени файла",
+    "pt": "Instantâneo do nome do arquivo",
+    "nl": "Bestandsnaam Snapshot",
+    "fr": "Instantané du nom de fichier",
+    "it": "Istantanea nome file",
+    "es": "Instantánea de nombre de archivo",
+    "pl": "Migawka nazwy pliku",
+    "zh-cn": "文件名快照"
+  },
+  "Filename Livestream": {
+    "en": "Filename Livestream",
+    "de": "Dateiname Livestream",
+    "ru": "Имя файла Livestream",
+    "pt": "Nome do arquivo Livestream",
+    "nl": "Bestandsnaam Livestream",
+    "fr": "Nom de fichier Livestream",
+    "it": "Nome file Livestream",
+    "es": "Nombre de archivo Livestream",
+    "pl": "Nazwa pliku Livestream",
+    "zh-cn": "文件名直播"
+  },
+  "Livestream recordtime in sec.": {
+    "en": "Livestream recordtime in sec.",
+    "de": "Aufnahmezeit Livestream in Sek.",
+    "ru": "Прямая трансляция в сек.",
+    "pt": "Transmissão ao vivo em segundos.",
+    "nl": "Livestream recordtijd in sec.",
+    "fr": "Temps d'enregistrement en direct en sec.",
+    "it": "Tempo di registrazione live streaming in sec.",
+    "es": "Tiempo de grabación en vivo en seg.",
+    "pl": "Czas nagrywania na żywo w sek.",
+    "zh-cn": "实时录制时间（以秒为单位）。"
+  },
+  "Path": {
+    "en": "Path Snapshot/Livestream",
+    "de": "Pfad Schnappschuss / Livestream",
+    "ru": "Снимок пути / прямой эфир",
+    "pt": "Instantâneo do caminho / Transmissão ao vivo",
+    "nl": "Pad Snapshot / Livestream",
+    "fr": "Instantané de chemin / Livestream",
+    "it": "Path Snapshot / Livestream",
+    "es": "Instantánea de ruta / transmisión en vivo",
+    "pl": "Ścieżka Snapshot / Livestream",
+    "zh-cn": "路径快照/直播"
   }
 };
