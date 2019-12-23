@@ -316,6 +316,7 @@ async function setLivetream(ring, id, init) {
     let kind = ring.getKind(id);
     let deviceId = kind + '_' + id;
     let channelId = deviceId;
+    // if(!init) await ring.getLiveStreamSIP(id);
     let livestream = init ? undefined : await ring.getLiveStream(id);
     if (!init && !livestream) return;
     let info = datapoints.getObjectByName('livestream');
@@ -581,9 +582,8 @@ async function ringer() {
         if (id) {
           if (!ringdevices[id]) {
             adapter.log.info('Starting Ring Device for Id ' + id);
-            // let doorb = await ring.getDoorbell(id); // Info
-            try { setInfo(ring, id, true); } catch (error) { adapter.log.info(error); }
-            try { setHealth(ring, id); } catch (error) { adapter.log.info(error); }
+            // try { setInfo(ring, id, true); } catch (error) { adapter.log.info(error); }
+            // try { setHealth(ring, id); } catch (error) { adapter.log.info(error); }
             try { setDingDong(ring, id, true); } catch (error) { adapter.log.info(error); }
             try { setHistory(ring, id); } catch (error) { adapter.log.info(error); }
             try { setSnapshot(ring, id, true); } catch (error) { adapter.log.info(error); }
@@ -594,10 +594,9 @@ async function ringer() {
               adapter.log.info('Ding Dong for Id ' + id + ' (' + ding.kind + ', ' + ding.state + ')');
               adapter.log.debug('Ding Dong for Id ' + id + JSON.stringify(ding));
               try { await setDingDong(ring, id, ding); } catch (error) { adapter.log.info(error); }
-              try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); }
               if (ding.kind != 'on_demand') {
-                try { setSnapshot(ring, id); } catch (error) { adapter.log.info(error); }
-                try { setLivetream(ring, id); } catch (error) { adapter.log.info(error); }
+                // try { setSnapshot(ring, id); } catch (error) { adapter.log.info(error); }
+                // try { setLivetream(ring, id); } catch (error) { adapter.log.info(error); }
               }
             });
             await ring.eventOnSnapshot(id, async (data) => {
@@ -608,7 +607,6 @@ async function ringer() {
           } else {
             try { await setHealth(ring, id); } catch (error) { adapter.log.info(error); }
             try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); }
-            // try { await setSnapshot(ring, id); } catch (error) { adapter.log.info(error); }
             let deviceId = ring.getKind(id) + '_' + id;
             adapter.getObject(deviceId, (err, object) => {
               if (err || !object) {
