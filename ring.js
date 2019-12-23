@@ -261,6 +261,9 @@ async function setSnapshot(ring, id, init) {
       let common = info[i];
       let type = 'state';
       switch (i) {
+        case 'jpg':
+          if (snapshot) await adapter.setBinaryStateAsync(stateId, snapshot.image);
+          break;
         case 'snapshot':
           type = 'meta';
           // http://<ip-iobroker>:<port-vis>/<ring-instanz>/<device>.snapshot/snapshot.jpg 
@@ -332,6 +335,9 @@ async function setLivetream(ring, id, init) {
       let common = info[i];
       let type = 'state';
       switch (i) {
+        case 'mp4':
+          if (livestream) await adapter.setBinaryStateAsync(stateId, livestream.video);
+          break;
         case 'livestream':
           type = 'meta';
           // http://<ip-iobroker>:<port-vis>/<ring-instanz>/<device>.livestream/livestream.jpg 
@@ -637,7 +643,7 @@ async function poll_ringer() {
  */
 async function main() {
   adapter.log.info('Starting Adapter ' + adapter.namespace + ' in version ' + adapter.version);
-  adapter.config.recordtime_livestream = adapter.config.recordtime_livestream || 15;
+  adapter.config.recordtime_livestream = adapter.config.recordtime_livestream || 0;
   adapter.config.path = adapter.config.path || path.join(adapter.adapterDir, adapter.namespace, 'snapshot'); // '/Users/thorsten.stueben/Downloads/public'
   adapter.config.filename_snapshot = adapter.config.filename_snapshot || 'snapshot.jpg';
   adapter.config.filename_livestream = adapter.config.filename_livestream || 'livestream.mp4';

@@ -97,7 +97,11 @@
     "email": "email@test.foo",
     "password": "password",
     "timeout": 5,
-    "pollsec": 15
+    "pollsec": 15,
+    "recordtime_livestream": 10,
+    "path": "/opt/iobroker/node_modules/iobroker.ring/ring.0/snapshot/",
+    "filename_livestream": "livestream%n.mp4",
+    "filename_snapshot": "snapshot%d.jpg"
   },
   "objects": [],
   "instanceObjects": []
