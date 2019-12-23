@@ -595,8 +595,8 @@ async function ringer() {
               adapter.log.debug('Ding Dong for Id ' + id + JSON.stringify(ding));
               try { await setDingDong(ring, id, ding); } catch (error) { adapter.log.info(error); }
               if (ding.kind != 'on_demand') {
-                // try { setSnapshot(ring, id); } catch (error) { adapter.log.info(error); }
-                // try { setLivetream(ring, id); } catch (error) { adapter.log.info(error); }
+                try { setSnapshot(ring, id); } catch (error) { adapter.log.info(error); }
+                try { setLivetream(ring, id); } catch (error) { adapter.log.info(error); }
               }
             });
             await ring.eventOnSnapshot(id, async (data) => {
