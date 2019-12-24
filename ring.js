@@ -239,6 +239,7 @@ async function setHealth(ring, id) {
  */
 async function setSnapshot(ring, id, init) {
   try {
+    return;
     let kind = ring.getKind(id);
     let deviceId = kind + '_' + id;
     let channelId = deviceId;
