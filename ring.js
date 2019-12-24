@@ -313,6 +313,7 @@ async function setSnapshot(ring, id, init) {
  */
 async function setLivetream(ring, id, init) {
   try {
+    return;
     let kind = ring.getKind(id);
     let deviceId = kind + '_' + id;
     let channelId = deviceId;

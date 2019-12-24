@@ -1,9 +1,13 @@
 {
   "common": {
     "name": "ring",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "title": "Ring",
     "news": {
+      "1.0.7": {
+        "en": "New API",
+        "de": "Neue API"
+      },
       "1.0.6": {
         "en": "Bugfixing",
         "de": "Fehlerbehebung"

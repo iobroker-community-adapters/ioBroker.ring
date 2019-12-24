@@ -10,3 +10,5 @@ test
 appveyor.yml
 .DS_Store
 .vscode
+ring.0
+ring.0/*
