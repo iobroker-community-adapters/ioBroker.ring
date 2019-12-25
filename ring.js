@@ -584,8 +584,8 @@ async function ringer() {
         if (id) {
           if (!ringdevices[id]) {
             adapter.log.info('Starting Ring Device for Id ' + id);
-            // try { setInfo(ring, id, true); } catch (error) { adapter.log.info(error); }
-            // try { setHealth(ring, id); } catch (error) { adapter.log.info(error); }
+            try { setInfo(ring, id, true); } catch (error) { adapter.log.info(error); }
+            try { setHealth(ring, id); } catch (error) { adapter.log.info(error); }
             try { setDingDong(ring, id, true); } catch (error) { adapter.log.info(error); }
             try { setHistory(ring, id); } catch (error) { adapter.log.info(error); }
             try { setSnapshot(ring, id, true); } catch (error) { adapter.log.info(error); }
