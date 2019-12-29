@@ -149,5 +149,29 @@ systemDictionary = {
     "es": "Instantánea de ruta / transmisión en vivo",
     "pl": "Ścieżka Snapshot / Livestream",
     "zh-cn": "路径快照/直播"
+  },
+  "Set two face auth (once)": {
+    "en": "Set two face auth (once)",
+    "de": "Setze Tow Face Authentification (einmal)",
+    "ru": "Установить два лица аутентификации (один раз)",
+    "pt": "Definir autenticação de duas faces (uma vez)",
+    "nl": "Stel twee gezichtsverificatie in (eenmalig)",
+    "fr": "Définir l'authentification à deux faces (une fois)",
+    "it": "Imposta un'autenticazione a due volti (una volta)",
+    "es": "Establecer dos caras de autenticación (una vez)",
+    "pl": "Ustaw dwa uwierzytelnianie twarzy (raz)",
+    "zh-cn": "设置两张面孔身份验证（一次）"
+  },
+  "Refreshtoken (Two Face Auth)": {
+    "en": "Refreshtoken (Two Face Auth)",
+    "de": "Refreshtoken (Two Face Auth)",
+    "ru": "Refreshtoken (аутентификация двух лиц)",
+    "pt": "Atualizar atualização (autenticação de duas faces)",
+    "nl": "Refreshtoken (Two Face Auth)",
+    "fr": "Refreshtoken (authentification à deux faces)",
+    "it": "Refreshtoken (Two Face Auth)",
+    "es": "Refreshtoken (autenticación de dos caras)",
+    "pl": "Refreshtoken (uwierzytelnianie dwóch twarzy)",
+    "zh-cn": "刷新令牌（两面验证）"
   }
 };
