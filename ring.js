@@ -6,6 +6,7 @@
 
 'use strict';
 
+const { RingRestClient } = require('ring-client-api/lib/api/rest-client');
 const utils = require('@iobroker/adapter-core');
 const objectHelper = require('@apollon/iobroker-tools').objectHelper; // Get common adapter utils
 const ringapiclient = require(__dirname + '/lib/ringapiclient');
@@ -85,6 +86,32 @@ function startAdapter(options) {
 
   return adapter;
 }
+
+/**
+ * Get two face auth refreshtoken
+ */
+async function refreshToken() {
+  if(!adapter.config.twofaceauth) return;
+  adapter.log.info('Setting two face authentication and delete email and password from configuration afterwards');
+  let restClient = new RingRestClient({
+    email: adapter.config.email,
+    password: adapter.config.password,
+  });
+  let auth = await restClient.getCurrentAuth();
+  let refreshtoken = auth.refresh_token;
+  if (refreshtoken) {
+    adapter.log.info('Two face authentication successfully set. Adapter is restarting!');
+    await adapter.extendForeignObjectAsync('system.adapter.' + adapter.namespace, {
+      native: {
+        twofaceauth: false,
+        email: '',
+        password: '',
+        refreshtoken: refreshtoken
+      }
+    });
+  }
+}
+
 
 /**
  *  Password decrypt
@@ -239,7 +266,6 @@ async function setHealth(ring, id) {
  */
 async function setSnapshot(ring, id, init) {
   try {
-    return;
     let kind = ring.getKind(id);
     let deviceId = kind + '_' + id;
     let channelId = deviceId;
@@ -643,6 +669,7 @@ async function poll_ringer() {
  */
 async function main() {
   adapter.log.info('Starting Adapter ' + adapter.namespace + ' in version ' + adapter.version);
+  await refreshToken();
   adapter.config.recordtime_livestream = adapter.config.recordtime_livestream || 0;
   adapter.config.path = adapter.config.path || path.join(adapter.adapterDir, adapter.namespace, 'snapshot'); // '/Users/thorsten.stueben/Downloads/public'
   adapter.config.filename_snapshot = adapter.config.filename_snapshot || 'snapshot.jpg';

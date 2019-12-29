@@ -100,6 +100,8 @@
   "native": {
     "email": "email@test.foo",
     "password": "password",
+    "twofaceauth": false,
+    "refreshtoken": "",
     "timeout": 5,
     "pollsec": 15,
     "recordtime_livestream": 10,
