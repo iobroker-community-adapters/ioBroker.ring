@@ -592,7 +592,6 @@ async function pollHealth(ring, id) {
  */
 async function ringer() {
   let dbids;
-  let ring;
   try {
     ring = ring || new ringapiclient.RingApiClient(adapter);
     dbids = await ring.getAllRingsDevices();
