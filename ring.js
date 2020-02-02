@@ -490,17 +490,10 @@ async function setDingDong(ring, id, ding) {
  */
 async function setHistory(ring, id) {
   let history;
-  let videos = new Array();
+  let videos;
   try {
-    const cameras = await ring.ring.getCameras()
-    const camera = cameras[0]
-    history = (await camera.getEvents({recording_status: 'ready', limit: 10})).events;
-    for( let h of history) {
-      let untranscodedUrl = await camera.getRecordingUrl(
-        h.ding_id_str
-      )
-      videos.push(untranscodedUrl)
-    }
+    history = await ring.getHistory(id);
+    videos = await ring.getLastVideos(id);
 
     let deviceId = ring.getKind(id) + '_' + id;
     let channelId = deviceId + '.History';
