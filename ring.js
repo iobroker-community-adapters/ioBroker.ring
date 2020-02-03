@@ -494,6 +494,7 @@ async function setHistory(ring, id) {
   try {
     history = await ring.getHistory(id);
     videos = await ring.getLastVideos(id);
+
     let deviceId = ring.getKind(id) + '_' + id;
     let channelId = deviceId + '.History';
     // Create Deivce
@@ -584,7 +585,6 @@ async function pollHealth(ring, id) {
  */
 async function ringer() {
   let dbids;
-  let ring;
   try {
     ring = ring || new ringapiclient.RingApiClient(adapter);
     dbids = await ring.getAllRingsDevices();
