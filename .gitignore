@@ -8,3 +8,5 @@ admin/i18n/*/flat.txt
 package-lock.json
 ring.0
 ring.0/*
+test.js
+test.ts
