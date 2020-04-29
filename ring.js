@@ -91,7 +91,7 @@ function startAdapter(options) {
  * Get two face auth refreshtoken
  */
 async function refreshToken() {
-  if(!adapter.config.twofaceauth) return;
+  if (!adapter.config.twofaceauth) return;
   adapter.log.info('Setting two face authentication and delete email and password from configuration afterwards');
   let restClient = new RingRestClient({
     email: adapter.config.email,
@@ -340,8 +340,7 @@ async function setSnapshot(ring, id, init) {
  */
 async function setLivetream(ring, id, init) {
   try {
-    return;
-    let kind = ring.getKind(id);
+    let kind = ring.getKind(id); 
     let deviceId = kind + '_' + id;
     let channelId = deviceId;
     // if(!init) await ring.getLiveStreamSIP(id);
