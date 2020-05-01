@@ -19,7 +19,12 @@ If you press livestreamrequest button you get new SIP Information for building u
 
 ## Install & Configuration
 
-After installing the Adapter you have to enter your Email and Password of your [ring.com](https://ring.com) Account. 
+After installing the Adapter you have to enter your Email and Password of your [ring.com](https://ring.com) Account and a Token. Ring now requires the use of Two-Factor Auth (2fa) for all accounts. For getting the token please do following on your shell.
+```
+cd /opt/iobroker/node_modules/iobroker.ring/node_modules/
+node ring-client-api/ring-auth-cli.js 
+```
+
 
 An example to get changes if a motion or door ring is detected: 
 ```
@@ -32,7 +37,7 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 ## Changelog
 
 ### 1.0.7 (24.12.2019)
-* (Stübi) Improvements, Node 10 ist requried
+* (Stübi) Improvements, Node 10 ist required
 
 ### 1.0.6 (20.12.2019)
 * (Stübi) Bugfixing: Login with username and password changed
