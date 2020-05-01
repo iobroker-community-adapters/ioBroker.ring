@@ -26,6 +26,16 @@ After installing the Adapter you have to enter your Email and Password of your [
 npx -p ring-client-api ring-auth-cli
 ```
 
+![Ring Admin 1](docs/ring_admin_tab1.png)
+
+![Ring Admin 2](docs/ring_admin_tab2.png)
+
+## Objects
+
+![Ring Admin 2](docs/ring_objects.png)
+
+## Example
+
 An example to get changes if a motion or door ring is detected: 
 ```
 on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
