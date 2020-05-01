@@ -173,5 +173,29 @@ systemDictionary = {
     "es": "Refreshtoken (autenticación de dos caras)",
     "pl": "Refreshtoken (uwierzytelnianie dwóch twarzy)",
     "zh-cn": "刷新令牌（两面验证）"
+  },
+  "Delete old Snapshots": {
+    "en": "Delete old Snapshots",
+    "de": "Löschen Sie alte Schnappschüsse",
+    "ru": "Удалить старые снимки",
+    "pt": "Excluir instantâneos antigos",
+    "nl": "Verwijder oude snapshots",
+    "fr": "Supprimer les anciens instantanés",
+    "it": "Elimina le vecchie istantanee",
+    "es": "Eliminar instantáneas antiguas",
+    "pl": "Usuń stare migawki",
+    "zh-cn": "删除旧快照"
+  },
+  "Delete old Livestreams": {
+    "en": "Delete old Livestreams",
+    "de": "Alte Livestreams löschen",
+    "ru": "Удалить старые прямые трансляции",
+    "pt": "Excluir livestreams antigos",
+    "nl": "Verwijder oude livestreams",
+    "fr": "Supprimer les anciens livestreams",
+    "it": "Elimina i vecchi Livestream",
+    "es": "Eliminar viejos Livestreams",
+    "pl": "Usuń stare transmisje na żywo",
+    "zh-cn": "删除旧的直播"
   }
 };

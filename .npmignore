@@ -12,5 +12,7 @@ appveyor.yml
 .vscode
 ring.0
 ring.0/*
+snapshot
+snapshot/*
 test.js
 test.ts

@@ -139,6 +139,16 @@ function encrypt(key, value) {
   return result;
 }
 
+
+/**
+ * 
+ * @param {*} file 
+ */
+function delFile(file) {
+  if (fs.existsSync(file)) fs.unlinkSync(file);
+}
+
+
 /**
  * Build error messages
  * @param {*} error 
@@ -282,7 +292,8 @@ async function setSnapshot(ring, id, init) {
     let kind = ring.getKind(id);
     let deviceId = kind + '_' + id;
     let channelId = deviceId;
-    let snapshot = init ? undefined : await ring.getSnapshot(id);
+    let file = path.join(adapter.config.path, adapter.config.filename_snapshot);
+    let snapshot = init ? undefined : await ring.getSnapshot(id, file);
     if (!init && !snapshot) return;
     let info = datapoints.getObjectByName('snapshot');
     let vis;
@@ -308,22 +319,31 @@ async function setSnapshot(ring, id, init) {
           type = 'meta';
           // http://<ip-iobroker>:<port-vis>/<ring-instanz>/<device>.snapshot/snapshot.jpg 
           // http://192.168.1.10:8082/ring.0/doorbell_4711.snapshot/snapshot.jpg
-          if (snapshot) await adapter.writeFileAsync(adapter.namespace, deviceId + '.snapshot/' + snapshot.filename, snapshot.image);
+          if (snapshot) await adapter.writeFileAsync(adapter.namespace, deviceId + '/' + snapshot.filename, snapshot.image);
           break;
         case 'snapshot_url':
           vis = await adapter.getForeignObjectAsync('system.adapter.web.0');
-          if (vis && vis.native && vis.native.port) {
-            if (snapshot) value = 'http://' + adapter.host + ':' + vis.native.port + '/' + adapter.namespace + '/' + deviceId + '.snapshot/' + snapshot.filename;
+          if (vis && vis.native) {
+            let secure = vis.native.secure ? 'https' : 'http';
+            if (snapshot) value = secure + '://' + adapter.host + ':' + vis.native.port + '/' + adapter.namespace + '/' + deviceId + '/' + snapshot.filename;
           }
           break;
         case 'snapshot_file':
-          if (snapshot) value = path.join(snapshot.pathname, snapshot.filename);
+          if (snapshot) {
+            let oldState = await adapter.getStateAsync(stateId);
+            if (oldState && oldState.val && adapter.config.del_old_snapshot) {
+              delFile(oldState.val);
+              await adapter.delFileAsync(adapter.namespace, deviceId + '/' + path.basename(oldState.val));
+            }
+            value = path.join(snapshot.pathname, snapshot.filename);
+          }
           break;
         case 'snapshotrequest':
           controlFunction = async (value) => {
             if (value == true) {
               try {
-                await setSnapshot(ring, id);
+                // await setSnapshot(ring, id);
+                setSnapshot(ring, id);
               } catch (error) {
                 adapter.log.info(error);
               }
@@ -357,7 +377,8 @@ async function setLivetream(ring, id, init) {
     let deviceId = kind + '_' + id;
     let channelId = deviceId;
     // if(!init) await ring.getLiveStreamSIP(id);
-    let livestream = init ? undefined : await ring.getLiveStream(id);
+    let file = path.join(adapter.config.path, adapter.config.filename_livestream);
+    let livestream = init ? undefined : await ring.getLiveStream(id, file);
     if (!init && !livestream) return;
     let info = datapoints.getObjectByName('livestream');
     let vis;
@@ -383,22 +404,33 @@ async function setLivetream(ring, id, init) {
           type = 'meta';
           // http://<ip-iobroker>:<port-vis>/<ring-instanz>/<device>.livestream/livestream.jpg 
           // http://192.168.1.10:8082/ring.0/doorbell_4711.livestream/livestream.jpg
-          if (livestream) await adapter.writeFileAsync(adapter.namespace, deviceId + '.livestream/' + livestream.filename, livestream.video);
+          if (livestream) {
+            await adapter.writeFileAsync(adapter.namespace, deviceId + '/' + livestream.filename, livestream.video);
+          }
           break;
         case 'livestream_url':
           vis = await adapter.getForeignObjectAsync('system.adapter.web.0');
-          if (vis && vis.native && vis.native.port) {
-            if (livestream) value = 'http://' + adapter.host + ':' + vis.native.port + '/' + adapter.namespace + '/' + deviceId + '.livestream/' + livestream.filename;
+          if (vis && vis.native && vis.native) {
+            let secure = vis.native.secure ? 'https' : 'http';
+            if (livestream) value = secure + '://' + adapter.host + ':' + vis.native.port + '/' + adapter.namespace + '/' + deviceId + '/' + livestream.filename;
           }
           break;
         case 'livestream_file':
-          if (livestream) value = path.join(livestream.pathname, livestream.filename);
+          if (livestream) {
+            let oldState = await adapter.getStateAsync(stateId);
+            if (oldState && oldState.val && adapter.config.del_old_livestream) {
+              delFile(oldState.val);
+              await adapter.delFileAsync(adapter.namespace, deviceId + '/' + path.basename(oldState.val));
+            }
+            if (livestream) value = path.join(livestream.pathname, livestream.filename);
+          }
           break;
         case 'livestreamrequest':
           controlFunction = async (value) => {
             if (value == true) {
               try {
-                await setLivetream(ring, id);
+                // await setLivetream(ring, id);
+                setLivetream(ring, id);
               } catch (error) {
                 adapter.log.info(error);
               }
