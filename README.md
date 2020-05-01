@@ -11,7 +11,9 @@
 
 Requires node.js 10.0 or higher and Admin v3!
 
-The Ring adapter works with Ring devices like the Ring Video Doorbell and Ring Cam and shows if somenone rings the doorbell or if motion is detected. The Ring Video Doorbell or Cam does not send a videostream if a motion or door bell ist detected. Instead SIP Information for a SIP Video Conference will be provided. 
+The Ring adapter works with Ring devices like the Ring Video Doorbell and Ring Cam and shows if somenone rings the doorbell or if motion is detected. The Ring Video Doorbell or Cam sends a videostream if a motion or doorbell ist detected or you use the SIP Information for a SIP Video Conference with your SIP client. 
+Unfortunately the adapter will not provide all ring devices because the used API do not includes all ring devices. 
+
 You can use for example the Blink SIP client on [http://icanblink.com/](http://icanblink.com/). To get video working go into Blink's Preferences and under "Accounts", switch the tab to "Media" and deselect "Encrypt audio and video" under "RTP Options". Be careful the SIP information expire after a few seconds!
 Hopefully I will able to support a video stream soon. Unfortunatly [ring.com](https://ring.com) does not have an official API that support this feature. 
 If you press livestreamrequest button you get new SIP Information for building up a SIP Video Call session. If you are using the [ring.com](https://ring.com) cloud you find under history a http link to your last motion / door bell recorded video. 
@@ -34,8 +36,18 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 
 ## Changelog
 
+### 1.1.0 (01.05.2020)
+* (Stübi) Node 10 is now required, Node 12 recommended. If you use Node 8 or less, the adapter will stop immediately.
+* (Stübi) Tested with js-controller 3. I recommend using js-controller 3 or higher because of sentry logging and more features in the future 
+* (Stübi) Snapshot link will be shown as https or http in state (Issue #18)
+* (Stübi) Livestream link added and a request button added to get new livestream
+* (Stübi) Old snapshots and livestreams can be deleted on the filesystem
+* (Stübi) Sentry logging added
+* (Stübi) Small improvements and bugfixing   
+* (Stübi) Add a Two-Factor Auth (2fa) description (Issue #14, Issue #13, Issue #19)
+
 ### 1.0.7 (24.12.2019)
-* (Stübi) Improvements, Node 10 ist required
+* (Stübi) Bugfixing
 
 ### 1.0.6 (20.12.2019)
 * (Stübi) Bugfixing: Login with username and password changed

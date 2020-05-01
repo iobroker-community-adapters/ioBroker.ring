@@ -1,9 +1,21 @@
 {
   "common": {
     "name": "ring",
-    "version": "1.0.7",
+    "version": "1.1.0",
     "title": "Ring",
     "news": {
+      "1.1.0": {
+        "en": "New features, Improvements and bug fixing",
+        "de": "Neue Funktionen, Verbesserungen und Fehlerbehebung",
+        "ru": "Новые функции, улучшения и исправление ошибок",
+        "pt": "Novos recursos, melhorias e correção de erros",
+        "nl": "Nieuwe functies, verbeteringen en bugfixing",
+        "fr": "Nouvelles fonctionnalités, améliorations et correction de bugs",
+        "it": "Nuove funzionalità, miglioramenti e correzione dei bug",
+        "es": "Nuevas características, mejoras y corrección de errores.",
+        "pl": "Nowe funkcje, ulepszenia i naprawa błędów",
+        "zh-cn": "新功能，改进和错误修复"
+      },
       "1.0.7": {
         "en": "New API",
         "de": "Neue API"
@@ -62,7 +74,8 @@
       "fr": "Ring",
       "it": "Ring",
       "es": "Ring",
-      "pl": "Ring"
+      "pl": "Ring",
+      "zh-cn": "环"
     },
     "desc": {
       "en": "Ring Adapter",
@@ -73,7 +86,8 @@
       "fr": "Adaptateur Ring",
       "it": "Adattatore Ring",
       "es": "Adaptador Ring",
-      "pl": "Adapter Ring"
+      "pl": "Adapter Ring",
+      "zh-cn": "紧定环"
     },
     "license": "MIT",
     "authors": [
