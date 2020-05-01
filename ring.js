@@ -127,6 +127,19 @@ function decrypt(key, value) {
 }
 
 /**
+ * 
+ * @param {*} key 
+ * @param {*} value 
+ */
+function encrypt(key, value) {
+  var result = '';
+  for (var i = 0; i < value.length; ++i) {
+    result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+  }
+  return result;
+}
+
+/**
  * Build error messages
  * @param {*} error 
  */
@@ -629,6 +642,25 @@ async function ringer() {
             await ring.eventOnSnapshot(id, async (data) => {
             });
             await ring.eventOnLivestream(id, async (data) => {
+            });
+            await ring.eventOnRefreshTokenUpdated(id, async (data) => {
+              if (data) {
+                if (data.newRefreshToken != adapter.config.refreshtoken) {
+                  adapter.log.info('Old refresh token : ' + data.oldRefreshToken);
+                  adapter.log.info('New refresh token : ' + data.newRefreshToken);
+                  adapter.log.info('Two face authentication successfully set. Adapter is restarting!');
+                  let obj = await adapter.getForeignObjectAsync('system.config');
+                  let secret = obj && obj.native && obj.native.secret ? obj.native.secret : 'Zgfr56gFe87jJOM';
+                  await adapter.extendForeignObjectAsync('system.adapter.' + adapter.namespace, {
+                    native: {
+                      twofaceauth: false,
+                      email: adapter.config.email,
+                      password: encrypt(secret, adapter.config.password),
+                      refreshtoken: data.newRefreshToken
+                    }
+                  });
+                }
+              }
             });
             ringdevices[id] = true; // add Device to Array
           } else {

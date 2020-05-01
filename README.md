@@ -24,7 +24,10 @@ After installing the Adapter you have to enter your Email and Password of your [
 cd /opt/iobroker/node_modules/iobroker.ring/node_modules/
 node ring-client-api/ring-auth-cli.js 
 ```
-
+or
+```
+npx -p ring-client-api ring-auth-cli
+```
 
 An example to get changes if a motion or door ring is detected: 
 ```
