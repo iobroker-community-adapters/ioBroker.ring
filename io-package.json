@@ -95,7 +95,9 @@
     "readme": "https://github.com/schmupu/ioBroker.ring/blob/master/README.md",
     "loglevel": "info",
     "type": "hardware",
-    "restartAdapters": []
+    "restartAdapters": [],
+    "connectionType": "local",
+    "dataSource": "push"
   },
   "native": {
     "email": "email@test.foo",

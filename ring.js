@@ -340,7 +340,7 @@ async function setSnapshot(ring, id, init) {
  */
 async function setLivetream(ring, id, init) {
   try {
-    let kind = ring.getKind(id); 
+    let kind = ring.getKind(id);
     let deviceId = kind + '_' + id;
     let channelId = deviceId;
     // if(!init) await ring.getLiveStreamSIP(id);
@@ -667,18 +667,22 @@ async function poll_ringer() {
  * Main
  */
 async function main() {
-  adapter.log.info('Starting Adapter ' + adapter.namespace + ' in version ' + adapter.version);
-  await refreshToken();
-  adapter.config.recordtime_livestream = adapter.config.recordtime_livestream || 0;
-  adapter.config.path = adapter.config.path || path.join(adapter.adapterDir, adapter.namespace, 'snapshot'); // '/Users/thorsten.stueben/Downloads/public'
-  adapter.config.filename_snapshot = adapter.config.filename_snapshot || 'snapshot.jpg';
-  adapter.config.filename_livestream = adapter.config.filename_livestream || 'livestream.mp4';
-  if (!fs.existsSync(adapter.config.path)) fs.mkdirSync(adapter.config.path, { recursive: true });
-  if (!semver.satisfies(process.version, adapterNodeVer)) {
-    adapter.log.error(`Required node version ${adapterNodeVer} not satisfied with current version ${process.version}.`);
-    return;
+  try {
+    adapter.log.info('Starting Adapter ' + adapter.namespace + ' in version ' + adapter.version);
+    await refreshToken();
+    adapter.config.recordtime_livestream = adapter.config.recordtime_livestream || 0;
+    adapter.config.path = adapter.config.path || path.join(adapter.adapterDir, adapter.namespace, 'snapshot'); // '/Users/thorsten.stueben/Downloads/public'
+    adapter.config.filename_snapshot = adapter.config.filename_snapshot || 'snapshot.jpg';
+    adapter.config.filename_livestream = adapter.config.filename_livestream || 'livestream.mp4';
+    if (!fs.existsSync(adapter.config.path)) fs.mkdirSync(adapter.config.path, { recursive: true });
+    if (!semver.satisfies(process.version, adapterNodeVer)) {
+      adapter.log.error(`Required node version ${adapterNodeVer} not satisfied with current version ${process.version}.`);
+      return;
+    }
+    await poll_ringer();
+  } catch (e) {
+    // 
   }
-  await poll_ringer();
 }
 
 /**
