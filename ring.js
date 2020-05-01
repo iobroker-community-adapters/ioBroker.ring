@@ -330,10 +330,15 @@ async function setSnapshot(ring, id, init) {
           break;
         case 'snapshot_file':
           if (snapshot) {
-            let oldState = await adapter.getStateAsync(stateId);
-            if (oldState && oldState.val && adapter.config.del_old_snapshot) {
-              delFile(oldState.val);
-              await adapter.delFileAsync(adapter.namespace, deviceId + '/' + path.basename(oldState.val));
+            try {
+              let oldState = await adapter.getStateAsync(stateId);
+              if (oldState && oldState.val && adapter.config.del_old_snapshot) {
+
+                delFile(oldState.val);
+                await adapter.delFileAsync(adapter.namespace, deviceId + '/' + path.basename(oldState.val));
+              }
+            } catch (error) {
+              //  
             }
             value = path.join(snapshot.pathname, snapshot.filename);
           }
@@ -416,12 +421,16 @@ async function setLivetream(ring, id, init) {
           break;
         case 'livestream_file':
           if (livestream) {
-            let oldState = await adapter.getStateAsync(stateId);
-            if (oldState && oldState.val && adapter.config.del_old_livestream) {
-              delFile(oldState.val);
-              await adapter.delFileAsync(adapter.namespace, deviceId + '/' + path.basename(oldState.val));
+            try {
+              let oldState = await adapter.getStateAsync(stateId);
+              if (oldState && oldState.val && adapter.config.del_old_livestream) {
+                delFile(oldState.val);
+                await adapter.delFileAsync(adapter.namespace, deviceId + '/' + path.basename(oldState.val));
+              }
+            } catch (error) {
+              //
             }
-            if (livestream) value = path.join(livestream.pathname, livestream.filename);
+            value = path.join(livestream.pathname, livestream.filename);
           }
           break;
         case 'livestreamrequest':
