@@ -97,7 +97,17 @@
     "type": "hardware",
     "restartAdapters": [],
     "connectionType": "local",
-    "dataSource": "push"
+    "dataSource": "push",
+    "plugins": {
+      "sentry": {
+        "dsn": "https://345fa9990a0e4e4d95297341d0d0ee9a@sentry.iobroker.net/61",
+        "pathWhitelist": [
+          "@apollon",
+          "ring-client-api",
+          "rtsp-streaming-server"
+        ]
+      }
+    }
   },
   "native": {
     "email": "email@test.foo",

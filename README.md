@@ -21,11 +21,6 @@ If you press livestreamrequest button you get new SIP Information for building u
 
 After installing the Adapter you have to enter your Email and Password of your [ring.com](https://ring.com) Account and a Token. Ring now requires the use of Two-Factor Auth (2fa) for all accounts. For getting the token please do following on your shell.
 ```
-cd /opt/iobroker/node_modules/iobroker.ring/node_modules/
-node ring-client-api/ring-auth-cli.js 
-```
-or
-```
 npx -p ring-client-api ring-auth-cli
 ```
 
