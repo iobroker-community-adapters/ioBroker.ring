@@ -342,8 +342,7 @@ async function setSnapshot(ring, id, init) {
           controlFunction = async (value) => {
             if (value == true) {
               try {
-                // await setSnapshot(ring, id);
-                setSnapshot(ring, id);
+                await setSnapshot(ring, id);
               } catch (error) {
                 adapter.log.info(error);
               }
@@ -429,8 +428,7 @@ async function setLivetream(ring, id, init) {
           controlFunction = async (value) => {
             if (value == true) {
               try {
-                // await setLivetream(ring, id);
-                setLivetream(ring, id);
+                await setLivetream(ring, id);
               } catch (error) {
                 adapter.log.info(error);
               }
