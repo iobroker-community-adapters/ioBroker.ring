@@ -1,9 +1,21 @@
 {
   "common": {
     "name": "ring",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "title": "Ring",
     "news": {
+      "1.1.1": {
+        "en": "Sentry Logging ",
+        "de": "Sentry Logging",
+        "ru": "Sentry Logging",
+        "pt": "Registro de Sentinela",
+        "nl": "Sentry Logging",
+        "fr": "Journalisation des sentinelles",
+        "it": "Registrazione delle sentinelle",
+        "es": "Registro de centinela",
+        "pl": "Rejestrowanie wartowników",
+        "zh-cn": "哨兵记录"
+      },
       "1.1.0": {
         "en": "New features, Improvements and bug fixing",
         "de": "Neue Funktionen, Verbesserungen und Fehlerbehebung",
@@ -115,11 +127,7 @@
     "plugins": {
       "sentry": {
         "dsn": "https://345fa9990a0e4e4d95297341d0d0ee9a@sentry.iobroker.net/61",
-        "pathWhitelist": [
-          "@apollon",
-          "ring-client-api",
-          "rtsp-streaming-server"
-        ]
+        "pathWhitelist": []
       }
     }
   },
@@ -135,7 +143,8 @@
     "filename_livestream": "livestream%i_%d.mp4",
     "filename_snapshot": "snapshot%i_%d.jpg",
     "del_old_livestream": true,
-    "del_old_snapshot": true
+    "del_old_snapshot": true,
+    "sentry_enable": true
   },
   "objects": [],
   "instanceObjects": []

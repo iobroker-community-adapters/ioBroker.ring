@@ -197,5 +197,17 @@ systemDictionary = {
     "es": "Eliminar viejos Livestreams",
     "pl": "Usuń stare transmisje na żywo",
     "zh-cn": "删除旧的直播"
+  },
+  "Allow to transfer error logs to the external ioBroker Sentry system. Usernames, Passwords, Tokens, ... will be NOT be transferd.": {
+    "en": "Allow to transfer error logs to the external ioBroker Sentry system. Usernames, Passwords, Tokens, ... will be NOT be transferd.",
+    "de": "Erlaube das weiterleiten von Fehlerprotokollen an die externe ioBroker Sentry Anwendung. Benutzernamen, Passwörter, Tokens, ... werden NICHT übertragen.",
+    "ru": "Разрешить перенос ошибок на внешнюю систему ioBroker Sentry. Имена пользователей, пароли, токены, ... НЕ будут передаваться.",
+    "pt": "Permita o armazenamento de erros no sistema ioBroker Sentry externo. Nomes de usuário, senhas, tokens, ... NÃO serão transferidos.",
+    "nl": "Sta looging van fouten toe aan het externe ioBroker Sentry-systeem. Gebruikersnamen, wachtwoorden, tokens, ... worden NIET overgedragen.",
+    "fr": "Autorise le repérage des erreurs sur le système ioBroker Sentry externe. Les noms d'utilisateur, mots de passe, jetons, ... ne seront PAS transférés.",
+    "it": "Consentire il looging degli errori sul sistema ioBroker Sentry esterno. Nomi utente, password, token, ... NON saranno trasferiti.",
+    "es": "Permitir el registro de errores en el sistema externo ioBroker Sentry. Los nombres de usuario, contraseñas, tokens, ... NO serán transferidos.",
+    "pl": "Zezwalaj na zapętlanie błędów w zewnętrznym systemie ioBroker Sentry. Nazwy użytkowników, hasła, tokeny, ... NIE zostaną przeniesione.",
+    "zh-cn": "允许将错误清除到外部ioBroker Sentry系统。用户名，密码，令牌……将不会被转移。"
   }
 };

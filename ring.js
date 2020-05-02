@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* jshint -W097 */
 /* jshint -W030 */
 /* jshint strict:true */
@@ -85,6 +86,28 @@ function startAdapter(options) {
   });
 
   return adapter;
+}
+
+/**
+ * Change the external Sentry Logging. After changing the Logging
+ * the adapter restarts once
+ * @param {*} id : adapter.config.sentry_enable for example
+ */
+async function setSentryLogging(value) {
+  try {
+    value = value === true;
+    let idSentry = 'system.adapter.' + adapter.namespace + '.plugins.sentry.enabled';
+    let stateSentry = await adapter.getForeignStateAsync(idSentry);
+    if (stateSentry && stateSentry.val !== value) {
+      await adapter.setForeignStateAsync(idSentry, value);
+      adapter.log.info('Restarting Adapter because of changeing Sentry settings');
+      adapter.restart();
+      return true;
+    }
+  } catch (error) {
+    return false;
+  }
+  return false;
 }
 
 /**
@@ -180,9 +203,8 @@ function restartAdapter() {
  * @param {*} id 
  */
 async function setInfo(ring, id) {
-  let doorb;
   try {
-    doorb = await ring.getAllRingsDevice(id);
+    let doorb = await ring.getAllRingsDevice(id);
     let kind = ring.getKind(id);
     let deviceId = kind + '_' + id;
     let channelId = deviceId + '.Info';
@@ -226,10 +248,8 @@ async function setInfo(ring, id) {
 
     objectHelper.processObjectQueue(() => { });
 
-
-
   } catch (error) {
-    throw (error);
+    throw ('Error setInfo(): ' + error);
   }
 }
 
@@ -277,7 +297,7 @@ async function setHealth(ring, id) {
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
-    throw (error);
+    throw ('Error setHealth(): ' + error);
   }
 }
 
@@ -733,13 +753,13 @@ async function poll_ringer() {
   }, pollsec * 1000);
 }
 
-
 /**
  * Main
  */
 async function main() {
   try {
     adapter.log.info('Starting Adapter ' + adapter.namespace + ' in version ' + adapter.version);
+    if (await setSentryLogging(adapter.config.sentry_enable)) return;
     await refreshToken();
     adapter.config.recordtime_livestream = adapter.config.recordtime_livestream || 0;
     adapter.config.path = adapter.config.path || path.join(adapter.adapterDir, adapter.namespace, 'snapshot'); // '/Users/thorsten.stueben/Downloads/public'
