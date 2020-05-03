@@ -249,7 +249,7 @@ async function setInfo(ring, id) {
     objectHelper.processObjectQueue(() => { });
 
   } catch (error) {
-    throw ('Error setInfo(): ' + error);
+    throw new Error('Error setInfo(): ' + error);
   }
 }
 
@@ -297,7 +297,7 @@ async function setHealth(ring, id) {
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
-    throw ('Error setHealth(): ' + error);
+    throw new Error('Error setHealth(): ' + error);
   }
 }
 
@@ -385,7 +385,7 @@ async function setSnapshot(ring, id, init) {
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
-    throw ('Error setSanpshot): ' + error);
+    throw new Error('Error setSanpshot): ' + error);
   }
 }
 
@@ -475,7 +475,7 @@ async function setLivetream(ring, id, init) {
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
-    throw ('Error setLivetream): ' + error);
+    throw new Error('Error setLivetream): ' + error);
   }
 }
 
@@ -550,7 +550,7 @@ async function setDingDong(ring, id, ding) {
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
-    throw ('Error setDingDong(): ' + error);
+    throw new Error('Error setDingDong(): ' + error);
   }
 }
 
@@ -626,7 +626,7 @@ async function setHistory(ring, id) {
 
   } catch (error) {
     if (!history) {
-      throw (error);
+      throw new Error(error);
     }
   }
 }
