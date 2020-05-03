@@ -1,9 +1,21 @@
 {
   "common": {
     "name": "ring",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "title": "Ring",
     "news": {
+      "1.1.2": {
+        "en": "Fixed health info ",
+        "de": "Gesundheitsinformationen behoben",
+        "ru": "Исправлена информация о здоровье",
+        "pt": "Informações de saúde corrigidas",
+        "nl": "Vaste gezondheidsinformatie",
+        "fr": "Informations de santé fixes",
+        "it": "Informazioni sanitarie fisse",
+        "es": "Información de salud fija",
+        "pl": "Naprawiono informacje o zdrowiu",
+        "zh-cn": "固定健康信息"
+      },
       "1.1.1": {
         "en": "Sentry Logging ",
         "de": "Sentry Logging",

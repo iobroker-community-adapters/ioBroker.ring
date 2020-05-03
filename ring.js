@@ -282,7 +282,7 @@ async function setHealth(ring, id) {
       native: {}
     }, ['name']);
 
-    let info = datapoints.getObjectByName('heal th');
+    let info = datapoints.getObjectByName('health');
     for (let i in info) {
       let value = health[i] || null;
       let stateId = channelId + '.' + i;
