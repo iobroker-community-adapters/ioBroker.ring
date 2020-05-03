@@ -231,23 +231,19 @@ async function setInfo(ring, id) {
 
     let info = datapoints.getObjectByName('info');
     for (let i in info) {
-      let value = doorb[i] || null;
+      let value = doorb[i];
       let stateId = channelId + '.' + i;
       let common = info[i];
       let controlFunction;
-
-      // if (!states.hasOwnProperty(stateId) || states[stateId] !== value) {
-      objectHelper.setOrUpdateObject(stateId, {
-        type: 'state',
-        common: common
-      }, ['name'], value, controlFunction);
-      // }
-
+      if (!states.hasOwnProperty(stateId) || states[stateId] !== value) {
+        objectHelper.setOrUpdateObject(stateId, {
+          type: 'state',
+          common: common
+        }, ['name'], value, controlFunction);
+      }
       states[stateId] = value;
     }
-
     objectHelper.processObjectQueue(() => { });
-
   } catch (error) {
     throw new Error('Error setInfo(): ' + error);
   }
@@ -284,15 +280,15 @@ async function setHealth(ring, id) {
 
     let info = datapoints.getObjectByName('health');
     for (let i in info) {
-      let value = health[i] || null;
+      let value = health[i];
       let stateId = channelId + '.' + i;
       let common = info[i];
-      // if (!states.hasOwnProperty(stateId) || states[stateId] !== value) {
-      objectHelper.setOrUpdateObject(stateId, {
-        type: 'state',
-        common: common
-      }, ['name'], value);
-      // }
+      if (!states.hasOwnProperty(stateId) || states[stateId] !== value) {
+        objectHelper.setOrUpdateObject(stateId, {
+          type: 'state',
+          common: common
+        }, ['name'], value);
+      }
       states[stateId] = value;
     }
     objectHelper.processObjectQueue(() => { });
@@ -377,11 +373,13 @@ async function setSnapshot(ring, id, init) {
         default:
           break;
       }
-      objectHelper.setOrUpdateObject(stateId, {
-        type: type,
-        common: common
-      }, ['name'], value, controlFunction);
-      // }
+      if (!states.hasOwnProperty(stateId) || states[stateId] !== value) {
+        objectHelper.setOrUpdateObject(stateId, {
+          type: type,
+          common: common
+        }, ['name'], value, controlFunction);
+      }
+      states[stateId] = value;
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
@@ -467,11 +465,13 @@ async function setLivetream(ring, id, init) {
         default:
           break;
       }
-      objectHelper.setOrUpdateObject(stateId, {
-        type: type,
-        common: common
-      }, ['name'], value, controlFunction);
-      // }
+      if (!states.hasOwnProperty(stateId) || states[stateId] !== value) {
+        objectHelper.setOrUpdateObject(stateId, {
+          type: type,
+          common: common
+        }, ['name'], value, controlFunction);
+      }
+      states[stateId] = value;
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
@@ -541,12 +541,12 @@ async function setDingDong(ring, id, ding) {
         default:
           break;
       }
-      // if (!states.hasOwnProperty(stateId) || states[stateId] !== value) {
-      objectHelper.setOrUpdateObject(stateId, {
-        type: type,
-        common: common
-      }, ['name'], value, controlFunction);
-      // }
+      if (!states.hasOwnProperty(stateId) || states[stateId] !== value) {
+        objectHelper.setOrUpdateObject(stateId, {
+          type: type,
+          common: common
+        }, ['name'], value, controlFunction);
+      }
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
@@ -600,27 +600,24 @@ async function setHistory(ring, id) {
       if (counter != null) {
         switch (i) {
           case 'history_url':
-            value = videos && videos[counter] || null;
-            // value = history[counter].apiUri || null;
+            value = videos && videos[counter];
             break;
           case 'created_at':
-            value = history && history[counter][i].toString() || null;
+            value = history && history[counter][i].toString();
             break;
           default:
-            value = history && history[counter][i] || null;
+            value = history && history[counter][i];
         }
       }
       let stateId = channelId + '.' + i;
       let common = info[i];
-
-      // if (!states.hasOwnProperty(stateId) || states[stateId] !== value) {
-      objectHelper.setOrUpdateObject(stateId, {
-        type: 'state',
-        common: common
-      }, ['name'], value);
-      // }
+      if (!states.hasOwnProperty(stateId) || states[stateId] !== value) {
+        objectHelper.setOrUpdateObject(stateId, {
+          type: 'state',
+          common: common
+        }, ['name'], value);
+      }
       states[stateId] = value;
-
     }
     objectHelper.processObjectQueue(() => { });
 
