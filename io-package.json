@@ -5,16 +5,16 @@
     "title": "Ring",
     "news": {
       "1.1.2": {
-        "en": "Fixed health info ",
-        "de": "Gesundheitsinformationen behoben",
-        "ru": "Исправлена информация о здоровье",
-        "pt": "Informações de saúde corrigidas",
-        "nl": "Vaste gezondheidsinformatie",
-        "fr": "Informations de santé fixes",
-        "it": "Informazioni sanitarie fisse",
-        "es": "Información de salud fija",
-        "pl": "Naprawiono informacje o zdrowiu",
-        "zh-cn": "固定健康信息"
+        "en": "Provide Stick Up Cam. Fixing health info",
+        "de": "Stick Up Cam bereitstellen. Gesundheitsinformationen korrigieren",
+        "ru": "Обеспечить Stick Up Cam. Исправление информации о здоровье",
+        "pt": "Fornecer Stick Up Cam. Corrigindo informações de saúde",
+        "nl": "Zorg voor Stick Up Cam. Gezondheidsinformatie repareren",
+        "fr": "Fournissez Stick Up Cam. Correction des informations de santé",
+        "it": "Fornire Stick Up Cam. Correzione delle informazioni sulla salute",
+        "es": "Proporcionar Stick Up Cam. Arreglando información de salud",
+        "pl": "Podaj kamerę Stick Up. Naprawianie informacji o zdrowiu",
+        "zh-cn": "提供粘贴凸轮。修复健康信息"
       },
       "1.1.1": {
         "en": "Sentry Logging ",
