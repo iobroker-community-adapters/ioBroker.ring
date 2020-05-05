@@ -383,7 +383,7 @@ async function setSnapshot(ring, id, init) {
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
-    throw new Error('Error setSanpshot): ' + error);
+    throw new Error('Error setSanpshot()): ' + error);
   }
 }
 
@@ -475,7 +475,7 @@ async function setLivetream(ring, id, init) {
     }
     objectHelper.processObjectQueue(() => { });
   } catch (error) {
-    throw new Error('Error setLivetream): ' + error);
+    throw new Error('Error setLivetream()): ' + error);
   }
 }
 
@@ -623,7 +623,7 @@ async function setHistory(ring, id) {
 
   } catch (error) {
     if (!history) {
-      throw new Error(error);
+      throw new Error('Error setHistory(): ' + error);
     }
   }
 }
@@ -678,21 +678,21 @@ async function ringer() {
         if (id) {
           if (!ringdevices[id]) {
             adapter.log.info('Starting Ring Device for Id ' + id);
-            try { setInfo(ring, id, true); } catch (error) { adapter.log.info(error); }
-            try { setHealth(ring, id); } catch (error) { adapter.log.info(error); }
-            try { setDingDong(ring, id, true); } catch (error) { adapter.log.info(error); }
-            try { setHistory(ring, id); } catch (error) { adapter.log.info(error); }
-            try { setSnapshot(ring, id, true); } catch (error) { adapter.log.info(error); }
-            try { setLivetream(ring, id, true); } catch (error) { adapter.log.info(error); }
+            process.nextTick(async () => { try { await setInfo(ring, id, true); } catch (error) { adapter.log.info(error); } });
+            process.nextTick(async () => { try { await setHealth(ring, id); } catch (error) { adapter.log.info(error); } });
+            process.nextTick(async () => { try { await setDingDong(ring, id, true); } catch (error) { adapter.log.info(error); } });
+            process.nextTick(async () => { try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); } });
+            process.nextTick(async () => { try { await setSnapshot(ring, id, true); } catch (error) { adapter.log.info(error); } });
+            process.nextTick(async () => { try { await setLivetream(ring, id, true); } catch (error) { adapter.log.info(error); } });
             // healthtimeout = await pollHealth(ring, id);
             // On Event ding or motion do something
             await ring.eventOnNewDing(id, async (ding) => {
               adapter.log.info('Ding Dong for Id ' + id + ' (' + ding.kind + ', ' + ding.state + ')');
               adapter.log.debug('Ding Dong for Id ' + id + JSON.stringify(ding));
-              try { await setDingDong(ring, id, ding); } catch (error) { adapter.log.info(error); }
+              process.nextTick(async () => { try { await setDingDong(ring, id, ding); } catch (error) { adapter.log.info(error); } });
               if (ding.kind != 'on_demand') {
-                try { setSnapshot(ring, id); } catch (error) { adapter.log.info(error); }
-                try { setLivetream(ring, id); } catch (error) { adapter.log.info(error); }
+                process.nextTick(async () => { try { await setSnapshot(ring, id); } catch (error) { adapter.log.info(error); } });
+                process.nextTick(async () => { try { await setLivetream(ring, id); } catch (error) { adapter.log.info(error); } });
               }
             });
             await ring.eventOnSnapshot(id, async (data) => {
@@ -720,8 +720,8 @@ async function ringer() {
             });
             ringdevices[id] = true; // add Device to Array
           } else {
-            try { await setHealth(ring, id); } catch (error) { adapter.log.info(error); }
-            try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); }
+            process.nextTick(async () => { try { await setHealth(ring, id); } catch (error) { adapter.log.info(error); } });
+            process.nextTick(async () => { try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); } });
             let deviceId = ring.getKind(id) + '_' + id;
             adapter.getObject(deviceId, (err, object) => {
               if (err || !object) {
