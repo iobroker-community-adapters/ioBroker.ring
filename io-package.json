@@ -4,6 +4,18 @@
     "version": "1.1.3",
     "title": "Ring",
     "news": {
+      "1.1.3": {
+        "en": "Fixed error with missing objects ",
+        "de": "Fehler bei fehlenden Objekten behoben",
+        "ru": "Исправлена ошибка с отсутствующими объектами",
+        "pt": "Corrigido erro com objetos ausentes",
+        "nl": "Vaste fout met ontbrekende objecten",
+        "fr": "Correction d'une erreur avec des objets manquants",
+        "it": "Risolto errore con oggetti mancanti",
+        "es": "Se corrigió el error con objetos faltantes",
+        "pl": "Naprawiono błąd z brakującymi obiektami",
+        "zh-cn": "修复了缺少对象的错误"
+      },
       "1.1.2": {
         "en": "Provide Stick Up Cam. Fixing health info",
         "de": "Stick Up Cam bereitstellen. Gesundheitsinformationen korrigieren",

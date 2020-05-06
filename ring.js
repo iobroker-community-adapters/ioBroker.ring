@@ -68,9 +68,10 @@ function startAdapter(options) {
    * is called when databases are connected and adapter received configuration.
    * start here!
    */
-  adapter.on('ready', () => {
-    adapter.getForeignObject('system.config', (err, obj) => {
+  adapter.on('ready', async () => {
+    try {
       if (adapter.config.password) {
+        let obj = await adapter.getForeignObjectAsync('system.config');
         if (obj && obj.native && obj.native.secret) {
           adapter.config.password = decrypt(obj.native.secret, adapter.config.password);
         } else {
@@ -80,9 +81,10 @@ function startAdapter(options) {
       // adapter.subscribeStates(adapter.namespace + '.*.Livestream.livestreamrequest');
       adapter.subscribeStates('*');
       objectHelper.init(adapter);
-      main();
-    });
-
+      await main();
+    } catch (error) {
+      adapter.log.error(error);
+    }
   });
 
   return adapter;
@@ -208,7 +210,6 @@ async function setInfo(ring, id) {
     let kind = ring.getKind(id);
     let deviceId = kind + '_' + id;
     let channelId = deviceId + '.Info';
-
     // Create Deivce
     objectHelper.setOrUpdateObject(deviceId, {
       type: 'device',
@@ -217,7 +218,6 @@ async function setInfo(ring, id) {
       },
       native: {}
     }, ['name']);
-
     // Create Channel
     objectHelper.setOrUpdateObject(channelId, {
       type: 'channel',
@@ -225,10 +225,8 @@ async function setInfo(ring, id) {
         name: 'Info ' + id
       },
       native: {
-
       }
     }, ['name']);
-
     let info = datapoints.getObjectByName('info');
     for (let i in info) {
       let value = doorb[i];
@@ -259,7 +257,6 @@ async function setHealth(ring, id) {
     let health = await ring.getHealthSummarie(id); // health
     let deviceId = ring.getKind(id) + '_' + id;
     let channelId = deviceId + '.Info';
-
     // Create Deivce
     objectHelper.setOrUpdateObject(deviceId, {
       type: 'device',
@@ -268,7 +265,6 @@ async function setHealth(ring, id) {
       },
       native: {}
     }, ['name']);
-
     // Create Channel
     objectHelper.setOrUpdateObject(channelId, {
       type: 'channel',
@@ -277,7 +273,6 @@ async function setHealth(ring, id) {
       },
       native: {}
     }, ['name']);
-
     let info = datapoints.getObjectByName('health');
     for (let i in info) {
       let value = health[i];
@@ -490,7 +485,6 @@ async function setDingDong(ring, id, ding) {
     let kind = ring.getKind(id);
     let deviceId = kind + '_' + id;
     let channelId = deviceId;
-
     // Create Deivce
     objectHelper.setOrUpdateObject(deviceId, {
       type: 'device',
@@ -620,7 +614,6 @@ async function setHistory(ring, id) {
       states[stateId] = value;
     }
     objectHelper.processObjectQueue(() => { });
-
   } catch (error) {
     if (!history) {
       throw new Error('Error setHistory(): ' + error);
@@ -628,25 +621,6 @@ async function setHistory(ring, id) {
   }
 }
 
-/**
- * Polling Health every x seconds
- * @param {*} ring 
- * @param {*} id 
- */
-async function pollHealth(ring, id) {
-
-  let healthtimeout = setTimeout((async () => {
-    try {
-      await setHealth(ring, id);
-      await setHistory(ring, id);
-    } catch (error) {
-      adapter.log.info(error);
-    }
-    await pollHealth(ring, id);
-  }), adapter.config.pollsec * 1000);
-
-  return healthtimeout;
-}
 
 /**
  * main function for ring
@@ -678,10 +652,10 @@ async function ringer() {
         if (id) {
           if (!ringdevices[id]) {
             adapter.log.info('Starting Ring Device for Id ' + id);
-            setImmediate(async () => { try { await setInfo(ring, id, true); } catch (error) { adapter.log.info(error); } });
+            setImmediate(async () => { try { await setInfo(ring, id); } catch (error) { adapter.log.info(error); } });
             setImmediate(async () => { try { await setHealth(ring, id); } catch (error) { adapter.log.info(error); } });
-            setImmediate(async () => { try { await setDingDong(ring, id, true); } catch (error) { adapter.log.info(error); } });
             setImmediate(async () => { try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); } });
+            setImmediate(async () => { try { await setDingDong(ring, id, true); } catch (error) { adapter.log.info(error); } });
             setImmediate(async () => { try { await setSnapshot(ring, id, true); } catch (error) { adapter.log.info(error); } });
             setImmediate(async () => { try { await setLivetream(ring, id, true); } catch (error) { adapter.log.info(error); } });
             // healthtimeout = await pollHealth(ring, id);
@@ -720,6 +694,7 @@ async function ringer() {
             });
             ringdevices[id] = true; // add Device to Array
           } else {
+            setImmediate(async () => { try { await setInfo(ring, id); } catch (error) { adapter.log.info(error); } });
             setImmediate(async () => { try { await setHealth(ring, id); } catch (error) { adapter.log.info(error); } });
             setImmediate(async () => { try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); } });
             let deviceId = ring.getKind(id) + '_' + id;
@@ -744,7 +719,11 @@ async function poll_ringer() {
     let wait = 60;
     pollsec = adapter.config.pollsec > wait ? adapter.config.pollsec : wait;
   }
-  await ringer();
+  try {
+    await ringer();
+  } catch (error) {
+    // 
+  }
   setTimeout(async () => {
     await poll_ringer();
   }, pollsec * 1000);
@@ -768,8 +747,9 @@ async function main() {
       return;
     }
     await poll_ringer();
-  } catch (e) {
-    // 
+  } catch (error) {
+    adapter.log.error('Could not start the Adapter ' + adapter.namespace + ' in version ' + adapter.version + ' because of ' + error);
+    adapter.terminate();
   }
 }
 
