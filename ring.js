@@ -68,10 +68,9 @@ function startAdapter(options) {
    * is called when databases are connected and adapter received configuration.
    * start here!
    */
-  adapter.on('ready', async () => {
-    try {
+  adapter.on('ready', () => {
+    adapter.getForeignObject('system.config', (err, obj) => {
       if (adapter.config.password) {
-        let obj = await adapter.getForeignObjectAsync('system.config');
         if (obj && obj.native && obj.native.secret) {
           adapter.config.password = decrypt(obj.native.secret, adapter.config.password);
         } else {
@@ -81,10 +80,9 @@ function startAdapter(options) {
       // adapter.subscribeStates(adapter.namespace + '.*.Livestream.livestreamrequest');
       adapter.subscribeStates('*');
       objectHelper.init(adapter);
-      await main();
-    } catch (error) {
-      adapter.log.error(error);
-    }
+      main();
+    });
+
   });
 
   return adapter;
