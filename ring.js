@@ -358,7 +358,7 @@ async function setSnapshot(ring, id, init) {
               try {
                 await setSnapshot(ring, id);
               } catch (error) {
-                adapter.log.info(error);
+                adapter.log.error(error);
               }
             }
           };
@@ -450,7 +450,7 @@ async function setLivetream(ring, id, init) {
               try {
                 await setLivetream(ring, id);
               } catch (error) {
-                adapter.log.info(error);
+                adapter.log.error(error);
               }
             }
           };
@@ -511,7 +511,7 @@ async function setDingDong(ring, id, ding) {
               try {
                 await ring.setLight(ring, id, value);
               } catch (error) {
-                adapter.log.info(error);
+                adapter.log.error(error);
               }
             }
           };
@@ -635,7 +635,7 @@ async function ringer() {
     ringdevices = {};
     states = {};
     ring = null; // we start from beginning
-    adapter.log.info(error);
+    adapter.log.error(error);
     if (errorcounter >= errorcountmax) {
       adapter.log.error('To many connection errors, restarting adapter');
       restartAdapter();
@@ -650,21 +650,21 @@ async function ringer() {
         if (id) {
           if (!ringdevices[id]) {
             adapter.log.info('Starting Ring Device for Id ' + id);
-            setImmediate(async () => { try { await setInfo(ring, id); } catch (error) { adapter.log.info(error); } });
-            setImmediate(async () => { try { await setHealth(ring, id); } catch (error) { adapter.log.info(error); } });
-            setImmediate(async () => { try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); } });
-            setImmediate(async () => { try { await setDingDong(ring, id, true); } catch (error) { adapter.log.info(error); } });
-            setImmediate(async () => { try { await setSnapshot(ring, id, true); } catch (error) { adapter.log.info(error); } });
-            setImmediate(async () => { try { await setLivetream(ring, id, true); } catch (error) { adapter.log.info(error); } });
+            setImmediate(async () => { try { await setInfo(ring, id); } catch (error) { adapter.log.error(error); } });
+            setImmediate(async () => { try { await setHealth(ring, id); } catch (error) { adapter.log.error(error); } });
+            setImmediate(async () => { try { await setHistory(ring, id); } catch (error) { adapter.log.error(error); } });
+            setImmediate(async () => { try { await setDingDong(ring, id, true); } catch (error) { adapter.log.error(error); } });
+            setImmediate(async () => { try { await setSnapshot(ring, id, true); } catch (error) { adapter.log.error(error); } });
+            setImmediate(async () => { try { await setLivetream(ring, id, true); } catch (error) { adapter.log.error(error); } });
             // healthtimeout = await pollHealth(ring, id);
             // On Event ding or motion do something
             await ring.eventOnNewDing(id, async (ding) => {
               adapter.log.info('Ding Dong for Id ' + id + ' (' + ding.kind + ', ' + ding.state + ')');
               adapter.log.debug('Ding Dong for Id ' + id + JSON.stringify(ding));
-              setImmediate(async () => { try { await setDingDong(ring, id, ding); } catch (error) { adapter.log.info(error); } });
+              setImmediate(async () => { try { await setDingDong(ring, id, ding); } catch (error) { adapter.log.error(error); } });
               if (ding.kind != 'on_demand') {
-                setImmediate(async () => { try { await setSnapshot(ring, id); } catch (error) { adapter.log.info(error); } });
-                setImmediate(async () => { try { await setLivetream(ring, id); } catch (error) { adapter.log.info(error); } });
+                setImmediate(async () => { try { await setSnapshot(ring, id); } catch (error) { adapter.log.error(error); } });
+                setImmediate(async () => { try { await setLivetream(ring, id); } catch (error) { adapter.log.error(error); } });
               }
             });
             await ring.eventOnSnapshot(id, async (data) => {
@@ -692,9 +692,9 @@ async function ringer() {
             });
             ringdevices[id] = true; // add Device to Array
           } else {
-            setImmediate(async () => { try { await setInfo(ring, id); } catch (error) { adapter.log.info(error); } });
-            setImmediate(async () => { try { await setHealth(ring, id); } catch (error) { adapter.log.info(error); } });
-            setImmediate(async () => { try { await setHistory(ring, id); } catch (error) { adapter.log.info(error); } });
+            setImmediate(async () => { try { await setInfo(ring, id); } catch (error) { adapter.log.error(error); } });
+            setImmediate(async () => { try { await setHealth(ring, id); } catch (error) { adapter.log.error(error); } });
+            setImmediate(async () => { try { await setHistory(ring, id); } catch (error) { adapter.log.error(error); } });
             let deviceId = ring.getKind(id) + '_' + id;
             adapter.getObject(deviceId, (err, object) => {
               if (err || !object) {
@@ -706,7 +706,7 @@ async function ringer() {
       }
     }
   } catch (error) {
-    adapter.log.info(error);
+    throw new Error(error);
   }
 }
 
