@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@apollon/iobroker-tools": "^0.2.0",
-    "@iobroker/adapter-core": "^2.3.1",
+    "@iobroker/adapter-core": "^2.4.0",
     "esm": "^3.2.25",
     "events": "^3.1.0",
     "express": "^4.17.1",
