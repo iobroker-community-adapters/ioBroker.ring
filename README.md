@@ -137,7 +137,7 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 ## License
 The MIT License (MIT)
 
-Copyright (c) 2020 Thorsten <thorsten@stueben.de> / <https://github.com/schmupu>
+Copyright (c) 2020 Thorsten <thorsten@stueben.de> / <https://github.com/iobroker-community-adapters>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

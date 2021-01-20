@@ -166,7 +166,7 @@
     "keywords": [
       "ring"
     ],
-    "readme": "https://github.com/schmupu/ioBroker.ring/blob/master/README.md",
+    "readme": "https://github.com/iobroker-community-adapters/ioBroker.ring/blob/master/README.md",
     "loglevel": "info",
     "type": "hardware",
     "restartAdapters": [],

@@ -12,7 +12,7 @@
       "email": "thorsten@stueben.de"
     }
   ],
-  "homepage": "https://github.com/schmupu/ioBroker.ring",
+  "homepage": "https://github.com/iobroker-community-adapters/ioBroker.ring",
   "license": "MIT",
   "keywords": [
     "ring",
@@ -20,7 +20,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/schmupu/ioBroker.ring"
+    "url": "https://github.com/iobroker-community-adapters/ioBroker.ring"
   },
   "dependencies": {
     "@apollon/iobroker-tools": "^0.2.0",
@@ -58,7 +58,7 @@
     "test:integration": "mocha test/integration --exit"
   },
   "bugs": {
-    "url": "https://github.com/schmupu/ioBroker.ring/issues"
+    "url": "https://github.com/iobroker-community-adapters/ioBroker.ring/issues"
   },
   "readmeFilename": "README.md"
 }
