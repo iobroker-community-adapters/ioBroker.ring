@@ -10,7 +10,7 @@
     {
       "name": "Thorsten Stueben",
       "email": "thorsten@stueben.de"
-    }
+    } 
   ],
   "homepage": "https://github.com/iobroker-community-adapters/ioBroker.ring",
   "license": "MIT",
