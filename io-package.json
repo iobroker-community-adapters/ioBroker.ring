@@ -162,11 +162,11 @@
     "materialize": true,
     "enabled": true,
     "compact": true,
-    "extIcon": "https://raw.githubusercontent.com/schmupu/ioBroker.ring/master/admin/ring.png",
+    "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.ring/master/admin/ring.png",
     "keywords": [
       "ring"
     ],
-    "readme": "https://github.com/schmupu/ioBroker.ring/blob/master/README.md",
+    "readme": "https://github.com/iobroker-community-adapters/ioBroker.ring/blob/master/README.md",
     "loglevel": "info",
     "type": "hardware",
     "restartAdapters": [],
