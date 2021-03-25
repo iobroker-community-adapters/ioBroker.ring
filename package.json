@@ -10,7 +10,11 @@
     {
       "name": "Thorsten Stueben",
       "email": "thorsten@stueben.de"
-    } 
+    },
+    {
+      "name": "Thiemo Hoffmann",
+      "email": "thiemo.hoffmann@web.de"
+    }
   ],
   "homepage": "https://github.com/iobroker-community-adapters/ioBroker.ring",
   "license": "MIT",
