@@ -63,6 +63,11 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 
 ## Changelog
 
+<!--
+    Placeholder for the next version (at the beginning of the line):
+    ### __WORK IN PROGRESS__
+-->
+
 ### __WORK IN PROGRESS__
 * (theimo1221) Support for Floodlight V2
 * (theimo1221) Control Floodlight by Switch
