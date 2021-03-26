@@ -68,7 +68,7 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
     ### __WORK IN PROGRESS__
 -->
 
-### __WORK IN PROGRESS__
+### 1.1.6-0 (2021-03-26)
 * (theimo1221) Support for Floodlight V2
 * (theimo1221) Control Floodlight by Switch
 

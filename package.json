@@ -1,6 +1,6 @@
 {
   "name": "iobroker.ring",
-  "version": "1.1.5-beta",
+  "version": "1.1.6-0",
   "description": "Ring",
   "author": {
     "name": "Thorsten Stueben",
@@ -43,6 +43,7 @@
     "xmlbuilder": "^15.1.1"
   },
   "devDependencies": {
+    "@alcalzone/release-script": "^1.8.3",
     "@iobroker/testing": "^2.4.4",
     "axios": "^0.21.0",
     "chai": "^4.3.4",
@@ -56,10 +57,14 @@
   },
   "main": "ring.js",
   "scripts": {
-    "test": "npm run test:package && npm run test:unit",
+    "test:js": "mocha --opts test/mocha.custom.opts",
     "test:package": "mocha test/package --exit",
     "test:unit": "mocha test/unit --exit",
-    "test:integration": "mocha test/integration --exit"
+    "test:integration": "mocha test/integration --exit",
+    "test": "npm run test:js && npm run test:package",
+    "lint": "npm run lint:js",
+    "lint:js": "eslint",
+    "release": "release-script"
   },
   "bugs": {
     "url": "https://github.com/iobroker-community-adapters/ioBroker.ring/issues"
