@@ -1,10 +1,10 @@
 {
     "common": {
         "name": "ring",
-        "version": "1.1.6-0",
+        "version": "1.1.6-1",
         "title": "Ring",
         "news": {
-            "1.1.6-0": {
+            "1.1.6-1": {
                 "en": "Support for Floodlight V2\nControl Floodlight by Switch",
                 "de": "Unterstützung für Floodlight V2\nSteuern Sie das Flutlicht per Schalter",
                 "ru": "Поддержка Floodlight V2\nУправление прожектором с помощью переключателя",
