@@ -195,5 +195,15 @@
     "sentry_enable": true
   },
   "objects": [],
-  "instanceObjects": []
+  "instanceObjects": [
+    {
+      "_id": "",
+      "type": "meta",
+      "common": {
+        "name": "Snapshots and videos from Ring",
+        "type": "meta.user"
+      },
+      "native": {}
+    }
+  ]
 }
