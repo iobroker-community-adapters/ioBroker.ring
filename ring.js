@@ -802,7 +802,7 @@ async function main() {
     adapter.config.path = adapter.config.path || path.join(adapter.adapterDir, adapter.namespace, 'snapshot'); // '/Users/thorsten.stueben/Downloads/public'
     adapter.config.filename_snapshot = adapter.config.filename_snapshot || 'snapshot.jpg';
     adapter.config.filename_livestream = adapter.config.filename_livestream || 'livestream.mp4';
-    if (!fs.existsSync(adapter.config.path)) fs.mkdirSync(adapter.config.path, { recursive: true });
+    if (!fs.existsSync(adapter.config.path)) adapter.mkdir(adapter.config.path, { recursive: true });
     if (!semver.satisfies(process.version, adapterNodeVer)) {
       adapter.log.error(`Required node version ${adapterNodeVer} not satisfied with current version ${process.version}.`);
       return;
