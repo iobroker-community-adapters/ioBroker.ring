@@ -56,10 +56,14 @@
   },
   "main": "ring.js",
   "scripts": {
-    "test": "npm run test:package && npm run test:unit",
+    "test:js": "mocha --opts test/mocha.custom.opts",
     "test:package": "mocha test/package --exit",
     "test:unit": "mocha test/unit --exit",
-    "test:integration": "mocha test/integration --exit"
+    "test:integration": "mocha test/integration --exit",
+    "test": "npm run test:js && npm run test:package",
+    "lint": "npm run lint:js",
+    "lint:js": "eslint",
+    "release": "release-script"
   },
   "bugs": {
     "url": "https://github.com/iobroker-community-adapters/ioBroker.ring/issues"
