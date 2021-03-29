@@ -67,7 +67,7 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
     Placeholder for the next version (at the beginning of the line):
     ### __WORK IN PROGRESS__
 -->
-### __WORK IN PROGRESS__
+### 1.1.6-2 (2021-03-29)
 * (theimo1221) Fixing some Issues while saving snapshots and place Snapshots within 'iobroker-data' Folder. 
 
 ### 1.1.6-1 (2021-03-26)

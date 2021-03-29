@@ -11,3 +11,4 @@ snapshot
 snapshot/*
 test.js
 test.ts
+*.tgz

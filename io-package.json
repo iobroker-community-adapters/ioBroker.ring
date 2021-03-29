@@ -1,9 +1,21 @@
 {
     "common": {
         "name": "ring",
-        "version": "1.1.6-1",
+        "version": "1.1.6-2",
         "title": "Ring",
         "news": {
+            "1.1.6-2": {
+                "en": "Fixing some Issues while saving snapshots and place Snapshots within 'iobroker-data' Folder.",
+                "de": "Behebung einiger Probleme beim Speichern von Snapshots und Platzieren von Snapshots im Ordner \"iobroker-data\".",
+                "ru": "Устранение некоторых проблем при сохранении снимков и их размещении в папке iobroker-data.",
+                "pt": "Corrigindo alguns problemas ao salvar instantâneos e colocar os instantâneos na pasta 'iobroker-data'.",
+                "nl": "Enkele problemen oplossen tijdens het opslaan van momentopnamen en momentopnamen in de map 'iobroker-data' plaatsen.",
+                "fr": "Correction de certains problèmes lors de l'enregistrement des instantanés et placez les instantanés dans le dossier 'iobroker-data'.",
+                "it": "Risolvere alcuni problemi durante il salvataggio delle istantanee e posizionare le istantanee nella cartella \"iobroker-data\".",
+                "es": "Soluciona algunos problemas al guardar instantáneas y colocar las instantáneas dentro de la carpeta 'iobroker-data'.",
+                "pl": "Naprawianie niektórych problemów podczas zapisywania migawek i umieszczanie migawek w folderze „iobroker-data”.",
+                "zh-cn": "解决了在保存快照并将快照放置在“ iobroker-data”文件夹中时的一些问题。"
+            },
             "1.1.6-1": {
                 "en": "Support for Floodlight V2\nControl Floodlight by Switch",
                 "de": "Unterstützung für Floodlight V2\nSteuern Sie das Flutlicht per Schalter",
