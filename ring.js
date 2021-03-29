@@ -486,6 +486,7 @@ async function setLivetream(ring, id, init) {
           // http://192.168.1.10:8082/ring.0/doorbell_4711.livestream/livestream.jpg
           if (livestream) {
             const path = `${deviceId}/${livestream.filename}`;
+            adapter.log.debug(`Write Livestream to: ${path}`);
             await adapter.writeFile(adapter.namespace, path, livestream.video);
           }
           break;
@@ -734,7 +735,7 @@ async function ringer() {
         // On Event ding or motion do something
         await ring.eventOnNewDing(id, async (ding) => {
           adapter.log.info('Ding Dong for Id ' + id + ' (' + ding.kind + ', ' + ding.state + ')');
-          adapter.log.debug('Ding Dong for Id ' + id + JSON.stringify(ding));
+          adapter.log.silly('Ding Dong for Id ' + id + JSON.stringify(ding));
           setImmediate(async () => { try { await setDingDong(ring, id, ding); } catch (error) { adapter.log.error(error); } });
           if (ding.kind != 'on_demand') {
             setImmediate(async () => { try { await setSnapshot(ring, id); } catch (error) { adapter.log.error(error); } });
