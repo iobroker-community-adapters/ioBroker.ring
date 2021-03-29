@@ -1,9 +1,21 @@
 {
     "common": {
         "name": "ring",
-        "version": "1.1.6-2",
+        "version": "1.1.6-3",
         "title": "Ring",
         "news": {
+            "1.1.6-3": {
+                "en": "Fix typo preventing Livestream recordings after motion detection\nReduce Levels of Log Messages, to not spam iobroker Log",
+                "de": "Tippfehler behoben, der Livestream-Aufnahmen nach Bewegungserkennung verhindert\nReduzieren Sie die Anzahl der Protokollnachrichten, um das iobroker-Protokoll nicht zu spammen",
+                "ru": "Исправлена опечатка, препятствующая записи Livestream после обнаружения движения\nУменьшите уровень сообщений журнала, чтобы не спамить журнал iobroker",
+                "pt": "Corrigir erros de digitação que impedem gravações de transmissão ao vivo após detecção de movimento\nReduza os níveis de mensagens de registro para não enviar spam para o registro do iobroker",
+                "nl": "Typefout verhinderen dat Livestream-opnamen worden voorkomen na bewegingsdetectie\nVerlaag het aantal logboekberichten om iobroker Log niet te spammen",
+                "fr": "Correction d'une faute de frappe empêchant les enregistrements Livestream après la détection de mouvement\nRéduisez les niveaux de messages du journal, pour ne pas spammer le journal iobroker",
+                "it": "Risolto un errore di battitura che impediva le registrazioni Livestream dopo il rilevamento del movimento\nRiduci i livelli dei messaggi di registro, per non inviare spam al registro di iobroker",
+                "es": "Se corrigió un error tipográfico que evitaba las grabaciones de Livestream después de la detección de movimiento\nReduzca los niveles de mensajes de registro, para no enviar spam al registro de iobroker",
+                "pl": "Naprawiono literówkę uniemożliwiającą nagrywanie na żywo po wykryciu ruchu\nZmniejsz poziomy komunikatów dziennika, aby nie spamować dziennika iobroker",
+                "zh-cn": "修复打字错误，防止在运动检测后进行实时流录制\n降低日志消息的级别，以防止垃圾邮件iobroker日志"
+            },
             "1.1.6-2": {
                 "en": "Fixing some Issues while saving snapshots and place Snapshots within 'iobroker-data' Folder.",
                 "de": "Behebung einiger Probleme beim Speichern von Snapshots und Platzieren von Snapshots im Ordner \"iobroker-data\".",
@@ -143,10 +155,6 @@
             "0.1.1": {
                 "en": "A few updates",
                 "de": "Kleine Änderungen"
-            },
-            "0.1.0": {
-                "en": "First version",
-                "de": "Erste Version"
             }
         },
         "titleLang": {
