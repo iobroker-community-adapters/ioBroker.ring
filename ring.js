@@ -485,7 +485,7 @@ async function setLivetream(ring, id, init) {
           // http://<ip-iobroker>:<port-vis>/<ring-instanz>/<device>.livestream/livestream.jpg 
           // http://192.168.1.10:8082/ring.0/doorbell_4711.livestream/livestream.jpg
           if (livestream) {
-            const patH = `${deviceId}/${livestream.filename}`;
+            const path = `${deviceId}/${livestream.filename}`;
             await adapter.writeFile(adapter.namespace, path, livestream.video);
           }
           break;
