@@ -15,6 +15,7 @@ const datapoints = require(__dirname + '/lib/datapoints');
 const semver = require('semver');
 const path = require('path');
 const fs = require('fs');
+let isWin = process.platform.startsWith('win');
 
 let ring = null;
 let ringdevices = {};
@@ -28,6 +29,7 @@ let adapter;
 
 function startAdapter(options) {
   options = options || {};
+  options.systemConfig = true;
   options.name = adapterName;
   adapter = new utils.Adapter(options);
 
@@ -168,7 +170,7 @@ function encrypt(key, value) {
  * @param {*} file 
  */
 function delFile(file) {
-  if (fs.existsSync(file)) fs.unlinkSync(file);
+  if (adapter.existsSync(adapter.namespace, file)) adapter.delFile(adapter.namespace, file);
 }
 
 
@@ -386,13 +388,19 @@ async function setSnapshot(ring, id, init) {
           type = 'meta';
           // http://<ip-iobroker>:<port-vis>/<ring-instanz>/<device>.snapshot/snapshot.jpg 
           // http://192.168.1.10:8082/ring.0/doorbell_4711.snapshot/snapshot.jpg
-          if (snapshot) await adapter.writeFile(adapter.namespace, deviceId + '/' + snapshot.filename, snapshot.image);
+          if (snapshot) {
+            // const path = `${adapter.config.path}/${deviceId}_${snapshot.filename}`;
+            const path = `${deviceId}/${snapshot.filename}`;
+            await adapter.writeFile(adapter.namespace, path, snapshot.image);
+          }
           break;
         case 'snapshot_url':
           vis = await adapter.getForeignObjectAsync('system.adapter.web.0');
           if (vis && vis.native) {
             let secure = vis.native.secure ? 'https' : 'http';
-            if (snapshot) value = secure + '://' + adapter.host + ':' + vis.native.port + '/' + adapter.namespace + '/' + deviceId + '/' + snapshot.filename;
+            if (snapshot) {
+              value = `${secure}://${adapter.host}:${vis.native.port}/${adapter.namespace}/${deviceId}/${snapshot.filename}`;
+            }
           }
           break;
         case 'snapshot_file':
@@ -400,7 +408,6 @@ async function setSnapshot(ring, id, init) {
             try {
               let oldState = await adapter.getStateAsync(stateId);
               if (oldState && oldState.val && adapter.config.del_old_snapshot) {
-
                 delFile(oldState.val);
                 await adapter.delFileAsync(adapter.namespace, deviceId + '/' + path.basename(oldState.val));
               }
@@ -478,14 +485,17 @@ async function setLivetream(ring, id, init) {
           // http://<ip-iobroker>:<port-vis>/<ring-instanz>/<device>.livestream/livestream.jpg 
           // http://192.168.1.10:8082/ring.0/doorbell_4711.livestream/livestream.jpg
           if (livestream) {
-            await adapter.writeFileAsync(adapter.namespace, deviceId + '/' + livestream.filename, livestream.video);
+            const patH = `${deviceId}/${livestream.filename}`;
+            await adapter.writeFile(adapter.namespace, path, livestream.video);
           }
           break;
         case 'livestream_url':
           vis = await adapter.getForeignObjectAsync('system.adapter.web.0');
           if (vis && vis.native && vis.native) {
             let secure = vis.native.secure ? 'https' : 'http';
-            if (livestream) value = secure + '://' + adapter.host + ':' + vis.native.port + '/' + adapter.namespace + '/' + deviceId + '/' + livestream.filename;
+            if (livestream) {
+              value = `${secure}://${adapter.host}:${vis.native.port}/${adapter.namespace}/${deviceId}/${livestream.filename}`;
+            }
           }
           break;
         case 'livestream_file':
@@ -794,15 +804,25 @@ async function poll_ringer() {
  * Main
  */
 async function main() {
+  isWin = process.platform.startsWith('win');
   try {
     adapter.log.info('Starting Adapter ' + adapter.namespace + ' in version ' + adapter.version);
+    const dataDir = (adapter.systemConfig) ? adapter.systemConfig.dataDir : '';
+    const snapshotDir = path.normalize(utils.controllerDir + '/' + dataDir + adapter.namespace.replace('.', '_'));
     if (await setSentryLogging(adapter.config.sentry_enable)) return;
     await refreshToken();
     adapter.config.recordtime_livestream = adapter.config.recordtime_livestream || 0;
-    adapter.config.path = adapter.config.path || path.join(adapter.adapterDir, adapter.namespace, 'snapshot'); // '/Users/thorsten.stueben/Downloads/public'
+    if(adapter.config.path === '') {
+      adapter.config.path = path.join(snapshotDir, 'snapshot'); // '/Users/thorsten.stueben/Downloads/public'
+    }
     adapter.config.filename_snapshot = adapter.config.filename_snapshot || 'snapshot.jpg';
     adapter.config.filename_livestream = adapter.config.filename_livestream || 'livestream.mp4';
-    if (!fs.existsSync(adapter.config.path)) adapter.mkdir(adapter.config.path, { recursive: true });
+    if (!fs.existsSync(adapter.config.path)) {
+      fs.mkdirSync(adapter.config.path, { recursive: true });
+      if(!isWin) {
+        fs.chmodSync(adapter.config.path, 508);
+      }
+    }
     if (!semver.satisfies(process.version, adapterNodeVer)) {
       adapter.log.error(`Required node version ${adapterNodeVer} not satisfied with current version ${process.version}.`);
       return;

@@ -199,7 +199,7 @@
         "timeout": 5,
         "pollsec": 15,
         "recordtime_livestream": 10,
-        "path": "/opt/iobroker/node_modules/iobroker.ring/",
+        "path": "",
         "filename_livestream": "livestream%i_%d.mp4",
         "filename_snapshot": "snapshot%i_%d.jpg",
         "del_old_livestream": true,
