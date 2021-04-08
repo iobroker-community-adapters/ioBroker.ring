@@ -1,4 +1,4 @@
-name: Test and Release
+name: Test only
 
 # Run this job on all pushes and pull requests
 # as well as tags with a semantic version
