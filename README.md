@@ -69,6 +69,7 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 -->
 ### __WORK IN PROGRESS__
 * (theimo1221) Add new device type spotlightw as doorbell
+* (theimo1221) Update dependencies (ringapi, node-schedule, etc.)
 
 ### 1.1.6-3 (2021-03-29)
 * (theimo1221) Fix typo preventing Livestream recordings after motion detection
