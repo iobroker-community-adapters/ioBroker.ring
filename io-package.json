@@ -1,9 +1,21 @@
 {
     "common": {
         "name": "ring",
-        "version": "1.1.6-3",
+        "version": "1.2.0",
         "title": "Ring",
         "news": {
+            "1.2.0": {
+                "en": "Add new device type spotlightw as doorbell\nUpdate dependencies (ringapi, node-schedule, etc.)",
+                "de": "Fügen Sie den neuen Gerätetyp spotlightw als Türklingel hinzu\nAbhängigkeiten aktualisieren (Ringapi, Knotenplan usw.)",
+                "ru": "Добавить новый тип устройства прожектор в качестве дверного звонка\nОбновите зависимости (ringapi, node-schedule и т. Д.)",
+                "pt": "Adicionar novo tipo de dispositivo spotlightw como campainha\nAtualizar dependências (ringapi, node-schedule, etc.)",
+                "nl": "Voeg een nieuw apparaattype spotlightw toe als deurbel\nUpdate afhankelijkheden (ringapi, knooppuntschema, etc.)",
+                "fr": "Ajouter un nouveau projecteur de type d'appareil comme sonnette\nMettre à jour les dépendances (ringapi, noeud-planning, etc.)",
+                "it": "Aggiungi un nuovo tipo di dispositivo spotlightw come campanello\nAggiorna le dipendenze (ringapi, node-schedule, ecc.)",
+                "es": "Agregar un nuevo tipo de dispositivo spotlightw como timbre\nActualice las dependencias (ringapi, node-schedule, etc.)",
+                "pl": "Dodaj reflektor nowego typu urządzenia jako dzwonek do drzwi\nAktualizuj zależności (ringapi, harmonogram węzłów itp.)",
+                "zh-cn": "将新的设备类型Spotlightw添加为门铃\n更新依赖项（ringapi，节点计划等）"
+            },
             "1.1.6-3": {
                 "en": "Fix typo preventing Livestream recordings after motion detection\nReduce Levels of Log Messages, to not spam iobroker Log",
                 "de": "Tippfehler behoben, der Livestream-Aufnahmen nach Bewegungserkennung verhindert\nReduzieren Sie die Anzahl der Protokollnachrichten, um das iobroker-Protokoll nicht zu spammen",
@@ -151,10 +163,6 @@
             "0.1.2": {
                 "en": "Update error handlinge",
                 "de": "Anpassung Fehlererkennung"
-            },
-            "0.1.1": {
-                "en": "A few updates",
-                "de": "Kleine Änderungen"
             }
         },
         "titleLang": {
