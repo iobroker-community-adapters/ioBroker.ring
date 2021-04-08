@@ -67,6 +67,9 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
     Placeholder for the next version (at the beginning of the line):
     ### __WORK IN PROGRESS__
 -->
+### __WORK IN PROGRESS__
+* (theimo1221) Add new device type spotlightw as doorbell
+
 ### 1.1.6-3 (2021-03-29)
 * (theimo1221) Fix typo preventing Livestream recordings after motion detection
 * (theimo1221) Reduce Levels of Log Messages, to not spam iobroker Log
