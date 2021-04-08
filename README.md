@@ -67,6 +67,8 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
     Placeholder for the next version (at the beginning of the line):
     ### __WORK IN PROGRESS__
 -->
+### __WORK IN PROGRESS__
+* (theimo1221) Bump version
 
 ### 1.2.0 (2021-04-08)
 * (theimo1221) Add new device type spotlightw as doorbell
