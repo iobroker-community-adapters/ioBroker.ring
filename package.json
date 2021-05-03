@@ -36,7 +36,7 @@
     "request": "^2.88.2",
     "ring-client-api": "^9.15.6",
     "rtsp-streaming-server": "^2.0.6",
-    "rxjs": "^6.6.7",
+    "rxjs": "^7.0.0",
     "semver": "^7.3.5",
     "utf-8-validate": "^5.0.4",
     "xml2js": "~0.4.23",
