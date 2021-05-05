@@ -67,7 +67,7 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
     Placeholder for the next version (at the beginning of the line):
     ### __WORK IN PROGRESS__
 -->
-### __WORK IN PROGRESS__
+### 1.2.2 (2021-05-05)
 * (theimo1221) Update packages due to security patches
 
 ### 1.2.1 (2021-04-09)
