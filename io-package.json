@@ -1,9 +1,21 @@
 {
     "common": {
         "name": "ring",
-        "version": "1.2.2",
+        "version": "1.2.3",
         "title": "Ring",
         "news": {
+            "1.2.3": {
+                "en": "Update packages\nFix compatibility issues with new ring api",
+                "de": "Pakete aktualisieren\nKompatibilitätsprobleme mit der neuen Ring-API beheben",
+                "ru": "Пакеты обновлений\nУстранение проблем совместимости с новым кольцевым API",
+                "pt": "Pacotes de atualização\nCorrija problemas de compatibilidade com a nova API de anel",
+                "nl": "Pakketten bijwerken\nCompatibiliteitsproblemen oplossen met nieuwe ring api",
+                "fr": "Mettre à jour les packages\nRésoudre les problèmes de compatibilité avec la nouvelle API Ring",
+                "it": "Aggiorna pacchetti\nRisolvi i problemi di compatibilità con la nuova API dell'anello",
+                "es": "Actualizar paquetes\nSolucionar problemas de compatibilidad con la nueva API de anillo",
+                "pl": "Zaktualizuj pakiety\nNapraw problemy ze zgodnością z nowym ring api",
+                "zh-cn": "更新包\n修复与新环 api 的兼容性问题"
+            },
             "1.2.2": {
                 "en": "Update packages due to security patches",
                 "de": "Aktualisieren Sie Pakete aufgrund von Sicherheitspatches",
@@ -175,10 +187,6 @@
             "1.0.1": {
                 "en": "Support of compact mode",
                 "de": "Compact mode Unterstützung"
-            },
-            "1.0.0": {
-                "en": "Add Ring Camera as new device",
-                "de": "Ring Camera Unterstützung"
             }
         },
         "titleLang": {
