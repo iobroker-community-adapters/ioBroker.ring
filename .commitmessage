@@ -1,3 +1,4 @@
-chore: release v1.2.2
+chore: release v1.2.3
 
-Update packages due to security patches
+Update packages
+Fix compatibility issues with new ring api
