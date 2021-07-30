@@ -7,7 +7,7 @@
 
 'use strict';
 
-const { RingRestClient } = require('ring-client-api/lib/api/rest-client');
+const {RingRestClient} = require('ring-client-api/lib/api/rest-client');
 const utils = require('@iobroker/adapter-core');
 const objectHelper = require('@apollon/iobroker-tools').objectHelper; // Get common adapter utils
 const ringapiclient = require(__dirname + '/lib/ringapiclient');
@@ -124,24 +124,25 @@ async function refreshToken() {
   });
   let auth = await restClient.getCurrentAuth();
   let refreshtoken = auth.refresh_token;
-  if (refreshtoken) {
-    adapter.log.info('Two face authentication successfully set. Adapter is restarting!');
-    await adapter.extendForeignObjectAsync('system.adapter.' + adapter.namespace, {
-      native: {
-        twofaceauth: false,
-        email: '',
-        password: '',
-        refreshtoken: refreshtoken
-      }
-    });
+  if (!refreshtoken) {
+    return;
   }
+  adapter.log.info('Two face authentication successfully set. Adapter is restarting!');
+  await adapter.extendForeignObjectAsync('system.adapter.' + adapter.namespace, {
+    native: {
+      twofaceauth: false,
+      email: '',
+      password: '',
+      refreshtoken: refreshtoken
+    }
+  });
 }
 
 
 /**
  *  Password decrypt
- * @param {*} key 
- * @param {*} value 
+ * @param {*} key
+ * @param {*} value
  */
 function decrypt(key, value) {
   let result = '';
@@ -152,9 +153,9 @@ function decrypt(key, value) {
 }
 
 /**
- * 
- * @param {*} key 
- * @param {*} value 
+ *
+ * @param {*} key
+ * @param {*} value
  */
 function encrypt(key, value) {
   var result = '';
@@ -166,8 +167,8 @@ function encrypt(key, value) {
 
 
 /**
- * 
- * @param {*} file 
+ *
+ * @param {*} file
  */
 function delFile(file) {
   if (adapter.existsSync(adapter.namespace, file)) adapter.delFile(adapter.namespace, file);
@@ -176,16 +177,17 @@ function delFile(file) {
 
 /**
  * Build error messages
- * @param {*} error 
+ * @param {*} error
  */
 function printErrorMessage(error) {
-  if (error) {
-    if (!Array.isArray(error)) {
-      error = [error];
-    }
-    for (let i in error) {
-      adapter.log.info(error[i]);
-    }
+  if (!error) {
+    return;
+  }
+  if (!Array.isArray(error)) {
+    error = [error];
+  }
+  for (let i in error) {
+    adapter.log.info(error[i]);
   }
 }
 
@@ -201,8 +203,8 @@ function restartAdapter() {
 
 /**
  * set info channel
- * @param {*} ring 
- * @param {*} id 
+ * @param {*} ring
+ * @param {*} id
  */
 async function setInfo(ring, id) {
   try {
@@ -224,8 +226,7 @@ async function setInfo(ring, id) {
       common: {
         name: 'Info ' + id
       },
-      native: {
-      }
+      native: {}
     }, ['name']);
     let info = datapoints.getObjectByName('info');
     for (let i in info) {
@@ -241,7 +242,8 @@ async function setInfo(ring, id) {
       }
       states[stateId] = value;
     }
-    objectHelper.processObjectQueue(() => { });
+    objectHelper.processObjectQueue(() => {
+    });
   } catch (error) {
     throw new Error('Error setInfo(): ' + error);
   }
@@ -249,8 +251,8 @@ async function setInfo(ring, id) {
 
 /**
  * health infos
- * @param {*} ring 
- * @param {*} id 
+ * @param {*} ring
+ * @param {*} id
  */
 async function setHealth(ring, id) {
   try {
@@ -286,7 +288,8 @@ async function setHealth(ring, id) {
       }
       states[stateId] = value;
     }
-    objectHelper.processObjectQueue(() => { });
+    objectHelper.processObjectQueue(() => {
+    });
   } catch (error) {
     throw new Error('Error setHealth(): ' + error);
   }
@@ -299,7 +302,7 @@ async function setHealth(ring, id) {
  */
 async function setLight(ring, id, deviceData, init) {
   try {
-    if(!deviceData || deviceData.health === undefined && deviceData.health.floodlight_on == undefined)
+    if (!deviceData || deviceData.health === undefined && deviceData.health.floodlight_on == undefined)
       return;
 
     let deviceId = ring.getKind(id) + '_' + id;
@@ -327,7 +330,7 @@ async function setLight(ring, id, deviceData, init) {
       let controlFunction;
       let stateId = channelId + '.' + i;
       let common = info[i];
-      if(i === 'light_switch' && init){
+      if (i === 'light_switch' && init) {
         controlFunction = async (controlVal) => {
           try {
             await ring.setLight(id, controlVal);
@@ -344,17 +347,75 @@ async function setLight(ring, id, deviceData, init) {
       }
       states[stateId] = value;
     }
-    objectHelper.processObjectQueue(() => { });
+    objectHelper.processObjectQueue(() => {
+    });
   } catch (error) {
     throw new Error('Error setLight(): ' + error);
   }
 }
 
+async function processSnapshotInfo(info, channelId, snapshot, deviceId, vis, ring, id) {
+  for (let i in info) {
+    let controlFunction;
+    let value = null;
+    let stateId = channelId + '.' + i;
+    let common = info[i];
+    let type = 'state';
+    switch (i) {
+      case 'jpg':
+        if (snapshot) await adapter.setBinaryStateAsync(stateId, snapshot.image);
+        break;
+      case 'snapshot':
+        type = 'meta';
+        // http://<ip-iobroker>:<port-vis>/<ring-instanz>/<device>.snapshot/snapshot.jpg
+        // http://192.168.1.10:8082/ring.0/doorbell_4711.snapshot/snapshot.jpg
+        if (snapshot) {
+          // const path = `${adapter.config.path}/${deviceId}_${snapshot.filename}`;
+          const path = `${deviceId}/${snapshot.filename}`;
+          await adapter.writeFile(adapter.namespace, path, snapshot.image);
+        }
+        break;
+      case 'snapshot_url':
+        vis = await adapter.getForeignObjectAsync('system.adapter.web.0');
+        if (vis && vis.native) {
+          let secure = vis.native.secure ? 'https' : 'http';
+          if (snapshot) {
+            value = `${secure}://${adapter.host}:${vis.native.port}/${adapter.namespace}/${deviceId}/${snapshot.filename}`;
+          }
+        }
+        break;
+      case 'snapshot_file':
+        value = await updateCurrentFile(snapshot, stateId, deviceId, value, adapter.config.del_old_snapshot);
+        break;
+      case 'snapshotrequest':
+        controlFunction = async (value) => {
+          if (value == true) {
+            try {
+              await setSnapshot(ring, id);
+            } catch (error) {
+              adapter.log.error(error);
+            }
+          }
+        };
+        break;
+      default:
+        break;
+    }
+    if (!states.hasOwnProperty(stateId) || states[stateId] !== value) {
+      objectHelper.setOrUpdateObject(stateId, {
+        type: type,
+        common: common
+      }, ['name'], value, controlFunction);
+    }
+    states[stateId] = value;
+  }
+}
+
 /**
  * make snapshot
- * @param {*} ring 
- * @param {*} id 
- * @param {*} image 
+ * @param {*} ring
+ * @param {*} id
+ * @param {*} image
  */
 async function setSnapshot(ring, id, init) {
   try {
@@ -374,82 +435,36 @@ async function setSnapshot(ring, id, init) {
       },
       native: {}
     }, ['name']);
-    for (let i in info) {
-      let controlFunction;
-      let value = null;
-      let stateId = channelId + '.' + i;
-      let common = info[i];
-      let type = 'state';
-      switch (i) {
-        case 'jpg':
-          if (snapshot) await adapter.setBinaryStateAsync(stateId, snapshot.image);
-          break;
-        case 'snapshot':
-          type = 'meta';
-          // http://<ip-iobroker>:<port-vis>/<ring-instanz>/<device>.snapshot/snapshot.jpg 
-          // http://192.168.1.10:8082/ring.0/doorbell_4711.snapshot/snapshot.jpg
-          if (snapshot) {
-            // const path = `${adapter.config.path}/${deviceId}_${snapshot.filename}`;
-            const path = `${deviceId}/${snapshot.filename}`;
-            await adapter.writeFile(adapter.namespace, path, snapshot.image);
-          }
-          break;
-        case 'snapshot_url':
-          vis = await adapter.getForeignObjectAsync('system.adapter.web.0');
-          if (vis && vis.native) {
-            let secure = vis.native.secure ? 'https' : 'http';
-            if (snapshot) {
-              value = `${secure}://${adapter.host}:${vis.native.port}/${adapter.namespace}/${deviceId}/${snapshot.filename}`;
-            }
-          }
-          break;
-        case 'snapshot_file':
-          if (snapshot) {
-            try {
-              let oldState = await adapter.getStateAsync(stateId);
-              if (oldState && oldState.val && adapter.config.del_old_snapshot) {
-                delFile(oldState.val);
-                await adapter.delFileAsync(adapter.namespace, deviceId + '/' + path.basename(oldState.val));
-              }
-            } catch (error) {
-              //  
-            }
-            value = path.join(snapshot.pathname, snapshot.filename);
-          }
-          break;
-        case 'snapshotrequest':
-          controlFunction = async (value) => {
-            if (value == true) {
-              try {
-                await setSnapshot(ring, id);
-              } catch (error) {
-                adapter.log.error(error);
-              }
-            }
-          };
-          break;
-        default:
-          break;
-      }
-      if (!states.hasOwnProperty(stateId) || states[stateId] !== value) {
-        objectHelper.setOrUpdateObject(stateId, {
-          type: type,
-          common: common
-        }, ['name'], value, controlFunction);
-      }
-      states[stateId] = value;
-    }
-    objectHelper.processObjectQueue(() => { });
+    await processSnapshotInfo(info, channelId, snapshot, deviceId, vis, ring, id);
+    objectHelper.processObjectQueue(() => {
+    });
   } catch (error) {
     throw new Error('Error setSanpshot()): ' + error);
   }
 }
 
+async function updateCurrentFile(file, stateId, deviceId, value, deleteOldSetting) {
+  if (!file) {
+    return value;
+  }
+  try {
+    let oldState = await adapter.getStateAsync(stateId);
+    if (oldState && oldState.val && deleteOldSetting) {
+      delFile(oldState.val);
+      await adapter.delFileAsync(adapter.namespace, `${deviceId}/${path.basename(oldState.val)}`);
+    }
+  } catch (error) {
+    //
+  }
+  value = path.join(file.pathname, file.filename);
+  return value;
+}
+
 /**
  * make lviestream
- * @param {*} ring 
- * @param {*} id 
- * @param {*} image 
+ * @param {*} ring
+ * @param {*} id
+ * @param {*} image
  */
 async function setLivetream(ring, id, init) {
   try {
@@ -482,7 +497,7 @@ async function setLivetream(ring, id, init) {
           break;
         case 'livestream':
           type = 'meta';
-          // http://<ip-iobroker>:<port-vis>/<ring-instanz>/<device>.livestream/livestream.jpg 
+          // http://<ip-iobroker>:<port-vis>/<ring-instanz>/<device>.livestream/livestream.jpg
           // http://192.168.1.10:8082/ring.0/doorbell_4711.livestream/livestream.jpg
           if (livestream) {
             const path = `${deviceId}/${livestream.filename}`;
@@ -500,18 +515,7 @@ async function setLivetream(ring, id, init) {
           }
           break;
         case 'livestream_file':
-          if (livestream) {
-            try {
-              let oldState = await adapter.getStateAsync(stateId);
-              if (oldState && oldState.val && adapter.config.del_old_livestream) {
-                delFile(oldState.val);
-                await adapter.delFileAsync(adapter.namespace, deviceId + '/' + path.basename(oldState.val));
-              }
-            } catch (error) {
-              //
-            }
-            value = path.join(livestream.pathname, livestream.filename);
-          }
+          value = await updateCurrentFile(livestream, stateId, deviceId, value, adapter.config.del_old_livestream);
           break;
         case 'livestreamrequest':
           controlFunction = async (value) => {
@@ -535,7 +539,8 @@ async function setLivetream(ring, id, init) {
       }
       states[stateId] = value;
     }
-    objectHelper.processObjectQueue(() => { });
+    objectHelper.processObjectQueue(() => {
+    });
   } catch (error) {
     throw new Error('Error setLivetream()): ' + error);
   }
@@ -543,9 +548,9 @@ async function setLivetream(ring, id, init) {
 
 /**
  * Ring and Motions infos
- * @param {*} ring 
- * @param {*} id 
- * @param {*} ding 
+ * @param {*} ring
+ * @param {*} id
+ * @param {*} ding
  */
 async function setDingDong(ring, id, ding) {
   try {
@@ -609,7 +614,8 @@ async function setDingDong(ring, id, ding) {
         }, ['name'], value, controlFunction);
       }
     }
-    objectHelper.processObjectQueue(() => { });
+    objectHelper.processObjectQueue(() => {
+    });
   } catch (error) {
     throw new Error('Error setDingDong(): ' + error);
   }
@@ -617,8 +623,8 @@ async function setDingDong(ring, id, ding) {
 
 /**
  * set History Infos. Only Motion and Dings will be shown
- * @param {*} ring 
- * @param {*} id 
+ * @param {*} ring
+ * @param {*} id
  */
 async function setHistory(ring, id) {
   let history;
@@ -644,9 +650,7 @@ async function setHistory(ring, id) {
       common: {
         name: 'History'
       },
-      native: {
-
-      }
+      native: {}
     }, ['name']);
     let info = datapoints.getObjectByName('history');
     let counter = null;
@@ -680,7 +684,8 @@ async function setHistory(ring, id) {
       }
       states[stateId] = value;
     }
-    objectHelper.processObjectQueue(() => { });
+    objectHelper.processObjectQueue(() => {
+    });
   } catch (error) {
     if (!history) {
       throw new Error('Error setHistory(): ' + error);
@@ -688,6 +693,51 @@ async function setHistory(ring, id) {
   }
 }
 
+
+async function startDevice(id, dbids, j) {
+  adapter.log.info('Starting Ring Device for Id ' + id);
+  executeImmediateGuarded(async () => {await setInfo(ring, id);}, this);
+  executeImmediateGuarded(async () => {await setHealth(ring, id);}, this);
+  executeImmediateGuarded(async () => {await setHistory(ring, id);}, this);
+  executeImmediateGuarded(async () => {await setDingDong(ring, id, true);}, this);
+  executeImmediateGuarded(async () => {await setSnapshot(ring, id, true);}, this);
+  executeImmediateGuarded(async () => {await setLivetream(ring, id, true);}, this);
+  executeImmediateGuarded(async () => {await setLight(ring, id, dbids[j], true);}, this);
+  // healthtimeout = await pollHealth(ring, id);
+  // On Event ding or motion do something
+  await ring.eventOnNewDing(id, async (ding) => {
+    adapter.log.info('Ding Dong for Id ' + id + ' (' + ding.kind + ', ' + ding.state + ')');
+    adapter.log.silly('Ding Dong for Id ' + id + JSON.stringify(ding));
+    executeImmediateGuarded(async () => {await setDingDong(ring, id, ding);}, this);
+    if (ding.kind != 'on_demand') {
+      executeImmediateGuarded(async () => {await setSnapshot(ring, id);}, this);
+      executeImmediateGuarded(async () => {await setLivetream(ring, id);}, this);
+    }
+  });
+  await ring.eventOnSnapshot(id, async (data) => {
+  });
+  await ring.eventOnLivestream(id, async (data) => {
+  });
+  await ring.eventOnRefreshTokenUpdated(id, async (data) => {
+    if (!(data && data.newRefreshToken != adapter.config.refreshtoken)) {
+      return;
+    }
+    adapter.log.info('Old refresh token : ' + data.oldRefreshToken);
+    adapter.log.info('New refresh token : ' + data.newRefreshToken);
+    adapter.log.info('Two face authentication successfully set. Adapter is restarting!');
+    let obj = await adapter.getForeignObjectAsync('system.config');
+    let secret = obj && obj.native && obj.native.secret ? obj.native.secret : 'Zgfr56gFe87jJOM';
+    await adapter.extendForeignObjectAsync('system.adapter.' + adapter.namespace, {
+      native: {
+        twofaceauth: false,
+        email: adapter.config.email,
+        password: encrypt(secret, adapter.config.password),
+        refreshtoken: data.newRefreshToken
+      }
+    });
+  });
+  ringdevices[id] = true; // add Device to Array
+}
 
 /**
  * main function for ring
@@ -723,54 +773,12 @@ async function ringer() {
       }
 
       if (!ringdevices[id]) {
-        adapter.log.info('Starting Ring Device for Id ' + id);
-        setImmediate(async () => { try { await setInfo(ring, id); } catch (error) { adapter.log.error(error); } });
-        setImmediate(async () => { try { await setHealth(ring, id); } catch (error) { adapter.log.error(error); } });
-        setImmediate(async () => { try { await setHistory(ring, id); } catch (error) { adapter.log.error(error); } });
-        setImmediate(async () => { try { await setDingDong(ring, id, true); } catch (error) { adapter.log.error(error); } });
-        setImmediate(async () => { try { await setSnapshot(ring, id, true); } catch (error) { adapter.log.error(error); } });
-        setImmediate(async () => { try { await setLivetream(ring, id, true); } catch (error) { adapter.log.error(error); } });
-        setImmediate(async () => { try { await setLight(ring, id, dbids[j], true); } catch (error) { adapter.log.error(error); } });
-        // healthtimeout = await pollHealth(ring, id);
-        // On Event ding or motion do something
-        await ring.eventOnNewDing(id, async (ding) => {
-          adapter.log.info('Ding Dong for Id ' + id + ' (' + ding.kind + ', ' + ding.state + ')');
-          adapter.log.silly('Ding Dong for Id ' + id + JSON.stringify(ding));
-          setImmediate(async () => { try { await setDingDong(ring, id, ding); } catch (error) { adapter.log.error(error); } });
-          if (ding.kind != 'on_demand') {
-            setImmediate(async () => { try { await setSnapshot(ring, id); } catch (error) { adapter.log.error(error); } });
-            setImmediate(async () => { try { await setLivetream(ring, id); } catch (error) { adapter.log.error(error); } });
-          }
-        });
-        await ring.eventOnSnapshot(id, async (data) => {
-        });
-        await ring.eventOnLivestream(id, async (data) => {
-        });
-        await ring.eventOnRefreshTokenUpdated(id, async (data) => {
-          if (data) {
-            if (data.newRefreshToken != adapter.config.refreshtoken) {
-              adapter.log.info('Old refresh token : ' + data.oldRefreshToken);
-              adapter.log.info('New refresh token : ' + data.newRefreshToken);
-              adapter.log.info('Two face authentication successfully set. Adapter is restarting!');
-              let obj = await adapter.getForeignObjectAsync('system.config');
-              let secret = obj && obj.native && obj.native.secret ? obj.native.secret : 'Zgfr56gFe87jJOM';
-              await adapter.extendForeignObjectAsync('system.adapter.' + adapter.namespace, {
-                native: {
-                  twofaceauth: false,
-                  email: adapter.config.email,
-                  password: encrypt(secret, adapter.config.password),
-                  refreshtoken: data.newRefreshToken
-                }
-              });
-            }
-          }
-        });
-        ringdevices[id] = true; // add Device to Array
+        await startDevice(id, dbids, j);
       } else {
-        setImmediate(async () => { try { await setInfo(ring, id); } catch (error) { adapter.log.error(error); } });
-        setImmediate(async () => { try { await setHealth(ring, id); } catch (error) { adapter.log.error(error); } });
-        setImmediate(async () => { try { await setHistory(ring, id); } catch (error) { adapter.log.error(error); } });
-        setImmediate(async () => { try { await setLight(ring, id, dbids[j], false); } catch (error) { adapter.log.error(error); } });
+        executeImmediateGuarded(async () => {await setInfo(ring, id);}, this);
+        executeImmediateGuarded(async () => {await setHealth(ring, id);}, this);
+        executeImmediateGuarded(async () => {await setHistory(ring, id);}, this);
+        executeImmediateGuarded(async() => { await setLight(ring, id, dbids[j], false);}, this);
         let deviceId = ring.getKind(id) + '_' + id;
         adapter.getObject(deviceId, (err, object) => {
           if (err || !object) {
@@ -794,11 +802,20 @@ async function poll_ringer() {
   try {
     await ringer();
   } catch (error) {
-    // 
+    //
   }
   setTimeout(async () => {
     await poll_ringer();
   }, pollsec * 1000);
+}
+function executeImmediateGuarded(f, thisContext) {
+  setImmediate(async () => {
+    try {
+      await f.bind(thisContext)();
+    } catch (error) {
+      adapter.log.error(error);
+    }
+  });
 }
 
 /**
@@ -813,14 +830,14 @@ async function main() {
     if (await setSentryLogging(adapter.config.sentry_enable)) return;
     await refreshToken();
     adapter.config.recordtime_livestream = adapter.config.recordtime_livestream || 0;
-    if(adapter.config.path === '') {
+    if (adapter.config.path === '') {
       adapter.config.path = path.join(snapshotDir, 'snapshot'); // '/Users/thorsten.stueben/Downloads/public'
     }
     adapter.config.filename_snapshot = adapter.config.filename_snapshot || 'snapshot.jpg';
     adapter.config.filename_livestream = adapter.config.filename_livestream || 'livestream.mp4';
     if (!fs.existsSync(adapter.config.path)) {
-      fs.mkdirSync(adapter.config.path, { recursive: true });
-      if(!isWin) {
+      fs.mkdirSync(adapter.config.path, {recursive: true});
+      if (!isWin) {
         fs.chmodSync(adapter.config.path, 508);
       }
     }
