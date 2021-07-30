@@ -1,14 +1,16 @@
 import {RingApi} from "ring-client-api/lib/api/api";
 import {RingAdapter} from "../main";
 import {Location} from "ring-client-api/lib/api/location";
-import {RingCamera, RingDevice} from "ring-client-api";
+import {RingCamera} from "ring-client-api";
 import {OwnRingDevice} from "./ownRingDevice";
 
 export class RingApiClient {
-    private devices: {[id: string]: OwnRingDevice} = {};
+    private devices: { [id: string]: OwnRingDevice } = {};
+
     get locations(): Location[] {
         return this._locations;
     }
+
     private _locations: Location[] = [];
 
     public validateRefreshToken(): boolean {
@@ -63,18 +65,18 @@ export class RingApiClient {
 
     public async init(): Promise<void> {
         await this.retrieveLocations();
-        if(this._locations.length === 0) {
+        if (this._locations.length === 0) {
             this.adapter.terminate(`We couldn't find any locations in your Ring Account`);
             return;
         }
 
-        for (let i = 0; i< this._locations.length; i++) {
+        for (let i = 0; i < this._locations.length; i++) {
             this.debug(`Process Location ${i}`);
             const loc = this._locations[i];
             const devices = await loc.getDevices();
             this.debug(`Recieved ${devices.length} Devices in Location ${i}`);
             this.debug(`Location has ${loc.cameras.length} Cameras`);
-            for(const c of loc.cameras) {
+            for (const c of loc.cameras) {
                 this.updateDev(c, i);
             }
         }
@@ -90,9 +92,9 @@ export class RingApiClient {
         this.adapter.log.debug(retrieveLocations);
     }
 
-    private updateDev(d: RingCamera, locationIndex = 0) {
+    private updateDev(d: RingCamera, locationIndex = 0): void {
         let ownDev: OwnRingDevice = this.devices[d.id];
-        if(ownDev === undefined) {
+        if (ownDev === undefined) {
             ownDev = new OwnRingDevice(d, locationIndex, this.adapter, this);
             this.devices[d.id] = ownDev;
         } else {

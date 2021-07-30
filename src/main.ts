@@ -124,7 +124,7 @@ export class RingAdapter extends utils.Adapter {
     // 	}
     // }
 
-    upsertState(id: string, common: Partial<ioBroker.StateCommon>, value: ioBroker.StateValue) {
+    upsertState(id: string, common: Partial<ioBroker.StateCommon>, value: ioBroker.StateValue): void {
         if (this.states[id] === value) {
             // Unchanged Value
             return;
@@ -133,7 +133,7 @@ export class RingAdapter extends utils.Adapter {
         this.upsertStateAsync(id, common, value);
     }
 
-    private async upsertStateAsync(id: string, common: Partial<ioBroker.StateCommon>, value: string | number | null | boolean) {
+    private async upsertStateAsync(id: string, common: Partial<ioBroker.StateCommon>, value: ioBroker.StateValue): Promise<void> {
         if (this.states[id] === undefined) {
             const splits = id.split(".");
             const device = splits[0];

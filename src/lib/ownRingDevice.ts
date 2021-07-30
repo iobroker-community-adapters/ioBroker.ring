@@ -1,5 +1,5 @@
 import {Location} from "ring-client-api/lib/api/location";
-import {CameraEvent, CameraEventResponse, CameraHealth, DingKind, RingCamera, RingCameraKind} from "ring-client-api";
+import {CameraEventResponse, CameraHealth, DingKind, RingCamera, RingCameraKind} from "ring-client-api";
 import {RingAdapter} from "../main";
 import {RingApiClient} from "./ringApiClient";
 import {
@@ -71,11 +71,11 @@ export class OwnRingDevice {
         this.updateHistory();
     }
 
-    public update(ringDevice: RingCamera) {
+    public update(ringDevice: RingCamera): void {
         this._ringDevice = ringDevice;
     }
 
-    private recreateDeviceObjectTree() {
+    private recreateDeviceObjectTree(): void {
         this.silly(`Recreate DeviceObjectTree for ${this.fullId}`);
         this._adapter.deleteDevice(this.fullId);
         this._adapter.createDevice(this.fullId, {
@@ -88,12 +88,12 @@ export class OwnRingDevice {
         }
     }
 
-    public updateHealth() {
+    public updateHealth(): void {
         this.silly(`Update Health for ${this.fullId}`);
         this._ringDevice.getHealth().then(this.updateHealthObject.bind(this))
     }
 
-    public async updateHistory() {
+    public async updateHistory(): Promise<void> {
         this.silly(`Update History for ${this.fullId}`);
         this._ringDevice.getEvents({limit: 50})
             .then(async (r: CameraEventResponse) => {
@@ -118,7 +118,7 @@ export class OwnRingDevice {
             });
     }
 
-    private updateDeviceInfoObject() {
+    private updateDeviceInfoObject(): void {
         this._adapter.upsertState(
             `${this.infoChannelId}.id`,
             COMMON_INFO_ID,
@@ -156,7 +156,7 @@ export class OwnRingDevice {
         );
     }
 
-    private updateHistoryObject(lastAction: LastAction) {
+    private updateHistoryObject(lastAction: LastAction): void {
         this._adapter.upsertState(
             `${this.historyChannelId}.created_at`,
             COMMON_HISTORY_CREATED_AT,
@@ -174,7 +174,7 @@ export class OwnRingDevice {
         );
     }
 
-    private updateHealthObject(health: CameraHealth) {
+    private updateHealthObject(health: CameraHealth): void {
         this._adapter.upsertState(
             `${this.infoChannelId}.battery_percentage`,
             COMMON_INFO_BATTERY_PERCENTAGE,
@@ -245,11 +245,11 @@ export class OwnRingDevice {
         return "unknown";
     }
 
-    private debug(message: string) {
+    private debug(message: string): void {
         this._adapter.log.debug(message);
     }
 
-    private silly(message: string) {
+    private silly(message: string): void {
         this._adapter.log.silly(message);
     }
 }
