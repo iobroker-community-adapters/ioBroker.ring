@@ -6,6 +6,7 @@ import {OwnRingDevice} from "./ownRingDevice";
 
 export class RingApiClient {
     private devices: { [id: string]: OwnRingDevice } = {};
+    private interval: ioBroker.Interval | undefined;
 
     get locations(): Location[] {
         return this._locations;
@@ -51,18 +52,6 @@ export class RingApiClient {
         this.adapter = adapter;
     }
 
-    private async retrieveLocations(): Promise<void> {
-        this.debug(`Retrieve Locations`);
-        await this.api.getLocations()
-            .then(
-                (locs) => {
-                    this.debug(`Recieved Locations`);
-                    this._locations = locs;
-                },
-                this.handleApiError
-            );
-    }
-
     public async init(): Promise<void> {
         await this.retrieveLocations();
         if (this._locations.length === 0) {
@@ -70,6 +59,14 @@ export class RingApiClient {
             return;
         }
 
+        this.refreshAll();
+        this.interval = this.adapter.setInterval(() => {
+            this.refreshAll();
+        }, 60000);
+    }
+
+    public async refreshAll(): Promise<void> {
+        this.debug(`Refresh all Cameras`);
         for (let i = 0; i < this._locations.length; i++) {
             this.debug(`Process Location ${i}`);
             const loc = this._locations[i];
@@ -82,6 +79,38 @@ export class RingApiClient {
         }
     }
 
+
+
+    public processUserInput(deviceID: string, channelID: string, stateID: string, state: ioBroker.State): void {
+        if(!this.devices[deviceID]) {
+            this.adapter.log.error(`Recieved State Change on Subscribed State, for unknown Device "${deviceID}"`);
+            return;
+        }
+
+        const targetDevice = this.devices[deviceID];
+
+        targetDevice.processUserInput(channelID, stateID, state);
+    }
+
+    public unload(): void {
+        if(this.interval) {
+            this.adapter.clearInterval(this.interval);
+            this.interval = undefined;
+        }
+    }
+
+    private async retrieveLocations(): Promise<void> {
+        this.debug(`Retrieve Locations`);
+        await this.api.getLocations()
+            .then(
+                (locs) => {
+                    this.debug(`Recieved Locations`);
+                    this._locations = locs;
+                },
+                this.handleApiError
+            );
+    }
+
     private handleApiError(reason: any): void {
         this.adapter.log.error(`Api Call failed`);
         this.adapter.log.debug(`Failure reason:\n${reason}`);
@@ -92,13 +121,14 @@ export class RingApiClient {
         this.adapter.log.debug(retrieveLocations);
     }
 
-    private updateDev(d: RingCamera, locationIndex = 0): void {
-        let ownDev: OwnRingDevice = this.devices[d.id];
+    private updateDev(device: RingCamera, locationIndex = 0): void {
+        const fullID = OwnRingDevice.getFullId(device, this.adapter);
+        let ownDev: OwnRingDevice = this.devices[fullID];
         if (ownDev === undefined) {
-            ownDev = new OwnRingDevice(d, locationIndex, this.adapter, this);
-            this.devices[d.id] = ownDev;
+            ownDev = new OwnRingDevice(device, locationIndex, this.adapter, this);
+            this.devices[fullID] = ownDev;
         } else {
-            ownDev.update(d);
+            ownDev.update(device);
         }
     }
 }

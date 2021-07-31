@@ -72,6 +72,10 @@ class RingAdapter extends utils.Adapter {
                 fs.chmodSync(this.config.path, 508);
             }
         }
+        const objectDevices = this.getDevicesAsync();
+        for (const objectDevice in objectDevices) {
+            this.deleteDevice(objectDevice);
+        }
         this.log.info(`Initializing Api Client`);
         await this.apiClient.init();
     }
@@ -85,6 +89,9 @@ class RingAdapter extends utils.Adapter {
             // clearTimeout(timeout2);
             // ...
             // clearInterval(interval1);
+            if (this.apiClient) {
+                this.apiClient.unload();
+            }
             callback();
         }
         catch (e) {
@@ -109,14 +116,22 @@ class RingAdapter extends utils.Adapter {
      * Is called if a subscribed state changes
      */
     onStateChange(id, state) {
-        if (state) {
-            // The state was changed
-            this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-        }
-        else {
+        if (!state || !this.apiClient) {
             // The state was deleted
-            this.log.info(`state ${id} deleted`);
+            this.log.silly(`state ${id} deleted`);
+            return;
         }
+        // The state was changed
+        this.log.silly(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+        const splits = id.split(".");
+        const deviceID = splits[2];
+        let stateID = splits[3];
+        let channelID = "";
+        if (splits.length === 5) {
+            channelID = splits[3];
+            stateID = splits[4];
+        }
+        this.apiClient.processUserInput(deviceID, channelID, stateID, state);
     }
     // If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
     // /**
@@ -133,28 +148,34 @@ class RingAdapter extends utils.Adapter {
     // 		}
     // 	}
     // }
-    upsertState(id, common, value) {
+    upsertState(id, common, value, subscribe = false) {
         if (this.states[id] === value) {
             // Unchanged Value
             return;
         }
         // noinspection JSIgnoredPromiseFromCall
-        this.upsertStateAsync(id, common, value);
+        this.upsertStateAsync(id, common, value, subscribe);
     }
-    async upsertStateAsync(id, common, value) {
-        if (this.states[id] === undefined) {
-            const splits = id.split(".");
-            const device = splits[0];
-            let channel = "";
-            let stateName = splits[1];
-            if (splits.length === 3) {
-                channel = splits[1];
-                stateName = splits[2];
-            }
-            await this.createStateAsync(device, channel, stateName, common);
+    async upsertStateAsync(id, common, value, subscribe = false) {
+        if (this.states[id] !== undefined) {
+            this.states[id] = value;
+            await this.setStateAsync(id, value);
+            return;
         }
+        const splits = id.split(".");
+        const device = splits[0];
+        let channel = "";
+        let stateName = splits[1];
+        if (splits.length === 3) {
+            channel = splits[1];
+            stateName = splits[2];
+        }
+        await this.createStateAsync(device, channel, stateName, common);
         this.states[id] = value;
         await this.setStateAsync(id, value);
+        if (subscribe) {
+            await this.subscribeStatesAsync(id);
+        }
     }
 }
 exports.RingAdapter = RingAdapter;

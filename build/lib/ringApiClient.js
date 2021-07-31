@@ -40,20 +40,19 @@ class RingApiClient {
         }
         return this._api;
     }
-    async retrieveLocations() {
-        this.debug(`Retrieve Locations`);
-        await this.api.getLocations()
-            .then((locs) => {
-            this.debug(`Recieved Locations`);
-            this._locations = locs;
-        }, this.handleApiError);
-    }
     async init() {
         await this.retrieveLocations();
         if (this._locations.length === 0) {
             this.adapter.terminate(`We couldn't find any locations in your Ring Account`);
             return;
         }
+        this.refreshAll();
+        this.interval = this.adapter.setInterval(() => {
+            this.refreshAll();
+        }, 60000);
+    }
+    async refreshAll() {
+        this.debug(`Refresh all Cameras`);
         for (let i = 0; i < this._locations.length; i++) {
             this.debug(`Process Location ${i}`);
             const loc = this._locations[i];
@@ -65,6 +64,28 @@ class RingApiClient {
             }
         }
     }
+    processUserInput(deviceID, channelID, stateID, state) {
+        if (!this.devices[deviceID]) {
+            this.adapter.log.error(`Recieved State Change on Subscribed State, for unknown Device "${deviceID}"`);
+            return;
+        }
+        const targetDevice = this.devices[deviceID];
+        targetDevice.processUserInput(channelID, stateID, state);
+    }
+    unload() {
+        if (this.interval) {
+            this.adapter.clearInterval(this.interval);
+            this.interval = undefined;
+        }
+    }
+    async retrieveLocations() {
+        this.debug(`Retrieve Locations`);
+        await this.api.getLocations()
+            .then((locs) => {
+            this.debug(`Recieved Locations`);
+            this._locations = locs;
+        }, this.handleApiError);
+    }
     handleApiError(reason) {
         this.adapter.log.error(`Api Call failed`);
         this.adapter.log.debug(`Failure reason:\n${reason}`);
@@ -73,14 +94,15 @@ class RingApiClient {
     debug(retrieveLocations) {
         this.adapter.log.debug(retrieveLocations);
     }
-    updateDev(d, locationIndex = 0) {
-        let ownDev = this.devices[d.id];
+    updateDev(device, locationIndex = 0) {
+        const fullID = ownRingDevice_1.OwnRingDevice.getFullId(device, this.adapter);
+        let ownDev = this.devices[fullID];
         if (ownDev === undefined) {
-            ownDev = new ownRingDevice_1.OwnRingDevice(d, locationIndex, this.adapter, this);
-            this.devices[d.id] = ownDev;
+            ownDev = new ownRingDevice_1.OwnRingDevice(device, locationIndex, this.adapter, this);
+            this.devices[fullID] = ownDev;
         }
         else {
-            ownDev.update(d);
+            ownDev.update(device);
         }
     }
 }

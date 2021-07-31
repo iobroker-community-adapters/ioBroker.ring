@@ -93,6 +93,21 @@ export const COMMON_INFO_HAS_SIREN: Partial<ioBroker.StateCommon> = {
     read: true,
     write: false
 }
+export const COMMON_LIGHT_SWITCH: Partial<ioBroker.StateCommon> = {
+    type: "boolean",
+    role: "switch",
+    name: "Set Floodlight",
+    read: false,
+    write: true
+}
+export const COMMON_LIGHT_STATE: Partial<ioBroker.StateCommon> = {
+    type: "boolean",
+    role: "state",
+    name: "Floodlight State",
+    read: true,
+    write: false
+}
+
 
 export const COMMON_HISTORY_URL: Partial<ioBroker.StateCommon> = {
     type: "string",
@@ -115,3 +130,9 @@ export const COMMON_HISTORY_KIND: Partial<ioBroker.StateCommon> = {
     read: true,
     write: false
 }
+export const CHANNEL_NAME_INFO = "Info";
+export const CHANNEL_NAME_LIGHT = "Light";
+export const CHANNEL_NAME_HISTORY = "History";
+
+
+export const STATE_ID_LIGHT_SWITCH = "light_switch";

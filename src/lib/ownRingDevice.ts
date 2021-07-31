@@ -3,6 +3,8 @@ import {CameraEventResponse, CameraHealth, DingKind, RingCamera, RingCameraKind}
 import {RingAdapter} from "../main";
 import {RingApiClient} from "./ringApiClient";
 import {
+    CHANNEL_NAME_HISTORY,
+    CHANNEL_NAME_INFO, CHANNEL_NAME_LIGHT,
     COMMON_HISTORY_CREATED_AT, COMMON_HISTORY_KIND,
     COMMON_HISTORY_URL,
     COMMON_INFO_BATTERY_PERCENTAGE,
@@ -14,11 +16,53 @@ import {
     COMMON_INFO_KIND,
     COMMON_INFO_LATEST_SIGNAL_CATEGORY,
     COMMON_INFO_LATEST_SIGNAL_STRENGTH,
-    COMMON_INFO_WIFI_NAME
+    COMMON_INFO_WIFI_NAME, COMMON_LIGHT_STATE, COMMON_LIGHT_SWITCH, STATE_ID_LIGHT_SWITCH
 } from "./constants";
 import {LastAction} from "./lastAction";
 
 export class OwnRingDevice {
+    public static getFullId(device: RingCamera, adapter: RingAdapter): string {
+        return `${this.evaluateKind(device, adapter)}_${device.id}`;
+    }
+
+    public static evaluateKind(device: RingCamera, adapter: RingAdapter): string {
+        switch (device.deviceType) {
+            case RingCameraKind.doorbot:
+            case RingCameraKind.doorbell:
+            case RingCameraKind.doorbell_v3:
+            case RingCameraKind.doorbell_v4:
+            case RingCameraKind.doorbell_v5:
+            case RingCameraKind.doorbell_portal:
+            case RingCameraKind.doorbell_scallop:
+            case RingCameraKind.doorbell_scallop_lite:
+            case RingCameraKind.hp_cam_v1:
+            case RingCameraKind.hp_cam_v2:
+            case RingCameraKind.lpd_v1:
+            case RingCameraKind.lpd_v2:
+            case RingCameraKind.floodlight_v1:
+            case RingCameraKind.floodlight_v2:
+            case RingCameraKind.spotlightw_v2:
+            case RingCameraKind.jbox_v1:
+                return `doorbell`;
+            case RingCameraKind.cocoa_camera:
+            case RingCameraKind.cocoa_doorbell:
+                return `cocoa`;
+            case RingCameraKind.stickup_cam:
+            case RingCameraKind.stickup_cam_v3:
+            case RingCameraKind.stickup_cam_v4:
+            case RingCameraKind.stickup_cam_mini:
+            case RingCameraKind.stickup_cam_lunar:
+            case RingCameraKind.stickup_cam_elite:
+                return `stickup`
+            default:
+                adapter.log.error(
+                    `Device with Type ${device.deviceType} not yet supported, please inform dev Team via Github`
+                );
+                adapter.log.debug(`Unsupported Device Info: ${JSON.stringify(device)}`);
+        }
+        return "unknown";
+    }
+
     private fullId: string;
     private infoChannelId: string;
     private historyChannelId: string;
@@ -57,12 +101,13 @@ export class OwnRingDevice {
         this._locationIndex = locationIndex;
         this._client = apiClient;
         this.path = `${this._locationIndex}.`
-        this.kind = this.evaluateKind();
+        this.kind = OwnRingDevice.evaluateKind(ringDevice, adapter);
         this.shortId = `${ringDevice.id}`;
         this.fullId = `${this.kind}_${this.shortId}`;
-        this.infoChannelId = `${this.fullId}.Info`;
-        this.historyChannelId = `${this.fullId}.History`;
-        this.lightChannelId = `${this.fullId}.Light`;
+        this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
+        this.historyChannelId = `${this.fullId}.${CHANNEL_NAME_HISTORY}`;
+        this.lightChannelId = `${this.fullId}.${CHANNEL_NAME_LIGHT}`;
+
         this.recreateDeviceObjectTree();
         this.updateDeviceInfoObject();
         this.updateHealth();
@@ -71,21 +116,54 @@ export class OwnRingDevice {
         this.updateHistory();
     }
 
-    public update(ringDevice: RingCamera): void {
-        this._ringDevice = ringDevice;
+
+    public processUserInput(channelID: string, stateID: string, state: ioBroker.State): void {
+        switch (channelID) {
+            case "Light":
+                if (!this._ringDevice.hasLight) {
+                    return;
+                }
+                if (stateID === STATE_ID_LIGHT_SWITCH) {
+                    const targetVal = state.val as boolean;
+                    this._adapter.log.debug(`Set light for ${this.shortId} to value ${targetVal}`)
+                    this._ringDevice.setLight(targetVal).then((success) => {
+                        if(success) {
+                            this._adapter.upsertState(
+                                `${this.lightChannelId}.light_state`,
+                                COMMON_LIGHT_STATE,
+                                targetVal
+                            );
+                        }
+                    });
+                } else {
+                    this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
+                }
+                break;
+            default:
+                this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
+        }
     }
 
     private recreateDeviceObjectTree(): void {
         this.silly(`Recreate DeviceObjectTree for ${this.fullId}`);
-        this._adapter.deleteDevice(this.fullId);
         this._adapter.createDevice(this.fullId, {
             name: `Device ${this.shortId} ("${this._ringDevice.data.description}")`
         });
-        this._adapter.createChannel(this.infoChannelId, `Info ${this.shortId}`);
-        this._adapter.createChannel(this.historyChannelId, `History`);
+        this._adapter.createChannel(this.fullId, CHANNEL_NAME_INFO, {name: `Info ${this.shortId}`});
+        this._adapter.createChannel(this.fullId, CHANNEL_NAME_HISTORY);
         if (this._ringDevice.hasLight) {
-            this._adapter.createChannel(this.lightChannelId, `Light ${this.shortId}`);
+            this.debug(`Device with Light Capabilities detected "${this.fullId}"`);
+            this._adapter.createChannel(this.fullId, CHANNEL_NAME_LIGHT, {name:`Light ${this.shortId}`});
         }
+    }
+
+    public update(ringDevice: RingCamera): void {
+        this.debug(`Recieved Update for ${this.fullId}`);
+        this._ringDevice = ringDevice;
+        this.updateDeviceInfoObject();
+        this.updateHealth();
+        // noinspection JSIgnoredPromiseFromCall
+        this.updateHistory();
     }
 
     public updateHealth(): void {
@@ -175,6 +253,7 @@ export class OwnRingDevice {
     }
 
     private updateHealthObject(health: CameraHealth): void {
+        this.debug(`Update Health Callback for "${this.fullId}"`);
         this._adapter.upsertState(
             `${this.infoChannelId}.battery_percentage`,
             COMMON_INFO_BATTERY_PERCENTAGE,
@@ -205,44 +284,22 @@ export class OwnRingDevice {
             COMMON_INFO_FIRMWARE,
             health.firmware
         );
-    }
-
-    private evaluateKind(): string {
-        switch (this.ringDevice.deviceType) {
-            case RingCameraKind.doorbot:
-            case RingCameraKind.doorbell:
-            case RingCameraKind.doorbell_v3:
-            case RingCameraKind.doorbell_v4:
-            case RingCameraKind.doorbell_v5:
-            case RingCameraKind.doorbell_portal:
-            case RingCameraKind.doorbell_scallop:
-            case RingCameraKind.doorbell_scallop_lite:
-            case RingCameraKind.hp_cam_v1:
-            case RingCameraKind.hp_cam_v2:
-            case RingCameraKind.lpd_v1:
-            case RingCameraKind.lpd_v2:
-            case RingCameraKind.floodlight_v1:
-            case RingCameraKind.floodlight_v2:
-            case RingCameraKind.spotlightw_v2:
-            case RingCameraKind.jbox_v1:
-                return `doorbell`;
-            case RingCameraKind.cocoa_camera:
-            case RingCameraKind.cocoa_doorbell:
-                return `cocoa`;
-            case RingCameraKind.stickup_cam:
-            case RingCameraKind.stickup_cam_v3:
-            case RingCameraKind.stickup_cam_v4:
-            case RingCameraKind.stickup_cam_mini:
-            case RingCameraKind.stickup_cam_lunar:
-            case RingCameraKind.stickup_cam_elite:
-                return `stickup`
-            default:
-                this._adapter.log.error(
-                    `Device with Type ${this.ringDevice.deviceType} not yet supported, please inform dev Team via Github`
-                );
-                this._adapter.log.debug(`Unsupported Device Info: ${JSON.stringify(this._ringDevice)}`);
+        if (this._ringDevice.hasLight) {
+            // this.silly(JSON.stringify(this._ringDevice.data));
+            const floodlightOn = (this._ringDevice.data as any).health.floodlight_on as boolean;
+            this.debug(`Update Light within Health Update for "${this.fullId}" FLoodlight is ${floodlightOn}`);
+            this._adapter.upsertState(
+                `${this.lightChannelId}.light_state`,
+                COMMON_LIGHT_STATE,
+                floodlightOn
+            );
+            this._adapter.upsertState(
+                `${this.lightChannelId}.${STATE_ID_LIGHT_SWITCH}`,
+                COMMON_LIGHT_SWITCH,
+                floodlightOn,
+                true
+            );
         }
-        return "unknown";
     }
 
     private debug(message: string): void {

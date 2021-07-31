@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.COMMON_HISTORY_KIND = exports.COMMON_HISTORY_CREATED_AT = exports.COMMON_HISTORY_URL = exports.COMMON_INFO_HAS_SIREN = exports.COMMON_INFO_HAS_BATTERY = exports.COMMON_INFO_HAS_LIGHT = exports.COMMON_INFO_FIRMWARE = exports.COMMON_INFO_LATEST_SIGNAL_CATEGORY = exports.COMMON_INFO_LATEST_SIGNAL_STRENGTH = exports.COMMON_INFO_WIFI_NAME = exports.COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY = exports.COMMON_INFO_BATTERY_PERCENTAGE = exports.COMMON_INFO_KIND = exports.COMMON_INFO_EXTERNAL_CONNECTION = exports.COMMON_INFO_DESCRIPTION = exports.COMMON_INFO_ID = void 0;
+exports.STATE_ID_LIGHT_SWITCH = exports.CHANNEL_NAME_HISTORY = exports.CHANNEL_NAME_LIGHT = exports.CHANNEL_NAME_INFO = exports.COMMON_HISTORY_KIND = exports.COMMON_HISTORY_CREATED_AT = exports.COMMON_HISTORY_URL = exports.COMMON_LIGHT_STATE = exports.COMMON_LIGHT_SWITCH = exports.COMMON_INFO_HAS_SIREN = exports.COMMON_INFO_HAS_BATTERY = exports.COMMON_INFO_HAS_LIGHT = exports.COMMON_INFO_FIRMWARE = exports.COMMON_INFO_LATEST_SIGNAL_CATEGORY = exports.COMMON_INFO_LATEST_SIGNAL_STRENGTH = exports.COMMON_INFO_WIFI_NAME = exports.COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY = exports.COMMON_INFO_BATTERY_PERCENTAGE = exports.COMMON_INFO_KIND = exports.COMMON_INFO_EXTERNAL_CONNECTION = exports.COMMON_INFO_DESCRIPTION = exports.COMMON_INFO_ID = void 0;
 exports.COMMON_INFO_ID = {
     type: "number",
     role: "state",
@@ -96,6 +96,20 @@ exports.COMMON_INFO_HAS_SIREN = {
     read: true,
     write: false
 };
+exports.COMMON_LIGHT_SWITCH = {
+    type: "boolean",
+    role: "switch",
+    name: "Set Floodlight",
+    read: false,
+    write: true
+};
+exports.COMMON_LIGHT_STATE = {
+    type: "boolean",
+    role: "state",
+    name: "Floodlight State",
+    read: true,
+    write: false
+};
 exports.COMMON_HISTORY_URL = {
     type: "string",
     role: "url",
@@ -117,4 +131,8 @@ exports.COMMON_HISTORY_KIND = {
     read: true,
     write: false
 };
+exports.CHANNEL_NAME_INFO = "Info";
+exports.CHANNEL_NAME_LIGHT = "Light";
+exports.CHANNEL_NAME_HISTORY = "History";
+exports.STATE_ID_LIGHT_SWITCH = "light_switch";
 //# sourceMappingURL=constants.js.map
