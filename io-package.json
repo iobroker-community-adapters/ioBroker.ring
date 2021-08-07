@@ -1,9 +1,21 @@
 {
     "common": {
         "name": "ring",
-        "version": "1.2.3",
+        "version": "1.2.4-0",
         "title": "Ring",
         "news": {
+            "1.2.4-0": {
+                "en": "Refactoring\nUpdate packages",
+                "de": "Refactoring\nPakete aktualisieren",
+                "ru": "Рефакторинг\nПакеты обновлений",
+                "pt": "Reestruturação\nPacotes de atualização",
+                "nl": "Refactoring\nPakketten bijwerken",
+                "fr": "Refactorisation\nMettre à jour les packages",
+                "it": "Refactoring\nAggiorna pacchetti",
+                "es": "Refactorización\nActualizar paquetes",
+                "pl": "Refaktoryzacja\nZaktualizuj pakiety",
+                "zh-cn": "重构\n更新包"
+            },
             "1.2.3": {
                 "en": "Update packages\nFix compatibility issues with new ring api",
                 "de": "Pakete aktualisieren\nKompatibilitätsprobleme mit der neuen Ring-API beheben",
@@ -183,10 +195,6 @@
             "1.0.2": {
                 "en": "More debug information",
                 "de": "Debug Ansicht erweiteret"
-            },
-            "1.0.1": {
-                "en": "Support of compact mode",
-                "de": "Compact mode Unterstützung"
             }
         },
         "titleLang": {
