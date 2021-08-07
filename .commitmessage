@@ -1,4 +1,4 @@
-chore: release v1.2.3
+chore: release v1.2.4-0
 
+Refactoring
 Update packages
-Fix compatibility issues with new ring api
