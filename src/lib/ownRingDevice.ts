@@ -1,24 +1,37 @@
+import path from "path";
 import {Location} from "ring-client-api/lib/api/location";
-import {CameraEventResponse, CameraHealth, DingKind, RingCamera, RingCameraKind} from "ring-client-api";
+import {CameraEvent, CameraEventResponse, CameraHealth, DingKind, RingCamera, RingCameraKind} from "ring-client-api";
 import {RingAdapter} from "../main";
 import {RingApiClient} from "./ringApiClient";
 import {
     CHANNEL_NAME_HISTORY,
-    CHANNEL_NAME_INFO, CHANNEL_NAME_LIGHT,
-    COMMON_HISTORY_CREATED_AT, COMMON_HISTORY_KIND,
+    CHANNEL_NAME_INFO,
+    CHANNEL_NAME_LIGHT,
+    CHANNEL_NAME_SNAPSHOT,
+    COMMON_HISTORY_CREATED_AT,
+    COMMON_HISTORY_KIND,
     COMMON_HISTORY_URL,
     COMMON_INFO_BATTERY_PERCENTAGE,
     COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY,
     COMMON_INFO_DESCRIPTION,
     COMMON_INFO_EXTERNAL_CONNECTION,
-    COMMON_INFO_FIRMWARE, COMMON_INFO_HAS_BATTERY, COMMON_INFO_HAS_LIGHT, COMMON_INFO_HAS_SIREN,
+    COMMON_INFO_FIRMWARE,
+    COMMON_INFO_HAS_BATTERY,
+    COMMON_INFO_HAS_LIGHT,
+    COMMON_INFO_HAS_SIREN,
     COMMON_INFO_ID,
     COMMON_INFO_KIND,
     COMMON_INFO_LATEST_SIGNAL_CATEGORY,
     COMMON_INFO_LATEST_SIGNAL_STRENGTH,
-    COMMON_INFO_WIFI_NAME, COMMON_LIGHT_STATE, COMMON_LIGHT_SWITCH, STATE_ID_LIGHT_SWITCH
+    COMMON_INFO_WIFI_NAME,
+    COMMON_LIGHT_STATE,
+    COMMON_LIGHT_SWITCH,
+    COMMON_SNAPSHOT_FILE, COMMON_SNAPSHOT_REQUEST, COMMON_SNAPSHOT_SNAPSHOT,
+    COMMON_SNAPSHOT_URL,
+    STATE_ID_LIGHT_SWITCH, STATE_ID_SNAPSHOT_REQUEST
 } from "./constants";
 import {LastAction} from "./lastAction";
+import * as fs from "fs";
 
 export class OwnRingDevice {
     public static getFullId(device: RingCamera, adapter: RingAdapter): string {
@@ -68,6 +81,7 @@ export class OwnRingDevice {
     private historyChannelId: string;
     private kind: string;
     private lightChannelId: string;
+    private snapshotChannelId: string;
     private path: string;
     private shortId: string;
 
@@ -76,6 +90,20 @@ export class OwnRingDevice {
     private _locationIndex: number;
     private _ringDevice: RingCamera;
     private lastAction: LastAction | undefined;
+    private _requestingSnapshot = false;
+    private _lastSnapShotUrl = "";
+    private _lastSnapShotDir = "";
+    private _lastSnapshotImage: Buffer | null = null;
+    private _lastSnapshotTimestamp = 0;
+    private _snapshotCount = 0;
+
+    get lastSnapShotDir(): string {
+        return this._lastSnapShotDir;
+    }
+
+    get lastSnapShotUrl(): string {
+        return this._lastSnapShotUrl;
+    }
 
 
     get locationIndex(): number {
@@ -107,6 +135,7 @@ export class OwnRingDevice {
         this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
         this.historyChannelId = `${this.fullId}.${CHANNEL_NAME_HISTORY}`;
         this.lightChannelId = `${this.fullId}.${CHANNEL_NAME_LIGHT}`;
+        this.snapshotChannelId = `${this.fullId}.${CHANNEL_NAME_SNAPSHOT}`;
 
         this.recreateDeviceObjectTree();
         this.updateDeviceInfoObject();
@@ -114,6 +143,7 @@ export class OwnRingDevice {
 
         // noinspection JSIgnoredPromiseFromCall
         this.updateHistory();
+        this.updateSnapshot();
     }
 
 
@@ -127,7 +157,7 @@ export class OwnRingDevice {
                     const targetVal = state.val as boolean;
                     this._adapter.log.debug(`Set light for ${this.shortId} to value ${targetVal}`)
                     this._ringDevice.setLight(targetVal).then((success) => {
-                        if(success) {
+                        if (success) {
                             this._adapter.upsertState(
                                 `${this.lightChannelId}.light_state`,
                                 COMMON_LIGHT_STATE,
@@ -135,6 +165,16 @@ export class OwnRingDevice {
                             );
                         }
                     });
+                } else {
+                    this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
+                }
+                break;
+            case "Snapshot":
+                if (stateID === STATE_ID_SNAPSHOT_REQUEST) {
+                    const targetVal = state.val as boolean;
+                    this._adapter.log.debug(`Get Snapshot request for ${this.shortId} to value ${targetVal}`)
+                    // noinspection JSIgnoredPromiseFromCall
+                    this.updateSnapshot();
                 } else {
                     this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
                 }
@@ -150,10 +190,11 @@ export class OwnRingDevice {
             name: `Device ${this.shortId} ("${this._ringDevice.data.description}")`
         });
         this._adapter.createChannel(this.fullId, CHANNEL_NAME_INFO, {name: `Info ${this.shortId}`});
+        this._adapter.createChannel(this.fullId, CHANNEL_NAME_SNAPSHOT);
         this._adapter.createChannel(this.fullId, CHANNEL_NAME_HISTORY);
         if (this._ringDevice.hasLight) {
             this.debug(`Device with Light Capabilities detected "${this.fullId}"`);
-            this._adapter.createChannel(this.fullId, CHANNEL_NAME_LIGHT, {name:`Light ${this.shortId}`});
+            this._adapter.createChannel(this.fullId, CHANNEL_NAME_LIGHT, {name: `Light ${this.shortId}`});
         }
     }
 
@@ -164,6 +205,54 @@ export class OwnRingDevice {
         this.updateHealth();
         // noinspection JSIgnoredPromiseFromCall
         this.updateHistory();
+        this.updateSnapshotObject();
+    }
+
+    public async updateSnapshot(): Promise<void> {
+        let fullPath: string = path.join(this._adapter.config.path, this._adapter.config.filename_snapshot);
+        fullPath = fullPath
+            .replace("%d", String(Date.now()))
+            .replace("%n", String(++this._snapshotCount))
+            .replace("%i", this.shortId)
+            .replace("%k", this.kind);
+        const pathname = path.dirname(fullPath);
+        const filename = path.basename(fullPath);
+        if (!fs.existsSync(pathname)) {
+            this._adapter.mkDir(null, pathname, {recursive: true}, (e) => {
+                this.info(`Error while creating directory --> Abort`);
+                this.debug(`Error message ${e?.message}\nStack: ${e?.stack}`);
+                return;
+            });
+        }
+        if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
+        if(this._ringDevice.isOffline) {
+            this.info(
+                `Device ${this.fullId} ("${this._ringDevice.data.description}") is offline --> won't take Snapshot
+            `);
+            return;
+        }
+        const image = await this._ringDevice.getSnapshot();
+        if (!image) {
+            this.info("Could not create snapshot");
+            return;
+        }
+
+        await fs.writeFileSync(fullPath, image);
+        const vis = await this._adapter.getForeignObjectAsync("system.adapter.web.0");
+        if (vis && vis.native) {
+            const secure = vis.native.secure ? "https" : "http";
+            this._lastSnapShotUrl = `${secure}://${this._adapter.host}:${vis.native.port
+            }/${this._adapter.namespace}/${this.fullId}/${filename}`;
+        }
+        if (this.lastSnapShotDir !== "" && this._adapter.config.del_old_snapshot) {
+            await this._adapter.delFileAsync(this._adapter.namespace, `${this.lastSnapShotDir}`);
+        }
+        this._lastSnapShotDir = fullPath;
+        this._requestingSnapshot = false;
+        this._lastSnapshotImage = image;
+        this._lastSnapshotTimestamp = Date.now();
+        this.updateSnapshotObject();
+        this.debug(`Done creating snapshot to ${fullPath}`);
     }
 
     public updateHealth(): void {
@@ -176,7 +265,7 @@ export class OwnRingDevice {
         this._ringDevice.getEvents({limit: 50})
             .then(async (r: CameraEventResponse) => {
                 this.silly(`Recieved Event History for ${this.fullId}`);
-                const lastAction = r.events.find((event) => {
+                const lastAction = r.events.find((event: CameraEvent) => {
                     const kind: DingKind = event.kind;
                     switch (kind) {
                         case "motion":
@@ -252,6 +341,36 @@ export class OwnRingDevice {
         );
     }
 
+    // noinspection JSIgnoredPromiseFromCall
+    private updateSnapshotObject(): void {
+        this.debug(`Update Snapshot Object for "${this.fullId}"`);
+        if (this._lastSnapshotImage) {
+            // noinspection JSIgnoredPromiseFromCall
+            this._adapter.upsertFile(
+                `${this.snapshotChannelId}.snapshot`,
+                COMMON_SNAPSHOT_SNAPSHOT,
+                this._lastSnapshotImage,
+                this._lastSnapshotTimestamp
+            );
+        }
+        this._adapter.upsertState(
+            `${this.snapshotChannelId}.snapshot_file`,
+            COMMON_SNAPSHOT_FILE,
+            this._lastSnapShotDir
+        );
+        this._adapter.upsertState(
+            `${this.snapshotChannelId}.snapshot_url`,
+            COMMON_SNAPSHOT_URL,
+            this._lastSnapShotUrl
+        );
+        this._adapter.upsertState(
+            `${this.snapshotChannelId}.${STATE_ID_SNAPSHOT_REQUEST}`,
+            COMMON_SNAPSHOT_REQUEST,
+            this._requestingSnapshot,
+            true
+        );
+    }
+
     private updateHealthObject(health: CameraHealth): void {
         this.debug(`Update Health Callback for "${this.fullId}"`);
         this._adapter.upsertState(
@@ -308,6 +427,10 @@ export class OwnRingDevice {
 
     private silly(message: string): void {
         this._adapter.log.silly(message);
+    }
+
+    private info(message: string): void {
+        this._adapter.log.info(message);
     }
 }
 

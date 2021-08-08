@@ -1,5 +1,5 @@
 export const COMMON_INFO_ID: Partial<ioBroker.StateCommon> = {
-    type: "number",
+    type: "string",
     role: "state",
     name: "Device ID",
     read: true,
@@ -130,9 +130,39 @@ export const COMMON_HISTORY_KIND: Partial<ioBroker.StateCommon> = {
     read: true,
     write: false
 }
+export const COMMON_SNAPSHOT_URL: Partial<ioBroker.StateCommon> = {
+    type: "string",
+    role: "url",
+    name: "Snapshot URL",
+    read: true,
+    write: false
+}
+export const COMMON_SNAPSHOT_FILE: Partial<ioBroker.StateCommon> = {
+    type: "string",
+    role: "url",
+    name: "Snapshot file",
+    read: true,
+    write: false
+}
+export const COMMON_SNAPSHOT_REQUEST: Partial<ioBroker.StateCommon> = {
+    type: "boolean",
+    role: "button",
+    name: "New Snapshot Request",
+    read: false,
+    write: true
+}
+export const COMMON_SNAPSHOT_SNAPSHOT: Partial<ioBroker.StateCommon> = {
+    type: "file",
+    role: "file",
+    name: "The current snapshot",
+    read: true,
+    write: true
+}
 export const CHANNEL_NAME_INFO = "Info";
-export const CHANNEL_NAME_LIGHT = "Light";
 export const CHANNEL_NAME_HISTORY = "History";
+export const CHANNEL_NAME_LIGHT = "Light";
+export const CHANNEL_NAME_SNAPSHOT = "Snapshot";
 
 
 export const STATE_ID_LIGHT_SWITCH = "light_switch";
+export const STATE_ID_SNAPSHOT_REQUEST = "snapshot_request";

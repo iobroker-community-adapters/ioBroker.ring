@@ -42,6 +42,7 @@ class RingAdapter extends utils.Adapter {
         });
         this.isWindows = process.platform.startsWith("win");
         this.states = {};
+        this.initializedMetaObjects = {};
         this.on("ready", this.onReady.bind(this));
         this.on("stateChange", this.onStateChange.bind(this));
         // this.on("objectChange", this.onObjectChange.bind(this));
@@ -60,10 +61,16 @@ class RingAdapter extends utils.Adapter {
             this.terminate(`Invalid Refresh Token, please follow steps provided within Readme to generate a new one`);
             return;
         }
-        if (this.config.path === "") {
+        this.log.debug(`Configured Path: "${this.config.path}"`);
+        if (!this.config.path) {
             const dataDir = (this.systemConfig) ? this.systemConfig.dataDir : "";
+            this.log.silly(`DataDir: ${dataDir}`);
+            if (this.systemConfig) {
+                this.log.silly(`systemConfig: ${JSON.stringify(this.systemConfig)}`);
+            }
             const snapshotDir = path_1.default.normalize(`${utils.controllerDir}/${dataDir}${this.namespace.replace(".", "_")}`);
             this.config.path = path_1.default.join(snapshotDir, "snapshot");
+            this.log.debug(`New Config Path: "${this.config.path}"`);
         }
         if (!fs.existsSync(this.config.path)) {
             this.log.info(`Data dir isn't existing yet --> Creating Directory`);
@@ -157,11 +164,52 @@ class RingAdapter extends utils.Adapter {
         this.upsertStateAsync(id, common, value, subscribe);
     }
     async upsertStateAsync(id, common, value, subscribe = false) {
-        if (this.states[id] !== undefined) {
+        try {
+            if (this.states[id] !== undefined) {
+                this.states[id] = value;
+                await this.setStateAsync(id, value, true);
+                return;
+            }
+            const { device, channel, stateName } = this.getSplittedIds(id);
+            await this.createStateAsync(device, channel, stateName, common);
             this.states[id] = value;
-            await this.setStateAsync(id, value);
-            return;
+            await this.setStateAsync(id, value, true);
+            if (subscribe) {
+                await this.subscribeStatesAsync(id);
+            }
         }
+        catch (e) {
+            this.log.warn(`Error Updating State ${id} to ${value}: ${e.message}`);
+            this.log.debug(`Error Stack: ${e.stack}`);
+        }
+    }
+    async upsertFile(id, common, value, timestamp) {
+        try {
+            const { device, channel, stateName } = this.getSplittedIds(id);
+            if (id.indexOf("ring.") < 0) {
+                id = `${this.namespace}.${id}`;
+            }
+            this.log.silly(`upsertFile ${id}`);
+            if (this.states[id] === timestamp) {
+                // Unchanged Value
+                return;
+            }
+            if (this.states[id] !== undefined) {
+                this.states[id] = timestamp;
+                await this.setBinaryStateAsync(id, value);
+                return;
+            }
+            this.log.silly(`upsertFile.First File create State first for ${id}.\n Device: ${device}; Channel: ${channel}; StateName: ${stateName}`);
+            await this.createStateAsync(device, channel, stateName, common);
+            await this.setBinaryStateAsync(id, value);
+            this.states[id] = timestamp;
+        }
+        catch (e) {
+            this.log.warn(`Error Updating File State ${id}: ${e.message}`);
+            this.log.debug(`Error Stack: ${e.stack}`);
+        }
+    }
+    getSplittedIds(id) {
         const splits = id.split(".");
         const device = splits[0];
         let channel = "";
@@ -170,12 +218,7 @@ class RingAdapter extends utils.Adapter {
             channel = splits[1];
             stateName = splits[2];
         }
-        await this.createStateAsync(device, channel, stateName, common);
-        this.states[id] = value;
-        await this.setStateAsync(id, value);
-        if (subscribe) {
-            await this.subscribeStatesAsync(id);
-        }
+        return { device, channel, stateName };
     }
 }
 exports.RingAdapter = RingAdapter;

@@ -169,6 +169,9 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 
 ### V2 Rewrite Breaking Changes
 1. The Device Names got extended by their description (e.g. from `Device 1234567` to `Device 1234567 ("Floodlight Garden")`)
+2. Snapshot Data is now in a respective channel, containing the other data points.
+3. The snapshot object got changed from type meta to state with type file.
+
 
 ### Scripts in `package.json`
 Several npm scripts are predefined for your convenience. You can run them using `npm run <scriptname>`

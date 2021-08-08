@@ -5,6 +5,7 @@ declare global {
     namespace ioBroker {
         interface AdapterConfig {
             del_old_livestream: boolean;
+            del_old_snapshot: boolean;
             filename_livestream: string;
             filename_snapshot: string;
             path: string;

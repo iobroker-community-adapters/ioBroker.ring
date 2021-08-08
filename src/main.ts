@@ -16,6 +16,7 @@ export class RingAdapter extends utils.Adapter {
     private apiClient: RingApiClient | undefined;
     private isWindows: boolean = process.platform.startsWith("win");
     private states: { [id: string]: ioBroker.StateValue } = {};
+    private initializedMetaObjects: { [id: string]: boolean } = {};
 
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
         super({
@@ -43,12 +44,18 @@ export class RingAdapter extends utils.Adapter {
             return;
         }
 
-        if (this.config.path === "") {
+        this.log.debug(`Configured Path: "${this.config.path}"`);
+        if (!this.config.path) {
             const dataDir = (this.systemConfig) ? this.systemConfig.dataDir : "";
+            this.log.silly(`DataDir: ${dataDir}`);
+            if(this.systemConfig) {
+                this.log.silly(`systemConfig: ${JSON.stringify(this.systemConfig)}`);
+            }
             const snapshotDir = path.normalize(
                 `${utils.controllerDir}/${dataDir}${this.namespace.replace(".", "_")}`
             );
             this.config.path = path.join(snapshotDir, "snapshot");
+            this.log.debug(`New Config Path: "${this.config.path}"`);
         }
         if (!fs.existsSync(this.config.path)) {
             this.log.info(`Data dir isn't existing yet --> Creating Directory`);
@@ -59,7 +66,7 @@ export class RingAdapter extends utils.Adapter {
         }
 
         const objectDevices = this.getDevicesAsync();
-        for(const objectDevice in objectDevices) {
+        for (const objectDevice in objectDevices) {
             this.deleteDevice(objectDevice);
         }
 
@@ -77,7 +84,7 @@ export class RingAdapter extends utils.Adapter {
             // clearTimeout(timeout2);
             // ...
             // clearInterval(interval1);
-            if(this.apiClient) {
+            if (this.apiClient) {
                 this.apiClient.unload();
             }
             callback();
@@ -152,12 +159,59 @@ export class RingAdapter extends utils.Adapter {
     }
 
     private async upsertStateAsync(id: string, common: Partial<ioBroker.StateCommon>, value: ioBroker.StateValue, subscribe = false): Promise<void> {
-        if (this.states[id] !== undefined) {
-            this.states[id] = value;
-            await this.setStateAsync(id, value);
-            return;
-        }
+        try {
+            if (this.states[id] !== undefined) {
+                this.states[id] = value;
+                await this.setStateAsync(id, value, true);
+                return;
+            }
 
+            const {device, channel, stateName} = this.getSplittedIds(id);
+            await this.createStateAsync(device, channel, stateName, common);
+            this.states[id] = value;
+            await this.setStateAsync(id, value, true);
+            if (subscribe) {
+                await this.subscribeStatesAsync(id);
+            }
+        } catch (e) {
+            this.log.warn(`Error Updating State ${id} to ${value}: ${e.message}`);
+            this.log.debug(`Error Stack: ${e.stack}`);
+        }
+    }
+
+    public async upsertFile(
+        id: string,
+        common: Partial<ioBroker.StateCommon>,
+        value: Buffer,
+        timestamp: number
+    ): Promise<void> {
+        try {
+            const {device, channel, stateName} = this.getSplittedIds(id);
+            if(id.indexOf("ring.") < 0) {
+                id = `${this.namespace}.${id}`;
+            }
+            this.log.silly(`upsertFile ${id}`);
+            if (this.states[id] === timestamp) {
+                // Unchanged Value
+                return;
+            }
+            if (this.states[id] !== undefined) {
+                this.states[id] = timestamp;
+                await this.setBinaryStateAsync(id, value);
+                return;
+            }
+            this.log.silly(`upsertFile.First File create State first for ${id
+            }.\n Device: ${device}; Channel: ${channel}; StateName: ${stateName}`);
+            await this.createStateAsync(device, channel, stateName, common);
+            await this.setBinaryStateAsync(id, value);
+            this.states[id] = timestamp;
+        } catch (e) {
+            this.log.warn(`Error Updating File State ${id}: ${e.message}`);
+            this.log.debug(`Error Stack: ${e.stack}`);
+        }
+    }
+
+    private getSplittedIds(id: string): { device: string, channel: string, stateName: string } {
         const splits = id.split(".");
         const device = splits[0];
         let channel = "";
@@ -166,12 +220,7 @@ export class RingAdapter extends utils.Adapter {
             channel = splits[1];
             stateName = splits[2];
         }
-        await this.createStateAsync(device, channel, stateName, common);
-        this.states[id] = value;
-        await this.setStateAsync(id, value);
-        if (subscribe) {
-            await this.subscribeStatesAsync(id);
-        }
+        return {device, channel, stateName};
     }
 }
 
