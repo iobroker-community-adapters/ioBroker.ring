@@ -34,13 +34,14 @@
     "express": "^4.17.1",
     "node-schedule": "^2.0.0",
     "request": "^2.88.2",
-    "ring-client-api": "^9.20.0",
+    "ring-client-api": "^9.20.1",
     "rtsp-streaming-server": "^2.0.6",
     "rxjs": "^7.3.0",
     "semver": "^7.3.5",
     "utf-8-validate": "^5.0.5",
     "xml2js": "~0.4.23",
-    "xmlbuilder": "^15.1.1"
+    "xmlbuilder": "^15.1.1",
+    "stun": "^2.1.0"
   },
   "devDependencies": {
     "@alcalzone/release-script": "^2.2.1",
@@ -69,7 +70,8 @@
     "test": "npm run test:js && npm run test:package",
     "lint": "npm run lint:js",
     "lint:js": "eslint",
-    "release": "release-script"
+    "release": "release-script",
+    "preRelease-dry": "npm run release prerelease -- --all --dry"
   },
   "bugs": {
     "url": "https://github.com/iobroker-community-adapters/ioBroker.ring/issues"
