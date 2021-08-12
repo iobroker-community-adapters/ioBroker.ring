@@ -1,9 +1,21 @@
 {
     "common": {
         "name": "ring",
-        "version": "1.2.4-0",
+        "version": "1.2.4-1",
         "title": "Ring",
         "news": {
+            "1.2.4-1": {
+                "en": "Update packages",
+                "de": "Pakete aktualisieren",
+                "ru": "Пакеты обновлений",
+                "pt": "Pacotes de atualização",
+                "nl": "Pakketten bijwerken",
+                "fr": "Mettre à jour les packages",
+                "it": "Aggiorna pacchetti",
+                "es": "Actualizar paquetes",
+                "pl": "Zaktualizuj pakiety",
+                "zh-cn": "更新包"
+            },
             "1.2.4-0": {
                 "en": "Refactoring\nUpdate packages",
                 "de": "Refactoring\nPakete aktualisieren",
@@ -191,10 +203,6 @@
             "1.0.3": {
                 "en": "Changing ring API. Old one did not work anymore",
                 "de": "Wechsel der ring.com API"
-            },
-            "1.0.2": {
-                "en": "More debug information",
-                "de": "Debug Ansicht erweiteret"
             }
         },
         "titleLang": {
