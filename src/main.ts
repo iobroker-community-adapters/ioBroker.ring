@@ -186,10 +186,6 @@ export class RingAdapter extends utils.Adapter {
         timestamp: number
     ): Promise<void> {
         try {
-            const {device, channel, stateName} = this.getSplittedIds(id);
-            if(id.indexOf("ring.") < 0) {
-                id = `${this.namespace}.${id}`;
-            }
             this.log.silly(`upsertFile ${id}`);
             if (this.states[id] === timestamp) {
                 // Unchanged Value
@@ -200,6 +196,7 @@ export class RingAdapter extends utils.Adapter {
                 await this.setBinaryStateAsync(id, value);
                 return;
             }
+            const {device, channel, stateName} = this.getSplittedIds(id);
             this.log.silly(`upsertFile.First File create State first for ${id
             }.\n Device: ${device}; Channel: ${channel}; StateName: ${stateName}`);
             await this.createStateAsync(device, channel, stateName, common);
