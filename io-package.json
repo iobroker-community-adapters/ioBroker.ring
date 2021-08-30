@@ -1,9 +1,21 @@
 {
     "common": {
         "name": "ring",
-        "version": "1.2.4-1",
+        "version": "1.2.4",
         "title": "Ring",
         "news": {
+            "1.2.4": {
+                "en": "Update packages\nStop adapter on unhandled Error\nTerminate adapter on invalid refresh token",
+                "de": "Pakete aktualisieren\nAdapter bei unbehandeltem Fehler stoppen\nAdapter bei ungültigem Aktualisierungstoken beenden",
+                "ru": "Пакеты обновлений\nОстановить адаптер при необработанной ошибке\nЗавершить адаптер при недопустимом токене обновления",
+                "pt": "Pacotes de atualização\nPare o adaptador em erro não tratado\nEncerrar adaptador em token de atualização inválido",
+                "nl": "Pakketten bijwerken\nStop adapter bij onverwerkte fout\nBeëindig adapter op ongeldige vernieuwingstoken",
+                "fr": "Mettre à jour les packages\nArrêter l'adaptateur en cas d'erreur non gérée\nMettre fin à l'adaptateur sur un jeton d'actualisation non valide",
+                "it": "Aggiorna pacchetti\nArresta l'adattatore in caso di errore non gestito\nTermina adattatore su token di aggiornamento non valido",
+                "es": "Actualizar paquetes\nDetener el adaptador en caso de error no manejado\nTerminar adaptador en token de actualización no válido",
+                "pl": "Zaktualizuj pakiety\nZatrzymaj adapter przy nieobsługiwanym błędzie\nZakończ adapter przy nieprawidłowym tokenie odświeżania",
+                "zh-cn": "更新包\n在未处理的错误上停止适配器\n在无效的刷新令牌上终止适配器"
+            },
             "1.2.4-1": {
                 "en": "Update packages",
                 "de": "Pakete aktualisieren",
@@ -199,10 +211,6 @@
             "1.0.4": {
                 "en": "Bugfixing for Ring Pro",
                 "de": "Fehlerbehebung Ring Pro"
-            },
-            "1.0.3": {
-                "en": "Changing ring API. Old one did not work anymore",
-                "de": "Wechsel der ring.com API"
             }
         },
         "titleLang": {
