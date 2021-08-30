@@ -335,7 +335,7 @@ async function setLight(ring, id, deviceData, init) {
           try {
             await ring.setLight(id, controlVal);
           } catch (error) {
-            adapter.log.error(error);
+            adapter.log.error(`Error within light_switch Call: ${error}`);
           }
         };
       }
@@ -393,7 +393,7 @@ async function processSnapshotInfo(info, channelId, snapshot, deviceId, vis, rin
             try {
               await setSnapshot(ring, id);
             } catch (error) {
-              adapter.log.error(error);
+              adapter.log.error(`Error within snapshotrequest: ${error}`);
             }
           }
         };
@@ -523,7 +523,7 @@ async function setLivetream(ring, id, init) {
               try {
                 await setLivetream(ring, id);
               } catch (error) {
-                adapter.log.error(error);
+                adapter.log.error(`Error within livestreamrequest: ${error}`);
               }
             }
           };
@@ -585,7 +585,7 @@ async function setDingDong(ring, id, ding) {
               try {
                 await ring.setLight(ring, id, value);
               } catch (error) {
-                adapter.log.error(error);
+                adapter.log.error(`Error within setDingDong: ${error}`);
               }
             }
           };
@@ -749,12 +749,21 @@ async function ringer() {
     dbids = await ring.getAllRingsDevices();
     errorcounter = 0;
   } catch (error) {
+    if(error.message.indexOf('Refresh token is not valid') >= 0) {
+      adapter.log.error(
+        `Invalid Refresh token detected. Please check and/or create a fresh one following "https://github.com/dgreif/ring/wiki/Refresh-Tokens"`
+      );
+      adapter.stop();
+      adapter.disable();
+      adapter.terminate('Invalid Refresh token detected', 11);
+      return;
+    }
     // if, error we will get a new ring connection
     errorcounter++;
     ringdevices = {};
     states = {};
     ring = null; // we start from beginning
-    adapter.log.error(error);
+    adapter.log.error(`Error within Ringer: ${error}`);
     if (errorcounter >= errorcountmax) {
       adapter.log.error('To many connection errors, restarting adapter');
       restartAdapter();
@@ -813,7 +822,7 @@ function executeImmediateGuarded(f, thisContext) {
     try {
       await f.bind(thisContext)();
     } catch (error) {
-      adapter.log.error(error);
+      adapter.log.error(`executeImmediateGuarded resulted in Error: ${error}`);
     }
   });
 }
@@ -847,8 +856,11 @@ async function main() {
     }
     await poll_ringer();
   } catch (error) {
-    adapter.log.error('Could not start the Adapter ' + adapter.namespace + ' in version ' + adapter.version + ' because of ' + error);
-    adapter.terminate();
+    adapter.log.error(
+      `Could not start the Adapter ${adapter.namespace} in version ${adapter.version} because of ${error.message}:\n${
+        error.stackTrace}`
+    );
+    adapter.stop();
   }
 }
 
