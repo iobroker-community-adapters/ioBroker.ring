@@ -749,13 +749,21 @@ async function ringer() {
     dbids = await ring.getAllRingsDevices();
     errorcounter = 0;
   } catch (error) {
-    if(error.message.indexOf('Refresh token is not valid') >= 0) {
-      adapter.log.error(
-        `Invalid Refresh token detected. Please check and/or create a fresh one following "https://github.com/dgreif/ring/wiki/Refresh-Tokens"`
-      );
+    const isRefreshTokenError = error.message.indexOf('Refresh token is not valid') >= 0;
+    const isoAuthError = error.message.indexOf('Failed to fetch oauth token from Ring') >= 0;
+    if(isRefreshTokenError || isoAuthError) {
+      if(isRefreshTokenError) {
+        adapter.log.error(
+          `Invalid Refresh token detected. Please check and/or create a fresh one following "https://github.com/dgreif/ring/wiki/Refresh-Tokens"`
+        );
+      } else if (isoAuthError) {
+        adapter.log.error(
+          `Invalid Login information, additionally please use a refresh token instead. Please create a fresh one following "https://github.com/dgreif/ring/wiki/Refresh-Tokens"`
+        );
+      }
       adapter.stop();
       adapter.disable();
-      adapter.terminate('Invalid Refresh token detected', 11);
+      adapter.terminate('Invalid Ring Login information', 11);
       return;
     }
     // if, error we will get a new ring connection
