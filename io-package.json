@@ -1,9 +1,21 @@
 {
     "common": {
         "name": "ring",
-        "version": "1.2.5",
+        "version": "1.2.6",
         "title": "Ring",
         "news": {
+            "1.2.6": {
+                "en": "Update packages\nStop adapter on unhandled Error\nTerminate adapter on invalid ring credentials",
+                "de": "Pakete aktualisieren\nAdapter bei unbehandeltem Fehler stoppen\nAdapter bei ungültigen Ringanmeldeinformationen beenden",
+                "ru": "Пакеты обновлений\nОстановить адаптер при необработанной ошибке\nЗавершить адаптер при неверных учетных данных кольца",
+                "pt": "Pacotes de atualização\nPare o adaptador em erro não tratado\nEncerrar o adaptador com credenciais de anel inválidas",
+                "nl": "Pakketten bijwerken\nStop adapter bij onverwerkte fout\nBeëindig adapter op ongeldige ringreferenties",
+                "fr": "Mettre à jour les packages\nArrêter l'adaptateur en cas d'erreur non gérée\nMettre fin à l'adaptateur sur des informations d'identification de sonnerie non valides",
+                "it": "Aggiorna pacchetti\nArresta l'adattatore in caso di errore non gestito\nTermina l'adattatore con credenziali di anello non valide",
+                "es": "Actualizar paquetes\nDetener el adaptador en caso de error no manejado\nTerminar adaptador en credenciales de anillo no válidas",
+                "pl": "Zaktualizuj pakiety\nZatrzymaj adapter przy nieobsługiwanym błędzie\nZakończ kartę z nieprawidłowymi danymi uwierzytelniającymi dzwonek",
+                "zh-cn": "更新包\n在未处理的错误上停止适配器\n在无效的环凭据上终止适配器"
+            },
             "1.2.5": {
                 "en": "Update packages\nStop adapter on unhandled Error\nTerminate adapter on invalid ring credentials",
                 "de": "Pakete aktualisieren\nAdapter bei unbehandeltem Fehler stoppen\nAdapter bei ungültigen Ringanmeldeinformationen beenden",
@@ -213,10 +225,6 @@
                 "de": "Neue API"
             },
             "1.0.6": {
-                "en": "Bugfixing",
-                "de": "Fehlerbehebung"
-            },
-            "1.0.5": {
                 "en": "Bugfixing",
                 "de": "Fehlerbehebung"
             }
