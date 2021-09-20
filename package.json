@@ -44,7 +44,7 @@
     "stun": "^2.1.0"
   },
   "devDependencies": {
-    "@alcalzone/release-script": "^2.2.1",
+    "@alcalzone/release-script": "^3.3.0",
     "@iobroker/testing": "^2.4.4",
     "axios": "^0.21.3",
     "chai": "^4.3.4",
