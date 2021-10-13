@@ -38,7 +38,7 @@
     "rtsp-streaming-server": "^2.0.6",
     "rxjs": "^7.3.1",
     "semver": "^7.3.5",
-    "utf-8-validate": "^5.0.6",
+    "utf-8-validate": "^5.0.7",
     "xml2js": "~0.4.23",
     "xmlbuilder": "^15.1.1",
     "stun": "^2.1.0"
