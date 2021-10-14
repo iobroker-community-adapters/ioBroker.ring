@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "ring",
-        "version": "1.2.6",
+        "version": "1.2.7",
         "title": "Ring",
         "news": {
             "1.2.6": {
