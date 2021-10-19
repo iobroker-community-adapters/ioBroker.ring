@@ -46,7 +46,7 @@
   "devDependencies": {
     "@alcalzone/release-script": "^3.4.0",
     "@iobroker/testing": "^2.5.2",
-    "axios": "^0.22.0",
+    "axios": "^0.23.0",
     "chai": "^4.3.4",
     "eslint": "^7.32.0",
     "eslint-plugin-react": "^7.26.1",
