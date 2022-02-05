@@ -70,7 +70,7 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 ### __WORK IN PROGRESS__
 * (theimo1221) Update packages
 * (theimo1221) Add JS-Controller 4.0 dependency
-* 
+* (theimo1221) On ding --> First take snapshot then livestream
 
 ### 1.2.8 (2021-10-14)
 * (theimo1221) Update packages

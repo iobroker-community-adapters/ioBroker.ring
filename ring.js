@@ -423,7 +423,11 @@ async function setSnapshot(ring, id, init) {
     let deviceId = kind + '_' + id;
     let channelId = deviceId;
     let file = path.join(adapter.config.path, adapter.config.filename_snapshot);
-    let snapshot = init ? undefined : await ring.getSnapshot(id, file);
+    let snapshot;
+    if(!init) {
+      adapter.log.silly(`Starting Snapshot request for: ${id} to ${file}`);
+      snapshot = await ring.getSnapshot(id, file);
+    }
     if (!init && !snapshot) return;
     let info = datapoints.getObjectByName('snapshot');
     let vis;
@@ -435,11 +439,12 @@ async function setSnapshot(ring, id, init) {
       },
       native: {}
     }, ['name']);
+    adapter.log.silly(`Processing Snapshot info for: ${id} at ${file}`);
     await processSnapshotInfo(info, channelId, snapshot, deviceId, vis, ring, id);
     objectHelper.processObjectQueue(() => {
     });
   } catch (error) {
-    throw new Error('Error setSanpshot()): ' + error);
+    throw new Error('Error setSnapshot()): ' + error);
   }
 }
 
@@ -460,8 +465,65 @@ async function updateCurrentFile(file, stateId, deviceId, value, deleteOldSettin
   return value;
 }
 
+async function processLivestreamInfo(info, channelId, livestream, deviceId, vis, ring, id) {
+  for (let i in info) {
+    let controlFunction;
+    let value = null;
+    let stateId = channelId + '.' + i;
+    let common = info[i];
+    let type = 'state';
+    switch (i) {
+      case 'mp4':
+        if (livestream) await adapter.setForeignBinaryStateAsync(stateId, livestream.video);
+        break;
+      case 'livestream':
+        type = 'meta';
+        // http://<ip-iobroker>:<port-vis>/<ring-instanz>/<device>.livestream/livestream.jpg
+        // http://192.168.1.10:8082/ring.0/doorbell_4711.livestream/livestream.jpg
+        if (livestream) {
+          const path = `${deviceId}/${livestream.filename}`;
+          adapter.log.debug(`Write Livestream to: ${path}`);
+          await adapter.writeFile(adapter.namespace, path, livestream.video);
+        }
+        break;
+      case 'livestream_url':
+        vis = await adapter.getForeignObjectAsync('system.adapter.web.0');
+        if (vis && vis.native && vis.native) {
+          let secure = vis.native.secure ? 'https' : 'http';
+          if (livestream) {
+            value = `${secure}://${adapter.host}:${vis.native.port}/${adapter.namespace}/${deviceId}/${livestream.filename}`;
+          }
+        }
+        break;
+      case 'livestream_file':
+        value = await updateCurrentFile(livestream, stateId, deviceId, value, adapter.config.del_old_livestream);
+        break;
+      case 'livestreamrequest':
+        controlFunction = async (value) => {
+          if (value == true) {
+            try {
+              await setLivetream(ring, id);
+            } catch (error) {
+              adapter.log.error(`Error within livestreamrequest: ${error}`);
+            }
+          }
+        };
+        break;
+      default:
+        break;
+    }
+    if (!states.hasOwnProperty(stateId) || states[stateId] !== value) {
+      objectHelper.setOrUpdateObject(stateId, {
+        type: type,
+        common: common
+      }, ['name'], value, controlFunction);
+    }
+    states[stateId] = value;
+  }
+}
+
 /**
- * make lviestream
+ * make livestream
  * @param {*} ring
  * @param {*} id
  * @param {*} image
@@ -473,7 +535,11 @@ async function setLivetream(ring, id, init) {
     let channelId = deviceId;
     // if(!init) await ring.getLiveStreamSIP(id);
     let file = path.join(adapter.config.path, adapter.config.filename_livestream);
-    let livestream = init ? undefined : await ring.getLiveStream(id, file);
+    let livestream;
+    if(!init) {
+      adapter.log.silly(`Starting Livestream request for: ${id} to ${file}`);
+      livestream = await ring.getLiveStream(id, file);
+    }
     if (!init && !livestream) return;
     let info = datapoints.getObjectByName('livestream');
     let vis;
@@ -485,60 +551,8 @@ async function setLivetream(ring, id, init) {
       },
       native: {}
     }, ['name']);
-    for (let i in info) {
-      let controlFunction;
-      let value = null;
-      let stateId = channelId + '.' + i;
-      let common = info[i];
-      let type = 'state';
-      switch (i) {
-        case 'mp4':
-          if (livestream) await adapter.setForeignBinaryStateAsync(stateId, livestream.video);
-          break;
-        case 'livestream':
-          type = 'meta';
-          // http://<ip-iobroker>:<port-vis>/<ring-instanz>/<device>.livestream/livestream.jpg
-          // http://192.168.1.10:8082/ring.0/doorbell_4711.livestream/livestream.jpg
-          if (livestream) {
-            const path = `${deviceId}/${livestream.filename}`;
-            adapter.log.debug(`Write Livestream to: ${path}`);
-            await adapter.writeFile(adapter.namespace, path, livestream.video);
-          }
-          break;
-        case 'livestream_url':
-          vis = await adapter.getForeignObjectAsync('system.adapter.web.0');
-          if (vis && vis.native && vis.native) {
-            let secure = vis.native.secure ? 'https' : 'http';
-            if (livestream) {
-              value = `${secure}://${adapter.host}:${vis.native.port}/${adapter.namespace}/${deviceId}/${livestream.filename}`;
-            }
-          }
-          break;
-        case 'livestream_file':
-          value = await updateCurrentFile(livestream, stateId, deviceId, value, adapter.config.del_old_livestream);
-          break;
-        case 'livestreamrequest':
-          controlFunction = async (value) => {
-            if (value == true) {
-              try {
-                await setLivetream(ring, id);
-              } catch (error) {
-                adapter.log.error(`Error within livestreamrequest: ${error}`);
-              }
-            }
-          };
-          break;
-        default:
-          break;
-      }
-      if (!states.hasOwnProperty(stateId) || states[stateId] !== value) {
-        objectHelper.setOrUpdateObject(stateId, {
-          type: type,
-          common: common
-        }, ['name'], value, controlFunction);
-      }
-      states[stateId] = value;
-    }
+    adapter.log.silly(`Processing Livestream info for: ${id} at ${file}`);
+    await processLivestreamInfo(info, channelId, livestream, deviceId, vis, ring, id);
     objectHelper.processObjectQueue(() => {
     });
   } catch (error) {
@@ -710,8 +724,10 @@ async function startDevice(id, dbids, j) {
     adapter.log.silly('Ding Dong for Id ' + id + JSON.stringify(ding));
     executeImmediateGuarded(async () => {await setDingDong(ring, id, ding);}, this);
     if (ding.kind != 'on_demand') {
-      executeImmediateGuarded(async () => {await setSnapshot(ring, id);}, this);
-      executeImmediateGuarded(async () => {await setLivetream(ring, id);}, this);
+      executeImmediateGuarded(async () => {
+        await setSnapshot(ring, id);
+        await setLivetream(ring, id);
+      }, this);
     }
   });
   await ring.eventOnSnapshot(id, async (data) => {
