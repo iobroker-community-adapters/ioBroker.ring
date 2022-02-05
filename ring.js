@@ -363,7 +363,7 @@ async function processSnapshotInfo(info, channelId, snapshot, deviceId, vis, rin
     let type = 'state';
     switch (i) {
       case 'jpg':
-        if (snapshot) await adapter.setBinaryStateAsync(stateId, snapshot.image);
+        if (snapshot) await adapter.setForeignBinaryStateAsync(stateId, snapshot.image);
         break;
       case 'snapshot':
         type = 'meta';
@@ -493,7 +493,7 @@ async function setLivetream(ring, id, init) {
       let type = 'state';
       switch (i) {
         case 'mp4':
-          if (livestream) await adapter.setBinaryStateAsync(stateId, livestream.video);
+          if (livestream) await adapter.setForeignBinaryStateAsync(stateId, livestream.video);
           break;
         case 'livestream':
           type = 'meta';
