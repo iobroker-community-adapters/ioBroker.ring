@@ -281,7 +281,12 @@
                 "dsn": "https://345fa9990a0e4e4d95297341d0d0ee9a@sentry.iobroker.net/61",
                 "pathWhitelist": []
             }
-        }
+        },
+        "dependencies": [
+            {
+                "js-controller": ">=4.0.0"
+            }
+        ]
     },
     "native": {
         "email": "email@test.foo",
