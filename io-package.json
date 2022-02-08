@@ -4,7 +4,7 @@
         "version": "2.0.0-beta.1",
         "title": "Ring",
         "news": {
-            "2.0.0-beta.1": {
+            "2.0.0-beta.2": {
                 "en": "Fix adapter checker issues"
             },
             "2.0.0-beta.0": {
@@ -216,26 +216,6 @@
                 "es": "Registro de centinela",
                 "pl": "Rejestrowanie wartowników",
                 "zh-cn": "哨兵记录"
-            },
-            "1.1.0": {
-                "en": "New features, Improvements and bug fixing",
-                "de": "Neue Funktionen, Verbesserungen und Fehlerbehebung",
-                "ru": "Новые функции, улучшения и исправление ошибок",
-                "pt": "Novos recursos, melhorias e correção de erros",
-                "nl": "Nieuwe functies, verbeteringen en bugfixing",
-                "fr": "Nouvelles fonctionnalités, améliorations et correction de bugs",
-                "it": "Nuove funzionalità, miglioramenti e correzione dei bug",
-                "es": "Nuevas características, mejoras y corrección de errores.",
-                "pl": "Nowe funkcje, ulepszenia i naprawa błędów",
-                "zh-cn": "新功能，改进和错误修复"
-            },
-            "1.0.7": {
-                "en": "New API",
-                "de": "Neue API"
-            },
-            "1.0.6": {
-                "en": "Bugfixing",
-                "de": "Fehlerbehebung"
             }
         },
         "titleLang": {
