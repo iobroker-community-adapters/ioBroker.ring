@@ -1,9 +1,18 @@
 {
     "common": {
         "name": "ring",
-        "version": "1.2.8",
+        "version": "2.0.0-beta.1",
         "title": "Ring",
         "news": {
+            "2.0.0-beta.1": {
+                "en": "Fix adapter checker issues"
+            },
+            "2.0.0-beta.0": {
+                "en": "Update package\nAdd JS-Controller 4.0 dependency\nOn ding --> First take snapshot then livestream"
+            },
+            "1.2.8": {
+                "en": "Update package"
+            },
             "1.2.6": {
                 "en": "Update packages\nStop adapter on unhandled Error\nTerminate adapter on invalid ring credentials",
                 "de": "Pakete aktualisieren\nAdapter bei unbehandeltem Fehler stoppen\nAdapter bei ungültigen Ringanmeldeinformationen beenden",
