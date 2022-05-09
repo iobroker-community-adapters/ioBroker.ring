@@ -34,7 +34,7 @@
     "express": "^4.18.1",
     "node-schedule": "^2.1.0",
     "request": "^2.88.2",
-    "ring-client-api": "^9.24.0",
+    "ring-client-api": "^11.0.0",
     "rtsp-streaming-server": "^2.0.6",
     "rxjs": "^7.5.5",
     "semver": "^7.3.7",
