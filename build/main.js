@@ -4,7 +4,11 @@
  */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -164,6 +168,7 @@ class RingAdapter extends utils.Adapter {
         this.upsertStateAsync(id, common, value, subscribe);
     }
     async upsertStateAsync(id, common, value, subscribe = false) {
+        var _a;
         try {
             if (this.states[id] !== undefined) {
                 this.states[id] = value;
@@ -179,31 +184,37 @@ class RingAdapter extends utils.Adapter {
             }
         }
         catch (e) {
-            this.log.warn(`Error Updating State ${id} to ${value}: ${e.message}`);
-            this.log.debug(`Error Stack: ${e.stack}`);
+            this.log.warn(`Error Updating State ${id} to ${value}: ${(_a = e === null || e === void 0 ? void 0 : e.message) !== null && _a !== void 0 ? _a : e}`);
+            if (e === null || e === void 0 ? void 0 : e.stack) {
+                this.log.debug(`Error Stack: ${e.stack}`);
+            }
         }
     }
     async upsertFile(id, common, value, timestamp) {
+        var _a;
         try {
             this.log.silly(`upsertFile ${id}`);
             if (this.states[id] === timestamp) {
                 // Unchanged Value
                 return;
             }
+            const foreignId = `${this.namespace}.${id}`;
             if (this.states[id] !== undefined) {
                 this.states[id] = timestamp;
-                await this.setBinaryStateAsync(id, value);
+                await this.setForeignBinaryStateAsync(foreignId, value);
                 return;
             }
             const { device, channel, stateName } = this.getSplittedIds(id);
             this.log.silly(`upsertFile.First File create State first for ${id}.\n Device: ${device}; Channel: ${channel}; StateName: ${stateName}`);
             await this.createStateAsync(device, channel, stateName, common);
-            await this.setBinaryStateAsync(id, value);
+            await this.setForeignBinaryStateAsync(foreignId, value);
             this.states[id] = timestamp;
         }
         catch (e) {
-            this.log.warn(`Error Updating File State ${id}: ${e.message}`);
-            this.log.debug(`Error Stack: ${e.stack}`);
+            this.log.warn(`Error Updating File State ${id}: ${(_a = e.message) !== null && _a !== void 0 ? _a : e}`);
+            if (e === null || e === void 0 ? void 0 : e.stack) {
+                this.log.debug(`Error Stack: ${e.stack}`);
+            }
         }
     }
     getSplittedIds(id) {

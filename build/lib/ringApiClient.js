@@ -34,8 +34,7 @@ class RingApiClient {
         else {
             this._api = new api_1.RingApi({
                 refreshToken: this.adapter.config.refreshtoken,
-                cameraStatusPollingSeconds: 20,
-                cameraDingsPollingSeconds: 1
+                cameraStatusPollingSeconds: 20
             });
         }
         return this._api;
@@ -63,6 +62,7 @@ class RingApiClient {
                 this.updateDev(c, i);
             }
         }
+        this.debug(`Refresh complete`);
     }
     processUserInput(deviceID, channelID, stateID, state) {
         if (!this.devices[deviceID]) {
@@ -84,7 +84,7 @@ class RingApiClient {
             .then((locs) => {
             this.debug(`Recieved Locations`);
             this._locations = locs;
-        }, this.handleApiError);
+        }, this.handleApiError.bind(this));
     }
     handleApiError(reason) {
         this.adapter.log.error(`Api Call failed`);

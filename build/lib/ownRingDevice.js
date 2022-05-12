@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -137,7 +141,9 @@ class OwnRingDevice {
                     const targetVal = state.val;
                     this._adapter.log.debug(`Get Snapshot request for ${this.shortId} to value ${targetVal}`);
                     // noinspection JSIgnoredPromiseFromCall
-                    this.updateSnapshot();
+                    this.updateSnapshot().catch((reason) => {
+                        this.catcher("Couldn't retrieve Snapshot.", reason);
+                    });
                 }
                 else {
                     this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
@@ -192,25 +198,31 @@ class OwnRingDevice {
             `);
             return;
         }
-        const image = await this._ringDevice.getSnapshot();
+        const image = await this._ringDevice.getSnapshot().catch((reason) => {
+            this.catcher("Couldn't get Snapshot from api.", reason);
+        });
         if (!image) {
             this.info("Could not create snapshot");
             return;
         }
-        await fs.writeFileSync(fullPath, image);
-        const vis = await this._adapter.getForeignObjectAsync("system.adapter.web.0");
+        fs.writeFileSync(fullPath, image);
+        const vis = await this._adapter.getForeignObjectAsync("system.adapter.web.0").catch((reason) => {
+            this.catcher(`Couldn't load "web.0" Adapter object.`, reason);
+        });
         if (vis && vis.native) {
             const secure = vis.native.secure ? "https" : "http";
             this._lastSnapShotUrl = `${secure}://${this._adapter.host}:${vis.native.port}/${this._adapter.namespace}/${this.fullId}/${filename}`;
         }
         if (this.lastSnapShotDir !== "" && this._adapter.config.del_old_snapshot) {
-            await this._adapter.delFileAsync(this._adapter.namespace, `${this.lastSnapShotDir}`);
+            await this._adapter.delFileAsync(this._adapter.namespace, `${this.lastSnapShotDir}`).catch((reason) => {
+                this.catcher("Couldn't delete previous snapshot.", reason);
+            });
         }
         this._lastSnapShotDir = fullPath;
         this._requestingSnapshot = false;
         this._lastSnapshotImage = image;
         this._lastSnapshotTimestamp = Date.now();
-        this.updateSnapshotObject();
+        await this.updateSnapshotObject();
         this.debug(`Done creating snapshot to ${fullPath}`);
     }
     updateHealth() {
@@ -255,20 +267,25 @@ class OwnRingDevice {
         this._adapter.upsertState(`${this.historyChannelId}.history_url`, constants_1.COMMON_HISTORY_URL, lastAction.historyUrl);
         this._adapter.upsertState(`${this.historyChannelId}.kind`, constants_1.COMMON_HISTORY_KIND, lastAction.event.kind);
     }
-    // noinspection JSIgnoredPromiseFromCall
-    updateSnapshotObject() {
+    async updateSnapshotObject() {
         this.debug(`Update Snapshot Object for "${this.fullId}"`);
         if (this._lastSnapshotImage) {
-            // noinspection JSIgnoredPromiseFromCall
-            this._adapter.upsertFile(`${this.snapshotChannelId}.snapshot`, constants_1.COMMON_SNAPSHOT_SNAPSHOT, this._lastSnapshotImage, this._lastSnapshotTimestamp);
+            await this._adapter.upsertFile(`${this.snapshotChannelId}.snapshot`, constants_1.COMMON_SNAPSHOT_SNAPSHOT, this._lastSnapshotImage, this._lastSnapshotTimestamp).catch((reason) => {
+                this.debug(`Couldn't update Snapshot obejct: "${reason}"`);
+            });
         }
         this._adapter.upsertState(`${this.snapshotChannelId}.snapshot_file`, constants_1.COMMON_SNAPSHOT_FILE, this._lastSnapShotDir);
         this._adapter.upsertState(`${this.snapshotChannelId}.snapshot_url`, constants_1.COMMON_SNAPSHOT_URL, this._lastSnapShotUrl);
         this._adapter.upsertState(`${this.snapshotChannelId}.${constants_1.STATE_ID_SNAPSHOT_REQUEST}`, constants_1.COMMON_SNAPSHOT_REQUEST, this._requestingSnapshot, true);
     }
     updateHealthObject(health) {
+        var _a;
         this.debug(`Update Health Callback for "${this.fullId}"`);
-        this._adapter.upsertState(`${this.infoChannelId}.battery_percentage`, constants_1.COMMON_INFO_BATTERY_PERCENTAGE, health.battery_percentage);
+        let batteryPercent = parseInt((_a = health.battery_percentage) !== null && _a !== void 0 ? _a : "-1");
+        if (isNaN(batteryPercent)) {
+            batteryPercent = -1;
+        }
+        this._adapter.upsertState(`${this.infoChannelId}.battery_percentage`, constants_1.COMMON_INFO_BATTERY_PERCENTAGE, batteryPercent);
         this._adapter.upsertState(`${this.infoChannelId}.battery_percentage_category`, constants_1.COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY, health.battery_percentage_category);
         this._adapter.upsertState(`${this.infoChannelId}.wifi_name`, constants_1.COMMON_INFO_WIFI_NAME, health.wifi_name);
         this._adapter.upsertState(`${this.infoChannelId}.latest_signal_strength`, constants_1.COMMON_INFO_LATEST_SIGNAL_STRENGTH, health.latest_signal_strength);
@@ -290,6 +307,10 @@ class OwnRingDevice {
     }
     info(message) {
         this._adapter.log.info(message);
+    }
+    catcher(message, reason) {
+        this.info(message);
+        this.debug(`Reason: "${reason}"`);
     }
 }
 exports.OwnRingDevice = OwnRingDevice;
