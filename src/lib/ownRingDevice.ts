@@ -1,6 +1,14 @@
 import path from "path";
 import { Location } from "ring-client-api/lib/api/location";
-import { CameraEvent, CameraEventResponse, CameraHealth, DingKind, RingCamera, RingCameraKind } from "ring-client-api";
+import {
+  CameraData,
+  CameraEvent,
+  CameraEventResponse,
+  CameraHealth,
+  DingKind,
+  RingCamera,
+  RingCameraKind
+} from "ring-client-api";
 import { RingAdapter } from "../main";
 import { RingApiClient } from "./ringApiClient";
 import {
@@ -122,6 +130,10 @@ export class OwnRingDevice {
     return this._ringDevice;
   }
 
+  private set ringDevice(device) {
+    this._ringDevice = device;
+  }
+
   public constructor(ringDevice: RingCamera, locationIndex: number, adapter: RingAdapter, apiClient: RingApiClient) {
     this._adapter = adapter;
     this.debug(`Create device with ID: ${ringDevice.id}`);
@@ -138,12 +150,13 @@ export class OwnRingDevice {
     this.snapshotChannelId = `${this.fullId}.${CHANNEL_NAME_SNAPSHOT}`;
 
     this.recreateDeviceObjectTree();
-    this.updateDeviceInfoObject();
+    this.updateDeviceInfoObject(ringDevice.data);
     this.updateHealth();
 
     // noinspection JSIgnoredPromiseFromCall
     this.updateHistory();
     this.updateSnapshot();
+    this.ringDevice = ringDevice; // subscribes to the events
   }
 
 
@@ -200,10 +213,14 @@ export class OwnRingDevice {
     }
   }
 
-  public update(ringDevice: RingCamera): void {
+  public updateByDevice(ringDevice: RingCamera): void {
+    this.ringDevice = ringDevice;
+    this.update(ringDevice.data);
+  }
+
+  public update(data: CameraData): void {
     this.debug(`Recieved Update for ${this.fullId}`);
-    this._ringDevice = ringDevice;
-    this.updateDeviceInfoObject();
+    this.updateDeviceInfoObject(data);
     this.updateHealth();
     // noinspection JSIgnoredPromiseFromCall
     this.updateHistory();
@@ -241,6 +258,7 @@ export class OwnRingDevice {
       return;
     }
 
+    this.silly(`Writing Snapshot (Length: ${image.length}) to "${fullPath}"`);
     fs.writeFileSync(fullPath, image);
     const vis = await this._adapter.getForeignObjectAsync("system.adapter.web.0").catch((reason) => {
       this.catcher(`Couldn't load "web.0" Adapter object.`, reason);
@@ -257,6 +275,7 @@ export class OwnRingDevice {
     }
     this._lastSnapShotDir = fullPath;
     this._requestingSnapshot = false;
+    // this.silly(`Locally storing Snapshot (Length: ${image.length})`);
     this._lastSnapshotImage = image;
     this._lastSnapshotTimestamp = Date.now();
     await this.updateSnapshotObject();
@@ -293,26 +312,26 @@ export class OwnRingDevice {
       });
   }
 
-  private updateDeviceInfoObject(): void {
+  private updateDeviceInfoObject(data: CameraData): void {
     this._adapter.upsertState(
       `${this.infoChannelId}.id`,
       COMMON_INFO_ID,
-      this._ringDevice.data.device_id
+      data.device_id
     );
     this._adapter.upsertState(
       `${this.infoChannelId}.kind`,
       COMMON_INFO_KIND,
-      this._ringDevice.data.kind
+      data.kind
     );
     this._adapter.upsertState(
       `${this.infoChannelId}.description`,
       COMMON_INFO_DESCRIPTION,
-      this._ringDevice.data.description
+      data.description
     );
     this._adapter.upsertState(
       `${this.infoChannelId}.external_connection`,
       COMMON_INFO_EXTERNAL_CONNECTION,
-      this._ringDevice.data.external_connection
+      data.external_connection
     );
     this._adapter.upsertState(
       `${this.infoChannelId}.hasLight`,
@@ -446,8 +465,7 @@ export class OwnRingDevice {
   }
 
   private catcher(message: string, reason: any): void {
-    this.info(message);
-    this.debug(`Reason: "${reason}"`);
+    this._adapter.logCatch(message, reason);
   }
 }
 

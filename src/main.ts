@@ -224,6 +224,11 @@ export class RingAdapter extends utils.Adapter {
     }
     return {device, channel, stateName};
   }
+
+  public logCatch(message: string, reason: any): void {
+    this.log.info(message);
+    this.log.debug(`Reason: "${reason}"`);
+  }
 }
 
 if (require.main !== module) {

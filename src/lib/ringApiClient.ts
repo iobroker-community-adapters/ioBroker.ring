@@ -6,7 +6,6 @@ import { OwnRingDevice } from "./ownRingDevice";
 
 export class RingApiClient {
   private devices: { [id: string]: OwnRingDevice } = {};
-  private interval: ioBroker.Interval | undefined;
 
   get locations(): Location[] {
     return this._locations;
@@ -37,7 +36,7 @@ export class RingApiClient {
     } else {
       this._api = new RingApi({
         refreshToken: this.adapter.config.refreshtoken,
-        cameraStatusPollingSeconds: 20
+        cameraStatusPollingSeconds: 600
       });
     }
 
@@ -57,11 +56,12 @@ export class RingApiClient {
       this.adapter.terminate(`We couldn't find any locations in your Ring Account`);
       return;
     }
-
-    this.refreshAll();
-    this.interval = this.adapter.setInterval(() => {
-      this.refreshAll();
-    }, 60000);
+    for(const l of this._locations) {
+      l.onDataUpdate.subscribe((message) => {
+        this.debug(`Recieved Location Update Event: "${message}"`);
+      })
+    }
+    await this.refreshAll();
   }
 
   public async refreshAll(): Promise<void> {
@@ -92,10 +92,7 @@ export class RingApiClient {
   }
 
   public unload(): void {
-    if (this.interval) {
-      this.adapter.clearInterval(this.interval);
-      this.interval = undefined;
-    }
+    // Nothing yet
   }
 
   private async retrieveLocations(): Promise<void> {
@@ -103,7 +100,7 @@ export class RingApiClient {
     await this.api.getLocations()
       .then(
         (locs) => {
-          this.debug(`Recieved Locations`);
+          this.debug(`Recieved ${locs.length} Locations`);
           this._locations = locs;
         },
         this.handleApiError.bind(this)
@@ -116,8 +113,8 @@ export class RingApiClient {
     this.adapter.log.debug(`Call Stack: \n${(new Error()).stack}`);
   }
 
-  private debug(retrieveLocations: string): void {
-    this.adapter.log.debug(retrieveLocations);
+  private debug(message: string): void {
+    this.adapter.log.debug(message);
   }
 
   private updateDev(device: RingCamera, locationIndex = 0): void {
@@ -127,7 +124,7 @@ export class RingApiClient {
       ownDev = new OwnRingDevice(device, locationIndex, this.adapter, this);
       this.devices[fullID] = ownDev;
     } else {
-      ownDev.update(device);
+      ownDev.updateByDevice(device);
     }
   }
 }
