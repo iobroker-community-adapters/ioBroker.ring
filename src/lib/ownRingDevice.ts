@@ -12,10 +12,11 @@ import {
 import { RingAdapter } from "../main";
 import { RingApiClient } from "./ringApiClient";
 import {
+  CHANNEL_NAME_EVENTS,
   CHANNEL_NAME_HISTORY,
   CHANNEL_NAME_INFO,
   CHANNEL_NAME_LIGHT,
-  CHANNEL_NAME_SNAPSHOT,
+  CHANNEL_NAME_SNAPSHOT, COMMON_DOORBELL,
   COMMON_HISTORY_CREATED_AT,
   COMMON_HISTORY_KIND,
   COMMON_HISTORY_URL,
@@ -33,13 +34,14 @@ import {
   COMMON_INFO_LATEST_SIGNAL_STRENGTH,
   COMMON_INFO_WIFI_NAME,
   COMMON_LIGHT_STATE,
-  COMMON_LIGHT_SWITCH,
+  COMMON_LIGHT_SWITCH, COMMON_MOTION,
   COMMON_SNAPSHOT_FILE, COMMON_SNAPSHOT_REQUEST, COMMON_SNAPSHOT_SNAPSHOT,
   COMMON_SNAPSHOT_URL,
   STATE_ID_LIGHT_SWITCH, STATE_ID_SNAPSHOT_REQUEST
 } from "./constants";
 import { LastAction } from "./lastAction";
 import * as fs from "fs";
+import { PushNotification } from "ring-client-api/lib/api/ring-types";
 
 export class OwnRingDevice {
   public static getFullId(device: RingCamera, adapter: RingAdapter): string {
@@ -89,6 +91,7 @@ export class OwnRingDevice {
   private historyChannelId: string;
   private kind: string;
   private lightChannelId: string;
+  private eventsChannelId: string;
   private snapshotChannelId: string;
   private path: string;
   private shortId: string;
@@ -132,6 +135,9 @@ export class OwnRingDevice {
 
   private set ringDevice(device) {
     this._ringDevice = device;
+    this._ringDevice.onData.subscribe(this.update.bind(this));
+    this._ringDevice.onMotionDetected.subscribe(this.onMotion.bind(this));
+    this._ringDevice.onDoorbellPressed.subscribe(this.onDorbell.bind(this));
   }
 
   public constructor(ringDevice: RingCamera, locationIndex: number, adapter: RingAdapter, apiClient: RingApiClient) {
@@ -148,6 +154,7 @@ export class OwnRingDevice {
     this.historyChannelId = `${this.fullId}.${CHANNEL_NAME_HISTORY}`;
     this.lightChannelId = `${this.fullId}.${CHANNEL_NAME_LIGHT}`;
     this.snapshotChannelId = `${this.fullId}.${CHANNEL_NAME_SNAPSHOT}`;
+    this.eventsChannelId = `${this.fullId}.${CHANNEL_NAME_EVENTS}`;
 
     this.recreateDeviceObjectTree();
     this.updateDeviceInfoObject(ringDevice.data);
@@ -207,6 +214,7 @@ export class OwnRingDevice {
     this._adapter.createChannel(this.fullId, CHANNEL_NAME_INFO, {name: `Info ${this.shortId}`});
     this._adapter.createChannel(this.fullId, CHANNEL_NAME_SNAPSHOT);
     this._adapter.createChannel(this.fullId, CHANNEL_NAME_HISTORY);
+    this._adapter.createChannel(this.fullId, CHANNEL_NAME_EVENTS);
     if (this._ringDevice.hasLight) {
       this.debug(`Device with Light Capabilities detected "${this.fullId}"`);
       this._adapter.createChannel(this.fullId, CHANNEL_NAME_LIGHT, {name: `Light ${this.shortId}`});
@@ -466,6 +474,19 @@ export class OwnRingDevice {
 
   private catcher(message: string, reason: any): void {
     this._adapter.logCatch(message, reason);
+  }
+
+  private onDorbell(value: PushNotification): void {
+    this.debug(`Recieved Doorbell Event (${value}) for ${this.shortId}`);
+    this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, COMMON_DOORBELL, true);
+    setTimeout(() => {
+      this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, COMMON_DOORBELL, false);
+    }, 5000);
+  }
+
+  private onMotion(value: boolean): void {
+    this.debug(`Recieved Motion Event (${value}) for ${this.shortId}`);
+    this._adapter.upsertState(`${this.eventsChannelId}.motion`, COMMON_MOTION, value);
   }
 }
 

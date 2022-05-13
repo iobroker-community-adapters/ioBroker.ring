@@ -156,10 +156,25 @@ export const COMMON_SNAPSHOT_SNAPSHOT: ioBroker.StateCommon = {
   read: true,
   write: true
 }
+export const COMMON_DOORBELL: ioBroker.StateCommon = {
+  type: "boolean",
+  role: "sensor.door",
+  name: "If there is a Doorbell Event",
+  read: true,
+  write: false
+}
+export const COMMON_MOTION: ioBroker.StateCommon = {
+  type: "boolean",
+  role: "sensor.motion",
+  name: "If there is a Motion Event",
+  read: true,
+  write: false
+}
 export const CHANNEL_NAME_INFO = "Info";
 export const CHANNEL_NAME_HISTORY = "History";
 export const CHANNEL_NAME_LIGHT = "Light";
 export const CHANNEL_NAME_SNAPSHOT = "Snapshot";
+export const CHANNEL_NAME_EVENTS = "Events";
 
 
 export const STATE_ID_LIGHT_SWITCH = "light_switch";
