@@ -8,13 +8,14 @@ import * as utils from "@iobroker/adapter-core";
 import { RingApiClient } from "./lib/ringApiClient";
 import path from "path";
 import * as fs from "fs";
+import { FileService } from "./lib/services/file-service";
 
 // Load your modules here, e.g.:
 // import * as fs from "fs";
 
 export class RingAdapter extends utils.Adapter {
   private apiClient: RingApiClient | undefined;
-  private isWindows: boolean = process.platform.startsWith("win");
+  public static isWindows: boolean = process.platform.startsWith("win");
   private states: { [id: string]: ioBroker.StateValue } = {};
   private initializedMetaObjects: { [id: string]: boolean } = {};
 
@@ -46,25 +47,15 @@ export class RingAdapter extends utils.Adapter {
     }
 
     this.log.debug(`Configured Path: "${this.config.path}"`);
+    const dataDir = (this.systemConfig) ? this.systemConfig.dataDir : "";
+    this.log.silly(`DataDir: ${dataDir}`);
     if (!this.config.path) {
-      const dataDir = (this.systemConfig) ? this.systemConfig.dataDir : "";
-      this.log.silly(`DataDir: ${dataDir}`);
-      if (this.systemConfig) {
-        this.log.silly(`systemConfig: ${JSON.stringify(this.systemConfig)}`);
-      }
-      const snapshotDir = path.normalize(
-        `${utils.controllerDir}/${dataDir}${this.namespace.replace(".", "_")}`
+      this.config.path = path.normalize(
+        `${utils.controllerDir}/${dataDir}files/${this.namespace}`
       );
-      this.config.path = path.join(snapshotDir, "snapshot");
       this.log.debug(`New Config Path: "${this.config.path}"`);
     }
-    if (!fs.existsSync(this.config.path)) {
-      this.log.info(`Data dir isn't existing yet --> Creating Directory`);
-      fs.mkdirSync(this.config.path, {recursive: true});
-      if (!this.isWindows) {
-        fs.chmodSync(this.config.path, 508);
-      }
-    }
+    await FileService.prepareFolder(this.config.path);
 
     const objectDevices = this.getDevicesAsync();
     for (const objectDevice in objectDevices) {

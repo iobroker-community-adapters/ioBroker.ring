@@ -152,9 +152,37 @@ export const COMMON_SNAPSHOT_REQUEST: Partial<ioBroker.StateCommon> = {
 export const COMMON_SNAPSHOT_SNAPSHOT: ioBroker.StateCommon = {
   type: "file",
   role: "file",
-  name: "The current snapshot",
+  name: "The current snapshot image",
   read: true,
   write: true
+}
+export const COMMON_LIVESTREAM_LIVESTREAM: ioBroker.StateCommon = {
+  type: "file",
+  role: "file",
+  name: "The current Livestream Video",
+  read: true,
+  write: true
+}
+export const COMMON_LIVESTREAM_REQUEST: Partial<ioBroker.StateCommon> = {
+  type: "boolean",
+  role: "button",
+  name: "New Livestream Request",
+  read: false,
+  write: true
+}
+export const COMMON_LIVESTREAM_URL: Partial<ioBroker.StateCommon> = {
+  type: "string",
+  role: "text.url",
+  name: "Livestream URL",
+  read: true,
+  write: false
+}
+export const COMMON_LIVESTREAM_FILE: Partial<ioBroker.StateCommon> = {
+  type: "string",
+  role: "url",
+  name: "Livestream file",
+  read: true,
+  write: false
 }
 export const COMMON_DOORBELL: ioBroker.StateCommon = {
   type: "boolean",
@@ -174,8 +202,10 @@ export const CHANNEL_NAME_INFO = "Info";
 export const CHANNEL_NAME_HISTORY = "History";
 export const CHANNEL_NAME_LIGHT = "Light";
 export const CHANNEL_NAME_SNAPSHOT = "Snapshot";
+export const CHANNEL_NAME_LIVESTREAM = "Livestream";
 export const CHANNEL_NAME_EVENTS = "Events";
 
 
 export const STATE_ID_LIGHT_SWITCH = "light_switch";
 export const STATE_ID_SNAPSHOT_REQUEST = "snapshot_request";
+export const STATE_ID_LIVESTREAM_REQUEST = "livestream_request";

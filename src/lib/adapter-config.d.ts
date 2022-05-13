@@ -9,6 +9,7 @@ declare global {
       filename_livestream: string;
       filename_snapshot: string;
       path: string;
+      pathLivestream: string;
       pollsec: number;
       recordtime_livestream: number;
       refreshtoken: string;

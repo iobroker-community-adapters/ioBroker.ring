@@ -43,7 +43,7 @@ export class RingApiClient {
     return this._api;
   }
 
-  private adapter: RingAdapter;
+  private readonly adapter: RingAdapter;
   private _api: RingApi | undefined;
 
   public constructor(adapter: RingAdapter) {

@@ -35,7 +35,7 @@ exports.RingAdapter = void 0;
 const utils = __importStar(require("@iobroker/adapter-core"));
 const ringApiClient_1 = require("./lib/ringApiClient");
 const path_1 = __importDefault(require("path"));
-const fs = __importStar(require("fs"));
+const file_service_1 = require("./lib/services/file-service");
 // Load your modules here, e.g.:
 // import * as fs from "fs";
 class RingAdapter extends utils.Adapter {
@@ -45,7 +45,6 @@ class RingAdapter extends utils.Adapter {
             ...options,
             name: "ring",
         });
-        this.isWindows = process.platform.startsWith("win");
         this.states = {};
         this.initializedMetaObjects = {};
         this.on("ready", this.onReady.bind(this));
@@ -67,23 +66,13 @@ class RingAdapter extends utils.Adapter {
             return;
         }
         this.log.debug(`Configured Path: "${this.config.path}"`);
+        const dataDir = (this.systemConfig) ? this.systemConfig.dataDir : "";
+        this.log.silly(`DataDir: ${dataDir}`);
         if (!this.config.path) {
-            const dataDir = (this.systemConfig) ? this.systemConfig.dataDir : "";
-            this.log.silly(`DataDir: ${dataDir}`);
-            if (this.systemConfig) {
-                this.log.silly(`systemConfig: ${JSON.stringify(this.systemConfig)}`);
-            }
-            const snapshotDir = path_1.default.normalize(`${utils.controllerDir}/${dataDir}${this.namespace.replace(".", "_")}`);
-            this.config.path = path_1.default.join(snapshotDir, "snapshot");
+            this.config.path = path_1.default.normalize(`${utils.controllerDir}/${dataDir}files/${this.namespace}`);
             this.log.debug(`New Config Path: "${this.config.path}"`);
         }
-        if (!fs.existsSync(this.config.path)) {
-            this.log.info(`Data dir isn't existing yet --> Creating Directory`);
-            fs.mkdirSync(this.config.path, { recursive: true });
-            if (!this.isWindows) {
-                fs.chmodSync(this.config.path, 508);
-            }
-        }
+        await file_service_1.FileService.prepareFolder(this.config.path);
         const objectDevices = this.getDevicesAsync();
         for (const objectDevice in objectDevices) {
             this.deleteDevice(objectDevice);
@@ -249,6 +238,7 @@ class RingAdapter extends utils.Adapter {
     }
 }
 exports.RingAdapter = RingAdapter;
+RingAdapter.isWindows = process.platform.startsWith("win");
 if (require.main !== module) {
     // Export the constructor in compact mode
     module.exports = (options) => new RingAdapter(options);

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.STATE_ID_SNAPSHOT_REQUEST = exports.STATE_ID_LIGHT_SWITCH = exports.CHANNEL_NAME_EVENTS = exports.CHANNEL_NAME_SNAPSHOT = exports.CHANNEL_NAME_LIGHT = exports.CHANNEL_NAME_HISTORY = exports.CHANNEL_NAME_INFO = exports.COMMON_MOTION = exports.COMMON_DOORBELL = exports.COMMON_SNAPSHOT_SNAPSHOT = exports.COMMON_SNAPSHOT_REQUEST = exports.COMMON_SNAPSHOT_FILE = exports.COMMON_SNAPSHOT_URL = exports.COMMON_HISTORY_KIND = exports.COMMON_HISTORY_CREATED_AT = exports.COMMON_HISTORY_URL = exports.COMMON_LIGHT_STATE = exports.COMMON_LIGHT_SWITCH = exports.COMMON_INFO_HAS_SIREN = exports.COMMON_INFO_HAS_BATTERY = exports.COMMON_INFO_HAS_LIGHT = exports.COMMON_INFO_FIRMWARE = exports.COMMON_INFO_LATEST_SIGNAL_CATEGORY = exports.COMMON_INFO_LATEST_SIGNAL_STRENGTH = exports.COMMON_INFO_WIFI_NAME = exports.COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY = exports.COMMON_INFO_BATTERY_PERCENTAGE = exports.COMMON_INFO_KIND = exports.COMMON_INFO_EXTERNAL_CONNECTION = exports.COMMON_INFO_DESCRIPTION = exports.COMMON_INFO_ID = void 0;
+exports.STATE_ID_LIVESTREAM_REQUEST = exports.STATE_ID_SNAPSHOT_REQUEST = exports.STATE_ID_LIGHT_SWITCH = exports.CHANNEL_NAME_EVENTS = exports.CHANNEL_NAME_LIVESTREAM = exports.CHANNEL_NAME_SNAPSHOT = exports.CHANNEL_NAME_LIGHT = exports.CHANNEL_NAME_HISTORY = exports.CHANNEL_NAME_INFO = exports.COMMON_MOTION = exports.COMMON_DOORBELL = exports.COMMON_LIVESTREAM_FILE = exports.COMMON_LIVESTREAM_URL = exports.COMMON_LIVESTREAM_REQUEST = exports.COMMON_LIVESTREAM_LIVESTREAM = exports.COMMON_SNAPSHOT_SNAPSHOT = exports.COMMON_SNAPSHOT_REQUEST = exports.COMMON_SNAPSHOT_FILE = exports.COMMON_SNAPSHOT_URL = exports.COMMON_HISTORY_KIND = exports.COMMON_HISTORY_CREATED_AT = exports.COMMON_HISTORY_URL = exports.COMMON_LIGHT_STATE = exports.COMMON_LIGHT_SWITCH = exports.COMMON_INFO_HAS_SIREN = exports.COMMON_INFO_HAS_BATTERY = exports.COMMON_INFO_HAS_LIGHT = exports.COMMON_INFO_FIRMWARE = exports.COMMON_INFO_LATEST_SIGNAL_CATEGORY = exports.COMMON_INFO_LATEST_SIGNAL_STRENGTH = exports.COMMON_INFO_WIFI_NAME = exports.COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY = exports.COMMON_INFO_BATTERY_PERCENTAGE = exports.COMMON_INFO_KIND = exports.COMMON_INFO_EXTERNAL_CONNECTION = exports.COMMON_INFO_DESCRIPTION = exports.COMMON_INFO_ID = void 0;
 exports.COMMON_INFO_ID = {
     type: "string",
     role: "state",
@@ -153,9 +153,37 @@ exports.COMMON_SNAPSHOT_REQUEST = {
 exports.COMMON_SNAPSHOT_SNAPSHOT = {
     type: "file",
     role: "file",
-    name: "The current snapshot",
+    name: "The current snapshot image",
     read: true,
     write: true
+};
+exports.COMMON_LIVESTREAM_LIVESTREAM = {
+    type: "file",
+    role: "file",
+    name: "The current Livestream Video",
+    read: true,
+    write: true
+};
+exports.COMMON_LIVESTREAM_REQUEST = {
+    type: "boolean",
+    role: "button",
+    name: "New Livestream Request",
+    read: false,
+    write: true
+};
+exports.COMMON_LIVESTREAM_URL = {
+    type: "string",
+    role: "text.url",
+    name: "Livestream URL",
+    read: true,
+    write: false
+};
+exports.COMMON_LIVESTREAM_FILE = {
+    type: "string",
+    role: "url",
+    name: "Livestream file",
+    read: true,
+    write: false
 };
 exports.COMMON_DOORBELL = {
     type: "boolean",
@@ -175,7 +203,9 @@ exports.CHANNEL_NAME_INFO = "Info";
 exports.CHANNEL_NAME_HISTORY = "History";
 exports.CHANNEL_NAME_LIGHT = "Light";
 exports.CHANNEL_NAME_SNAPSHOT = "Snapshot";
+exports.CHANNEL_NAME_LIVESTREAM = "Livestream";
 exports.CHANNEL_NAME_EVENTS = "Events";
 exports.STATE_ID_LIGHT_SWITCH = "light_switch";
 exports.STATE_ID_SNAPSHOT_REQUEST = "snapshot_request";
+exports.STATE_ID_LIVESTREAM_REQUEST = "livestream_request";
 //# sourceMappingURL=constants.js.map
