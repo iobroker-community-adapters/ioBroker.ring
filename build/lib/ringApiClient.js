@@ -34,7 +34,7 @@ class RingApiClient {
         else {
             this._api = new api_1.RingApi({
                 refreshToken: this.adapter.config.refreshtoken,
-                cameraStatusPollingSeconds: 20
+                cameraStatusPollingSeconds: 600
             });
         }
         return this._api;
@@ -45,10 +45,12 @@ class RingApiClient {
             this.adapter.terminate(`We couldn't find any locations in your Ring Account`);
             return;
         }
-        this.refreshAll();
-        this.interval = this.adapter.setInterval(() => {
-            this.refreshAll();
-        }, 60000);
+        for (const l of this._locations) {
+            l.onDataUpdate.subscribe((message) => {
+                this.debug(`Recieved Location Update Event: "${message}"`);
+            });
+        }
+        await this.refreshAll();
     }
     async refreshAll() {
         this.debug(`Refresh all Cameras`);
@@ -73,16 +75,13 @@ class RingApiClient {
         targetDevice.processUserInput(channelID, stateID, state);
     }
     unload() {
-        if (this.interval) {
-            this.adapter.clearInterval(this.interval);
-            this.interval = undefined;
-        }
+        // Nothing yet
     }
     async retrieveLocations() {
         this.debug(`Retrieve Locations`);
         await this.api.getLocations()
             .then((locs) => {
-            this.debug(`Recieved Locations`);
+            this.debug(`Recieved ${locs.length} Locations`);
             this._locations = locs;
         }, this.handleApiError.bind(this));
     }
@@ -91,8 +90,8 @@ class RingApiClient {
         this.adapter.log.debug(`Failure reason:\n${reason}`);
         this.adapter.log.debug(`Call Stack: \n${(new Error()).stack}`);
     }
-    debug(retrieveLocations) {
-        this.adapter.log.debug(retrieveLocations);
+    debug(message) {
+        this.adapter.log.debug(message);
     }
     updateDev(device, locationIndex = 0) {
         const fullID = ownRingDevice_1.OwnRingDevice.getFullId(device, this.adapter);
@@ -102,7 +101,7 @@ class RingApiClient {
             this.devices[fullID] = ownDev;
         }
         else {
-            ownDev.update(device);
+            ownDev.updateByDevice(device);
         }
     }
 }

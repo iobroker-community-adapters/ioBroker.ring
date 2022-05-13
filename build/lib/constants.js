@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.STATE_ID_SNAPSHOT_REQUEST = exports.STATE_ID_LIGHT_SWITCH = exports.CHANNEL_NAME_SNAPSHOT = exports.CHANNEL_NAME_LIGHT = exports.CHANNEL_NAME_HISTORY = exports.CHANNEL_NAME_INFO = exports.COMMON_SNAPSHOT_SNAPSHOT = exports.COMMON_SNAPSHOT_REQUEST = exports.COMMON_SNAPSHOT_FILE = exports.COMMON_SNAPSHOT_URL = exports.COMMON_HISTORY_KIND = exports.COMMON_HISTORY_CREATED_AT = exports.COMMON_HISTORY_URL = exports.COMMON_LIGHT_STATE = exports.COMMON_LIGHT_SWITCH = exports.COMMON_INFO_HAS_SIREN = exports.COMMON_INFO_HAS_BATTERY = exports.COMMON_INFO_HAS_LIGHT = exports.COMMON_INFO_FIRMWARE = exports.COMMON_INFO_LATEST_SIGNAL_CATEGORY = exports.COMMON_INFO_LATEST_SIGNAL_STRENGTH = exports.COMMON_INFO_WIFI_NAME = exports.COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY = exports.COMMON_INFO_BATTERY_PERCENTAGE = exports.COMMON_INFO_KIND = exports.COMMON_INFO_EXTERNAL_CONNECTION = exports.COMMON_INFO_DESCRIPTION = exports.COMMON_INFO_ID = void 0;
+exports.STATE_ID_SNAPSHOT_REQUEST = exports.STATE_ID_LIGHT_SWITCH = exports.CHANNEL_NAME_EVENTS = exports.CHANNEL_NAME_SNAPSHOT = exports.CHANNEL_NAME_LIGHT = exports.CHANNEL_NAME_HISTORY = exports.CHANNEL_NAME_INFO = exports.COMMON_MOTION = exports.COMMON_DOORBELL = exports.COMMON_SNAPSHOT_SNAPSHOT = exports.COMMON_SNAPSHOT_REQUEST = exports.COMMON_SNAPSHOT_FILE = exports.COMMON_SNAPSHOT_URL = exports.COMMON_HISTORY_KIND = exports.COMMON_HISTORY_CREATED_AT = exports.COMMON_HISTORY_URL = exports.COMMON_LIGHT_STATE = exports.COMMON_LIGHT_SWITCH = exports.COMMON_INFO_HAS_SIREN = exports.COMMON_INFO_HAS_BATTERY = exports.COMMON_INFO_HAS_LIGHT = exports.COMMON_INFO_FIRMWARE = exports.COMMON_INFO_LATEST_SIGNAL_CATEGORY = exports.COMMON_INFO_LATEST_SIGNAL_STRENGTH = exports.COMMON_INFO_WIFI_NAME = exports.COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY = exports.COMMON_INFO_BATTERY_PERCENTAGE = exports.COMMON_INFO_KIND = exports.COMMON_INFO_EXTERNAL_CONNECTION = exports.COMMON_INFO_DESCRIPTION = exports.COMMON_INFO_ID = void 0;
 exports.COMMON_INFO_ID = {
     type: "string",
     role: "state",
@@ -35,8 +35,7 @@ exports.COMMON_INFO_BATTERY_PERCENTAGE = {
     name: "Battery",
     read: true,
     write: false,
-    unit: "%",
-    def: 0
+    unit: "%"
 };
 exports.COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY = {
     type: "string",
@@ -58,8 +57,7 @@ exports.COMMON_INFO_LATEST_SIGNAL_STRENGTH = {
     name: "WLAN Signal",
     read: true,
     write: false,
-    unit: "RSSI",
-    def: 0
+    unit: "RSSI"
 };
 exports.COMMON_INFO_LATEST_SIGNAL_CATEGORY = {
     type: "string",
@@ -159,10 +157,25 @@ exports.COMMON_SNAPSHOT_SNAPSHOT = {
     read: true,
     write: true
 };
+exports.COMMON_DOORBELL = {
+    type: "boolean",
+    role: "sensor.door",
+    name: "If there is a Doorbell Event",
+    read: true,
+    write: false
+};
+exports.COMMON_MOTION = {
+    type: "boolean",
+    role: "sensor.motion",
+    name: "If there is a Motion Event",
+    read: true,
+    write: false
+};
 exports.CHANNEL_NAME_INFO = "Info";
 exports.CHANNEL_NAME_HISTORY = "History";
 exports.CHANNEL_NAME_LIGHT = "Light";
 exports.CHANNEL_NAME_SNAPSHOT = "Snapshot";
+exports.CHANNEL_NAME_EVENTS = "Events";
 exports.STATE_ID_LIGHT_SWITCH = "light_switch";
 exports.STATE_ID_SNAPSHOT_REQUEST = "snapshot_request";
 //# sourceMappingURL=constants.js.map

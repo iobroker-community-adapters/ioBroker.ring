@@ -53,12 +53,14 @@ class OwnRingDevice {
         this.historyChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HISTORY}`;
         this.lightChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIGHT}`;
         this.snapshotChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_SNAPSHOT}`;
+        this.eventsChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_EVENTS}`;
         this.recreateDeviceObjectTree();
-        this.updateDeviceInfoObject();
+        this.updateDeviceInfoObject(ringDevice.data);
         this.updateHealth();
         // noinspection JSIgnoredPromiseFromCall
         this.updateHistory();
         this.updateSnapshot();
+        this.ringDevice = ringDevice; // subscribes to the events
     }
     static getFullId(device, adapter) {
         return `${this.evaluateKind(device, adapter)}_${device.id}`;
@@ -117,6 +119,12 @@ class OwnRingDevice {
     get ringDevice() {
         return this._ringDevice;
     }
+    set ringDevice(device) {
+        this._ringDevice = device;
+        this._ringDevice.onData.subscribe(this.update.bind(this));
+        this._ringDevice.onMotionDetected.subscribe(this.onMotion.bind(this));
+        this._ringDevice.onDoorbellPressed.subscribe(this.onDorbell.bind(this));
+    }
     processUserInput(channelID, stateID, state) {
         switch (channelID) {
             case "Light":
@@ -161,15 +169,19 @@ class OwnRingDevice {
         this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_INFO, { name: `Info ${this.shortId}` });
         this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_SNAPSHOT);
         this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_HISTORY);
+        this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_EVENTS);
         if (this._ringDevice.hasLight) {
             this.debug(`Device with Light Capabilities detected "${this.fullId}"`);
             this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_LIGHT, { name: `Light ${this.shortId}` });
         }
     }
-    update(ringDevice) {
+    updateByDevice(ringDevice) {
+        this.ringDevice = ringDevice;
+        this.update(ringDevice.data);
+    }
+    update(data) {
         this.debug(`Recieved Update for ${this.fullId}`);
-        this._ringDevice = ringDevice;
-        this.updateDeviceInfoObject();
+        this.updateDeviceInfoObject(data);
         this.updateHealth();
         // noinspection JSIgnoredPromiseFromCall
         this.updateHistory();
@@ -205,6 +217,7 @@ class OwnRingDevice {
             this.info("Could not create snapshot");
             return;
         }
+        this.silly(`Writing Snapshot (Length: ${image.length}) to "${fullPath}"`);
         fs.writeFileSync(fullPath, image);
         const vis = await this._adapter.getForeignObjectAsync("system.adapter.web.0").catch((reason) => {
             this.catcher(`Couldn't load "web.0" Adapter object.`, reason);
@@ -220,6 +233,7 @@ class OwnRingDevice {
         }
         this._lastSnapShotDir = fullPath;
         this._requestingSnapshot = false;
+        // this.silly(`Locally storing Snapshot (Length: ${image.length})`);
         this._lastSnapshotImage = image;
         this._lastSnapshotTimestamp = Date.now();
         await this.updateSnapshotObject();
@@ -253,11 +267,11 @@ class OwnRingDevice {
             this.updateHistoryObject(this.lastAction);
         });
     }
-    updateDeviceInfoObject() {
-        this._adapter.upsertState(`${this.infoChannelId}.id`, constants_1.COMMON_INFO_ID, this._ringDevice.data.device_id);
-        this._adapter.upsertState(`${this.infoChannelId}.kind`, constants_1.COMMON_INFO_KIND, this._ringDevice.data.kind);
-        this._adapter.upsertState(`${this.infoChannelId}.description`, constants_1.COMMON_INFO_DESCRIPTION, this._ringDevice.data.description);
-        this._adapter.upsertState(`${this.infoChannelId}.external_connection`, constants_1.COMMON_INFO_EXTERNAL_CONNECTION, this._ringDevice.data.external_connection);
+    updateDeviceInfoObject(data) {
+        this._adapter.upsertState(`${this.infoChannelId}.id`, constants_1.COMMON_INFO_ID, data.device_id);
+        this._adapter.upsertState(`${this.infoChannelId}.kind`, constants_1.COMMON_INFO_KIND, data.kind);
+        this._adapter.upsertState(`${this.infoChannelId}.description`, constants_1.COMMON_INFO_DESCRIPTION, data.description);
+        this._adapter.upsertState(`${this.infoChannelId}.external_connection`, constants_1.COMMON_INFO_EXTERNAL_CONNECTION, data.external_connection);
         this._adapter.upsertState(`${this.infoChannelId}.hasLight`, constants_1.COMMON_INFO_HAS_LIGHT, this._ringDevice.hasLight);
         this._adapter.upsertState(`${this.infoChannelId}.hasBattery`, constants_1.COMMON_INFO_HAS_BATTERY, this._ringDevice.hasBattery);
         this._adapter.upsertState(`${this.infoChannelId}.hasSiren`, constants_1.COMMON_INFO_HAS_SIREN, this._ringDevice.hasSiren);
@@ -309,8 +323,18 @@ class OwnRingDevice {
         this._adapter.log.info(message);
     }
     catcher(message, reason) {
-        this.info(message);
-        this.debug(`Reason: "${reason}"`);
+        this._adapter.logCatch(message, reason);
+    }
+    onDorbell(value) {
+        this.debug(`Recieved Doorbell Event (${value}) for ${this.shortId}`);
+        this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, constants_1.COMMON_DOORBELL, true);
+        setTimeout(() => {
+            this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, constants_1.COMMON_DOORBELL, false);
+        }, 5000);
+    }
+    onMotion(value) {
+        this.debug(`Recieved Motion Event (${value}) for ${this.shortId}`);
+        this._adapter.upsertState(`${this.eventsChannelId}.motion`, constants_1.COMMON_MOTION, value);
     }
 }
 exports.OwnRingDevice = OwnRingDevice;

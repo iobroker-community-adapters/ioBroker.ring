@@ -40,6 +40,7 @@ const fs = __importStar(require("fs"));
 // import * as fs from "fs";
 class RingAdapter extends utils.Adapter {
     constructor(options = {}) {
+        options.systemConfig = true;
         super({
             ...options,
             name: "ring",
@@ -193,7 +194,7 @@ class RingAdapter extends utils.Adapter {
     async upsertFile(id, common, value, timestamp) {
         var _a;
         try {
-            this.log.silly(`upsertFile ${id}`);
+            this.log.silly(`upsertFile ${id}, length: ${value.length}`);
             if (this.states[id] === timestamp) {
                 // Unchanged Value
                 return;
@@ -201,13 +202,27 @@ class RingAdapter extends utils.Adapter {
             const foreignId = `${this.namespace}.${id}`;
             if (this.states[id] !== undefined) {
                 this.states[id] = timestamp;
-                await this.setForeignBinaryStateAsync(foreignId, value);
+                await this.setForeignBinaryStateAsync(foreignId, value).catch((reason) => {
+                    this.logCatch("Couldn't write File-State", reason);
+                });
                 return;
             }
             const { device, channel, stateName } = this.getSplittedIds(id);
             this.log.silly(`upsertFile.First File create State first for ${id}.\n Device: ${device}; Channel: ${channel}; StateName: ${stateName}`);
-            await this.createStateAsync(device, channel, stateName, common);
-            await this.setForeignBinaryStateAsync(foreignId, value);
+            // this.log.silly(`Create Binary State Common: ${JSON.stringify(common)}`);
+            const obj = {
+                _id: foreignId,
+                native: {},
+                type: "state",
+                common: common
+            };
+            await this.setObjectNotExistsAsync(id, obj).catch((reason) => {
+                // await this.createStateAsync(device, channel, stateName, common).catch((reason) => {
+                this.logCatch("Couldn't Create File-State", reason);
+            });
+            await this.setForeignBinaryStateAsync(foreignId, value).catch((reason) => {
+                this.logCatch("Couldn't write File-State", reason);
+            });
             this.states[id] = timestamp;
         }
         catch (e) {
@@ -227,6 +242,10 @@ class RingAdapter extends utils.Adapter {
             stateName = splits[2];
         }
         return { device, channel, stateName };
+    }
+    logCatch(message, reason) {
+        this.log.info(message);
+        this.log.debug(`Reason: "${reason}"`);
     }
 }
 exports.RingAdapter = RingAdapter;
