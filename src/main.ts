@@ -19,6 +19,7 @@ export class RingAdapter extends utils.Adapter {
   private initializedMetaObjects: { [id: string]: boolean } = {};
 
   public constructor(options: Partial<utils.AdapterOptions> = {}) {
+    options.systemConfig = true;
     super({
       ...options,
       name: "ring",
@@ -183,12 +184,12 @@ export class RingAdapter extends utils.Adapter {
 
   public async upsertFile(
     id: string,
-    common: Partial<ioBroker.StateCommon>,
+    common: ioBroker.StateCommon,
     value: Buffer,
     timestamp: number
   ): Promise<void> {
     try {
-      this.log.silly(`upsertFile ${id}`);
+      this.log.silly(`upsertFile ${id}, length: ${value.length}`);
       if (this.states[id] === timestamp) {
         // Unchanged Value
         return;
@@ -196,14 +197,29 @@ export class RingAdapter extends utils.Adapter {
       const foreignId = `${this.namespace}.${id}`;
       if (this.states[id] !== undefined) {
         this.states[id] = timestamp;
-        await this.setForeignBinaryStateAsync(foreignId, value);
+        await this.setForeignBinaryStateAsync(foreignId, value).catch((reason) => {
+          this.logCatch("Couldn't write File-State", reason);
+        });
         return;
       }
       const {device, channel, stateName} = this.getSplittedIds(id);
       this.log.silly(`upsertFile.First File create State first for ${id
       }.\n Device: ${device}; Channel: ${channel}; StateName: ${stateName}`);
-      await this.createStateAsync(device, channel, stateName, common);
-      await this.setForeignBinaryStateAsync(foreignId, value);
+      // this.log.silly(`Create Binary State Common: ${JSON.stringify(common)}`);
+
+      const obj: ioBroker.StateObject = {
+        _id: foreignId,
+        native: {},
+        type: "state",
+        common: common
+      };
+      await this.setObjectNotExistsAsync(id, obj).catch((reason) => {
+      // await this.createStateAsync(device, channel, stateName, common).catch((reason) => {
+        this.logCatch("Couldn't Create File-State", reason);
+      });
+      await this.setForeignBinaryStateAsync(foreignId, value).catch((reason) => {
+        this.logCatch("Couldn't write File-State", reason);
+      });
       this.states[id] = timestamp;
     } catch (e: any) {
       this.log.warn(`Error Updating File State ${id}: ${e.message ?? e}`);

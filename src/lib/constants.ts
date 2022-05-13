@@ -32,8 +32,7 @@ export const COMMON_INFO_BATTERY_PERCENTAGE: Partial<ioBroker.StateCommon> = {
   name: "Battery",
   read: true,
   write: false,
-  unit: "%",
-  def: 0
+  unit: "%"
 }
 export const COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY: Partial<ioBroker.StateCommon> = {
   type: "string",
@@ -55,8 +54,7 @@ export const COMMON_INFO_LATEST_SIGNAL_STRENGTH: Partial<ioBroker.StateCommon> =
   name: "WLAN Signal",
   read: true,
   write: false,
-  unit: "RSSI",
-  def: 0
+  unit: "RSSI"
 }
 export const COMMON_INFO_LATEST_SIGNAL_CATEGORY: Partial<ioBroker.StateCommon> = {
   type: "string",
@@ -151,7 +149,7 @@ export const COMMON_SNAPSHOT_REQUEST: Partial<ioBroker.StateCommon> = {
   read: false,
   write: true
 }
-export const COMMON_SNAPSHOT_SNAPSHOT: Partial<ioBroker.StateCommon> = {
+export const COMMON_SNAPSHOT_SNAPSHOT: ioBroker.StateCommon = {
   type: "file",
   role: "file",
   name: "The current snapshot",
