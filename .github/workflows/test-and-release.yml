@@ -119,22 +119,22 @@ jobs:
           BODY="${BODY//$'\r'/'%0D'}"
           echo "::set-output name=BODY::$BODY"
 
-        - name: Install Dependencies
-          run: npm ci
-        - name: Create a clean build
-          run: npm run build
+      - name: Install Dependencies
+        run: npm ci
+      - name: Create a clean build
+        run: npm run build
 
-        - name: Publish package to npm
-          run: |
+      - name: Publish package to npm
+        run: |
             npm config set //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
             npm whoami
             npm publish
 
-        - name: Create Github Release
-          uses: actions/create-release@v1
-          env:
+      - name: Create Github Release
+        uses: actions/create-release@v1
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
+        with:
           tag_name: ${{ github.ref }}
           release_name: Release v${{ steps.extract_release.outputs.VERSION }}
           draft: false
