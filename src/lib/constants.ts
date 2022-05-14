@@ -156,12 +156,26 @@ export const COMMON_SNAPSHOT_SNAPSHOT: ioBroker.StateCommon = {
   read: true,
   write: true
 }
+export const COMMON_SNAPSHOT_MOMENT: ioBroker.StateCommon = {
+  type: "number",
+  role: "date",
+  name: "The moment of the snapshot",
+  read: true,
+  write: false
+}
 export const COMMON_LIVESTREAM_LIVESTREAM: ioBroker.StateCommon = {
   type: "file",
   role: "file",
   name: "The current Livestream Video",
   read: true,
   write: true
+}
+export const COMMON_LIVESTREAM_MOMENT: ioBroker.StateCommon = {
+  type: "number",
+  role: "date",
+  name: "The moment of the livestream",
+  read: true,
+  write: false
 }
 export const COMMON_LIVESTREAM_REQUEST: Partial<ioBroker.StateCommon> = {
   type: "boolean",
@@ -184,17 +198,45 @@ export const COMMON_LIVESTREAM_FILE: Partial<ioBroker.StateCommon> = {
   read: true,
   write: false
 }
-export const COMMON_DOORBELL: ioBroker.StateCommon = {
-  type: "boolean",
-  role: "sensor.door",
-  name: "If there is a Doorbell Event",
-  read: true,
-  write: false
-}
 export const COMMON_MOTION: ioBroker.StateCommon = {
   type: "boolean",
   role: "sensor.motion",
   name: "If there is a Motion Event",
+  read: true,
+  write: false
+}
+export const COMMON_EVENTS_DOORBELL: ioBroker.StateCommon = {
+  type: "boolean",
+  role: "sensor.door",
+  name: "If there is a Doorbell Press Event",
+  read: true,
+  write: false
+}
+export const COMMON_EVENTS_TYPE: ioBroker.StateCommon = {
+  type: "string",
+  role: "text",
+  name: "The Kind of the Ding Event",
+  read: true,
+  write: false
+}
+export const COMMON_EVENTS_DETECTIONTYPE: ioBroker.StateCommon = {
+  type: "string",
+  role: "text",
+  name: "The detection type of the Ding Event",
+  read: true,
+  write: false
+}
+export const COMMON_EVENTS_MESSAGE: ioBroker.StateCommon = {
+  type: "string",
+  role: "text",
+  name: "The Notification message",
+  read: true,
+  write: false
+}
+export const COMMON_EVENTS_MOMENT: ioBroker.StateCommon = {
+  type: "number",
+  role: "date",
+  name: "The moment the ding event occured",
   read: true,
   write: false
 }

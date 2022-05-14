@@ -16,8 +16,8 @@ import {
   CHANNEL_NAME_INFO,
   CHANNEL_NAME_LIGHT,
   CHANNEL_NAME_LIVESTREAM,
-  CHANNEL_NAME_SNAPSHOT,
-  COMMON_DOORBELL,
+  CHANNEL_NAME_SNAPSHOT, COMMON_EVENTS_DETECTIONTYPE, COMMON_EVENTS_DOORBELL, COMMON_EVENTS_MESSAGE,
+  COMMON_EVENTS_MOMENT, COMMON_EVENTS_TYPE,
   COMMON_HISTORY_CREATED_AT,
   COMMON_HISTORY_KIND,
   COMMON_HISTORY_URL,
@@ -37,11 +37,11 @@ import {
   COMMON_LIGHT_STATE,
   COMMON_LIGHT_SWITCH,
   COMMON_LIVESTREAM_FILE,
-  COMMON_LIVESTREAM_LIVESTREAM,
+  COMMON_LIVESTREAM_LIVESTREAM, COMMON_LIVESTREAM_MOMENT,
   COMMON_LIVESTREAM_REQUEST,
   COMMON_LIVESTREAM_URL,
   COMMON_MOTION,
-  COMMON_SNAPSHOT_FILE,
+  COMMON_SNAPSHOT_FILE, COMMON_SNAPSHOT_MOMENT,
   COMMON_SNAPSHOT_REQUEST,
   COMMON_SNAPSHOT_SNAPSHOT,
   COMMON_SNAPSHOT_URL,
@@ -55,6 +55,7 @@ import { PushNotification } from "ring-client-api/lib/api/ring-types";
 import { FileService } from "./services/file-service";
 
 export class OwnRingDevice {
+
   public static getFullId(device: RingCamera, adapter: RingAdapter): string {
     return `${this.evaluateKind(device, adapter)}_${device.id}`;
   }
@@ -115,6 +116,7 @@ export class OwnRingDevice {
   private lastAction: LastAction | undefined;
   private _requestingSnapshot = false;
   private _requestingLiveStream = false;
+  private _lastLightCommand = 0;
   private _lastLiveStreamUrl = "";
   private _lastLiveStreamDir = "";
   private _lastLiveStreamVideo: Buffer | null = null;
@@ -156,6 +158,7 @@ export class OwnRingDevice {
     this._ringDevice.onData.subscribe(this.update.bind(this));
     this._ringDevice.onMotionDetected.subscribe(this.onMotion.bind(this));
     this._ringDevice.onDoorbellPressed.subscribe(this.onDorbell.bind(this));
+    this._ringDevice.onNewNotification.subscribe(this.onDing.bind(this));
   }
 
   public constructor(ringDevice: RingCamera, locationIndex: number, adapter: RingAdapter, apiClient: RingApiClient) {
@@ -195,7 +198,8 @@ export class OwnRingDevice {
         }
         if (stateID === STATE_ID_LIGHT_SWITCH) {
           const targetVal = state.val as boolean;
-          this._adapter.log.debug(`Set light for ${this.shortId} to value ${targetVal}`)
+          this._adapter.log.debug(`Set light for ${this.shortId} to value ${targetVal}`);
+          this._lastLightCommand = Date.now();
           this._ringDevice.setLight(targetVal).then((success) => {
             if (success) {
               this._adapter.upsertState(
@@ -203,6 +207,14 @@ export class OwnRingDevice {
                 COMMON_LIGHT_STATE,
                 targetVal
               );
+              this._adapter.upsertState(
+                `${this.lightChannelId}.light_switch`,
+                COMMON_LIGHT_SWITCH,
+                targetVal
+              );
+              setTimeout(() => {
+                this.updateHealth.bind(this)
+              }, 65000);
             }
           });
         } else {
@@ -270,7 +282,7 @@ export class OwnRingDevice {
     this.updateSnapshotObject();
   }
 
-  public async startLivestream(): Promise<void> {
+  public async startLivestream(duration?: number): Promise<void> {
     this.silly(`${this.shortId}.startLivestream()`);
     const {fullPath, dirname, filename} =
       FileService.getPath(
@@ -292,7 +304,7 @@ export class OwnRingDevice {
             `);
       return;
     }
-    const duration = this._adapter.config.recordtime_livestream;
+    duration ??= this._adapter.config.recordtime_livestream;
     this.silly(`Initialize Livestream (${duration}s) to file ${fullPath}`);
     await this._ringDevice.recordToFile(fullPath, duration);
     if (!fs.existsSync(fullPath)) {
@@ -317,7 +329,7 @@ export class OwnRingDevice {
 
   }
 
-  public async takeSnapshot(): Promise<void> {
+  public async takeSnapshot(uuid?: string): Promise<void> {
     const {fullPath, dirname} =
       FileService.getPath(
         this._adapter.config.path,
@@ -335,7 +347,7 @@ export class OwnRingDevice {
             `);
       return;
     }
-    const image = await this._ringDevice.getSnapshot().catch((reason) => {
+    const image = await this._ringDevice.getSnapshot({uuid: uuid}).catch((reason) => {
       this.catcher("Couldn't get Snapshot from api.", reason);
     });
     if (!image) {
@@ -465,6 +477,11 @@ export class OwnRingDevice {
       this._lastSnapShotDir
     );
     this._adapter.upsertState(
+      `${this.snapshotChannelId}.moment`,
+      COMMON_SNAPSHOT_MOMENT,
+      this._lastSnapshotTimestamp
+    );
+    this._adapter.upsertState(
       `${this.snapshotChannelId}.snapshot_url`,
       COMMON_SNAPSHOT_URL,
       this._lastSnapShotUrl
@@ -499,6 +516,11 @@ export class OwnRingDevice {
         `${this.liveStreamChannelId}.livestream_url`,
         COMMON_LIVESTREAM_URL,
         this._lastLiveStreamUrl
+      );
+      this._adapter.upsertState(
+        `${this.liveStreamChannelId}.moment`,
+        COMMON_LIVESTREAM_MOMENT,
+        this._lastLiveStreamTimestamp
       );
     }
     this._adapter.upsertState(
@@ -545,7 +567,7 @@ export class OwnRingDevice {
       COMMON_INFO_FIRMWARE,
       health.firmware
     );
-    if (this._ringDevice.hasLight) {
+    if (this._ringDevice.hasLight && (Date.now() - this._lastLightCommand > 60000)) {
       // this.silly(JSON.stringify(this._ringDevice.data));
       const floodlightOn = (this._ringDevice.data as any).health.floodlight_on as boolean;
       this.debug(`Update Light within Health Update for "${this.fullId}" FLoodlight is ${floodlightOn}`);
@@ -579,17 +601,27 @@ export class OwnRingDevice {
     this._adapter.logCatch(message, reason);
   }
 
-  private onDorbell(value: PushNotification): void {
-    this.debug(`Recieved Doorbell Event (${value}) for ${this.shortId}`);
-    this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, COMMON_DOORBELL, true);
-    setTimeout(() => {
-      this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, COMMON_DOORBELL, false);
-    }, 5000);
+  private onDing(value: PushNotification): void {
+    this.debug(`Recieved Ding Event (${value}) for ${this.shortId}`);
+    this.takeSnapshot(value.ding.image_uuid);
+    this.startLivestream(20);
+    this._adapter.upsertState(`${this.eventsChannelId}.type`, COMMON_EVENTS_TYPE, value.subtype);
+    this._adapter.upsertState(`${this.eventsChannelId}.detectionType`, COMMON_EVENTS_DETECTIONTYPE, value.ding.detection_type);
+    this._adapter.upsertState(`${this.eventsChannelId}.created_at`, COMMON_EVENTS_MOMENT, Date.now());
+    this._adapter.upsertState(`${this.eventsChannelId}.message`, COMMON_EVENTS_MESSAGE, value.aps.alert);
   }
 
   private onMotion(value: boolean): void {
     this.debug(`Recieved Motion Event (${value}) for ${this.shortId}`);
     this._adapter.upsertState(`${this.eventsChannelId}.motion`, COMMON_MOTION, value);
+  }
+
+  private onDorbell(value: PushNotification): void {
+    this.debug(`Recieved Doorbell Event (${value}) for ${this.shortId}`);
+    this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, COMMON_EVENTS_DOORBELL, true);
+    setTimeout(() => {
+      this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, COMMON_EVENTS_DOORBELL, false);
+    }, 5000);
   }
 }
 

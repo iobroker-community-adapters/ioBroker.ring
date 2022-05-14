@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.STATE_ID_LIVESTREAM_REQUEST = exports.STATE_ID_SNAPSHOT_REQUEST = exports.STATE_ID_LIGHT_SWITCH = exports.CHANNEL_NAME_EVENTS = exports.CHANNEL_NAME_LIVESTREAM = exports.CHANNEL_NAME_SNAPSHOT = exports.CHANNEL_NAME_LIGHT = exports.CHANNEL_NAME_HISTORY = exports.CHANNEL_NAME_INFO = exports.COMMON_MOTION = exports.COMMON_DOORBELL = exports.COMMON_LIVESTREAM_FILE = exports.COMMON_LIVESTREAM_URL = exports.COMMON_LIVESTREAM_REQUEST = exports.COMMON_LIVESTREAM_LIVESTREAM = exports.COMMON_SNAPSHOT_SNAPSHOT = exports.COMMON_SNAPSHOT_REQUEST = exports.COMMON_SNAPSHOT_FILE = exports.COMMON_SNAPSHOT_URL = exports.COMMON_HISTORY_KIND = exports.COMMON_HISTORY_CREATED_AT = exports.COMMON_HISTORY_URL = exports.COMMON_LIGHT_STATE = exports.COMMON_LIGHT_SWITCH = exports.COMMON_INFO_HAS_SIREN = exports.COMMON_INFO_HAS_BATTERY = exports.COMMON_INFO_HAS_LIGHT = exports.COMMON_INFO_FIRMWARE = exports.COMMON_INFO_LATEST_SIGNAL_CATEGORY = exports.COMMON_INFO_LATEST_SIGNAL_STRENGTH = exports.COMMON_INFO_WIFI_NAME = exports.COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY = exports.COMMON_INFO_BATTERY_PERCENTAGE = exports.COMMON_INFO_KIND = exports.COMMON_INFO_EXTERNAL_CONNECTION = exports.COMMON_INFO_DESCRIPTION = exports.COMMON_INFO_ID = void 0;
+exports.STATE_ID_LIVESTREAM_REQUEST = exports.STATE_ID_SNAPSHOT_REQUEST = exports.STATE_ID_LIGHT_SWITCH = exports.CHANNEL_NAME_EVENTS = exports.CHANNEL_NAME_LIVESTREAM = exports.CHANNEL_NAME_SNAPSHOT = exports.CHANNEL_NAME_LIGHT = exports.CHANNEL_NAME_HISTORY = exports.CHANNEL_NAME_INFO = exports.COMMON_EVENTS_MOMENT = exports.COMMON_EVENTS_MESSAGE = exports.COMMON_EVENTS_DETECTIONTYPE = exports.COMMON_EVENTS_TYPE = exports.COMMON_EVENTS_DOORBELL = exports.COMMON_MOTION = exports.COMMON_LIVESTREAM_FILE = exports.COMMON_LIVESTREAM_URL = exports.COMMON_LIVESTREAM_REQUEST = exports.COMMON_LIVESTREAM_MOMENT = exports.COMMON_LIVESTREAM_LIVESTREAM = exports.COMMON_SNAPSHOT_MOMENT = exports.COMMON_SNAPSHOT_SNAPSHOT = exports.COMMON_SNAPSHOT_REQUEST = exports.COMMON_SNAPSHOT_FILE = exports.COMMON_SNAPSHOT_URL = exports.COMMON_HISTORY_KIND = exports.COMMON_HISTORY_CREATED_AT = exports.COMMON_HISTORY_URL = exports.COMMON_LIGHT_STATE = exports.COMMON_LIGHT_SWITCH = exports.COMMON_INFO_HAS_SIREN = exports.COMMON_INFO_HAS_BATTERY = exports.COMMON_INFO_HAS_LIGHT = exports.COMMON_INFO_FIRMWARE = exports.COMMON_INFO_LATEST_SIGNAL_CATEGORY = exports.COMMON_INFO_LATEST_SIGNAL_STRENGTH = exports.COMMON_INFO_WIFI_NAME = exports.COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY = exports.COMMON_INFO_BATTERY_PERCENTAGE = exports.COMMON_INFO_KIND = exports.COMMON_INFO_EXTERNAL_CONNECTION = exports.COMMON_INFO_DESCRIPTION = exports.COMMON_INFO_ID = void 0;
 exports.COMMON_INFO_ID = {
     type: "string",
     role: "state",
@@ -157,12 +157,26 @@ exports.COMMON_SNAPSHOT_SNAPSHOT = {
     read: true,
     write: true
 };
+exports.COMMON_SNAPSHOT_MOMENT = {
+    type: "number",
+    role: "date",
+    name: "The moment of the snapshot",
+    read: true,
+    write: false
+};
 exports.COMMON_LIVESTREAM_LIVESTREAM = {
     type: "file",
     role: "file",
     name: "The current Livestream Video",
     read: true,
     write: true
+};
+exports.COMMON_LIVESTREAM_MOMENT = {
+    type: "number",
+    role: "date",
+    name: "The moment of the livestream",
+    read: true,
+    write: false
 };
 exports.COMMON_LIVESTREAM_REQUEST = {
     type: "boolean",
@@ -185,17 +199,45 @@ exports.COMMON_LIVESTREAM_FILE = {
     read: true,
     write: false
 };
-exports.COMMON_DOORBELL = {
-    type: "boolean",
-    role: "sensor.door",
-    name: "If there is a Doorbell Event",
-    read: true,
-    write: false
-};
 exports.COMMON_MOTION = {
     type: "boolean",
     role: "sensor.motion",
     name: "If there is a Motion Event",
+    read: true,
+    write: false
+};
+exports.COMMON_EVENTS_DOORBELL = {
+    type: "boolean",
+    role: "sensor.door",
+    name: "If there is a Doorbell Press Event",
+    read: true,
+    write: false
+};
+exports.COMMON_EVENTS_TYPE = {
+    type: "string",
+    role: "text",
+    name: "The Kind of the Ding Event",
+    read: true,
+    write: false
+};
+exports.COMMON_EVENTS_DETECTIONTYPE = {
+    type: "string",
+    role: "text",
+    name: "The detection type of the Ding Event",
+    read: true,
+    write: false
+};
+exports.COMMON_EVENTS_MESSAGE = {
+    type: "string",
+    role: "text",
+    name: "The Notification message",
+    read: true,
+    write: false
+};
+exports.COMMON_EVENTS_MOMENT = {
+    type: "number",
+    role: "date",
+    name: "The moment the ding event occured",
     read: true,
     write: false
 };
