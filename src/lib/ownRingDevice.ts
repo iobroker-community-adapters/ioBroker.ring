@@ -284,7 +284,7 @@ export class OwnRingDevice {
 
   public async startLivestream(duration?: number): Promise<void> {
     this.silly(`${this.shortId}.startLivestream()`);
-    const {fullPath, dirname, filename} =
+    const {fullPath, dirname} =
       FileService.getPath(
         this._adapter.config.path,
         this._adapter.config.filename_livestream,

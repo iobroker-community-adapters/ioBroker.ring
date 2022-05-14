@@ -46,7 +46,6 @@ class RingAdapter extends utils.Adapter {
             name: "ring",
         });
         this.states = {};
-        this.initializedMetaObjects = {};
         this.on("ready", this.onReady.bind(this));
         this.on("stateChange", this.onStateChange.bind(this));
         // this.on("objectChange", this.onObjectChange.bind(this));
@@ -165,7 +164,7 @@ class RingAdapter extends utils.Adapter {
                 await this.setStateAsync(id, value, true);
                 return;
             }
-            const { device, channel, stateName } = this.getSplittedIds(id);
+            const { device, channel, stateName } = RingAdapter.getSplittedIds(id);
             await this.createStateAsync(device, channel, stateName, common);
             this.states[id] = value;
             await this.setStateAsync(id, value, true);
@@ -196,7 +195,7 @@ class RingAdapter extends utils.Adapter {
                 });
                 return;
             }
-            const { device, channel, stateName } = this.getSplittedIds(id);
+            const { device, channel, stateName } = RingAdapter.getSplittedIds(id);
             this.log.silly(`upsertFile.First File create State first for ${id}.\n Device: ${device}; Channel: ${channel}; StateName: ${stateName}`);
             // this.log.silly(`Create Binary State Common: ${JSON.stringify(common)}`);
             const obj = {
@@ -221,7 +220,7 @@ class RingAdapter extends utils.Adapter {
             }
         }
     }
-    getSplittedIds(id) {
+    static getSplittedIds(id) {
         const splits = id.split(".");
         const device = splits[0];
         let channel = "";

@@ -217,7 +217,7 @@ class OwnRingDevice {
     }
     async startLivestream(duration) {
         this.silly(`${this.shortId}.startLivestream()`);
-        const { fullPath, dirname, filename } = file_service_1.FileService.getPath(this._adapter.config.path, this._adapter.config.filename_livestream, ++this._liveStreamCount, this.shortId, this.fullId, this.kind);
+        const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path, this._adapter.config.filename_livestream, ++this._liveStreamCount, this.shortId, this.fullId, this.kind);
         if (!(await file_service_1.FileService.prepareFolder(dirname))) {
             this.debug(`Failed to prepare Livestream folder ("${fullPath}") for ${this.shortId}`);
             return;

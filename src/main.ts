@@ -7,7 +7,6 @@
 import * as utils from "@iobroker/adapter-core";
 import { RingApiClient } from "./lib/ringApiClient";
 import path from "path";
-import * as fs from "fs";
 import { FileService } from "./lib/services/file-service";
 
 // Load your modules here, e.g.:
@@ -17,7 +16,6 @@ export class RingAdapter extends utils.Adapter {
   private apiClient: RingApiClient | undefined;
   public static isWindows: boolean = process.platform.startsWith("win");
   private states: { [id: string]: ioBroker.StateValue } = {};
-  private initializedMetaObjects: { [id: string]: boolean } = {};
 
   public constructor(options: Partial<utils.AdapterOptions> = {}) {
     options.systemConfig = true;
@@ -158,7 +156,7 @@ export class RingAdapter extends utils.Adapter {
         return;
       }
 
-      const {device, channel, stateName} = this.getSplittedIds(id);
+      const {device, channel, stateName} = RingAdapter.getSplittedIds(id);
       await this.createStateAsync(device, channel, stateName, common);
       this.states[id] = value;
       await this.setStateAsync(id, value, true);
@@ -193,7 +191,7 @@ export class RingAdapter extends utils.Adapter {
         });
         return;
       }
-      const {device, channel, stateName} = this.getSplittedIds(id);
+      const {device, channel, stateName} = RingAdapter.getSplittedIds(id);
       this.log.silly(`upsertFile.First File create State first for ${id
       }.\n Device: ${device}; Channel: ${channel}; StateName: ${stateName}`);
       // this.log.silly(`Create Binary State Common: ${JSON.stringify(common)}`);
@@ -220,7 +218,7 @@ export class RingAdapter extends utils.Adapter {
     }
   }
 
-  private getSplittedIds(id: string): { device: string, channel: string, stateName: string } {
+  private static getSplittedIds(id: string): { device: string, channel: string, stateName: string } {
     const splits = id.split(".");
     const device = splits[0];
     let channel = "";
