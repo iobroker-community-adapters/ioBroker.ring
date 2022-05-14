@@ -9,7 +9,7 @@
 
 [![NPM](https://nodei.co/npm/iobroker.ring.png?downloads=true)](https://nodei.co/npm/iobroker.ring/)
 
-Requires Admin v4 and recommends ``node 16.x``.
+Requires Admin v4 and ``node 16.x``.
 
 The Ring adapter works with Ring devices like the Ring Video Doorbell and Ring Cam and shows if somenone rings the doorbell or if motion is detected. The Ring Video Doorbell or Cam sends a videostream if a motion or doorbell ist detected or you use the SIP Information for a SIP Video Conference with your SIP client.
 Unfortunately the snapshot and livestream function does not work properly. Unfortunately I have no influence on it. Please consider this before you create an issue.
@@ -36,8 +36,6 @@ cd /opt/iobroker/node_modules/iobroker.ring/node_modules/ring-client-api
 node ring-auth-cli
 ```
 
-![Ring Admin 1](docs/ring_admin_tab1.png)
-
 You can use special variables for your livestream and snapshort path and filename. This variables will be replaced with a counter, timestamp, ring id or kind of ring.
 
 * %d : Unix timestamp. Example: test_%d -> test_1588331430061
@@ -45,26 +43,14 @@ You can use special variables for your livestream and snapshort path and filenam
 * %n : Counter since ring instance start. Example: test_%n -> test_1
 * %k : Kind of your ring device: Example: test_%k -> test_doorbel
 
-![Ring Admin 2](docs/ring_admin_tab2.png)
-
-## Objects
-
-![Ring Admin 2](docs/ring_objects.png)
-
-## Example
-
-An example to get changes if a motion or door ring is detected:
-```
-on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
-  if(obj.state.val == 'ding')   console.log("Someone is at the door");
-  if(obj.state.val == 'motion') console.log("Motion detected");
-});
-```
 ## Changelog
 <!--
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (theimo1221) Prevent crashes during installation by clearer enforcing of node 16
+
 ### 3.0.0-beta.4 (2022-05-14)
 * (theimo1221) Changes in io-package.json for release workflow
 
@@ -195,7 +181,7 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 2. Snapshot/Livestream Data is now in a respective channel, containing the other data points.
 3. The snapshot/livestream object got changed from type meta to state with type file.
 4. Events (Motion, Ding, etc.) are now in a respective channel.
-5. Due to `ring-api` dropping the support for node before `v16.x` this adapter recommends `node v16.x` 
+5. Due to `ring-api` dropping the support for node before `v16.x` this adapter needs `node v16.x` 
 
 
 ### Scripts in `package.json`
