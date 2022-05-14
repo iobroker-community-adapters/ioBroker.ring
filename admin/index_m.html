@@ -1,252 +1,169 @@
 <html>
 
 <head>
-  <meta charset="UTF-8">
-  <!-- Materialze style -->
-  <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
-  <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
 
-  <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
-  <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
+    <!-- Load ioBroker scripts and styles-->
+    <link rel="stylesheet" type="text/css" href="../../css/adapter.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
 
-  <script type="text/javascript" src="../../js/translate.js"></script>
-  <script type="text/javascript" src="../../lib/js/materialize.js"></script>
-  <script type="text/javascript" src="../../js/adapter-settings.js"></script>
-  <script type="text/javascript" src="words.js"></script>
+    <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
 
-  <!-- you have to define 2 functions in the global scope: -->
-  <script type="text/javascript">
-    var convertComma = null;
-    var secret = null;
+    <script type="text/javascript" src="../../js/translate.js"></script>
+    <script type="text/javascript" src="../../lib/js/materialize.js"></script>
+    <script type="text/javascript" src="../../js/adapter-settings.js"></script>
 
-    function encrypt(key, value) {
-      var result = '';
-      for (var i = 0; i < value.length; ++i) {
-        result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
-      }
-      return result;
-    }
+    <!-- Load our own files -->
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <script type="text/javascript" src="words.js"></script>
 
-    function decrypt(key, value) {
+    <script type="text/javascript">
+      var secret = null;
 
-      var result = '';
-      for (var i = 0; i < value.length; ++i) {
-        result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
-      }
-      return result;
-    }
-
-    function setValue(id, value, onChange) {
-
-      var $value = $('#' + id + '.value');
-      if (value && $value.attr('data-crypt') == "1") {
-        value = decrypt(secret, value);
+      function encrypt(key, value) {
+        var result = '';
+        for (var i = 0; i < value.length; ++i) {
+          result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+        }
+        return result;
       }
 
-      if ($value.attr('type') === 'checkbox') {
-        $value.prop('checked', value).change(function () {
-          onChange();
-        });
-      } else {
-        $value.val(value).on('change', function () {
-          onChange();
-        }).keyup(function () {
-          // Check that only numbers entered
-          if ($(this).hasClass('number')) {
-            var val = $(this).val();
-            if (val) {
-              var newVal = '';
-              for (var i = 0; i < val.length; i++) {
-                if ((val[i] >= '0' && val[i] <= '9') || val[i] === '-' || val[i] === '+' || val[i] === '.' || val[i] === ',') {
-                  if (val[i] === '.' && convertComma === true) val[i] = ',';
-                  if (val[i] === ',' && convertComma === false) val[i] = '.';
-                  newVal += val[i];
-                }
-              }
+      function decrypt(key, value) {
 
-              if (val != newVal) {
-                $(this).val(newVal);
-              }
+        var result = '';
+        for (var i = 0; i < value.length; ++i) {
+          result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+        }
+        return result;
+      }
+
+      // This will be called by the admin adapter when the settings page loads
+      function load(settings, onChange) {
+        // example: select elements with id=key and class=value and insert value
+        if (!settings) return;
+        secret = (systemConfig.native ? systemConfig.native.secret : '') || 'Zgfr56gFe87jJOM';
+
+        $('.value').each(function () {
+          var $key = $(this);
+          var id = $key.attr('id');
+          if ($key.attr('type') === 'checkbox') {
+            // do not call onChange direct, because onChange could expect some arguments
+            $key.prop('checked', settings[id])
+              .on('change', () => onChange())
+            ;
+          } else {
+            var value = settings[id];
+            if (value && $key.attr('data-crypt') == "1") {
+              value = decrypt(secret, value);
             }
+            // do not call onChange direct, because onChange could expect some arguments
+            $key.val(value)
+              .on('change', () => onChange())
+              .on('keyup', () => onChange())
+            ;
           }
-          $(this).trigger('change');
         });
-      }
-    }
-
-    function load(settings, onChange) {
-
-      // works only with newest admin adapter
-      if (typeof systemConfig !== 'undefined') {
-        convertComma = systemConfig.common.isFloatComma;
+        onChange(false);
+        // reinitialize all the Materialize labels on the page if you are dynamically adding inputs:
+        if (M) M.updateTextFields();
       }
 
-      if (settings.saveLastValue === undefined) {
-        settings.saveLastValue = false;
+      // This will be called by the admin adapter when the user presses the save button
+      function save(callback) {
+        // example: select elements with class=value and build settings object
+        var obj = {};
+        $('.value').each(function () {
+          var $this = $(this);
+          if ($this.attr('type') === 'checkbox') {
+            obj[$this.attr('id')] = $this.prop('checked');
+          } else if ($this.attr('type') === 'number') {
+            obj[$this.attr('id')] = parseFloat($this.val());
+          } else {
+            obj[$this.attr('id')] = $this.data('crypt') && $this.val() ? encrypt(secret, $this.val()) : $this.val();
+          }
+        });
+        callback(obj);
       }
-      if (settings.writeNulls === undefined) settings.writeNulls = true;
+    </script>
 
-      secret = (systemConfig.native ? systemConfig.native.secret : '') || 'Zgfr56gFe87jJOM';
-
-      for (var key in settings) {
-        if (settings.hasOwnProperty(key)) {
-          setValue(key, settings[key], onChange);
-        }
-      }
-
-
-      onChange(false);
-      if (M) M.updateTextFields();
-    }
-
-    function save(callback) {
-      var settings = {};
-      $('.value').each(function () {
-        var $this = $(this);
-        var id = $this.attr('id');
-
-        if ($this.attr('type') === 'checkbox') {
-          settings[id] = $this.prop('checked');
-        } else {
-          settings[id] = $this.data('crypt') && $this.val() ? encrypt(secret, $this.val()) : $this.val();
-        }
-      });
-
-      /*
-      if ($('#password').val() !== $('#password_confirm').val()) {
-        showMessage(_('Password confirmation is not equal with password'));
-        return;
-      }
-      */
-
-
-      callback(settings);
-    }
-  </script>
-  <style>
-    .adapter-container>div {
-      margin-bottom: 0 !important;
-    }
-
-    .page {
-      height: calc(100% - 50px) !important;
-    }
-
-    .marg {
-      margin-top: 5em;
-    }
-  </style>
 </head>
 
 <body>
-  <!-- you have to put your config page in a div with id adapter-container -->
-  <div class="m adapter-container">
+
+<div class="m adapter-container">
 
     <div class="row">
-      <div class="col s12">
-        <ul class="tabs">
-          <li class="tab col s2"><a href="#tab-login" class="translate active">Login</a></li>
-          <li class="tab col s2"><a href="#tab-snapshot" class="translate active">Snapshot</a></li>
-        </ul>
-      </div>
-
-      <div id="tab-login" class="col s12 page">
-
-
-        <div class="row">
-          <div class="input-field col s6">
+        <div class="input-field col s6">
             <img src="ring.png" class="logo">
-          </div>
         </div>
+    </div>
 
-        <!-- div class="row">
-          <div class="input-field col s8 m8 l3">
-            <select id="api" class="value">
-              <option value="ring-api-client">ring-api-client</option>
-              <option value="ring-api">ring-api</option>
-              <option value="doorbot">doorbot</option>
-            </select>
-            <label class="translate" for="api">API</label>
-          </div>
-        </div -->
-
+    <div class="row">
+        <div class="col s12">
+            <ul class="tabs">
+                <li class="tab col s2"><a href="#tab-login" class="translate active">Login</a></li>
+                <li class="tab col s2"><a href="#tab-snapshot" class="translate active">Snapshot</a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="tab-login" class="col s12 page">
         <div class="row">
-          <div class="col s12">
-            <p class="translate">ringdescription</p>
-          </div>
+            <div class="col s12">
+                <p class="translate">ringdescription</p>
+            </div>
         </div>
 
         <div class="row">
-          <div class="input-field col s12 m6 l4">
-            <input id="email" type="text" size="30" class="value" />
-            <label class="translate" for="email">Email</label>
-          </div>
+            <!-- div class="input-field col s12">
+              <input class="value" id="twofaceauth" type="checkbox" />
+              <label for="twofaceauth" class="translate">Set two face auth (once)</label>
+            </div -->
+            <div class="input-field col s12 m6 l16">
+                <input id="refreshtoken" type="text" size="30" class="value"/>
+                <label class="translate" for="refreshtoken">Refreshtoken (Two Face Auth)</label>
+            </div>
         </div>
-
-        <div class="row">
-          <div class="input-field col s12 m6 l4">
-            <input id="password" type="password" data-crypt="1" size="30" class="value" />
-            <label class="translate" for="password">Password</label>
-          </div>
-        </div>
-
-        <div class="row">
-          <!-- div class="input-field col s12">
-            <input class="value" id="twofaceauth" type="checkbox" />
-            <label for="twofaceauth" class="translate">Set two face auth (once)</label>
-          </div -->
-          <div class="input-field col s12 m6 l16">
-            <input id="refreshtoken" type="text" size="30" class="value" />
-            <label class="translate" for="refreshtoken">Refreshtoken (Two Face Auth)</label>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="input-field col s12">
-            <input class="value" id="sentry_enable" type="checkbox" />
-            <label for="sentry_enable" class="translate">Allow to transfer errors if the adapter crash. Private data like usernames, passwords, tokens, ... will be NOT be transferd.</label>
-          </div>
-        </div>
-
-      </div>
-
-      <div id="tab-snapshot" class="col s12 page">
-        <div class="row">
-          <div class="input-field col s6">
-            <img src="ring.png" class="logo">
-          </div>
-        </div>
-        <div class="row">
-          <div class="col s12 m4 l1">
-            <input class="value number" id="recordtime_livestream" min="0" max="60" type="number" />
-            <label class="translate" for="recordtime_livestream">Livestream recordtime in sec.</label>
-          </div>
-        </div>
-        <div class="row">
-          <div class="input-field col s12 m6 l4">
-            <input id="path" type="text" size="30" class="value" />
-            <label class="translate" for="path">Path</label>
-          </div>
-        </div>
-        <div class="row">
-          <div class="input-field col s12 m6 l4">
-            <input id="filename_snapshot" type="text" size="30" class="value" />
-            <label class="translate" for="filename_snapshot">Filename Snapshot</label>
-            <input class="value" id="del_old_snapshot" type="checkbox" />
-            <label for="del_old_snapshot" class="translate">Delete old Snapshots</label>
-        </div>
-        <div class="row">
-          <div class="input-field col s12 m6 l4">
-            <input id="filename_livestream" type="text" size="30" class="value" />
-            <label class="translate" for="filename_livestream">Filename Livestream</label>
-            <input class="value" id="del_old_livestream" type="checkbox" />
-            <label for="del_old_livestream" class="translate">Delete old Livestreams</label>
-          </div>
-        </div>
-      </div>
 
     </div>
-  </div>
+
+    <div id="tab-snapshot" class="col s12 page">
+        <div class="row">
+            <div class="input-field col s6">
+                <img src="ring.png" class="logo">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12 m4 l1">
+                <input class="value number" id="recordtime_livestream" min="0" max="60" type="number"/>
+                <label class="translate" for="recordtime_livestream">Livestream recordtime in sec.</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12 m6 l4">
+                <input id="path" type="text" size="30" class="value"/>
+                <label class="translate" for="path">Path</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12 m6 l4">
+                <input id="filename_snapshot" type="text" size="30" class="value"/>
+                <label class="translate" for="filename_snapshot">Filename Snapshot</label>
+                <input class="value" id="del_old_snapshot" type="checkbox"/>
+                <label for="del_old_snapshot" class="translate">Delete old Snapshots</label>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m6 l4">
+                    <input id="filename_livestream" type="text" size="30" class="value"/>
+                    <label class="translate" for="filename_livestream">Filename Livestream</label>
+                    <input class="value" id="del_old_livestream" type="checkbox"/>
+                    <label for="del_old_livestream" class="translate">Delete old Livestreams</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
 </body>
 
 </html>

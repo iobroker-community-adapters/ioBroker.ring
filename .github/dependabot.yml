@@ -1,8 +1,12 @@
 version: 2
 updates:
-- package-ecosystem: "npm"
+- package-ecosystem: npm
   directory: "/"
   schedule:
-    interval: "weekly"
-  target-branch: "master"
-  open-pull-requests-limit: 30
+    interval: weekly
+    time: "04:00"
+    timezone: Europe/Berlin
+  open-pull-requests-limit: 20
+  assignees:
+  - Author
+  versioning-strategy: increase

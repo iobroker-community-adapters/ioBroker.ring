@@ -1,14 +1,22 @@
 .git
 .idea
+*.code-workspace
 node_modules
 nbproject
+
+# npm package files
+iobroker.*.tgz
+
+# ioBroker dev-server
+.dev-server/
+
+Thumbs.db
+
+# NYC coverage files
+coverage
+.nyc*
+
+# i18n intermediate files
 admin/i18n/flat.txt
 admin/i18n/*/flat.txt
 .DS_Store
-ring.0
-ring.0/*
-snapshot
-snapshot/*
-test.js
-test.ts
-*.tgz

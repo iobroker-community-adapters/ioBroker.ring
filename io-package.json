@@ -1,9 +1,9 @@
 {
-    "common": {
-        "name": "ring",
-        "version": "2.0.0-beta.3",
-        "title": "Ring",
-        "news": {
+	"common": {
+		"name": "ring",
+		"version": "3.0.0-beta.4",
+		"title": "Ring",
+		"news": {
             "2.0.0-beta.2": {
                 "en": "Fix adapter checker issues"
             },
@@ -73,235 +73,239 @@
                 "pl": "Refaktoryzacja\nZaktualizuj pakiety",
                 "zh-cn": "重构\n更新包"
             },
-            "1.2.3": {
-                "en": "Update packages\nFix compatibility issues with new ring api",
-                "de": "Pakete aktualisieren\nKompatibilitätsprobleme mit der neuen Ring-API beheben",
-                "ru": "Пакеты обновлений\nУстранение проблем совместимости с новым кольцевым API",
-                "pt": "Pacotes de atualização\nCorrija problemas de compatibilidade com a nova API de anel",
-                "nl": "Pakketten bijwerken\nCompatibiliteitsproblemen oplossen met nieuwe ring api",
-                "fr": "Mettre à jour les packages\nRésoudre les problèmes de compatibilité avec la nouvelle API Ring",
-                "it": "Aggiorna pacchetti\nRisolvi i problemi di compatibilità con la nuova API dell'anello",
-                "es": "Actualizar paquetes\nSolucionar problemas de compatibilidad con la nueva API de anillo",
-                "pl": "Zaktualizuj pakiety\nNapraw problemy ze zgodnością z nowym ring api",
-                "zh-cn": "更新包\n修复与新环 api 的兼容性问题"
-            },
-            "1.2.2": {
-                "en": "Update packages due to security patches",
-                "de": "Aktualisieren Sie Pakete aufgrund von Sicherheitspatches",
-                "ru": "Пакеты обновлений из-за исправлений безопасности",
-                "pt": "Pacotes de atualização devido a patches de segurança",
-                "nl": "Update pakketten vanwege beveiligingspatches",
-                "fr": "Mettre à jour les packages en raison des correctifs de sécurité",
-                "it": "Aggiorna i pacchetti a causa delle patch di sicurezza",
-                "es": "Actualizar paquetes debido a parches de seguridad",
-                "pl": "Zaktualizuj pakiety ze względu na poprawki bezpieczeństwa",
-                "zh-cn": "由于安全补丁程序而更新软件包"
-            },
-            "1.2.1": {
-                "en": "Bump version",
-                "de": "Bump-Version",
-                "ru": "Версия Bump",
-                "pt": "Versão Bump",
-                "nl": "Bump-versie",
-                "fr": "Version en relief",
-                "it": "Versione bump",
-                "es": "Versión de relieve",
-                "pl": "Wersja uderzeniowa",
-                "zh-cn": "凹凸版"
-            },
-            "1.2.0": {
-                "en": "Add new device type spotlightw as doorbell\nUpdate dependencies (ringapi, node-schedule, etc.)",
-                "de": "Fügen Sie den neuen Gerätetyp spotlightw als Türklingel hinzu\nAbhängigkeiten aktualisieren (Ringapi, Knotenplan usw.)",
-                "ru": "Добавить новый тип устройства прожектор в качестве дверного звонка\nОбновите зависимости (ringapi, node-schedule и т. Д.)",
-                "pt": "Adicionar novo tipo de dispositivo spotlightw como campainha\nAtualizar dependências (ringapi, node-schedule, etc.)",
-                "nl": "Voeg een nieuw apparaattype spotlightw toe als deurbel\nUpdate afhankelijkheden (ringapi, knooppuntschema, etc.)",
-                "fr": "Ajouter un nouveau projecteur de type d'appareil comme sonnette\nMettre à jour les dépendances (ringapi, noeud-planning, etc.)",
-                "it": "Aggiungi un nuovo tipo di dispositivo spotlightw come campanello\nAggiorna le dipendenze (ringapi, node-schedule, ecc.)",
-                "es": "Agregar un nuevo tipo de dispositivo spotlightw como timbre\nActualice las dependencias (ringapi, node-schedule, etc.)",
-                "pl": "Dodaj reflektor nowego typu urządzenia jako dzwonek do drzwi\nAktualizuj zależności (ringapi, harmonogram węzłów itp.)",
-                "zh-cn": "将新的设备类型Spotlightw添加为门铃\n更新依赖项（ringapi，节点计划等）"
-            },
-            "1.1.6-3": {
-                "en": "Fix typo preventing Livestream recordings after motion detection\nReduce Levels of Log Messages, to not spam iobroker Log",
-                "de": "Tippfehler behoben, der Livestream-Aufnahmen nach Bewegungserkennung verhindert\nReduzieren Sie die Anzahl der Protokollnachrichten, um das iobroker-Protokoll nicht zu spammen",
-                "ru": "Исправлена опечатка, препятствующая записи Livestream после обнаружения движения\nУменьшите уровень сообщений журнала, чтобы не спамить журнал iobroker",
-                "pt": "Corrigir erros de digitação que impedem gravações de transmissão ao vivo após detecção de movimento\nReduza os níveis de mensagens de registro para não enviar spam para o registro do iobroker",
-                "nl": "Typefout verhinderen dat Livestream-opnamen worden voorkomen na bewegingsdetectie\nVerlaag het aantal logboekberichten om iobroker Log niet te spammen",
-                "fr": "Correction d'une faute de frappe empêchant les enregistrements Livestream après la détection de mouvement\nRéduisez les niveaux de messages du journal, pour ne pas spammer le journal iobroker",
-                "it": "Risolto un errore di battitura che impediva le registrazioni Livestream dopo il rilevamento del movimento\nRiduci i livelli dei messaggi di registro, per non inviare spam al registro di iobroker",
-                "es": "Se corrigió un error tipográfico que evitaba las grabaciones de Livestream después de la detección de movimiento\nReduzca los niveles de mensajes de registro, para no enviar spam al registro de iobroker",
-                "pl": "Naprawiono literówkę uniemożliwiającą nagrywanie na żywo po wykryciu ruchu\nZmniejsz poziomy komunikatów dziennika, aby nie spamować dziennika iobroker",
-                "zh-cn": "修复打字错误，防止在运动检测后进行实时流录制\n降低日志消息的级别，以防止垃圾邮件iobroker日志"
-            },
-            "1.1.6-2": {
-                "en": "Fixing some Issues while saving snapshots and place Snapshots within 'iobroker-data' Folder.",
-                "de": "Behebung einiger Probleme beim Speichern von Snapshots und Platzieren von Snapshots im Ordner \"iobroker-data\".",
-                "ru": "Устранение некоторых проблем при сохранении снимков и их размещении в папке iobroker-data.",
-                "pt": "Corrigindo alguns problemas ao salvar instantâneos e colocar os instantâneos na pasta 'iobroker-data'.",
-                "nl": "Enkele problemen oplossen tijdens het opslaan van momentopnamen en momentopnamen in de map 'iobroker-data' plaatsen.",
-                "fr": "Correction de certains problèmes lors de l'enregistrement des instantanés et placez les instantanés dans le dossier 'iobroker-data'.",
-                "it": "Risolvere alcuni problemi durante il salvataggio delle istantanee e posizionare le istantanee nella cartella \"iobroker-data\".",
-                "es": "Soluciona algunos problemas al guardar instantáneas y colocar las instantáneas dentro de la carpeta 'iobroker-data'.",
-                "pl": "Naprawianie niektórych problemów podczas zapisywania migawek i umieszczanie migawek w folderze „iobroker-data”.",
-                "zh-cn": "解决了在保存快照并将快照放置在“ iobroker-data”文件夹中时的一些问题。"
-            },
-            "1.1.6-1": {
-                "en": "Support for Floodlight V2\nControl Floodlight by Switch",
-                "de": "Unterstützung für Floodlight V2\nSteuern Sie das Flutlicht per Schalter",
-                "ru": "Поддержка Floodlight V2\nУправление прожектором с помощью переключателя",
-                "pt": "Suporte para Floodlight V2\nControle do Floodlight por interruptor",
-                "nl": "Ondersteuning voor Floodlight V2\nBedien de schijnwerper met een schakelaar",
-                "fr": "Prise en charge de Floodlight V2\nContrôler Floodlight par Switch",
-                "it": "Supporto per Floodlight V2\nControllo Floodlight tramite interruttore",
-                "es": "Compatibilidad con Floodlight V2\nControlar el reflector por interruptor",
-                "pl": "Obsługa Floodlight V2\nKontroluj Floodlight za pomocą przełącznika",
-                "zh-cn": "支持Floodlight V2\n通过开关控制Floodlight"
-            },
-            "1.1.5-beta": {
-                "en": "Bugfixing",
-                "de": "Bugfixing",
-                "ru": "Исправление ошибок",
-                "pt": "Corrigindo erro",
-                "nl": "Bugfixing",
-                "fr": "Correction de bugs",
-                "it": "Bugfixing",
-                "es": "Corrección de errores",
-                "pl": "Naprawa błędów",
-                "zh-cn": "错误修正"
-            },
-            "1.1.4": {
-                "en": "Bugfixing",
-                "de": "Bugfixing",
-                "ru": "Исправление ошибок",
-                "pt": "Corrigindo erro",
-                "nl": "Bugfixing",
-                "fr": "Correction de bugs",
-                "it": "Bugfixing",
-                "es": "Corrección de errores",
-                "pl": "Naprawa błędów",
-                "zh-cn": "错误修正"
-            },
-            "1.1.3": {
-                "en": "Fixed error with missing objects ",
-                "de": "Fehler bei fehlenden Objekten behoben",
-                "ru": "Исправлена ошибка с отсутствующими объектами",
-                "pt": "Corrigido erro com objetos ausentes",
-                "nl": "Vaste fout met ontbrekende objecten",
-                "fr": "Correction d'une erreur avec des objets manquants",
-                "it": "Risolto errore con oggetti mancanti",
-                "es": "Se corrigió el error con objetos faltantes",
-                "pl": "Naprawiono błąd z brakującymi obiektami",
-                "zh-cn": "修复了缺少对象的错误"
-            },
-            "1.1.2": {
-                "en": "Provide Stick Up Cam. Fixing health info",
-                "de": "Stick Up Cam bereitstellen. Gesundheitsinformationen korrigieren",
-                "ru": "Обеспечить Stick Up Cam. Исправление информации о здоровье",
-                "pt": "Fornecer Stick Up Cam. Corrigindo informações de saúde",
-                "nl": "Zorg voor Stick Up Cam. Gezondheidsinformatie repareren",
-                "fr": "Fournissez Stick Up Cam. Correction des informations de santé",
-                "it": "Fornire Stick Up Cam. Correzione delle informazioni sulla salute",
-                "es": "Proporcionar Stick Up Cam. Arreglando información de salud",
-                "pl": "Podaj kamerę Stick Up. Naprawianie informacji o zdrowiu",
-                "zh-cn": "提供粘贴凸轮。修复健康信息"
-            },
-            "1.1.1": {
-                "en": "Sentry Logging ",
-                "de": "Sentry Logging",
-                "ru": "Sentry Logging",
-                "pt": "Registro de Sentinela",
-                "nl": "Sentry Logging",
-                "fr": "Journalisation des sentinelles",
-                "it": "Registrazione delle sentinelle",
-                "es": "Registro de centinela",
-                "pl": "Rejestrowanie wartowników",
-                "zh-cn": "哨兵记录"
-            }
-        },
-        "titleLang": {
-            "en": "Ring",
-            "de": "Ring",
-            "ru": "изобилующий раковинами",
-            "pt": "Ring",
-            "nl": "schaalachtig",
-            "fr": "Ring",
-            "it": "Ring",
-            "es": "Ring",
-            "pl": "Ring",
-            "zh-cn": "环"
-        },
-        "desc": {
-            "en": "Ring Adapter",
-            "de": "Ring Adapter",
-            "ru": "Шестигранный адаптер",
-            "pt": "Adaptador Ring",
-            "nl": "Ring adapter",
-            "fr": "Adaptateur Ring",
-            "it": "Adattatore Ring",
-            "es": "Adaptador Ring",
-            "pl": "Adapter Ring",
-            "zh-cn": "紧定环"
-        },
-        "license": "MIT",
-        "authors": [
-            "Thorsten Stueben <thorsten@stueben.de>"
-        ],
-        "platform": "Javascript/Node.js",
-        "mode": "daemon",
-        "messagebox": true,
-        "stopBeforeUpdate": true,
-        "subscribe": "messagebox",
-        "icon": "ring.png",
-        "materialize": true,
-        "enabled": true,
-        "compact": true,
-        "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.ring/master/admin/ring.png",
-        "keywords": [
-            "ring"
-        ],
-        "readme": "https://github.com/iobroker-community-adapters/ioBroker.ring/blob/master/README.md",
-        "loglevel": "info",
-        "type": "hardware",
-        "restartAdapters": [],
-        "connectionType": "local",
-        "dataSource": "push",
-        "plugins": {
-            "sentry": {
-                "dsn": "https://345fa9990a0e4e4d95297341d0d0ee9a@sentry.iobroker.net/61",
-                "pathWhitelist": []
-            }
-        },
-        "dependencies": [
-            {
-                "js-controller": ">=4.0.0"
-            }
-        ]
-    },
-    "native": {
-        "email": "email@test.foo",
-        "password": "password",
-        "twofaceauth": false,
-        "refreshtoken": "",
-        "timeout": 5,
-        "pollsec": 15,
-        "recordtime_livestream": 10,
-        "path": "",
-        "filename_livestream": "livestream%i_%d.mp4",
-        "filename_snapshot": "snapshot%i_%d.jpg",
-        "del_old_livestream": true,
-        "del_old_snapshot": true,
-        "sentry_enable": true
-    },
-    "objects": [],
-    "instanceObjects": [
-        {
-            "_id": "",
-            "type": "meta",
-            "common": {
-                "name": "Snapshots and videos from Ring",
-                "type": "meta.user"
-            },
-            "native": {}
-        }
-    ]
+			"1.2.3": {
+				"en": "Update packages\nFix compatibility issues with new ring api",
+				"de": "Pakete aktualisieren\nKompatibilitätsprobleme mit der neuen Ring-API beheben",
+				"ru": "Пакеты обновлений\nУстранение проблем совместимости с новым кольцевым API",
+				"pt": "Pacotes de atualização\nCorrija problemas de compatibilidade com a nova API de anel",
+				"nl": "Pakketten bijwerken\nCompatibiliteitsproblemen oplossen met nieuwe ring api",
+				"fr": "Mettre à jour les packages\nRésoudre les problèmes de compatibilité avec la nouvelle API Ring",
+				"it": "Aggiorna pacchetti\nRisolvi i problemi di compatibilità con la nuova API dell'anello",
+				"es": "Actualizar paquetes\nSolucionar problemas de compatibilidad con la nueva API de anillo",
+				"pl": "Zaktualizuj pakiety\nNapraw problemy ze zgodnością z nowym ring api",
+				"zh-cn": "更新包\n修复与新环 api 的兼容性问题"
+			},
+			"1.2.2": {
+				"en": "Update packages due to security patches",
+				"de": "Aktualisieren Sie Pakete aufgrund von Sicherheitspatches",
+				"ru": "Пакеты обновлений из-за исправлений безопасности",
+				"pt": "Pacotes de atualização devido a patches de segurança",
+				"nl": "Update pakketten vanwege beveiligingspatches",
+				"fr": "Mettre à jour les packages en raison des correctifs de sécurité",
+				"it": "Aggiorna i pacchetti a causa delle patch di sicurezza",
+				"es": "Actualizar paquetes debido a parches de seguridad",
+				"pl": "Zaktualizuj pakiety ze względu na poprawki bezpieczeństwa",
+				"zh-cn": "由于安全补丁程序而更新软件包"
+			},
+			"1.2.1": {
+				"en": "Bump version",
+				"de": "Bump-Version",
+				"ru": "Версия Bump",
+				"pt": "Versão Bump",
+				"nl": "Bump-versie",
+				"fr": "Version en relief",
+				"it": "Versione bump",
+				"es": "Versión de relieve",
+				"pl": "Wersja uderzeniowa",
+				"zh-cn": "凹凸版"
+			},
+			"1.2.0": {
+				"en": "Add new device type spotlightw as doorbell\nUpdate dependencies (ringapi, node-schedule, etc.)",
+				"de": "Fügen Sie den neuen Gerätetyp spotlightw als Türklingel hinzu\nAbhängigkeiten aktualisieren (Ringapi, Knotenplan usw.)",
+				"ru": "Добавить новый тип устройства прожектор в качестве дверного звонка\nОбновите зависимости (ringapi, node-schedule и т. Д.)",
+				"pt": "Adicionar novo tipo de dispositivo spotlightw como campainha\nAtualizar dependências (ringapi, node-schedule, etc.)",
+				"nl": "Voeg een nieuw apparaattype spotlightw toe als deurbel\nUpdate afhankelijkheden (ringapi, knooppuntschema, etc.)",
+				"fr": "Ajouter un nouveau projecteur de type d'appareil comme sonnette\nMettre à jour les dépendances (ringapi, noeud-planning, etc.)",
+				"it": "Aggiungi un nuovo tipo di dispositivo spotlightw come campanello\nAggiorna le dipendenze (ringapi, node-schedule, ecc.)",
+				"es": "Agregar un nuevo tipo de dispositivo spotlightw como timbre\nActualice las dependencias (ringapi, node-schedule, etc.)",
+				"pl": "Dodaj reflektor nowego typu urządzenia jako dzwonek do drzwi\nAktualizuj zależności (ringapi, harmonogram węzłów itp.)",
+				"zh-cn": "将新的设备类型Spotlightw添加为门铃\n更新依赖项（ringapi，节点计划等）"
+			},
+			"1.1.6-3": {
+				"en": "Fix typo preventing Livestream recordings after motion detection\nReduce Levels of Log Messages, to not spam iobroker Log",
+				"de": "Tippfehler behoben, der Livestream-Aufnahmen nach Bewegungserkennung verhindert\nReduzieren Sie die Anzahl der Protokollnachrichten, um das iobroker-Protokoll nicht zu spammen",
+				"ru": "Исправлена опечатка, препятствующая записи Livestream после обнаружения движения\nУменьшите уровень сообщений журнала, чтобы не спамить журнал iobroker",
+				"pt": "Corrigir erros de digitação que impedem gravações de transmissão ao vivo após detecção de movimento\nReduza os níveis de mensagens de registro para não enviar spam para o registro do iobroker",
+				"nl": "Typefout verhinderen dat Livestream-opnamen worden voorkomen na bewegingsdetectie\nVerlaag het aantal logboekberichten om iobroker Log niet te spammen",
+				"fr": "Correction d'une faute de frappe empêchant les enregistrements Livestream après la détection de mouvement\nRéduisez les niveaux de messages du journal, pour ne pas spammer le journal iobroker",
+				"it": "Risolto un errore di battitura che impediva le registrazioni Livestream dopo il rilevamento del movimento\nRiduci i livelli dei messaggi di registro, per non inviare spam al registro di iobroker",
+				"es": "Se corrigió un error tipográfico que evitaba las grabaciones de Livestream después de la detección de movimiento\nReduzca los niveles de mensajes de registro, para no enviar spam al registro de iobroker",
+				"pl": "Naprawiono literówkę uniemożliwiającą nagrywanie na żywo po wykryciu ruchu\nZmniejsz poziomy komunikatów dziennika, aby nie spamować dziennika iobroker",
+				"zh-cn": "修复打字错误，防止在运动检测后进行实时流录制\n降低日志消息的级别，以防止垃圾邮件iobroker日志"
+			},
+			"1.1.6-2": {
+				"en": "Fixing some Issues while saving snapshots and place Snapshots within 'iobroker-data' Folder.",
+				"de": "Behebung einiger Probleme beim Speichern von Snapshots und Platzieren von Snapshots im Ordner \"iobroker-data\".",
+				"ru": "Устранение некоторых проблем при сохранении снимков и их размещении в папке iobroker-data.",
+				"pt": "Corrigindo alguns problemas ao salvar instantâneos e colocar os instantâneos na pasta 'iobroker-data'.",
+				"nl": "Enkele problemen oplossen tijdens het opslaan van momentopnamen en momentopnamen in de map 'iobroker-data' plaatsen.",
+				"fr": "Correction de certains problèmes lors de l'enregistrement des instantanés et placez les instantanés dans le dossier 'iobroker-data'.",
+				"it": "Risolvere alcuni problemi durante il salvataggio delle istantanee e posizionare le istantanee nella cartella \"iobroker-data\".",
+				"es": "Soluciona algunos problemas al guardar instantáneas y colocar las instantáneas dentro de la carpeta 'iobroker-data'.",
+				"pl": "Naprawianie niektórych problemów podczas zapisywania migawek i umieszczanie migawek w folderze „iobroker-data”.",
+				"zh-cn": "解决了在保存快照并将快照放置在“ iobroker-data”文件夹中时的一些问题。"
+			},
+			"1.1.6-1": {
+				"en": "Support for Floodlight V2\nControl Floodlight by Switch",
+				"de": "Unterstützung für Floodlight V2\nSteuern Sie das Flutlicht per Schalter",
+				"ru": "Поддержка Floodlight V2\nУправление прожектором с помощью переключателя",
+				"pt": "Suporte para Floodlight V2\nControle do Floodlight por interruptor",
+				"nl": "Ondersteuning voor Floodlight V2\nBedien de schijnwerper met een schakelaar",
+				"fr": "Prise en charge de Floodlight V2\nContrôler Floodlight par Switch",
+				"it": "Supporto per Floodlight V2\nControllo Floodlight tramite interruttore",
+				"es": "Compatibilidad con Floodlight V2\nControlar el reflector por interruptor",
+				"pl": "Obsługa Floodlight V2\nKontroluj Floodlight za pomocą przełącznika",
+				"zh-cn": "支持Floodlight V2\n通过开关控制Floodlight"
+			},
+			"1.1.5-beta": {
+				"en": "Bugfixing",
+				"de": "Bugfixing",
+				"ru": "Исправление ошибок",
+				"pt": "Corrigindo erro",
+				"nl": "Bugfixing",
+				"fr": "Correction de bugs",
+				"it": "Bugfixing",
+				"es": "Corrección de errores",
+				"pl": "Naprawa błędów",
+				"zh-cn": "错误修正"
+			},
+			"1.1.4": {
+				"en": "Bugfixing",
+				"de": "Bugfixing",
+				"ru": "Исправление ошибок",
+				"pt": "Corrigindo erro",
+				"nl": "Bugfixing",
+				"fr": "Correction de bugs",
+				"it": "Bugfixing",
+				"es": "Corrección de errores",
+				"pl": "Naprawa błędów",
+				"zh-cn": "错误修正"
+			},
+			"1.1.3": {
+				"en": "Fixed error with missing objects ",
+				"de": "Fehler bei fehlenden Objekten behoben",
+				"ru": "Исправлена ошибка с отсутствующими объектами",
+				"pt": "Corrigido erro com objetos ausentes",
+				"nl": "Vaste fout met ontbrekende objecten",
+				"fr": "Correction d'une erreur avec des objets manquants",
+				"it": "Risolto errore con oggetti mancanti",
+				"es": "Se corrigió el error con objetos faltantes",
+				"pl": "Naprawiono błąd z brakującymi obiektami",
+				"zh-cn": "修复了缺少对象的错误"
+			},
+			"1.1.2": {
+				"en": "Provide Stick Up Cam. Fixing health info",
+				"de": "Stick Up Cam bereitstellen. Gesundheitsinformationen korrigieren",
+				"ru": "Обеспечить Stick Up Cam. Исправление информации о здоровье",
+				"pt": "Fornecer Stick Up Cam. Corrigindo informações de saúde",
+				"nl": "Zorg voor Stick Up Cam. Gezondheidsinformatie repareren",
+				"fr": "Fournissez Stick Up Cam. Correction des informations de santé",
+				"it": "Fornire Stick Up Cam. Correzione delle informazioni sulla salute",
+				"es": "Proporcionar Stick Up Cam. Arreglando información de salud",
+				"pl": "Podaj kamerę Stick Up. Naprawianie informacji o zdrowiu",
+				"zh-cn": "提供粘贴凸轮。修复健康信息"
+			},
+			"1.1.1": {
+				"en": "Sentry Logging ",
+				"de": "Sentry Logging",
+				"ru": "Sentry Logging",
+				"pt": "Registro de Sentinela",
+				"nl": "Sentry Logging",
+				"fr": "Journalisation des sentinelles",
+				"it": "Registrazione delle sentinelle",
+				"es": "Registro de centinela",
+				"pl": "Rejestrowanie wartowników",
+				"zh-cn": "哨兵记录"
+			}
+		},
+		"titleLang": {
+			"en": "Ring",
+			"de": "Ring",
+			"ru": "изобилующий раковинами",
+			"pt": "Ring",
+			"nl": "schaalachtig",
+			"fr": "Ring",
+			"it": "Ring",
+			"es": "Ring",
+			"pl": "Ring",
+			"zh-cn": "环"
+		},
+		"desc": {
+			"en": "Ring Adapter",
+			"de": "Ring Adapter",
+			"ru": "Шестигранный адаптер",
+			"pt": "Adaptador Ring",
+			"nl": "Ring adapter",
+			"fr": "Adaptateur Ring",
+			"it": "Adattatore Ring",
+			"es": "Adaptador Ring",
+			"pl": "Adapter Ring",
+			"zh-cn": "紧定环"
+		},
+		"license": "MIT",
+		"authors": [
+			"Thorsten Stueben <thorsten@stueben.de>"
+		],
+		"keywords": [
+			"ioBroker",
+			"Ring",
+			"Smart Home",
+			"home automation"
+		],
+		"license": "MIT",
+		"platform": "Javascript/Node.js",
+		"main": "build/main.js",
+		"icon": "ring.png",
+		"enabled": true,
+		"extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.ring/master/admin/ring.png",
+		"readme": "https://github.com/iobroker-community-adapters/ioBroker.ring/blob/master/README.md",
+		"loglevel": "info",
+		"mode": "daemon",
+		"type": "hardware",
+		"compact": true,
+		"materialize": true,
+		"materializeTab": true,
+		"adminTab": {
+			"singleton": true,
+			"name": {
+				"en": "Ring Adapter",
+				"de": "Ring Adapter"
+			},
+			"link": "",
+			"fa-icon": "info"
+		},
+		"supportCustoms": true,
+		"dependencies": [
+			{
+				"js-controller": ">=4.0.0"
+			}
+		]
+	},
+	"native": {
+		"email": "email@test.foo",
+		"password": "password",
+		"twofaceauth": false,
+		"refreshtoken": "",
+		"timeout": 5,
+		"pollsec": 15,
+		"recordtime_livestream": 10,
+		"path": "",
+		"filename_livestream": "livestream%i_%d.mp4",
+		"filename_snapshot": "snapshot%i_%d.jpg",
+		"del_old_livestream": true,
+		"del_old_snapshot": true,
+		"sentry_enable": true
+	},
+	"objects": [],
+	"instanceObjects": [
+		{
+			"_id": "",
+			"type": "meta",
+			"common": {
+				"name": "Snapshots and videos from Ring",
+				"type": "meta.user"
+			},
+			"native": {}
+		}
+	]
 }

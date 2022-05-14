@@ -9,15 +9,15 @@
 
 [![NPM](https://nodei.co/npm/iobroker.ring.png?downloads=true)](https://nodei.co/npm/iobroker.ring/)
 
-Requires node.js 10.0 or higher and Admin v3. 
+Requires Admin v4 and recommends ``node 16.x``.
 
-The Ring adapter works with Ring devices like the Ring Video Doorbell and Ring Cam and shows if somenone rings the doorbell or if motion is detected. The Ring Video Doorbell or Cam sends a videostream if a motion or doorbell ist detected or you use the SIP Information for a SIP Video Conference with your SIP client. 
-Unfortunately the snapshot and livestream function does not work properly. Unfortunately I have no influence on it. Please consider this before you create an issue. 
-The adapter will not provide all ring devices because the used API do not includes all ring devices. 
+The Ring adapter works with Ring devices like the Ring Video Doorbell and Ring Cam and shows if somenone rings the doorbell or if motion is detected. The Ring Video Doorbell or Cam sends a videostream if a motion or doorbell ist detected or you use the SIP Information for a SIP Video Conference with your SIP client.
+Unfortunately the snapshot and livestream function does not work properly. Unfortunately I have no influence on it. Please consider this before you create an issue.
+The adapter will not provide all ring devices because the used API do not includes all ring devices.
 
 You can use for example the Blink SIP client on [http://icanblink.com/](http://icanblink.com/). To get video working go into Blink's Preferences and under "Accounts", switch the tab to "Media" and deselect "Encrypt audio and video" under "RTP Options". Be careful the SIP information expire after a few seconds!
-Hopefully I will able to support a video stream soon. Unfortunatly [ring.com](https://ring.com) does not have an official API that support this feature. 
-If you press the livestreamrequest button you get new SIP Information for building up a SIP Video Call session. If you are using the [ring.com](https://ring.com) cloud you find under history a http link to your last motion / door bell recorded video. 
+Hopefully I will able to support a video stream soon. Unfortunatly [ring.com](https://ring.com) does not have an official API that support this feature.
+If you press the livestreamrequest button you get new SIP Information for building up a SIP Video Call session. If you are using the [ring.com](https://ring.com) cloud you find under history a http link to your last motion / door bell recorded video.
 
 
 ## Install & Configuration
@@ -53,22 +53,25 @@ You can use special variables for your livestream and snapshort path and filenam
 
 ## Example
 
-An example to get changes if a motion or door ring is detected: 
+An example to get changes if a motion or door ring is detected:
 ```
 on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
   if(obj.state.val == 'ding')   console.log("Someone is at the door");
   if(obj.state.val == 'motion') console.log("Motion detected");
 });
 ```
-
 ## Changelog
-
 <!--
-    Placeholder for the next version (at the beginning of the line):
-    ### __WORK IN PROGRESS__
+	Placeholder for the next version (at the beginning of the line):
+	### **WORK IN PROGRESS**
 -->
-### __WORK IN PROGRESS__
+### 3.0.0-beta.4 (2022-05-14)
+* (theimo1221) Changes in io-package.json for release workflow
+
+### 3.0.0-beta.3 (2022-05-14)
+* (theimo1221) Rewrite V3 (Breaking Changes listed below)
 * (theimo1221) Update packages
+* (theimo1221) Fix in github release workflow
 
 ### 2.0.0-beta.3 (2022-02-08)
 * (theimo1221) Fix adapter checker issues
@@ -128,7 +131,7 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 * (Stübi) Fixed error of missing objects
 
 ### 1.1.2 (02.05.2020)
-* (Stübi) Fixed health info like missing battery status (Issue #22, Issue #25) 
+* (Stübi) Fixed health info like missing battery status (Issue #22, Issue #25)
 * (Stübi) Change error handling
 * (Stübi) Providing Stick Up Cam (BETA)
 * (Stübi) Using variables in the filename of the livestream or snapshot
@@ -139,12 +142,12 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 
 ### 1.1.0 (01.05.2020)
 * (Stübi) Node 10 is now required, Node 12 recommended. If you use Node 8 or less, the adapter will stop immediately.
-* (Stübi) Tested with js-controller 3. I recommend using js-controller 3 or higher because of sentry logging and more features in the future 
+* (Stübi) Tested with js-controller 3. I recommend using js-controller 3 or higher because of sentry logging and more features in the future
 * (Stübi) Snapshot link will be shown as https or http in state (Issue #18)
 * (Stübi) Livestream link added and a request button added to get new livestream
 * (Stübi) Old snapshots and livestreams can be deleted on the filesystem
 * (Stübi) Sentry logging added
-* (Stübi) Small improvements and bugfixing   
+* (Stübi) Small improvements and bugfixing
 * (Stübi) Add a Two-Factor Auth (2fa) description (Issue #14, Issue #13, Issue #19)
 
 ### 1.0.7 (24.12.2019)
@@ -155,7 +158,7 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 * (Stübi) New feature (BETA): Now you can make snapshots in jpg and a livestream in mp4 format. Unfortunately the snapshot / livestream does not work always!
 
 ### 1.0.5 (18.04.2019)
-* (Stübi) Bugfixing 
+* (Stübi) Bugfixing
 * (Stübi) Using new API. With this API livestreaming and snapshots are possible (work still in progress and not supported in this version)
 * (Stübi) Fixed an error with js-controller 2.0. You need at least this version with js-controller 2.0
 * (Stübi) two face authentication
@@ -187,8 +190,45 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 ### 0.1.0 (14.12.2018)
 * (Stübi) First Version
 
+### V3 Rewrite Breaking Changes
+1. The Device Names got extended by their description (e.g. from `Device 1234567` to `Device 1234567 ("Floodlight Garden")`)
+2. Snapshot/Livestream Data is now in a respective channel, containing the other data points.
+3. The snapshot/livestream object got changed from type meta to state with type file.
+4. Events (Motion, Ding, etc.) are now in a respective channel.
+5. Due to `ring-api` dropping the support for node before `v16.x` this adapter recommends `node v16.x` 
+
+
+### Scripts in `package.json`
+Several npm scripts are predefined for your convenience. You can run them using `npm run <scriptname>`
+| Script name | Description |
+|-------------|-------------|
+| `build:ts` | Compile the TypeScript sources. |
+| `watch:ts` | Compile the TypeScript sources and watch for changes. |
+| `watch` | Shortcut for `npm run watch:ts` |
+| `test:ts` | Executes the tests you defined in `*.test.ts` files. |
+| `test:package` | Ensures your `package.json` and `io-package.json` are valid. |
+| `test:unit` | Tests the adapter startup with unit tests (fast, but might require module mocks to work). |
+| `test:integration` | Tests the adapter startup with an actual instance of ioBroker. |
+| `test` | Performs a minimal test run on package files and your tests. |
+| `check` | Performs a type-check on your code (without compiling anything). |
+| `coverage` | Generates code coverage using your test files. |
+| `lint` | Runs `ESLint` to check your code for formatting errors and potential bugs. |
+| `release` | Creates a new release, see [`@alcalzone/release-script`](https://github.com/AlCalzone/release-script#usage) for more details. |
+
+### Writing tests
+When done right, testing code is invaluable, because it gives you the
+confidence to change your code while knowing exactly if and when
+something breaks. A good read on the topic of test-driven development
+is https://hackernoon.com/introduction-to-test-driven-development-tdd-61a13bc92d92.
+Although writing tests before the code might seem strange at first, but it has very
+clear upsides.
+
+The template provides you with basic tests for the adapter startup and package files.
+It is recommended that you add your own tests into the mix.
+
+
 ## License
-The MIT License (MIT)
+MIT License
 
 Copyright (c) 2022 Thorsten <thorsten@stueben.de> / <https://github.com/schmupu>
 
@@ -199,13 +239,13 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
