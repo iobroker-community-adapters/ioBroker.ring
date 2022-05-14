@@ -65,8 +65,7 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-
-### __WORK IN PROGRESS__
+### 3.0.0-beta.0 (2022-05-14)
 * (theimo1221) Rewrite V3 (Breaking Changes listed below)
 * (theimo1221) Update packages
 
@@ -186,7 +185,6 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 
 ### 0.1.0 (14.12.2018)
 * (Stübi) First Version
-
 
 ### V3 Rewrite Breaking Changes
 1. The Device Names got extended by their description (e.g. from `Device 1234567` to `Device 1234567 ("Floodlight Garden")`)
