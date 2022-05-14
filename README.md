@@ -67,7 +67,31 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 -->
 
 ### __WORK IN PROGRESS__
-* (theimo1221) Rewrite V2 (Breaking Changes listed below)
+* (theimo1221) Rewrite V3 (Breaking Changes listed below)
+* (theimo1221) Update packages
+
+### 2.0.0-beta.3 (2022-02-08)
+* (theimo1221) Fix adapter checker issues
+
+### 2.0.0-beta.0 (2022-02-05)
+* (theimo1221) Update packages
+* (theimo1221) Add JS-Controller 4.0 dependency
+* (theimo1221) On ding --> First take snapshot then livestream
+
+### 1.2.8 (2021-10-14)
+* (theimo1221) Update packages
+
+### 1.2.6 (2021-09-05)
+* (theimo1221) Update packages
+* (theimo1221) Stop adapter on unhandled Error
+* (theimo1221) Terminate adapter on invalid ring credentials
+
+### 1.2.4-1 (2021-08-12)
+* (theimo1221) Update packages
+
+### 1.2.4-0 (2021-08-07)
+* (theimo1221) Refactoring
+* (theimo1221) Update packages
 
 ### 1.2.3 (2021-07-30)
 * (theimo1221) Update packages
@@ -86,8 +110,6 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 ### 1.1.6-3 (2021-03-29)
 * (theimo1221) Fix typo preventing Livestream recordings after motion detection
 * (theimo1221) Reduce Levels of Log Messages, to not spam iobroker Log
-
-
 
 ### 1.1.6-2 (2021-03-29)
 * (theimo1221) Fixing some Issues while saving snapshots and place Snapshots within 'iobroker-data' Folder.
@@ -138,7 +160,6 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 * (Stübi) Fixed an error with js-controller 2.0. You need at least this version with js-controller 2.0
 * (Stübi) two face authentication
 
-
 ### 1.0.4 (17.04.2019)
 * (Stübi) Bugfixing for Ring Pro
 
@@ -167,10 +188,12 @@ on({id: "ring.0.doorbell_4711.kind"/*Kind*/},  (obj) => {
 * (Stübi) First Version
 
 
-### V2 Rewrite Breaking Changes
+### V3 Rewrite Breaking Changes
 1. The Device Names got extended by their description (e.g. from `Device 1234567` to `Device 1234567 ("Floodlight Garden")`)
-2. Snapshot Data is now in a respective channel, containing the other data points.
-3. The snapshot object got changed from type meta to state with type file.
+2. Snapshot/Livestream Data is now in a respective channel, containing the other data points.
+3. The snapshot/livestream object got changed from type meta to state with type file.
+4. Events (Motion, Ding, etc.) are now in a respective channel.
+5. Due to `ring-api` dropping the support for node before `v16.x` this adapter requires `node v16.x` 
 
 
 ### Scripts in `package.json`
@@ -205,7 +228,7 @@ It is recommended that you add your own tests into the mix.
 ## License
 MIT License
 
-Copyright (c) 2021 Author <author@mail.com>
+Copyright (c) 2022 Thorsten <thorsten@stueben.de> / <https://github.com/schmupu>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
