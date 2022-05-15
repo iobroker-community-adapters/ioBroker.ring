@@ -11,8 +11,10 @@
 
 Requires Admin v4 and ``node 16.x``.
 
-The Ring adapter works with Ring devices like the Ring Video Doorbell and Ring Cam and shows if somenone rings the doorbell or if motion is detected. The Ring Video Doorbell or Cam sends a videostream if a motion or doorbell ist detected or you use the SIP Information for a SIP Video Conference with your SIP client.
-Unfortunately the snapshot and livestream function does not work properly. Unfortunately I have no influence on it. Please consider this before you create an issue.
+The Ring adapter works with Ring devices like the Ring Video Doorbell and Ring Cam and shows if somenone rings the doorbell or if motion is detected. The Ring Video Doorbell or Cam sends a videostream if a motion or doorbell ist detected.
+
+### SIP (before Version 3.x)
+You can use the SIP Information for a SIP Video Conference with your SIP client.
 The adapter will not provide all ring devices because the used API do not includes all ring devices.
 
 You can use for example the Blink SIP client on [http://icanblink.com/](http://icanblink.com/). To get video working go into Blink's Preferences and under "Accounts", switch the tab to "Media" and deselect "Encrypt audio and video" under "RTP Options". Be careful the SIP information expire after a few seconds!
