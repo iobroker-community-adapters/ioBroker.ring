@@ -148,6 +148,12 @@ export class RingAdapter extends utils.Adapter {
     this.upsertStateAsync(id, common, value, subscribe);
   }
 
+  async tryGetStringState(id: string): Promise<string> {
+    const cachedVal = this.states[id];
+    if(cachedVal !== undefined && cachedVal !== null) return cachedVal + "";
+    return ((await this.getStateAsync(id))?.val ?? "") + "" ;
+  }
+
   private async upsertStateAsync(id: string, common: Partial<ioBroker.StateCommon>, value: ioBroker.StateValue, subscribe = false): Promise<void> {
     try {
       if (this.states[id] !== undefined) {
@@ -165,7 +171,7 @@ export class RingAdapter extends utils.Adapter {
       }
     } catch (e: any) {
       this.log.warn(`Error Updating State ${id} to ${value}: ${e?.message ?? e}`);
-      if (e?.stack) {
+      if (e?.stack !== undefined) {
         this.log.debug(`Error Stack: ${e.stack}`);
       }
     }
@@ -211,8 +217,8 @@ export class RingAdapter extends utils.Adapter {
       });
       this.states[id] = timestamp;
     } catch (e: any) {
-      this.log.warn(`Error Updating File State ${id}: ${e.message ?? e}`);
-      if (e?.stack) {
+      this.log.warn(`Error Updating File State ${id}: ${e?.message ?? e}`);
+      if (e?.stack !== undefined) {
         this.log.debug(`Error Stack: ${e.stack}`);
       }
     }

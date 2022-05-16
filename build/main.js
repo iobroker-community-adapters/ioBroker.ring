@@ -156,6 +156,13 @@ class RingAdapter extends utils.Adapter {
         // noinspection JSIgnoredPromiseFromCall
         this.upsertStateAsync(id, common, value, subscribe);
     }
+    async tryGetStringState(id) {
+        var _a, _b;
+        const cachedVal = this.states[id];
+        if (cachedVal !== undefined && cachedVal !== null)
+            return cachedVal + "";
+        return ((_b = (_a = (await this.getStateAsync(id))) === null || _a === void 0 ? void 0 : _a.val) !== null && _b !== void 0 ? _b : "") + "";
+    }
     async upsertStateAsync(id, common, value, subscribe = false) {
         var _a;
         try {
@@ -174,7 +181,7 @@ class RingAdapter extends utils.Adapter {
         }
         catch (e) {
             this.log.warn(`Error Updating State ${id} to ${value}: ${(_a = e === null || e === void 0 ? void 0 : e.message) !== null && _a !== void 0 ? _a : e}`);
-            if (e === null || e === void 0 ? void 0 : e.stack) {
+            if ((e === null || e === void 0 ? void 0 : e.stack) !== undefined) {
                 this.log.debug(`Error Stack: ${e.stack}`);
             }
         }
@@ -214,8 +221,8 @@ class RingAdapter extends utils.Adapter {
             this.states[id] = timestamp;
         }
         catch (e) {
-            this.log.warn(`Error Updating File State ${id}: ${(_a = e.message) !== null && _a !== void 0 ? _a : e}`);
-            if (e === null || e === void 0 ? void 0 : e.stack) {
+            this.log.warn(`Error Updating File State ${id}: ${(_a = e === null || e === void 0 ? void 0 : e.message) !== null && _a !== void 0 ? _a : e}`);
+            if ((e === null || e === void 0 ? void 0 : e.stack) !== undefined) {
                 this.log.debug(`Error Stack: ${e.stack}`);
             }
         }

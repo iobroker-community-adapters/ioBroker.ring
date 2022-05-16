@@ -1,9 +1,15 @@
 {
 	"common": {
 		"name": "ring",
-		"version": "3.0.0-beta.5",
+		"version": "3.0.0-beta.6",
 		"title": "Ring",
 		"news": {
+			"3.0.0-beta.6": {
+				"en": "Livestreams/Screenshots on more Events\n"
+			},
+			"3.0.0-beta.4": {
+				"en": "Rewrite V3 (Breaking Changes listed below)\nUpdate packages\nFix in github release workflow"
+			},
             "2.0.0-beta.2": {
                 "en": "Fix adapter checker issues"
             },
@@ -252,7 +258,6 @@
 			"Smart Home",
 			"home automation"
 		],
-		"license": "MIT",
 		"platform": "Javascript/Node.js",
 		"main": "build/main.js",
 		"icon": "ring.png",

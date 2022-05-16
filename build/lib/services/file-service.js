@@ -31,7 +31,7 @@ class FileService {
             resolve(true);
         });
     }
-    static deleteFileIfExist(fullPath) {
+    static deleteFileIfExistSync(fullPath) {
         if (fs_1.default.existsSync(fullPath))
             fs_1.default.unlinkSync(fullPath);
     }

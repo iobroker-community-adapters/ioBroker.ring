@@ -54,6 +54,13 @@ import * as fs from "fs";
 import { PushNotification } from "ring-client-api/lib/api/ring-types";
 import { FileService } from "./services/file-service";
 
+enum EventState {
+  Idle,
+  ReactingOnMotion,
+  ReactingOnDing,
+  ReactingOnDoorbell
+}
+
 export class OwnRingDevice {
 
   public static getFullId(device: RingCamera, adapter: RingAdapter): string {
@@ -127,6 +134,7 @@ export class OwnRingDevice {
   private _lastSnapshotTimestamp = 0;
   private _snapshotCount = 0;
   private _liveStreamCount = 0;
+  private _state = EventState.Idle;
 
   get lastLiveStreamDir(): string {
     return this._lastLiveStreamDir;
@@ -185,7 +193,7 @@ export class OwnRingDevice {
     // noinspection JSIgnoredPromiseFromCall
     this.updateHistory();
     this.updateLiveStreamObject();
-    this.takeSnapshot();
+    setTimeout(this.takeSnapshot.bind(this), 5000);
     this.ringDevice = ringDevice; // subscribes to the events
   }
 
@@ -252,7 +260,7 @@ export class OwnRingDevice {
     }
   }
 
-  private recreateDeviceObjectTree(): void {
+  private async recreateDeviceObjectTree(): Promise<void> {
     this.silly(`Recreate DeviceObjectTree for ${this.fullId}`);
     this._adapter.createDevice(this.fullId, {
       name: `Device ${this.shortId} ("${this._ringDevice.data.description}")`
@@ -266,6 +274,8 @@ export class OwnRingDevice {
       this.debug(`Device with Light Capabilities detected "${this.fullId}"`);
       this._adapter.createChannel(this.fullId, CHANNEL_NAME_LIGHT, {name: `Light ${this.shortId}`});
     }
+    this._lastSnapShotDir = await this._adapter.tryGetStringState(`${this.snapshotChannelId}.snapshot_file`);
+    this._lastLiveStreamDir = await this._adapter.tryGetStringState(`${this.liveStreamChannelId}.livestream_file`);
   }
 
   public updateByDevice(ringDevice: RingCamera): void {
@@ -297,7 +307,7 @@ export class OwnRingDevice {
       this.debug(`Failed to prepare Livestream folder ("${fullPath}") for ${this.shortId}`);
       return;
     }
-    FileService.deleteFileIfExist(fullPath);
+    FileService.deleteFileIfExistSync(fullPath);
     if (this._ringDevice.isOffline) {
       this.info(
         `Device ${this.fullId} ("${this._ringDevice.data.description}") is offline --> won't take LiveStream
@@ -315,9 +325,7 @@ export class OwnRingDevice {
     this.silly(`Recieved Livestream has Length: ${video.length}`);
     this._lastLiveStreamUrl = await FileService.getVisUrl(this._adapter, this.fullId, "Livestream.mp4");
     if (this.lastLiveStreamDir !== "" && this._adapter.config.del_old_livestream) {
-      await this._adapter.delFileAsync(this._adapter.namespace, `${this.lastLiveStreamDir}`).catch((reason) => {
-        this.catcher("Couldn't delete previous Livestream.", reason);
-      });
+      FileService.deleteFileIfExistSync(this._lastLiveStreamDir);
     }
     this._lastLiveStreamDir = fullPath;
     this._requestingLiveStream = false;
@@ -340,7 +348,7 @@ export class OwnRingDevice {
         this.kind
       );
     if (!(await FileService.prepareFolder(dirname))) return;
-    FileService.deleteFileIfExist(fullPath);
+    FileService.deleteFileIfExistSync(fullPath);
     if (this._ringDevice.isOffline) {
       this.info(
         `Device ${this.fullId} ("${this._ringDevice.data.description}") is offline --> won't take Snapshot
@@ -360,9 +368,7 @@ export class OwnRingDevice {
 
     this._lastSnapShotUrl = await FileService.getVisUrl(this._adapter, this.fullId, "Snapshot.jpg");
     if (this.lastSnapShotDir !== "" && this._adapter.config.del_old_snapshot) {
-      await this._adapter.delFileAsync(this._adapter.namespace, `${this.lastSnapShotDir}`).catch((reason) => {
-        this.catcher("Couldn't delete previous snapshot.", reason);
-      });
+      FileService.deleteFileIfExistSync(this._lastSnapShotDir);
     }
     this._lastSnapShotDir = fullPath;
     this._requestingSnapshot = false;
@@ -471,27 +477,29 @@ export class OwnRingDevice {
         this.debug(`Couldn't update Snapshot obejct: "${reason}"`);
       });
     }
-    this._adapter.upsertState(
-      `${this.snapshotChannelId}.snapshot_file`,
-      COMMON_SNAPSHOT_FILE,
-      this._lastSnapShotDir
-    );
-    this._adapter.upsertState(
-      `${this.snapshotChannelId}.moment`,
-      COMMON_SNAPSHOT_MOMENT,
-      this._lastSnapshotTimestamp
-    );
-    this._adapter.upsertState(
-      `${this.snapshotChannelId}.snapshot_url`,
-      COMMON_SNAPSHOT_URL,
-      this._lastSnapShotUrl
-    );
-    this._adapter.upsertState(
-      `${this.snapshotChannelId}.${STATE_ID_SNAPSHOT_REQUEST}`,
-      COMMON_SNAPSHOT_REQUEST,
-      this._requestingSnapshot,
-      true
-    );
+    if (this._lastSnapshotTimestamp !== 0) {
+      this._adapter.upsertState(
+        `${this.snapshotChannelId}.snapshot_file`,
+        COMMON_SNAPSHOT_FILE,
+        this._lastSnapShotDir
+      );
+      this._adapter.upsertState(
+        `${this.snapshotChannelId}.moment`,
+        COMMON_SNAPSHOT_MOMENT,
+        this._lastSnapshotTimestamp
+      );
+      this._adapter.upsertState(
+        `${this.snapshotChannelId}.snapshot_url`,
+        COMMON_SNAPSHOT_URL,
+        this._lastSnapShotUrl
+      );
+      this._adapter.upsertState(
+        `${this.snapshotChannelId}.${STATE_ID_SNAPSHOT_REQUEST}`,
+        COMMON_SNAPSHOT_REQUEST,
+        this._requestingSnapshot,
+        true
+      );
+    }
   }
 
   private async updateLiveStreamObject(): Promise<void> {
@@ -603,8 +611,7 @@ export class OwnRingDevice {
 
   private onDing(value: PushNotification): void {
     this.debug(`Recieved Ding Event (${value}) for ${this.shortId}`);
-    this.takeSnapshot(value.ding.image_uuid);
-    this.startLivestream(20);
+    this.conditionalRecording(EventState.ReactingOnDing, value.ding.image_uuid);
     this._adapter.upsertState(`${this.eventsChannelId}.type`, COMMON_EVENTS_TYPE, value.subtype);
     this._adapter.upsertState(`${this.eventsChannelId}.detectionType`, COMMON_EVENTS_DETECTIONTYPE, value.ding.detection_type);
     this._adapter.upsertState(`${this.eventsChannelId}.created_at`, COMMON_EVENTS_MOMENT, Date.now());
@@ -614,14 +621,31 @@ export class OwnRingDevice {
   private onMotion(value: boolean): void {
     this.debug(`Recieved Motion Event (${value}) for ${this.shortId}`);
     this._adapter.upsertState(`${this.eventsChannelId}.motion`, COMMON_MOTION, value);
+    if (value) {
+      this.conditionalRecording(EventState.ReactingOnMotion);
+    }
   }
 
   private onDorbell(value: PushNotification): void {
     this.debug(`Recieved Doorbell Event (${value}) for ${this.shortId}`);
+    this.conditionalRecording(EventState.ReactingOnDoorbell, value.ding.image_uuid);
     this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, COMMON_EVENTS_DOORBELL, true);
     setTimeout(() => {
       this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, COMMON_EVENTS_DOORBELL, false);
     }, 5000);
+  }
+
+  private conditionalRecording(state: EventState, uuid?: string): void {
+    if (this._state === EventState.Idle) {
+      this.silly(`Start recording (with: ${this.shortId}) for Event "${EventState[state]}"...`);
+      this._state = state;
+      this.takeSnapshot(uuid);
+      this.startLivestream(20).then(() => {
+        this._state = EventState.Idle;
+      });
+    } else {
+      this.silly(`Would have recorded due to "${EventState[state]}", but we are already reacting.`);
+    }
   }
 }
 

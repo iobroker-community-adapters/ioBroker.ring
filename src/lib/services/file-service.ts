@@ -39,7 +39,7 @@ export class FileService {
     });
   }
 
-  public static deleteFileIfExist(fullPath: string): void {
+  public static deleteFileIfExistSync(fullPath: string): void {
     if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
   }
 
