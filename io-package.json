@@ -198,30 +198,6 @@
 				"es": "Se corrigió el error con objetos faltantes",
 				"pl": "Naprawiono błąd z brakującymi obiektami",
 				"zh-cn": "修复了缺少对象的错误"
-			},
-			"1.1.2": {
-				"en": "Provide Stick Up Cam. Fixing health info",
-				"de": "Stick Up Cam bereitstellen. Gesundheitsinformationen korrigieren",
-				"ru": "Обеспечить Stick Up Cam. Исправление информации о здоровье",
-				"pt": "Fornecer Stick Up Cam. Corrigindo informações de saúde",
-				"nl": "Zorg voor Stick Up Cam. Gezondheidsinformatie repareren",
-				"fr": "Fournissez Stick Up Cam. Correction des informations de santé",
-				"it": "Fornire Stick Up Cam. Correzione delle informazioni sulla salute",
-				"es": "Proporcionar Stick Up Cam. Arreglando información de salud",
-				"pl": "Podaj kamerę Stick Up. Naprawianie informacji o zdrowiu",
-				"zh-cn": "提供粘贴凸轮。修复健康信息"
-			},
-			"1.1.1": {
-				"en": "Sentry Logging ",
-				"de": "Sentry Logging",
-				"ru": "Sentry Logging",
-				"pt": "Registro de Sentinela",
-				"nl": "Sentry Logging",
-				"fr": "Journalisation des sentinelles",
-				"it": "Registrazione delle sentinelle",
-				"es": "Registro de centinela",
-				"pl": "Rejestrowanie wartowników",
-				"zh-cn": "哨兵记录"
 			}
 		},
 		"titleLang": {
