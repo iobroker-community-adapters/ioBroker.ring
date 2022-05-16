@@ -28,7 +28,8 @@ const ring_client_api_1 = require("ring-client-api");
 const constants_1 = require("./constants");
 const lastAction_1 = require("./lastAction");
 const fs = __importStar(require("fs"));
-const file_service_1 = require("./services/file-service");
+const file_service_1 = require('./services/file-service');
+const util = __importStar(require('util'));
 var EventState;
 (function (EventState) {
     EventState[EventState["Idle"] = 0] = "Idle";
@@ -100,6 +101,7 @@ class OwnRingDevice {
                 return `doorbell`;
             case ring_client_api_1.RingCameraKind.cocoa_camera:
             case ring_client_api_1.RingCameraKind.cocoa_doorbell:
+            case ring_client_api_1.RingCameraKind.cocoa_floodlight:
                 return `cocoa`;
             case ring_client_api_1.RingCameraKind.stickup_cam:
             case ring_client_api_1.RingCameraKind.stickup_cam_v3:
@@ -110,7 +112,7 @@ class OwnRingDevice {
                 return `stickup`;
             default:
                 adapter.log.error(`Device with Type ${device.deviceType} not yet supported, please inform dev Team via Github`);
-                adapter.log.debug(`Unsupported Device Info: ${JSON.stringify(device)}`);
+                adapter.log.debug(`Unsupported Device Info: ${util.inspect(device, false, 1)}`);
         }
         return "unknown";
     }
@@ -142,7 +144,17 @@ class OwnRingDevice {
     }
     processUserInput(channelID, stateID, state) {
         switch (channelID) {
-            case "Light":
+            case '':
+                if (stateID !== constants_1.STATE_ID_DEBUG_REQUEST) {
+                    return;
+                }
+                const targetVal = state.val;
+                if (targetVal) {
+                    this._adapter.log.info(`Device Debug Data for ${this.shortId}: ${util.inspect(this._ringDevice, false, 1)}`);
+                    this._adapter.upsertState(`${this.fullId}.${constants_1.STATE_ID_DEBUG_REQUEST}`, constants_1.COMMON_DEBUG_REQUEST, false);
+                }
+                return;
+            case 'Light':
                 if (!this._ringDevice.hasLight) {
                     return;
                 }
@@ -212,6 +224,7 @@ class OwnRingDevice {
         }
         this._lastSnapShotDir = await this._adapter.tryGetStringState(`${this.snapshotChannelId}.snapshot_file`);
         this._lastLiveStreamDir = await this._adapter.tryGetStringState(`${this.liveStreamChannelId}.livestream_file`);
+        this._adapter.upsertState(`${this.fullId}.${constants_1.STATE_ID_DEBUG_REQUEST}`, constants_1.COMMON_DEBUG_REQUEST, false, true);
     }
     updateByDevice(ringDevice) {
         this.ringDevice = ringDevice;

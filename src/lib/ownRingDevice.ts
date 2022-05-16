@@ -16,8 +16,13 @@ import {
   CHANNEL_NAME_INFO,
   CHANNEL_NAME_LIGHT,
   CHANNEL_NAME_LIVESTREAM,
-  CHANNEL_NAME_SNAPSHOT, COMMON_EVENTS_DETECTIONTYPE, COMMON_EVENTS_DOORBELL, COMMON_EVENTS_MESSAGE,
-  COMMON_EVENTS_MOMENT, COMMON_EVENTS_TYPE,
+  CHANNEL_NAME_SNAPSHOT,
+  COMMON_DEBUG_REQUEST,
+  COMMON_EVENTS_DETECTIONTYPE,
+  COMMON_EVENTS_DOORBELL,
+  COMMON_EVENTS_MESSAGE,
+  COMMON_EVENTS_MOMENT,
+  COMMON_EVENTS_TYPE,
   COMMON_HISTORY_CREATED_AT,
   COMMON_HISTORY_KIND,
   COMMON_HISTORY_URL,
@@ -37,14 +42,17 @@ import {
   COMMON_LIGHT_STATE,
   COMMON_LIGHT_SWITCH,
   COMMON_LIVESTREAM_FILE,
-  COMMON_LIVESTREAM_LIVESTREAM, COMMON_LIVESTREAM_MOMENT,
+  COMMON_LIVESTREAM_LIVESTREAM,
+  COMMON_LIVESTREAM_MOMENT,
   COMMON_LIVESTREAM_REQUEST,
   COMMON_LIVESTREAM_URL,
   COMMON_MOTION,
-  COMMON_SNAPSHOT_FILE, COMMON_SNAPSHOT_MOMENT,
+  COMMON_SNAPSHOT_FILE,
+  COMMON_SNAPSHOT_MOMENT,
   COMMON_SNAPSHOT_REQUEST,
   COMMON_SNAPSHOT_SNAPSHOT,
   COMMON_SNAPSHOT_URL,
+  STATE_ID_DEBUG_REQUEST,
   STATE_ID_LIGHT_SWITCH,
   STATE_ID_LIVESTREAM_REQUEST,
   STATE_ID_SNAPSHOT_REQUEST
@@ -53,6 +61,7 @@ import { LastAction } from "./lastAction";
 import * as fs from "fs";
 import { PushNotification } from "ring-client-api/lib/api/ring-types";
 import { FileService } from "./services/file-service";
+import * as util from "util";
 
 enum EventState {
   Idle,
@@ -88,6 +97,7 @@ export class OwnRingDevice {
         return `doorbell`;
       case RingCameraKind.cocoa_camera:
       case RingCameraKind.cocoa_doorbell:
+      case RingCameraKind.cocoa_floodlight:
         return `cocoa`;
       case RingCameraKind.stickup_cam:
       case RingCameraKind.stickup_cam_v3:
@@ -100,7 +110,7 @@ export class OwnRingDevice {
         adapter.log.error(
           `Device with Type ${device.deviceType} not yet supported, please inform dev Team via Github`
         );
-        adapter.log.debug(`Unsupported Device Info: ${JSON.stringify(device)}`);
+        adapter.log.debug(`Unsupported Device Info: ${util.inspect(device, false, 1)}`);
     }
     return "unknown";
   }
@@ -200,6 +210,21 @@ export class OwnRingDevice {
 
   public processUserInput(channelID: string, stateID: string, state: ioBroker.State): void {
     switch (channelID) {
+      case "":
+        if (stateID !== STATE_ID_DEBUG_REQUEST) {
+          return;
+        }
+
+        const targetVal = state.val as boolean;
+        if (targetVal) {
+          this._adapter.log.info(`Device Debug Data for ${this.shortId}: ${util.inspect(this._ringDevice, false, 1)}`);
+          this._adapter.upsertState(
+            `${this.fullId}.${STATE_ID_DEBUG_REQUEST}`,
+            COMMON_DEBUG_REQUEST,
+            false
+          );
+        }
+        return;
       case "Light":
         if (!this._ringDevice.hasLight) {
           return;
@@ -276,6 +301,12 @@ export class OwnRingDevice {
     }
     this._lastSnapShotDir = await this._adapter.tryGetStringState(`${this.snapshotChannelId}.snapshot_file`);
     this._lastLiveStreamDir = await this._adapter.tryGetStringState(`${this.liveStreamChannelId}.livestream_file`);
+    this._adapter.upsertState(
+      `${this.fullId}.${STATE_ID_DEBUG_REQUEST}`,
+      COMMON_DEBUG_REQUEST,
+      false,
+      true
+    );
   }
 
   public updateByDevice(ringDevice: RingCamera): void {

@@ -240,6 +240,13 @@ export const COMMON_EVENTS_MOMENT: ioBroker.StateCommon = {
   read: true,
   write: false
 }
+export const COMMON_DEBUG_REQUEST: ioBroker.StateCommon = {
+  type: "boolean",
+  role: "button",
+  name: "Request Debug Output",
+  read: false,
+  write: true
+}
 export const CHANNEL_NAME_INFO = "Info";
 export const CHANNEL_NAME_HISTORY = "History";
 export const CHANNEL_NAME_LIGHT = "Light";
@@ -251,3 +258,4 @@ export const CHANNEL_NAME_EVENTS = "Events";
 export const STATE_ID_LIGHT_SWITCH = "light_switch";
 export const STATE_ID_SNAPSHOT_REQUEST = "snapshot_request";
 export const STATE_ID_LIVESTREAM_REQUEST = "livestream_request";
+export const STATE_ID_DEBUG_REQUEST = "debug_request";

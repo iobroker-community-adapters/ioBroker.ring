@@ -46,18 +46,27 @@ You can use special variables for your livestream and snapshort path and filenam
 * %k : Kind of your ring device: Example: test_%k -> test_doorbel
 
 ## Changelog
+
 <!--
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+* (theimo1221) Prevent Crashes on unsupported devices
+
 ### 3.0.0-beta.6 (2022-05-16)
+
 * (theimo1221) Record more events (without recording twice)
 * (theimo1221) Improve snapshot deleting for initial snapshot after restart
 
 ### 3.0.0-beta.5 (2022-05-14)
+
 * (theimo1221) Prevent crashes during installation by clearer enforcing of node 16
 
 ### 3.0.0-beta.4 (2022-05-14)
+
 * (theimo1221) Changes in io-package.json for release workflow
 
 ### 3.0.0-beta.3 (2022-05-14)
