@@ -51,8 +51,7 @@ You can use special variables for your livestream and snapshort path and filenam
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 3.0.0-beta.8 (2022-05-17)
 
 * (theimo1221) Fix writing to iobroker-data/files folder (thx to Apollon)
 
