@@ -1,12 +1,12 @@
-"use strict";
+'use strict';
 Object.defineProperty(exports, '__esModule', {value: true});
 exports.STATE_ID_DEBUG_REQUEST = exports.STATE_ID_LIVESTREAM_REQUEST = exports.STATE_ID_SNAPSHOT_REQUEST = exports.STATE_ID_LIGHT_SWITCH = exports.CHANNEL_NAME_EVENTS = exports.CHANNEL_NAME_LIVESTREAM = exports.CHANNEL_NAME_SNAPSHOT = exports.CHANNEL_NAME_LIGHT = exports.CHANNEL_NAME_HISTORY = exports.CHANNEL_NAME_INFO = exports.COMMON_DEBUG_REQUEST = exports.COMMON_EVENTS_MOMENT = exports.COMMON_EVENTS_MESSAGE = exports.COMMON_EVENTS_DETECTIONTYPE = exports.COMMON_EVENTS_TYPE = exports.COMMON_EVENTS_DOORBELL = exports.COMMON_MOTION = exports.COMMON_LIVESTREAM_FILE = exports.COMMON_LIVESTREAM_URL = exports.COMMON_LIVESTREAM_REQUEST = exports.COMMON_LIVESTREAM_MOMENT = exports.COMMON_LIVESTREAM_LIVESTREAM = exports.COMMON_SNAPSHOT_MOMENT = exports.COMMON_SNAPSHOT_SNAPSHOT = exports.COMMON_SNAPSHOT_REQUEST = exports.COMMON_SNAPSHOT_FILE = exports.COMMON_SNAPSHOT_URL = exports.COMMON_HISTORY_KIND = exports.COMMON_HISTORY_CREATED_AT = exports.COMMON_HISTORY_URL = exports.COMMON_LIGHT_STATE = exports.COMMON_LIGHT_SWITCH = exports.COMMON_INFO_HAS_SIREN = exports.COMMON_INFO_HAS_BATTERY = exports.COMMON_INFO_HAS_LIGHT = exports.COMMON_INFO_FIRMWARE = exports.COMMON_INFO_LATEST_SIGNAL_CATEGORY = exports.COMMON_INFO_LATEST_SIGNAL_STRENGTH = exports.COMMON_INFO_WIFI_NAME = exports.COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY = exports.COMMON_INFO_BATTERY_PERCENTAGE = exports.COMMON_INFO_KIND = exports.COMMON_INFO_EXTERNAL_CONNECTION = exports.COMMON_INFO_DESCRIPTION = exports.COMMON_INFO_ID = void 0;
 exports.COMMON_INFO_ID = {
-  type: 'string',
-  role: 'state',
-  name: 'Device ID',
-  read: true,
-  write: false,
+    type: 'string',
+    role: 'state',
+    name: 'Device ID',
+    read: true,
+    write: false,
 };
 exports.COMMON_INFO_DESCRIPTION = {
     type: "string",
@@ -235,27 +235,27 @@ exports.COMMON_EVENTS_MESSAGE = {
     write: false
 };
 exports.COMMON_EVENTS_MOMENT = {
-  type: 'number',
-  role: 'date',
-  name: 'The moment the ding event occured',
-  read: true,
-  write: false
+    type: 'number',
+    role: 'date',
+    name: 'The moment the ding event occured',
+    read: true,
+    write: false
 };
 exports.COMMON_DEBUG_REQUEST = {
-  type: 'boolean',
-  role: 'button',
-  name: 'Request Debug Output',
-  read: false,
-  write: true
+    type: 'boolean',
+    role: 'button',
+    name: 'Request Debug Output',
+    read: false,
+    write: true
 };
 exports.CHANNEL_NAME_INFO = 'Info';
-exports.CHANNEL_NAME_HISTORY = "History";
-exports.CHANNEL_NAME_LIGHT = "Light";
-exports.CHANNEL_NAME_SNAPSHOT = "Snapshot";
-exports.CHANNEL_NAME_LIVESTREAM = "Livestream";
-exports.CHANNEL_NAME_EVENTS = "Events";
-exports.STATE_ID_LIGHT_SWITCH = "light_switch";
-exports.STATE_ID_SNAPSHOT_REQUEST = "snapshot_request";
+exports.CHANNEL_NAME_HISTORY = 'History';
+exports.CHANNEL_NAME_LIGHT = 'Light';
+exports.CHANNEL_NAME_SNAPSHOT = 'Snapshot';
+exports.CHANNEL_NAME_LIVESTREAM = 'Livestream';
+exports.CHANNEL_NAME_EVENTS = 'Events';
+exports.STATE_ID_LIGHT_SWITCH = 'light_switch';
+exports.STATE_ID_SNAPSHOT_REQUEST = 'snapshot_request';
 exports.STATE_ID_LIVESTREAM_REQUEST = 'livestream_request';
 exports.STATE_ID_DEBUG_REQUEST = 'debug_request';
 //# sourceMappingURL=constants.js.map

@@ -1,8 +1,10 @@
 import path from "path";
-import fs  from "fs";
+import fs from "fs";
 import { RingAdapter } from "../../main";
+import * as utils from "@iobroker/adapter-core";
 
 export class FileService {
+  public static readonly IOBROKER_FILES_REGEX = new RegExp(/.*iobroker-data\/files.*/);
   public static getPath(
     basePath: string,
     extendedPath: string,
@@ -27,7 +29,10 @@ export class FileService {
     };
   }
 
-  public static prepareFolder(dirname: string): Promise<boolean> {
+  public static async prepareFolder(dirname: string): Promise<boolean> {
+    if (this.IOBROKER_FILES_REGEX.test(dirname)) {
+      return true;
+    }
     return new Promise<boolean>((resolve) => {
       if (!fs.existsSync(dirname)) {
         fs.mkdirSync(dirname, {recursive: true});
@@ -39,8 +44,19 @@ export class FileService {
     });
   }
 
-  public static deleteFileIfExistSync(fullPath: string): void {
-    if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
+  public static deleteFileIfExistSync(fullPath: string, adapter: RingAdapter): void {
+    if (!fs.existsSync(fullPath)) {
+      return;
+    }
+    if (this.IOBROKER_FILES_REGEX.test(fullPath)) {
+      adapter.delFile(adapter.namespace, this.reducePath(fullPath, adapter), (r) => {
+        if (r) {
+          adapter.logCatch(`Failed to delete File '${fullPath}'`, r.message);
+        }
+      });
+      return;
+    }
+    fs.unlinkSync(fullPath);
   }
 
   public static async getVisUrl(adapter: RingAdapter, fullId: string, stateName: string): Promise<string> {
@@ -53,6 +69,28 @@ export class FileService {
       }/state/${adapter.namespace}.${fullId}.${stateName}`;
     }
     return "";
+  }
+
+  public static async getTempDir(adapter: RingAdapter): Promise<string> {
+    const tempPath = path.join(utils.getAbsoluteInstanceDataDir(adapter));
+    await this.prepareFolder(tempPath);
+    return tempPath;
+  }
+
+  public static writeFileSync(fullPath: string, data: Buffer, adapter: RingAdapter): void {
+    if (this.IOBROKER_FILES_REGEX.test(fullPath)) {
+      adapter.writeFile(adapter.namespace, this.reducePath(fullPath, adapter), data, (r) => {
+        if (r) {
+          adapter.logCatch(`Failed to write Adapter File '${fullPath}'`, r.message);
+        }
+      });
+      return;
+    }
+    fs.writeFileSync(fullPath, data);
+  }
+
+  private static reducePath(fullPath: string, adapter: RingAdapter): string {
+    return fullPath.split(adapter.namespace)[1];
   }
 }
 

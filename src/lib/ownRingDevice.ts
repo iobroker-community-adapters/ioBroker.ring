@@ -338,7 +338,7 @@ export class OwnRingDevice {
       this.debug(`Failed to prepare Livestream folder ("${fullPath}") for ${this.shortId}`);
       return;
     }
-    FileService.deleteFileIfExistSync(fullPath);
+    FileService.deleteFileIfExistSync(fullPath, this._adapter);
     if (this._ringDevice.isOffline) {
       this.info(
         `Device ${this.fullId} ("${this._ringDevice.data.description}") is offline --> won't take LiveStream
@@ -346,17 +346,24 @@ export class OwnRingDevice {
       return;
     }
     duration ??= this._adapter.config.recordtime_livestream;
-    this.silly(`Initialize Livestream (${duration}s) to file ${fullPath}`);
-    await this._ringDevice.recordToFile(fullPath, duration);
-    if (!fs.existsSync(fullPath)) {
+    const tempPath = (await FileService.getTempDir(this._adapter)) + `/temp_${this.shortId}_livestream.mp4`;
+    this.silly(`Initialize Livestream (${duration}s) to temp-file ${tempPath}`);
+    await this._ringDevice.recordToFile(tempPath, duration);
+    if (!fs.existsSync(tempPath)) {
       this.info(`Could't create livestream for ${this.shortId}`);
       return;
     }
-    const video = fs.readFileSync(fullPath);
+    const video = fs.readFileSync(tempPath);
+    fs.unlink(tempPath, (err) => {
+      if (err) {
+        this._adapter.logCatch(`Couldn't delete temp file`, err);
+      }
+    });
     this.silly(`Recieved Livestream has Length: ${video.length}`);
     this._lastLiveStreamUrl = await FileService.getVisUrl(this._adapter, this.fullId, "Livestream.mp4");
+    FileService.writeFileSync(fullPath, video, this._adapter);
     if (this.lastLiveStreamDir !== "" && this._adapter.config.del_old_livestream) {
-      FileService.deleteFileIfExistSync(this._lastLiveStreamDir);
+      FileService.deleteFileIfExistSync(this._lastLiveStreamDir, this._adapter);
     }
     this._lastLiveStreamDir = fullPath;
     this._requestingLiveStream = false;
@@ -379,7 +386,7 @@ export class OwnRingDevice {
         this.kind
       );
     if (!(await FileService.prepareFolder(dirname))) return;
-    FileService.deleteFileIfExistSync(fullPath);
+    FileService.deleteFileIfExistSync(fullPath, this._adapter);
     if (this._ringDevice.isOffline) {
       this.info(
         `Device ${this.fullId} ("${this._ringDevice.data.description}") is offline --> won't take Snapshot
@@ -395,11 +402,11 @@ export class OwnRingDevice {
     }
 
     this.silly(`Writing Snapshot (Length: ${image.length}) to "${fullPath}"`);
-    fs.writeFileSync(fullPath, image);
+    FileService.writeFileSync(fullPath, image, this._adapter);
 
     this._lastSnapShotUrl = await FileService.getVisUrl(this._adapter, this.fullId, "Snapshot.jpg");
     if (this.lastSnapShotDir !== "" && this._adapter.config.del_old_snapshot) {
-      FileService.deleteFileIfExistSync(this._lastSnapShotDir);
+      FileService.deleteFileIfExistSync(this._lastSnapShotDir, this._adapter);
     }
     this._lastSnapShotDir = fullPath;
     this._requestingSnapshot = false;

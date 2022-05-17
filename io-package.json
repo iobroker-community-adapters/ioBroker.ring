@@ -1,9 +1,12 @@
 {
 	"common": {
 		"name": "ring",
-		"version": "3.0.0-beta.7",
+		"version": "3.0.0-beta.8",
 		"title": "Ring",
 		"news": {
+			"3.0.0-beta.8": {
+				"en": "Prevent crash on unsupported devices\n"
+			},
 			"3.0.0-beta.7": {
 				"en": "Prevent crash on unsupported devices\n"
 			},
@@ -165,30 +168,6 @@
 				"es": "Compatibilidad con Floodlight V2\nControlar el reflector por interruptor",
 				"pl": "Obsługa Floodlight V2\nKontroluj Floodlight za pomocą przełącznika",
 				"zh-cn": "支持Floodlight V2\n通过开关控制Floodlight"
-			},
-			"1.1.5-beta": {
-				"en": "Bugfixing",
-				"de": "Bugfixing",
-				"ru": "Исправление ошибок",
-				"pt": "Corrigindo erro",
-				"nl": "Bugfixing",
-				"fr": "Correction de bugs",
-				"it": "Bugfixing",
-				"es": "Corrección de errores",
-				"pl": "Naprawa błędów",
-				"zh-cn": "错误修正"
-			},
-			"1.1.4": {
-				"en": "Bugfixing",
-				"de": "Bugfixing",
-				"ru": "Исправление ошибок",
-				"pt": "Corrigindo erro",
-				"nl": "Bugfixing",
-				"fr": "Correction de bugs",
-				"it": "Bugfixing",
-				"es": "Corrección de errores",
-				"pl": "Naprawa błędów",
-				"zh-cn": "错误修正"
 			}
 		},
 		"titleLang": {
@@ -275,7 +254,7 @@
 			"type": "meta",
 			"common": {
 				"name": "Snapshots and videos from Ring",
-				"type": "meta.user"
+				"type": "meta"
 			},
 			"native": {}
 		}
