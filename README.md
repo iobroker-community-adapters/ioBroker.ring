@@ -51,8 +51,7 @@ You can use special variables for your livestream and snapshort path and filenam
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 3.0.0-beta.9 (2022-05-21)
 
 * (theimo1221) For stability reasons, perform an active refresh every 2 hours.
 
