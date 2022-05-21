@@ -16,8 +16,8 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
     o["default"] = v;
 });
 var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
+  if (mod && mod.__esModule) return mod;
+  var result = {};
   if (mod != null) for (var k in mod) if (k !== 'default' && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
   __setModuleDefault(result, mod);
   return result;
@@ -41,16 +41,16 @@ var EventState;
 class OwnRingDevice {
   constructor(ringDevice, locationIndex, adapter, apiClient) {
     this._requestingSnapshot = false;
-        this._requestingLiveStream = false;
-        this._lastLightCommand = 0;
-        this._lastLiveStreamUrl = "";
-        this._lastLiveStreamDir = "";
-        this._lastLiveStreamVideo = null;
-        this._lastLiveStreamTimestamp = 0;
-        this._lastSnapShotUrl = "";
-        this._lastSnapShotDir = "";
-        this._lastSnapshotImage = null;
-        this._lastSnapshotTimestamp = 0;
+    this._requestingLiveStream = false;
+    this._lastLightCommand = 0;
+    this._lastLiveStreamUrl = '';
+    this._lastLiveStreamDir = '';
+    this._lastLiveStreamVideo = null;
+    this._lastLiveStreamTimestamp = 0;
+    this._lastSnapShotUrl = '';
+    this._lastSnapShotDir = '';
+    this._lastSnapshotImage = null;
+    this._lastSnapshotTimestamp = 0;
         this._snapshotCount = 0;
         this._liveStreamCount = 0;
         this._state = EventState.Idle;
@@ -144,38 +144,37 @@ class OwnRingDevice {
         this._ringDevice.onNewNotification.subscribe(this.onDing.bind(this));
     }
     processUserInput(channelID, stateID, state) {
-        switch (channelID) {
-          case '':
-            if (stateID !== constants_1.STATE_ID_DEBUG_REQUEST) {
-              return;
-            }
-            const targetVal = state.val;
-            if (targetVal) {
-              this._adapter.log.info(`Device Debug Data for ${this.shortId}: ${util.inspect(this._ringDevice, false, 1)}`);
-              this._adapter.upsertState(`${this.fullId}.${constants_1.STATE_ID_DEBUG_REQUEST}`, constants_1.COMMON_DEBUG_REQUEST, false);
-            }
+      switch (channelID) {
+        case '':
+          if (stateID !== constants_1.STATE_ID_DEBUG_REQUEST) {
             return;
-          case 'Light':
-            if (!this._ringDevice.hasLight) {
-              return;
-            }
-            if (stateID === constants_1.STATE_ID_LIGHT_SWITCH) {
-              const targetVal = state.val;
-              this._adapter.log.debug(`Set light for ${this.shortId} to value ${targetVal}`);
-              this._lastLightCommand = Date.now();
-              this._ringDevice.setLight(targetVal).then((success) => {
-                if (success) {
-                  this._adapter.upsertState(`${this.lightChannelId}.light_state`, constants_1.COMMON_LIGHT_STATE, targetVal);
-                            this._adapter.upsertState(`${this.lightChannelId}.light_switch`, constants_1.COMMON_LIGHT_SWITCH, targetVal);
-                            setTimeout(() => {
-                                this.updateHealth.bind(this);
-                            }, 65000);
-                        }
-                    });
-                }
-                else {
-                    this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
-                }
+          }
+          const targetVal = state.val;
+          if (targetVal) {
+            this._adapter.log.info(`Device Debug Data for ${this.shortId}: ${util.inspect(this._ringDevice, false, 1)}`);
+            this._adapter.upsertState(`${this.fullId}.${constants_1.STATE_ID_DEBUG_REQUEST}`, constants_1.COMMON_DEBUG_REQUEST, false);
+          }
+          return;
+        case 'Light':
+          if (!this._ringDevice.hasLight) {
+            return;
+          }
+          if (stateID === constants_1.STATE_ID_LIGHT_SWITCH) {
+            const targetVal = state.val;
+            this._adapter.log.debug(`Set light for ${this.shortId} to value ${targetVal}`);
+            this._lastLightCommand = Date.now();
+            this._ringDevice.setLight(targetVal).then((success) => {
+              if (success) {
+                this._adapter.upsertState(`${this.lightChannelId}.light_state`, constants_1.COMMON_LIGHT_STATE, targetVal);
+                this._adapter.upsertState(`${this.lightChannelId}.light_switch`, constants_1.COMMON_LIGHT_SWITCH, targetVal);
+                setTimeout(() => {
+                  this.updateHealth.bind(this);
+                }, 65000);
+              }
+            });
+          } else {
+            this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
+          }
                 break;
             case "Snapshot":
                 if (stateID === constants_1.STATE_ID_SNAPSHOT_REQUEST) {
@@ -240,12 +239,15 @@ class OwnRingDevice {
         this.updateSnapshotObject();
     }
     async startLivestream(duration) {
-        this.silly(`${this.shortId}.startLivestream()`);
-        const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path, this._adapter.config.filename_livestream, ++this._liveStreamCount, this.shortId, this.fullId, this.kind);
-        if (!(await file_service_1.FileService.prepareFolder(dirname))) {
-          this.debug(`Failed to prepare Livestream folder ("${fullPath}") for ${this.shortId}`);
-          return;
-        }
+      this.silly(`${this.shortId}.startLivestream()`);
+      const {
+        fullPath,
+        dirname
+      } = file_service_1.FileService.getPath(this._adapter.config.path, this._adapter.config.filename_livestream, ++this._liveStreamCount, this.shortId, this.fullId, this.kind);
+      if (!(await file_service_1.FileService.prepareFolder(dirname))) {
+        this.debug(`Failed to prepare Livestream folder ("${fullPath}") for ${this.shortId}`);
+        return;
+      }
       file_service_1.FileService.deleteFileIfExistSync(fullPath, this._adapter);
       if (this._ringDevice.isOffline) {
         this.info(`Device ${this.fullId} ("${this._ringDevice.data.description}") is offline --> won't take LiveStream
@@ -276,9 +278,9 @@ class OwnRingDevice {
       this._requestingLiveStream = false;
       // this.silly(`Locally storing Snapshot (Length: ${image.length})`);
       this._lastLiveStreamVideo = video;
-        this._lastLiveStreamTimestamp = Date.now();
-        await this.updateLiveStreamObject();
-        this.debug(`Done creating livestream to ${fullPath}`);
+      this._lastLiveStreamTimestamp = Date.now();
+      await this.updateLiveStreamObject();
+      this.debug(`Done creating livestream to ${fullPath}`);
     }
     async takeSnapshot(uuid) {
         const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path, this._adapter.config.filename_snapshot, ++this._snapshotCount, this.shortId, this.fullId, this.kind);
@@ -288,28 +290,28 @@ class OwnRingDevice {
         if (this._ringDevice.isOffline) {
             this.info(`Device ${this.fullId} ("${this._ringDevice.data.description}") is offline --> won't take Snapshot
             `);
-            return;
+          return;
         }
-        const image = await this._ringDevice.getSnapshot({ uuid: uuid }).catch((reason) => {
-            this.catcher("Couldn't get Snapshot from api.", reason);
-        });
-        if (!image) {
-            this.info("Could not create snapshot");
-            return;
-        }
+      const image = await this._ringDevice.getSnapshot({uuid: uuid}).catch((reason) => {
+        this.catcher('Couldn\'t get Snapshot from api.', reason);
+      });
+      if (!image) {
+        this.info('Could not create snapshot');
+        return;
+      }
       this.silly(`Writing Snapshot (Length: ${image.length}) to "${fullPath}"`);
       file_service_1.FileService.writeFileSync(fullPath, image, this._adapter);
       this._lastSnapShotUrl = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, 'Snapshot.jpg');
-        if (this.lastSnapShotDir !== "" && this._adapter.config.del_old_snapshot) {
-          file_service_1.FileService.deleteFileIfExistSync(this._lastSnapShotDir, this._adapter);
-        }
-        this._lastSnapShotDir = fullPath;
-        this._requestingSnapshot = false;
-        // this.silly(`Locally storing Snapshot (Length: ${image.length})`);
-        this._lastSnapshotImage = image;
-        this._lastSnapshotTimestamp = Date.now();
-        await this.updateSnapshotObject();
-        this.debug(`Done creating snapshot to ${fullPath}`);
+      if (this.lastSnapShotDir !== '' && this._adapter.config.del_old_snapshot) {
+        file_service_1.FileService.deleteFileIfExistSync(this._lastSnapShotDir, this._adapter);
+      }
+      this._lastSnapShotDir = fullPath;
+      this._requestingSnapshot = false;
+      // this.silly(`Locally storing Snapshot (Length: ${image.length})`);
+      this._lastSnapshotImage = image;
+      this._lastSnapshotTimestamp = Date.now();
+      await this.updateSnapshotObject();
+      this.debug(`Done creating snapshot to ${fullPath}`);
     }
     updateHealth() {
         this.silly(`Update Health for ${this.fullId}`);

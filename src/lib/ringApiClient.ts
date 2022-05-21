@@ -6,6 +6,7 @@ import { OwnRingDevice } from "./ownRingDevice";
 
 export class RingApiClient {
   private devices: { [id: string]: OwnRingDevice } = {};
+  private _refreshInterval: NodeJS.Timer | null = null;
 
   get locations(): Location[] {
     return this._locations;
@@ -56,12 +57,13 @@ export class RingApiClient {
       this.adapter.terminate(`We couldn't find any locations in your Ring Account`);
       return;
     }
-    for(const l of this._locations) {
+    for (const l of this._locations) {
       l.onDataUpdate.subscribe((message) => {
         this.debug(`Recieved Location Update Event: "${message}"`);
       })
     }
     await this.refreshAll();
+    this._refreshInterval = setInterval(this.refreshAll.bind(this), 120 * 60 * 1000)
   }
 
   public async refreshAll(): Promise<void> {
@@ -92,7 +94,10 @@ export class RingApiClient {
   }
 
   public unload(): void {
-    // Nothing yet
+    if (this._refreshInterval) {
+      clearInterval(this._refreshInterval);
+      this._refreshInterval = null;
+    }
   }
 
   private async retrieveLocations(): Promise<void> {

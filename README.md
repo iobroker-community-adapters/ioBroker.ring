@@ -51,6 +51,11 @@ You can use special variables for your livestream and snapshort path and filenam
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+* (theimo1221) For stability reasons, perform an active refresh every 2 hours.
+
 ### 3.0.0-beta.8 (2022-05-17)
 
 * (theimo1221) Fix writing to iobroker-data/files folder (thx to Apollon)
@@ -199,8 +204,8 @@ You can use special variables for your livestream and snapshort path and filenam
 2. Snapshot/Livestream Data is now in a respective channel, containing the other data points.
 3. The snapshot/livestream object got changed from type meta to state with type file.
 4. Events (Motion, Ding, etc.) are now in a respective channel.
-5. Due to `ring-api` dropping the support for node before `v16.x` this adapter needs `node v16.x` 
-
+5. Due to `ring-api` dropping the support for node before `v16.x` this adapter needs `node v16.x`
+6. Active refreshes are reduced to once every 2 hours, as we are listening/reacting on events.
 
 ### Scripts in `package.json`
 Several npm scripts are predefined for your convenience. You can run them using `npm run <scriptname>`

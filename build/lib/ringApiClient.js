@@ -6,7 +6,8 @@ const ownRingDevice_1 = require("./ownRingDevice");
 class RingApiClient {
     constructor(adapter) {
         this.devices = {};
-        this._locations = [];
+      this._refreshInterval = null;
+      this._locations = [];
         this.adapter = adapter;
     }
     get locations() {
@@ -50,7 +51,8 @@ class RingApiClient {
                 this.debug(`Recieved Location Update Event: "${message}"`);
             });
         }
-        await this.refreshAll();
+      await this.refreshAll();
+      this._refreshInterval = setInterval(this.refreshAll.bind(this), 120 * 60 * 1000);
     }
     async refreshAll() {
         this.debug(`Refresh all Cameras`);
@@ -75,7 +77,10 @@ class RingApiClient {
         targetDevice.processUserInput(channelID, stateID, state);
     }
     unload() {
-        // Nothing yet
+      if (this._refreshInterval) {
+        clearInterval(this._refreshInterval);
+        this._refreshInterval = null;
+      }
     }
     async retrieveLocations() {
         this.debug(`Retrieve Locations`);

@@ -37,18 +37,18 @@ const main_1 = require('../../main');
 const utils = __importStar(require('@iobroker/adapter-core'));
 
 class FileService {
-    static getPath(basePath, extendedPath, count, shortId, fullId, kind) {
-        const fullPath = path_1.default.join(basePath, fullId, extendedPath)
-          .replace('%d', String(Date.now()))
-          .replace('%n', String(count))
-          .replace('%i', shortId)
-          .replace('%k', kind);
-      return {
-        fullPath: fullPath,
-        dirname: path_1.default.dirname(fullPath),
-        filename: path_1.default.basename(fullPath)
-      };
-    }
+  static getPath(basePath, extendedPath, count, shortId, fullId, kind) {
+    const fullPath = path_1.default.join(basePath, fullId, extendedPath)
+      .replace('%d', String(Date.now()))
+      .replace('%n', String(count))
+      .replace('%i', shortId)
+      .replace('%k', kind);
+    return {
+      fullPath: fullPath,
+      dirname: path_1.default.dirname(fullPath),
+      filename: path_1.default.basename(fullPath)
+    };
+  }
 
   static async prepareFolder(dirname) {
     if (this.IOBROKER_FILES_REGEX.test(dirname)) {
@@ -113,7 +113,6 @@ class FileService {
     return fullPath.split(adapter.namespace)[1];
   }
 }
-
 exports.FileService = FileService;
 FileService.IOBROKER_FILES_REGEX = new RegExp(/.*iobroker-data\/files.*/);
 //# sourceMappingURL=file-service.js.map
