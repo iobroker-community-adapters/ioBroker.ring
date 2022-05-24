@@ -5,10 +5,10 @@ const api_1 = require("ring-client-api/lib/api/api");
 const ownRingDevice_1 = require("./ownRingDevice");
 class RingApiClient {
     constructor(adapter) {
-        this.devices = {};
+      this.devices = {};
       this._refreshInterval = null;
       this._locations = [];
-        this.adapter = adapter;
+      this.adapter = adapter;
     }
     get locations() {
         return this._locations;
@@ -41,16 +41,16 @@ class RingApiClient {
         return this._api;
     }
     async init() {
-        await this.retrieveLocations();
-        if (this._locations.length === 0) {
-            this.adapter.terminate(`We couldn't find any locations in your Ring Account`);
-            return;
-        }
-        for (const l of this._locations) {
-            l.onDataUpdate.subscribe((message) => {
-                this.debug(`Recieved Location Update Event: "${message}"`);
-            });
-        }
+      await this.retrieveLocations();
+      if (this._locations.length === 0) {
+        this.adapter.terminate(`We couldn't find any locations in your Ring Account`);
+        return;
+      }
+      for (const l of this._locations) {
+        l.onDataUpdate.subscribe((message) => {
+          this.debug(`Recieved Location Update Event: "${message}"`);
+        });
+      }
       await this.refreshAll();
       this._refreshInterval = setInterval(this.refreshAll.bind(this), 120 * 60 * 1000);
     }

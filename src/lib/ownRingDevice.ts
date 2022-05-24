@@ -77,7 +77,7 @@ export class OwnRingDevice {
   }
 
   public static evaluateKind(device: RingCamera, adapter: RingAdapter): string {
-    switch (device.deviceType) {
+    switch (device.deviceType as RingCameraKind | string) {
       case RingCameraKind.doorbot:
       case RingCameraKind.doorbell:
       case RingCameraKind.doorbell_v3:
@@ -94,6 +94,8 @@ export class OwnRingDevice {
       case RingCameraKind.floodlight_v2:
       case RingCameraKind.spotlightw_v2:
       case RingCameraKind.jbox_v1:
+      case "lpd_v3":
+      case "lpd_v4":
         return `doorbell`;
       case RingCameraKind.cocoa_camera:
       case RingCameraKind.cocoa_doorbell:
@@ -110,7 +112,7 @@ export class OwnRingDevice {
         adapter.log.error(
           `Device with Type ${device.deviceType} not yet supported, please inform dev Team via Github`
         );
-        adapter.log.debug(`Unsupported Device Info: ${util.inspect(device, false, 1)}`);
+        adapter.log.info(`Unsupported Device Info: ${util.inspect(device, false, 1)}`);
     }
     return "unknown";
   }

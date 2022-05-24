@@ -1,9 +1,12 @@
 {
 	"common": {
 		"name": "ring",
-		"version": "3.0.0-beta.9",
+		"version": "3.0.0-beta.10",
 		"title": "Ring",
 		"news": {
+			"3.0.0-beta.10": {
+				"en": "Add `lpd_v4` Doorbell\n"
+			},
 			"3.0.0-beta.9": {
 				"en": "Refresh location every 2 hours for more stability\n"
 			},

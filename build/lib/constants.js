@@ -10,10 +10,10 @@ exports.COMMON_INFO_ID = {
 };
 exports.COMMON_INFO_DESCRIPTION = {
   type: 'string',
-    role: "text",
-    name: "Device Name",
-    read: true,
-    write: false
+  role: 'text',
+  name: 'Device Name',
+  read: true,
+  write: false
 };
 exports.COMMON_INFO_EXTERNAL_CONNECTION = {
     type: "boolean",
