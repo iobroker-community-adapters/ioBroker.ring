@@ -247,6 +247,20 @@ export const COMMON_DEBUG_REQUEST: ioBroker.StateCommon = {
   read: false,
   write: true
 }
+export const COMMON_NEW_TOKEN: ioBroker.StateCommon = {
+  type: "string",
+  role: "text",
+  name: "Next Refresh Token",
+  read: true,
+  write: false
+}
+export const COMMON_OLD_TOKEN: ioBroker.StateCommon = {
+  type: "string",
+  role: "text",
+  name: "Outdated user token",
+  read: true,
+  write: false
+}
 export const CHANNEL_NAME_INFO = "Info";
 export const CHANNEL_NAME_HISTORY = "History";
 export const CHANNEL_NAME_LIGHT = "Light";

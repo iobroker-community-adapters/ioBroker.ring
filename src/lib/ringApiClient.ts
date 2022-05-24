@@ -3,6 +3,7 @@ import { RingAdapter } from "../main";
 import { Location } from "ring-client-api/lib/api/location";
 import { RingCamera } from "ring-client-api";
 import { OwnRingDevice } from "./ownRingDevice";
+import { COMMON_NEW_TOKEN, COMMON_OLD_TOKEN } from "./constants";
 
 export class RingApiClient {
   private devices: { [id: string]: OwnRingDevice } = {};
@@ -28,7 +29,7 @@ export class RingApiClient {
     return true;
   }
 
-  get api(): RingApi {
+  public async getApi(): Promise<RingApi> {
     if (this._api) {
       return this._api;
     }
@@ -36,11 +37,17 @@ export class RingApiClient {
       throw(`Refresh Token needed.`)
     } else {
       this._api = new RingApi({
-        refreshToken: this.adapter.config.refreshtoken,
+        refreshToken: await this.adapter.getRefreshToken(),
         cameraStatusPollingSeconds: 600
       });
+      this._api.onRefreshTokenUpdated.subscribe((data) => {
+        this.adapter.log.info(
+          `Recieved new Refresh Token. Will use the new one until the token in config gets changed`
+        );
+        this.adapter.upsertState("next_refresh_token", COMMON_NEW_TOKEN, data.newRefreshToken);
+        this.adapter.upsertState("old_user_refresh_token", COMMON_OLD_TOKEN, this.adapter.config.refreshtoken);
+      });
     }
-
     return this._api;
   }
 
@@ -102,7 +109,7 @@ export class RingApiClient {
 
   private async retrieveLocations(): Promise<void> {
     this.debug(`Retrieve Locations`);
-    await this.api.getLocations()
+    await (await this.getApi()).getLocations()
       .then(
         (locs) => {
           this.debug(`Recieved ${locs.length} Locations`);

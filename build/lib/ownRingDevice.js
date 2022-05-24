@@ -61,16 +61,16 @@ class OwnRingDevice {
     this._client = apiClient;
     this.path = `${this._locationIndex}.`;
     this.kind = OwnRingDevice.evaluateKind(ringDevice, adapter);
-        this.shortId = `${ringDevice.id}`;
-        this.fullId = `${this.kind}_${this.shortId}`;
-        this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
-        this.historyChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HISTORY}`;
-        this.lightChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIGHT}`;
-        this.snapshotChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_SNAPSHOT}`;
-        this.liveStreamChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIVESTREAM}`;
-        this.eventsChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_EVENTS}`;
-        this.recreateDeviceObjectTree();
-        this.updateDeviceInfoObject(ringDevice.data);
+    this.shortId = `${ringDevice.id}`;
+    this.fullId = `${this.kind}_${this.shortId}`;
+    this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
+    this.historyChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HISTORY}`;
+    this.lightChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIGHT}`;
+    this.snapshotChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_SNAPSHOT}`;
+    this.liveStreamChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIVESTREAM}`;
+    this.eventsChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_EVENTS}`;
+    this.recreateDeviceObjectTree();
+    this.updateDeviceInfoObject(ringDevice.data);
         this.updateHealth();
         // noinspection JSIgnoredPromiseFromCall
         this.updateHistory();
@@ -82,41 +82,41 @@ class OwnRingDevice {
         return `${this.evaluateKind(device, adapter)}_${device.id}`;
     }
     static evaluateKind(device, adapter) {
-        switch (device.deviceType) {
-            case ring_client_api_1.RingCameraKind.doorbot:
-            case ring_client_api_1.RingCameraKind.doorbell:
-            case ring_client_api_1.RingCameraKind.doorbell_v3:
-            case ring_client_api_1.RingCameraKind.doorbell_v4:
-            case ring_client_api_1.RingCameraKind.doorbell_v5:
-            case ring_client_api_1.RingCameraKind.doorbell_portal:
-          case ring_client_api_1.RingCameraKind.doorbell_scallop:
-          case ring_client_api_1.RingCameraKind.doorbell_scallop_lite:
-          case ring_client_api_1.RingCameraKind.hp_cam_v1:
-          case ring_client_api_1.RingCameraKind.hp_cam_v2:
-          case ring_client_api_1.RingCameraKind.lpd_v1:
-          case ring_client_api_1.RingCameraKind.lpd_v2:
-          case ring_client_api_1.RingCameraKind.floodlight_v1:
-          case ring_client_api_1.RingCameraKind.floodlight_v2:
-          case ring_client_api_1.RingCameraKind.spotlightw_v2:
-          case ring_client_api_1.RingCameraKind.jbox_v1:
-          case 'lpd_v3':
-          case 'lpd_v4':
-            return `doorbell`;
-          case ring_client_api_1.RingCameraKind.cocoa_camera:
-          case ring_client_api_1.RingCameraKind.cocoa_doorbell:
-          case ring_client_api_1.RingCameraKind.cocoa_floodlight:
-            return `cocoa`;
-          case ring_client_api_1.RingCameraKind.stickup_cam:
-          case ring_client_api_1.RingCameraKind.stickup_cam_v3:
-          case ring_client_api_1.RingCameraKind.stickup_cam_v4:
-          case ring_client_api_1.RingCameraKind.stickup_cam_mini:
-          case ring_client_api_1.RingCameraKind.stickup_cam_lunar:
-            case ring_client_api_1.RingCameraKind.stickup_cam_elite:
-                return `stickup`;
-            default:
-              adapter.log.error(`Device with Type ${device.deviceType} not yet supported, please inform dev Team via Github`);
-              adapter.log.info(`Unsupported Device Info: ${util.inspect(device, false, 1)}`);
-        }
+      switch (device.deviceType) {
+        case ring_client_api_1.RingCameraKind.doorbot:
+        case ring_client_api_1.RingCameraKind.doorbell:
+        case ring_client_api_1.RingCameraKind.doorbell_v3:
+        case ring_client_api_1.RingCameraKind.doorbell_v4:
+        case ring_client_api_1.RingCameraKind.doorbell_v5:
+        case ring_client_api_1.RingCameraKind.doorbell_portal:
+        case ring_client_api_1.RingCameraKind.doorbell_scallop:
+        case ring_client_api_1.RingCameraKind.doorbell_scallop_lite:
+        case ring_client_api_1.RingCameraKind.hp_cam_v1:
+        case ring_client_api_1.RingCameraKind.hp_cam_v2:
+        case ring_client_api_1.RingCameraKind.lpd_v1:
+        case ring_client_api_1.RingCameraKind.lpd_v2:
+        case ring_client_api_1.RingCameraKind.floodlight_v1:
+        case ring_client_api_1.RingCameraKind.floodlight_v2:
+        case ring_client_api_1.RingCameraKind.spotlightw_v2:
+        case ring_client_api_1.RingCameraKind.jbox_v1:
+        case 'lpd_v3':
+        case 'lpd_v4':
+          return `doorbell`;
+        case ring_client_api_1.RingCameraKind.cocoa_camera:
+        case ring_client_api_1.RingCameraKind.cocoa_doorbell:
+        case ring_client_api_1.RingCameraKind.cocoa_floodlight:
+          return `cocoa`;
+        case ring_client_api_1.RingCameraKind.stickup_cam:
+        case ring_client_api_1.RingCameraKind.stickup_cam_v3:
+        case ring_client_api_1.RingCameraKind.stickup_cam_v4:
+        case ring_client_api_1.RingCameraKind.stickup_cam_mini:
+        case ring_client_api_1.RingCameraKind.stickup_cam_lunar:
+        case ring_client_api_1.RingCameraKind.stickup_cam_elite:
+          return `stickup`;
+        default:
+          adapter.log.error(`Device with Type ${device.deviceType} not yet supported, please inform dev Team via Github`);
+          adapter.log.info(`Unsupported Device Info: ${util.inspect(device, false, 1)}`);
+      }
         return "unknown";
     }
     get lastLiveStreamDir() {
@@ -187,16 +187,15 @@ class OwnRingDevice {
                 this.catcher('Couldn\'t retrieve Snapshot.', reason);
               });
             }
-                }
-                else {
-                    this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
-                }
-                break;
-            case "Livestream":
-                if (stateID === constants_1.STATE_ID_LIVESTREAM_REQUEST) {
-                    const targetVal = state.val;
-                    this._adapter.log.debug(`Get Livestream request for ${this.shortId} to value ${targetVal}`);
-                    if (targetVal) {
+          } else {
+            this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
+          }
+          break;
+        case 'Livestream':
+          if (stateID === constants_1.STATE_ID_LIVESTREAM_REQUEST) {
+            const targetVal = state.val;
+            this._adapter.log.debug(`Get Livestream request for ${this.shortId} to value ${targetVal}`);
+            if (targetVal) {
                         this.startLivestream().catch((reason) => {
                             this.catcher("Couldn't retrieve Livestream.", reason);
                         });

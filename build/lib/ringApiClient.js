@@ -2,20 +2,21 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RingApiClient = void 0;
 const api_1 = require("ring-client-api/lib/api/api");
-const ownRingDevice_1 = require("./ownRingDevice");
+const ownRingDevice_1 = require('./ownRingDevice');
+const constants_1 = require('./constants');
 class RingApiClient {
     constructor(adapter) {
-      this.devices = {};
-      this._refreshInterval = null;
-      this._locations = [];
-      this.adapter = adapter;
+        this.devices = {};
+        this._refreshInterval = null;
+        this._locations = [];
+        this.adapter = adapter;
     }
     get locations() {
         return this._locations;
     }
     validateRefreshToken() {
         const token = this.adapter.config.refreshtoken;
-        if (!token || token === "") {
+        if (!token || token === '') {
             this.adapter.log.error(`Refresh Token missing.`);
             return false;
         }
@@ -25,34 +26,39 @@ class RingApiClient {
         }
         return true;
     }
-    get api() {
+
+    async getApi() {
         if (this._api) {
             return this._api;
         }
         if (!this.adapter.config.refreshtoken) {
             throw (`Refresh Token needed.`);
-        }
-        else {
+        } else {
             this._api = new api_1.RingApi({
-                refreshToken: this.adapter.config.refreshtoken,
+                refreshToken: await this.adapter.getRefreshToken(),
                 cameraStatusPollingSeconds: 600
+            });
+            this._api.onRefreshTokenUpdated.subscribe((data) => {
+                this.adapter.log.info(`Recieved new Refresh Token. Will use the new one until the token in config gets changed`);
+                this.adapter.upsertState('next_refresh_token', constants_1.COMMON_NEW_TOKEN, data.newRefreshToken);
+                this.adapter.upsertState('old_user_refresh_token', constants_1.COMMON_OLD_TOKEN, this.adapter.config.refreshtoken);
             });
         }
         return this._api;
     }
     async init() {
-      await this.retrieveLocations();
-      if (this._locations.length === 0) {
-        this.adapter.terminate(`We couldn't find any locations in your Ring Account`);
-        return;
-      }
-      for (const l of this._locations) {
-        l.onDataUpdate.subscribe((message) => {
-          this.debug(`Recieved Location Update Event: "${message}"`);
-        });
-      }
-      await this.refreshAll();
-      this._refreshInterval = setInterval(this.refreshAll.bind(this), 120 * 60 * 1000);
+        await this.retrieveLocations();
+        if (this._locations.length === 0) {
+            this.adapter.terminate(`We couldn't find any locations in your Ring Account`);
+            return;
+        }
+        for (const l of this._locations) {
+            l.onDataUpdate.subscribe((message) => {
+                this.debug(`Recieved Location Update Event: "${message}"`);
+            });
+        }
+        await this.refreshAll();
+        this._refreshInterval = setInterval(this.refreshAll.bind(this), 120 * 60 * 1000);
     }
     async refreshAll() {
         this.debug(`Refresh all Cameras`);
@@ -77,18 +83,18 @@ class RingApiClient {
         targetDevice.processUserInput(channelID, stateID, state);
     }
     unload() {
-      if (this._refreshInterval) {
-        clearInterval(this._refreshInterval);
-        this._refreshInterval = null;
-      }
+        if (this._refreshInterval) {
+            clearInterval(this._refreshInterval);
+            this._refreshInterval = null;
+        }
     }
     async retrieveLocations() {
         this.debug(`Retrieve Locations`);
-        await this.api.getLocations()
-            .then((locs) => {
-            this.debug(`Recieved ${locs.length} Locations`);
-            this._locations = locs;
-        }, this.handleApiError.bind(this));
+        await (await this.getApi()).getLocations()
+          .then((locs) => {
+              this.debug(`Recieved ${locs.length} Locations`);
+              this._locations = locs;
+          }, this.handleApiError.bind(this));
     }
     handleApiError(reason) {
         this.adapter.log.error(`Api Call failed`);

@@ -49,7 +49,6 @@ class FileService {
             filename: path_1.default.basename(fullPath)
         };
     }
-
     static async prepareFolder(dirname) {
         if (this.IOBROKER_FILES_REGEX.test(dirname)) {
             return true;
@@ -64,7 +63,6 @@ class FileService {
             resolve(true);
         });
     }
-
     static deleteFileIfExistSync(fullPath, adapter) {
         if (!fs_1.default.existsSync(fullPath)) {
             return;
@@ -79,7 +77,6 @@ class FileService {
         }
         fs_1.default.unlinkSync(fullPath);
     }
-
     static async getVisUrl(adapter, fullId, stateName) {
         const vis = await adapter.getForeignObjectAsync('system.adapter.web.0').catch((reason) => {
             adapter.logCatch(`Couldn't load "web.0" Adapter object.`, reason);
@@ -90,13 +87,11 @@ class FileService {
         }
         return '';
     }
-
     static async getTempDir(adapter) {
         const tempPath = path_1.default.join(utils.getAbsoluteInstanceDataDir(adapter));
         await this.prepareFolder(tempPath);
         return tempPath;
     }
-
     static writeFileSync(fullPath, data, adapter) {
         if (this.IOBROKER_FILES_REGEX.test(fullPath)) {
             adapter.writeFile(adapter.namespace, this.reducePath(fullPath, adapter), data, (r) => {
@@ -108,7 +103,6 @@ class FileService {
         }
         fs_1.default.writeFileSync(fullPath, data);
     }
-
     static reducePath(fullPath, adapter) {
         return fullPath.split(adapter.namespace)[1];
     }

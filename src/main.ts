@@ -226,10 +226,13 @@ export class RingAdapter extends utils.Adapter {
 
   private static getSplittedIds(id: string): { device: string, channel: string, stateName: string } {
     const splits = id.split(".");
-    const device = splits[0];
+    let device = "";
     let channel = "";
-    let stateName = splits[1];
-    if (splits.length === 3) {
+    let stateName = splits[0];
+    if (splits.length === 2) {
+      device = splits[0];
+      stateName = splits[1];
+    } else if (splits.length === 3) {
       channel = splits[1];
       stateName = splits[2];
     }
@@ -239,6 +242,16 @@ export class RingAdapter extends utils.Adapter {
   public logCatch(message: string, reason: any): void {
     this.log.info(message);
     this.log.debug(`Reason: "${reason}"`);
+  }
+
+  public async getRefreshToken(): Promise<string> {
+    const newTokenStateVal = await this.tryGetStringState("next_refresh_token");
+    const oldTokenStateVal = await this.tryGetStringState("old_user_refresh_token");
+    if (newTokenStateVal && oldTokenStateVal === this.config.refreshtoken) {
+      this.log.debug(`As the configured refresh token hasn't changed the state one will be used`);
+      return newTokenStateVal;
+    }
+    return this.config.refreshtoken;
   }
 }
 
