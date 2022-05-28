@@ -1,9 +1,12 @@
 {
 	"common": {
 		"name": "ring",
-		"version": "3.0.0-beta.11",
+		"version": "3.0.0-beta.12",
 		"title": "Ring",
 		"news": {
+			"3.0.0-beta.12": {
+				"en": "Fix error in beta.11 in regards to new installations\nHarden Event Handling to prevent rare permanent busy occasions\n(theimo1221) Add support for doorbell device doorbell_graham_cracker\n"
+			},
 			"3.0.0-beta.11": {
 				"en": "Add processing of new refresh token\n"
 			},
@@ -81,42 +84,6 @@
                 "es": "Actualizar paquetes",
                 "pl": "Zaktualizuj pakiety",
                 "zh-cn": "更新包"
-            },
-            "1.2.4-0": {
-                "en": "Refactoring\nUpdate packages",
-                "de": "Refactoring\nPakete aktualisieren",
-                "ru": "Рефакторинг\nПакеты обновлений",
-                "pt": "Reestruturação\nPacotes de atualização",
-                "nl": "Refactoring\nPakketten bijwerken",
-                "fr": "Refactorisation\nMettre à jour les packages",
-                "it": "Refactoring\nAggiorna pacchetti",
-                "es": "Refactorización\nActualizar paquetes",
-                "pl": "Refaktoryzacja\nZaktualizuj pakiety",
-                "zh-cn": "重构\n更新包"
-            },
-			"1.2.3": {
-				"en": "Update packages\nFix compatibility issues with new ring api",
-				"de": "Pakete aktualisieren\nKompatibilitätsprobleme mit der neuen Ring-API beheben",
-				"ru": "Пакеты обновлений\nУстранение проблем совместимости с новым кольцевым API",
-				"pt": "Pacotes de atualização\nCorrija problemas de compatibilidade com a nova API de anel",
-				"nl": "Pakketten bijwerken\nCompatibiliteitsproblemen oplossen met nieuwe ring api",
-				"fr": "Mettre à jour les packages\nRésoudre les problèmes de compatibilité avec la nouvelle API Ring",
-				"it": "Aggiorna pacchetti\nRisolvi i problemi di compatibilità con la nuova API dell'anello",
-				"es": "Actualizar paquetes\nSolucionar problemas de compatibilidad con la nueva API de anillo",
-				"pl": "Zaktualizuj pakiety\nNapraw problemy ze zgodnością z nowym ring api",
-				"zh-cn": "更新包\n修复与新环 api 的兼容性问题"
-			},
-			"1.2.2": {
-				"en": "Update packages due to security patches",
-				"de": "Aktualisieren Sie Pakete aufgrund von Sicherheitspatches",
-				"ru": "Пакеты обновлений из-за исправлений безопасности",
-				"pt": "Pacotes de atualização devido a patches de segurança",
-				"nl": "Update pakketten vanwege beveiligingspatches",
-				"fr": "Mettre à jour les packages en raison des correctifs de sécurité",
-				"it": "Aggiorna i pacchetti a causa delle patch di sicurezza",
-				"es": "Actualizar paquetes debido a parches de seguridad",
-				"pl": "Zaktualizuj pakiety ze względu na poprawki bezpieczeństwa",
-				"zh-cn": "由于安全补丁程序而更新软件包"
 			}
 		},
 		"titleLang": {
