@@ -99,6 +99,7 @@ class OwnRingDevice {
             case ring_client_api_1.RingCameraKind.floodlight_v2:
             case ring_client_api_1.RingCameraKind.spotlightw_v2:
             case ring_client_api_1.RingCameraKind.jbox_v1:
+            case 'doorbell_graham_cracker':
             case 'lpd_v3':
             case 'lpd_v4':
                 return `doorbell`;
@@ -432,7 +433,6 @@ class OwnRingDevice {
             this.conditionalRecording(EventState.ReactingOnMotion);
         }
     }
-
     onDorbell(value) {
         this.debug(`Recieved Doorbell Event (${value}) for ${this.shortId}`);
         this.conditionalRecording(EventState.ReactingOnDoorbell, value.ding.image_uuid);
@@ -441,7 +441,6 @@ class OwnRingDevice {
             this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, constants_1.COMMON_EVENTS_DOORBELL, false);
         }, 5000);
     }
-
     async conditionalRecording(state, uuid) {
         if (this._state === EventState.Idle) {
             this.silly(`Start recording (with: ${this.shortId}) for Event "${EventState[state]}"...`);

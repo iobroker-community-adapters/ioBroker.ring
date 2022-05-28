@@ -94,6 +94,7 @@ export class OwnRingDevice {
       case RingCameraKind.floodlight_v2:
       case RingCameraKind.spotlightw_v2:
       case RingCameraKind.jbox_v1:
+      case "doorbell_graham_cracker":
       case "lpd_v3":
       case "lpd_v4":
         return `doorbell`;
