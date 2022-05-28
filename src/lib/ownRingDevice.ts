@@ -313,6 +313,7 @@ export class OwnRingDevice {
 
   public updateByDevice(ringDevice: RingCamera): void {
     this.ringDevice = ringDevice;
+    this._state = EventState.Idle;
     this.update(ringDevice.data);
   }
 
@@ -675,14 +676,16 @@ export class OwnRingDevice {
     }, 5000);
   }
 
-  private conditionalRecording(state: EventState, uuid?: string): void {
+  private async conditionalRecording(state: EventState, uuid?: string): Promise<void> {
     if (this._state === EventState.Idle) {
       this.silly(`Start recording (with: ${this.shortId}) for Event "${EventState[state]}"...`);
       this._state = state;
-      this.takeSnapshot(uuid);
-      this.startLivestream(20).then(() => {
+      try {
+        this.takeSnapshot(uuid);
+        await this.startLivestream(20);
+      } finally {
         this._state = EventState.Idle;
-      });
+      }
     } else {
       this.silly(`Would have recorded due to "${EventState[state]}", but we are already reacting.`);
     }

@@ -78,7 +78,6 @@ class OwnRingDevice {
         setTimeout(this.takeSnapshot.bind(this), 5000);
         this.ringDevice = ringDevice; // subscribes to the events
     }
-
     static getFullId(device, adapter) {
         return `${this.evaluateKind(device, adapter)}_${device.id}`;
     }
@@ -229,6 +228,7 @@ class OwnRingDevice {
     }
     updateByDevice(ringDevice) {
         this.ringDevice = ringDevice;
+        this._state = EventState.Idle;
         this.update(ringDevice.data);
     }
     update(data) {
@@ -432,6 +432,7 @@ class OwnRingDevice {
             this.conditionalRecording(EventState.ReactingOnMotion);
         }
     }
+
     onDorbell(value) {
         this.debug(`Recieved Doorbell Event (${value}) for ${this.shortId}`);
         this.conditionalRecording(EventState.ReactingOnDoorbell, value.ding.image_uuid);
@@ -440,14 +441,17 @@ class OwnRingDevice {
             this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, constants_1.COMMON_EVENTS_DOORBELL, false);
         }, 5000);
     }
-    conditionalRecording(state, uuid) {
+
+    async conditionalRecording(state, uuid) {
         if (this._state === EventState.Idle) {
             this.silly(`Start recording (with: ${this.shortId}) for Event "${EventState[state]}"...`);
             this._state = state;
-            this.takeSnapshot(uuid);
-            this.startLivestream(20).then(() => {
+            try {
+                this.takeSnapshot(uuid);
+                await this.startLivestream(20);
+            } finally {
                 this._state = EventState.Idle;
-            });
+            }
         }
         else {
             this.silly(`Would have recorded due to "${EventState[state]}", but we are already reacting.`);

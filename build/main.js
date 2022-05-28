@@ -242,12 +242,10 @@ class RingAdapter extends utils.Adapter {
         }
         return {device, channel, stateName};
     }
-
     logCatch(message, reason) {
         this.log.info(message);
         this.log.debug(`Reason: "${reason}"`);
     }
-
     async getRefreshToken() {
         const newTokenStateVal = await this.tryGetStringState('next_refresh_token');
         const oldTokenStateVal = await this.tryGetStringState('old_user_refresh_token');
