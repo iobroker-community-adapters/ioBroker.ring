@@ -224,7 +224,7 @@ export class RingAdapter extends utils.Adapter {
     }
   }
 
-  private static getSplittedIds(id: string): { device: string, channel: string, stateName: string } {
+  public static getSplittedIds(id: string): { device: string, channel: string, stateName: string } {
     const splits = id.split(".");
     let device = "";
     let channel = "";
@@ -233,6 +233,7 @@ export class RingAdapter extends utils.Adapter {
       device = splits[0];
       stateName = splits[1];
     } else if (splits.length === 3) {
+      device = splits[0];
       channel = splits[1];
       stateName = splits[2];
     }

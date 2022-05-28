@@ -1,9 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+'use strict';
+Object.defineProperty(exports, '__esModule', {value: true});
 exports.RingApiClient = void 0;
-const api_1 = require("ring-client-api/lib/api/api");
+const api_1 = require('ring-client-api/lib/api/api');
 const ownRingDevice_1 = require('./ownRingDevice');
 const constants_1 = require('./constants');
+
 class RingApiClient {
     constructor(adapter) {
         this.devices = {};
@@ -11,6 +12,7 @@ class RingApiClient {
         this._locations = [];
         this.adapter = adapter;
     }
+
     get locations() {
         return this._locations;
     }
@@ -26,7 +28,6 @@ class RingApiClient {
         }
         return true;
     }
-
     async getApi() {
         if (this._api) {
             return this._api;

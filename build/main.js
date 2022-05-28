@@ -228,34 +228,35 @@ class RingAdapter extends utils.Adapter {
         }
     }
     static getSplittedIds(id) {
-      const splits = id.split('.');
-      let device = '';
-      let channel = '';
-      let stateName = splits[0];
-      if (splits.length === 2) {
-        device = splits[0];
-        stateName = splits[1];
-      } else if (splits.length === 3) {
-        channel = splits[1];
-        stateName = splits[2];
-      }
-      return {device, channel, stateName};
+        const splits = id.split('.');
+        let device = '';
+        let channel = '';
+        let stateName = splits[0];
+        if (splits.length === 2) {
+            device = splits[0];
+            stateName = splits[1];
+        } else if (splits.length === 3) {
+            device = splits[0];
+            channel = splits[1];
+            stateName = splits[2];
+        }
+        return {device, channel, stateName};
     }
 
-  logCatch(message, reason) {
-    this.log.info(message);
-    this.log.debug(`Reason: "${reason}"`);
-  }
-
-  async getRefreshToken() {
-    const newTokenStateVal = await this.tryGetStringState('next_refresh_token');
-    const oldTokenStateVal = await this.tryGetStringState('old_user_refresh_token');
-    if (newTokenStateVal && oldTokenStateVal === this.config.refreshtoken) {
-      this.log.debug(`As the configured refresh token hasn't changed the state one will be used`);
-      return newTokenStateVal;
+    logCatch(message, reason) {
+        this.log.info(message);
+        this.log.debug(`Reason: "${reason}"`);
     }
-    return this.config.refreshtoken;
-  }
+
+    async getRefreshToken() {
+        const newTokenStateVal = await this.tryGetStringState('next_refresh_token');
+        const oldTokenStateVal = await this.tryGetStringState('old_user_refresh_token');
+        if (newTokenStateVal && oldTokenStateVal === this.config.refreshtoken) {
+            this.log.debug(`As the configured refresh token hasn't changed the state one will be used`);
+            return newTokenStateVal;
+        }
+        return this.config.refreshtoken;
+    }
 }
 exports.RingAdapter = RingAdapter;
 RingAdapter.isWindows = process.platform.startsWith("win");

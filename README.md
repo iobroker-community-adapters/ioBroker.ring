@@ -51,6 +51,11 @@ You can use special variables for your livestream and snapshort path and filenam
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+* (thiemo1221) Fix error in beta.11 in regards to new installations
+
 ### 3.0.0-beta.11 (2022-05-24)
 
 * (theimo1221) Add processing of new token provided by ring.
