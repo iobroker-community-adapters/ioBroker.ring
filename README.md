@@ -51,7 +51,7 @@ You can use special variables for your livestream and snapshort path and filenam
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 3.0.0-beta.13 (2022-05-30)
 
 * (theimo1221) Prevent missing of events, due to socket drop within ring-api-client
 * (theimo1221) Improve device logging readabillity
