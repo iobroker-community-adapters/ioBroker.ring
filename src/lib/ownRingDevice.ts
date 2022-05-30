@@ -187,6 +187,7 @@ export class OwnRingDevice {
     this.debug(`Create device with ID: ${ringDevice.id}`);
     this._ringDevice = ringDevice;
     this._locationIndex = locationIndex;
+    this.debug(`Create device`);
     this._client = apiClient;
     this.path = `${this._locationIndex}.`
     this.kind = OwnRingDevice.evaluateKind(ringDevice, adapter);
@@ -289,7 +290,7 @@ export class OwnRingDevice {
   }
 
   private async recreateDeviceObjectTree(): Promise<void> {
-    this.silly(`Recreate DeviceObjectTree for ${this.fullId}`);
+    this.silly(`Recreate DeviceObjectTree`);
     this._adapter.createDevice(this.fullId, {
       name: `Device ${this.shortId} ("${this._ringDevice.data.description}")`
     });
@@ -299,7 +300,7 @@ export class OwnRingDevice {
     this._adapter.createChannel(this.fullId, CHANNEL_NAME_HISTORY);
     this._adapter.createChannel(this.fullId, CHANNEL_NAME_EVENTS);
     if (this._ringDevice.hasLight) {
-      this.debug(`Device with Light Capabilities detected "${this.fullId}"`);
+      this.debug(`Device with Light Capabilities detected`);
       this._adapter.createChannel(this.fullId, CHANNEL_NAME_LIGHT, {name: `Light ${this.shortId}`});
     }
     this._lastSnapShotDir = await this._adapter.tryGetStringState(`${this.snapshotChannelId}.snapshot_file`);
@@ -319,7 +320,7 @@ export class OwnRingDevice {
   }
 
   public update(data: CameraData): void {
-    this.debug(`Recieved Update for ${this.fullId}`);
+    this.debug(`Recieved Update`);
     this.updateDeviceInfoObject(data);
     this.updateHealth();
     // noinspection JSIgnoredPromiseFromCall
@@ -339,14 +340,12 @@ export class OwnRingDevice {
         this.kind
       );
     if (!(await FileService.prepareFolder(dirname))) {
-      this.debug(`Failed to prepare Livestream folder ("${fullPath}") for ${this.shortId}`);
+      this.debug(`Failed to prepare Livestream folder ("${fullPath}")`);
       return;
     }
     FileService.deleteFileIfExistSync(fullPath, this._adapter);
     if (this._ringDevice.isOffline) {
-      this.info(
-        `Device ${this.fullId} ("${this._ringDevice.data.description}") is offline --> won't take LiveStream
-            `);
+      this.info(` is offline --> won't take LiveStream`);
       return;
     }
     duration ??= this._adapter.config.recordtime_livestream;
@@ -354,7 +353,7 @@ export class OwnRingDevice {
     this.silly(`Initialize Livestream (${duration}s) to temp-file ${tempPath}`);
     await this._ringDevice.recordToFile(tempPath, duration);
     if (!fs.existsSync(tempPath)) {
-      this.info(`Could't create livestream for ${this.shortId}`);
+      this.info(`Could't create livestream`);
       return;
     }
     const video = fs.readFileSync(tempPath);
@@ -392,9 +391,7 @@ export class OwnRingDevice {
     if (!(await FileService.prepareFolder(dirname))) return;
     FileService.deleteFileIfExistSync(fullPath, this._adapter);
     if (this._ringDevice.isOffline) {
-      this.info(
-        `Device ${this.fullId} ("${this._ringDevice.data.description}") is offline --> won't take Snapshot
-            `);
+      this.info(`is offline --> won't take Snapshot`);
       return;
     }
     const image = await this._ringDevice.getSnapshot({uuid: uuid}).catch((reason) => {
@@ -422,15 +419,15 @@ export class OwnRingDevice {
   }
 
   public updateHealth(): void {
-    this.silly(`Update Health for ${this.fullId}`);
+    this.silly(`Update Health`);
     this._ringDevice.getHealth().then(this.updateHealthObject.bind(this))
   }
 
   public async updateHistory(): Promise<void> {
-    this.silly(`Update History for ${this.fullId}`);
+    this.silly(`Update History`);
     this._ringDevice.getEvents({limit: 50})
       .then(async (r: CameraEventResponse) => {
-        this.silly(`Recieved Event History for ${this.fullId}`);
+        this.silly(`Recieved Event History`);
         const lastAction = r.events.find((event: CameraEvent) => {
           const kind: DingKind = event.kind;
           switch (kind) {
@@ -508,7 +505,7 @@ export class OwnRingDevice {
   }
 
   private async updateSnapshotObject(): Promise<void> {
-    this.debug(`Update Snapshot Object for "${this.fullId}"`);
+    this.debug(`Update Snapshot Object`);
     if (this._lastSnapshotImage) {
       await this._adapter.upsertFile(
         `${this.snapshotChannelId}.jpg`,
@@ -545,7 +542,7 @@ export class OwnRingDevice {
   }
 
   private async updateLiveStreamObject(): Promise<void> {
-    this.debug(`Update Livestream Object for "${this.fullId}"`);
+    this.debug(`Update Livestream Object`);
     if (this._lastLiveStreamVideo) {
       await this._adapter.upsertFile(
         `${this.liveStreamChannelId}.mp4`,
@@ -582,7 +579,7 @@ export class OwnRingDevice {
   }
 
   private updateHealthObject(health: CameraHealth): void {
-    this.debug(`Update Health Callback for "${this.fullId}"`);
+    this.debug(`Update Health Callback`);
     let batteryPercent: number = parseInt(health.battery_percentage ?? "-1");
     if (isNaN(batteryPercent)) {
       batteryPercent = -1;
@@ -620,7 +617,7 @@ export class OwnRingDevice {
     if (this._ringDevice.hasLight && (Date.now() - this._lastLightCommand > 60000)) {
       // this.silly(JSON.stringify(this._ringDevice.data));
       const floodlightOn = (this._ringDevice.data as any).health.floodlight_on as boolean;
-      this.debug(`Update Light within Health Update for "${this.fullId}" FLoodlight is ${floodlightOn}`);
+      this.debug(`Update Light within Health Update FLoodlight is ${floodlightOn}`);
       this._adapter.upsertState(
         `${this.lightChannelId}.light_state`,
         COMMON_LIGHT_STATE,
@@ -636,15 +633,15 @@ export class OwnRingDevice {
   }
 
   private debug(message: string): void {
-    this._adapter.log.debug(message);
+    this._adapter.log.debug(`Device ${this.shortId} ("${this.ringDevice.data.description}"): ${message}`);
   }
 
   private silly(message: string): void {
-    this._adapter.log.silly(message);
+    this._adapter.log.silly(`Device ${this.shortId} ("${this.ringDevice.data.description}"): ${message}`);
   }
 
   private info(message: string): void {
-    this._adapter.log.info(message);
+    this._adapter.log.info(`Device ${this.shortId} ("${this.ringDevice.data.description}"): ${message}`);
   }
 
   private catcher(message: string, reason: any): void {
@@ -652,7 +649,7 @@ export class OwnRingDevice {
   }
 
   private onDing(value: PushNotification): void {
-    this.debug(`Recieved Ding Event (${value}) for ${this.shortId}`);
+    this.debug(`Recieved Ding Event (${value})`);
     this.conditionalRecording(EventState.ReactingOnDing, value.ding.image_uuid);
     this._adapter.upsertState(`${this.eventsChannelId}.type`, COMMON_EVENTS_TYPE, value.subtype);
     this._adapter.upsertState(`${this.eventsChannelId}.detectionType`, COMMON_EVENTS_DETECTIONTYPE, value.ding.detection_type);
@@ -661,7 +658,7 @@ export class OwnRingDevice {
   }
 
   private onMotion(value: boolean): void {
-    this.debug(`Recieved Motion Event (${value}) for ${this.shortId}`);
+    this.debug(`Recieved Motion Event (${value})`);
     this._adapter.upsertState(`${this.eventsChannelId}.motion`, COMMON_MOTION, value);
     if (value) {
       this.conditionalRecording(EventState.ReactingOnMotion);
@@ -669,7 +666,7 @@ export class OwnRingDevice {
   }
 
   private onDorbell(value: PushNotification): void {
-    this.debug(`Recieved Doorbell Event (${value}) for ${this.shortId}`);
+    this.debug(`Recieved Doorbell Event (${value})`);
     this.conditionalRecording(EventState.ReactingOnDoorbell, value.ding.image_uuid);
     this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, COMMON_EVENTS_DOORBELL, true);
     setTimeout(() => {
@@ -679,7 +676,7 @@ export class OwnRingDevice {
 
   private async conditionalRecording(state: EventState, uuid?: string): Promise<void> {
     if (this._state === EventState.Idle) {
-      this.silly(`Start recording (with: ${this.shortId}) for Event "${EventState[state]}"...`);
+      this.silly(`Start recording for Event "${EventState[state]}"...`);
       this._state = state;
       try {
         this.takeSnapshot(uuid);
