@@ -53,6 +53,7 @@ You can use special variables for your livestream and snapshort path and filenam
 -->
 ### **WORK IN PROGRESS**
 
+* (theimo1221) Prevent missing of events, due to socket drop within ring-api-client
 * (theimo1221) Improve device logging readabillity
 
 ### 3.0.0-beta.12 (2022-05-28)

@@ -126,12 +126,11 @@ export class OwnRingDevice {
   private eventsChannelId: string;
   private snapshotChannelId: string;
   private liveStreamChannelId: string;
-  private path: string;
   private shortId: string;
 
   private _adapter: RingAdapter;
   private _client: RingApiClient;
-  private _locationIndex: number;
+  private _locationId: string;
   private _ringDevice: RingCamera;
   private lastAction: LastAction | undefined;
   private _requestingSnapshot = false;
@@ -158,16 +157,16 @@ export class OwnRingDevice {
   }
 
 
-  get locationIndex(): number {
-    return this._locationIndex;
+  get locationId(): string {
+    return this._locationId;
   }
 
   get location(): Location | undefined {
-    if (this._client.locations.length < this._locationIndex) {
-      this._adapter.log.error(`Can't find a Location with index ${this._locationIndex}`);
-      return undefined;
+    const location: Location | undefined = this._client.getLocation(this._locationId)
+    if (location === undefined) {
+      this._adapter.log.error(`Can't find a Location with id ${this._locationId}`);
     }
-    return this._client.locations[this._locationIndex];
+    return location;
   }
 
   get ringDevice(): RingCamera {
@@ -176,22 +175,27 @@ export class OwnRingDevice {
 
   private set ringDevice(device) {
     this._ringDevice = device;
+    this.silly(`Start device subscriptions`);
+    this._ringDevice.subscribeToDingEvents().catch((r) => {
+      this.catcher(`Failed subscribing to Ding Events for ${device.name}`, r);
+    });
+    this._ringDevice.subscribeToMotionEvents().catch((r) => {
+      this.catcher(`Failed subscribing to Motion Events for ${device.name}`, r);
+    });
     this._ringDevice.onData.subscribe(this.update.bind(this));
     this._ringDevice.onMotionDetected.subscribe(this.onMotion.bind(this));
     this._ringDevice.onDoorbellPressed.subscribe(this.onDorbell.bind(this));
     this._ringDevice.onNewNotification.subscribe(this.onDing.bind(this));
   }
 
-  public constructor(ringDevice: RingCamera, locationIndex: number, adapter: RingAdapter, apiClient: RingApiClient) {
+  public constructor(ringDevice: RingCamera, location: Location, adapter: RingAdapter, apiClient: RingApiClient) {
     this._adapter = adapter;
-    this.debug(`Create device with ID: ${ringDevice.id}`);
     this._ringDevice = ringDevice;
-    this._locationIndex = locationIndex;
-    this.debug(`Create device`);
-    this._client = apiClient;
-    this.path = `${this._locationIndex}.`
-    this.kind = OwnRingDevice.evaluateKind(ringDevice, adapter);
     this.shortId = `${ringDevice.id}`;
+    this.debug(`Create device`);
+    this._locationId = location.id;
+    this._client = apiClient;
+    this.kind = OwnRingDevice.evaluateKind(ringDevice, adapter);
     this.fullId = `${this.kind}_${this.shortId}`;
     this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
     this.historyChannelId = `${this.fullId}.${CHANNEL_NAME_HISTORY}`;
@@ -684,8 +688,14 @@ export class OwnRingDevice {
       } finally {
         this._state = EventState.Idle;
       }
-    } else {
-      this.silly(`Would have recorded due to "${EventState[state]}", but we are already reacting.`);
+      return;
+    }
+    this.silly(`Would have recorded due to "${EventState[state]}", but we are already reacting.`);
+    if(uuid) {
+      setTimeout(() => {
+        this.debug(`delayed uuid recording`);
+        this.takeSnapshot(uuid);
+      }, 22000);
     }
   }
 }

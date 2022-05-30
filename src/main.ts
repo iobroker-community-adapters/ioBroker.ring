@@ -184,11 +184,12 @@ export class RingAdapter extends utils.Adapter {
     timestamp: number
   ): Promise<void> {
     try {
-      this.log.silly(`upsertFile ${id}, length: ${value.length}`);
       if (this.states[id] === timestamp) {
+        this.log.silly(`upsertFile ${id} prevented as timestamp is the same`);
         // Unchanged Value
         return;
       }
+      this.log.silly(`upsertFile ${id}, length: ${value.length}`);
       const foreignId = `${this.namespace}.${id}`;
       if (this.states[id] !== undefined) {
         this.states[id] = timestamp;

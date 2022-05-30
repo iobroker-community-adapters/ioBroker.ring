@@ -1,11 +1,14 @@
 {
 	"common": {
 		"name": "ring",
-		"version": "3.0.0-beta.12",
+		"version": "3.0.0-beta.13",
 		"title": "Ring",
 		"news": {
+			"3.0.0-beta.13": {
+				"en": "Prevent missing of events, due to socket drop within ring-api-client\nImprove device logging\n"
+			},
 			"3.0.0-beta.12": {
-				"en": "Fix error in beta.11 in regards to new installations\nHarden Event Handling to prevent rare permanent busy occasions\n(theimo1221) Add support for doorbell device doorbell_graham_cracker\n"
+				"en": "Fix error in beta.11 in regards to new installations\nHarden Event Handling to prevent rare permanent busy occasions\nAdd support for doorbell device doorbell_graham_cracker\n"
 			},
 			"3.0.0-beta.11": {
 				"en": "Add processing of new refresh token\n"
