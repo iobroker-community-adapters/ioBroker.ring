@@ -4,18 +4,6 @@
     "version": "3.0.0",
     "title": "Ring",
     "news": {
-      "3.0.0": {
-        "en": "Changed the russian translations",
-        "de": "Ändern der russischen Übersetzungen",
-        "ru": "Изменены русские переводы",
-        "pt": "Mudou as traduções russas",
-        "nl": "Verander de Russen",
-        "fr": "Changement des traductions russes",
-        "it": "Cambiato le traduzioni russe",
-        "es": "Cambiaron las traducciones rusas",
-        "pl": "Zmienił russkie tłumaczenia",
-        "zh-cn": "B. 更改条约翻译"
-      },
       "3.0.0-beta.13": {
         "en": "Prevent missing of events, due to socket drop within ring-api-client\nImprove device logging\n"
       },
