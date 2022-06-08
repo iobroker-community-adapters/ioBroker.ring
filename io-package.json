@@ -92,9 +92,9 @@
 		"titleLang": {
 			"en": "Ring",
 			"de": "Ring",
-			"ru": "изобилующий раковинами",
+			"ru": "Ring",
 			"pt": "Ring",
-			"nl": "schaalachtig",
+			"nl": "Ring",
 			"fr": "Ring",
 			"it": "Ring",
 			"es": "Ring",
@@ -104,7 +104,7 @@
 		"desc": {
 			"en": "Ring Adapter",
 			"de": "Ring Adapter",
-			"ru": "Шестигранный адаптер",
+			"ru": "Ring адаптер",
 			"pt": "Adaptador Ring",
 			"nl": "Ring adapter",
 			"fr": "Adaptateur Ring",
