@@ -1,5 +1,4 @@
 ![Logo](admin/ring.png)
-
 # Ring Adapter
 
 [![Travis CI Build Status](https://travis-ci.org/iobroker-community-adapters/ioBroker.ring.svg?branch=master)](https://travis-ci.org/iobroker-community-adapters/ioBroker.ring)
@@ -9,17 +8,18 @@
 
 [![NPM](https://nodei.co/npm/iobroker.ring.png?downloads=true)](https://nodei.co/npm/iobroker.ring/)
 
-Requires Admin v4 and ``node 16.x``.
+Requires Admin v4 and `node 16.x`.
 
-The Ring adapter works with Ring devices like the Ring Video Doorbell and Ring Cam and shows if somenone rings the doorbell or if motion is detected. The Ring Video Doorbell or Cam sends a videostream if a motion or doorbell ist detected.
+The Ring adapter works with Ring devices like the Ring Video Doorbell and Ring Cam and shows if someone rings the doorbell or if motion is detected. The Ring Video Doorbell or Cam sends a videostream if a motion or doorbell ist detected.
 
 ### SIP (before Version 3.x)
 You can use the SIP Information for a SIP Video Conference with your SIP client.
-The adapter will not provide all ring devices because the used API do not includes all ring devices.
+The adapter will not provide all ring devices because the used API does not include all ring devices.
 
 You can use for example the Blink SIP client on [http://icanblink.com/](http://icanblink.com/). To get video working go into Blink's Preferences and under "Accounts", switch the tab to "Media" and deselect "Encrypt audio and video" under "RTP Options". Be careful the SIP information expire after a few seconds!
-Hopefully I will able to support a video stream soon. Unfortunatly [ring.com](https://ring.com) does not have an official API that support this feature.
-If you press the livestreamrequest button you get new SIP Information for building up a SIP Video Call session. If you are using the [ring.com](https://ring.com) cloud you find under history a http link to your last motion / door bell recorded video.
+Hopefully I will be able to support a video stream soon. Unfortunately [ring.com](https://ring.com) does not have an official API that support this feature.
+If you press the `livestream request` button you get new SIP Information for building up a SIP Video Call session. 
+If you are using the [ring.com](https://ring.com) cloud you find under history a http link to your last motion / doorbell recorded video.
 
 
 ## Install & Configuration
@@ -38,12 +38,48 @@ cd /opt/iobroker/node_modules/iobroker.ring/node_modules/ring-client-api
 node ring-auth-cli
 ```
 
-You can use special variables for your livestream and snapshort path and filename. This variables will be replaced with a counter, timestamp, ring id or kind of ring.
+You can use special variables for your livestream and snapshot path and filename. These variables will be replaced with a counter, timestamp, ring id or kind of ring.
 
-* %d : Unix timestamp. Example: test_%d -> test_1588331430061
-* %i : Id of your ring device: Example: test_%i -> test_234567890
-* %n : Counter since ring instance start. Example: test_%n -> test_1
-* %k : Kind of your ring device: Example: test_%k -> test_doorbel
+* `%d`: Unix timestamp. Example: `test_%d -> test_1588331430061`
+* `%i`: ID of your ring device: Example: `test_%i -> test_234567890`
+* `%n`: Counter since ring instance start. Example: `test_%n -> test_1`
+* `%k`: Kind of your ring device: Example: `test_%k -> test_doorbell`
+
+### V3 Rewrite Breaking Changes
+1. The Device Names got extended by their description (e.g. from `Device 1234567` to `Device 1234567 ("Floodlight Garden")`)
+2. Snapshot/Livestream Data is now in a respective channel, containing the other data points.
+3. The snapshot/livestream object got changed from type meta to state with type file.
+4. Events (Motion, Ding, etc.) are now in a respective channel.
+5. Due to `ring-api` dropping the support for node before `v16.x` this adapter needs `node v16.x`
+6. Active refreshes are reduced to once every 2 hours, as we are listening/reacting on events.
+
+### Scripts in `package.json`
+Several npm scripts are predefined for your convenience. You can run them using `npm run <scriptname>`
+| Script name | Description |
+|-------------|-------------|
+| `build:ts` | Compile the TypeScript sources. |
+| `watch:ts` | Compile the TypeScript sources and watch for changes. |
+| `watch` | Shortcut for `npm run watch:ts` |
+| `test:ts` | Executes the tests you defined in `*.test.ts` files. |
+| `test:package` | Ensures your `package.json` and `io-package.json` are valid. |
+| `test:unit` | Tests the adapter startup with unit tests (fast, but might require module mocks to work). |
+| `test:integration` | Tests the adapter startup with an actual instance of ioBroker. |
+| `test` | Performs a minimal test run on package files and your tests. |
+| `check` | Performs a type-check on your code (without compiling anything). |
+| `coverage` | Generates code coverage using your test files. |
+| `lint` | Runs `ESLint` to check your code for formatting errors and potential bugs. |
+| `release` | Creates a new release, see [`@alcalzone/release-script`](https://github.com/AlCalzone/release-script#usage) for more details. |
+
+### Writing tests
+When done right, testing code is invaluable, because it gives you the
+confidence to change your code while knowing exactly if and when
+something breaks. A good read on the topic of test-driven development
+is https://hackernoon.com/introduction-to-test-driven-development-tdd-61a13bc92d92.
+Although writing tests before the code might seem strange at first, but it has very
+clear upsides.
+
+The template provides you with basic tests for the adapter startup and package files.
+It is recommended that you add your own tests into the mix.
 
 ## Changelog
 
@@ -51,13 +87,15 @@ You can use special variables for your livestream and snapshort path and filenam
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### 3.0.0-beta.13 (2022-05-30)
+### **WORK IN PROGRESS**
+* (bluefox) Changed the russian translations
 
+### 3.0.0-beta.13 (2022-05-30)
 * (theimo1221) Prevent missing of events, due to socket drop within ring-api-client
-* (theimo1221) Improve device logging readabillity
+* (theimo1221) Improve device logging readability
 
 ### 3.0.0-beta.12 (2022-05-28)
-* (theimo1221) Fix error in beta.11 in regards to new installations
+* (theimo1221) Fix error in beta.11 in regard to new installations
 * (theimo1221) Harden Event Handling to prevent rare permanent busy occasions
 * (theimo1221) Add support for doorbell device `doorbell_graham_cracker`
 
@@ -97,7 +135,7 @@ You can use special variables for your livestream and snapshort path and filenam
 ### 3.0.0-beta.3 (2022-05-14)
 * (theimo1221) Rewrite V3 (Breaking Changes listed below)
 * (theimo1221) Update packages
-* (theimo1221) Fix in github release workflow
+* (theimo1221) Fix in GitHub release workflow
 
 ### 2.0.0-beta.3 (2022-02-08)
 * (theimo1221) Fix adapter checker issues
@@ -216,47 +254,10 @@ You can use special variables for your livestream and snapshort path and filenam
 ### 0.1.0 (14.12.2018)
 * (Stübi) First Version
 
-### V3 Rewrite Breaking Changes
-1. The Device Names got extended by their description (e.g. from `Device 1234567` to `Device 1234567 ("Floodlight Garden")`)
-2. Snapshot/Livestream Data is now in a respective channel, containing the other data points.
-3. The snapshot/livestream object got changed from type meta to state with type file.
-4. Events (Motion, Ding, etc.) are now in a respective channel.
-5. Due to `ring-api` dropping the support for node before `v16.x` this adapter needs `node v16.x`
-6. Active refreshes are reduced to once every 2 hours, as we are listening/reacting on events.
-
-### Scripts in `package.json`
-Several npm scripts are predefined for your convenience. You can run them using `npm run <scriptname>`
-| Script name | Description |
-|-------------|-------------|
-| `build:ts` | Compile the TypeScript sources. |
-| `watch:ts` | Compile the TypeScript sources and watch for changes. |
-| `watch` | Shortcut for `npm run watch:ts` |
-| `test:ts` | Executes the tests you defined in `*.test.ts` files. |
-| `test:package` | Ensures your `package.json` and `io-package.json` are valid. |
-| `test:unit` | Tests the adapter startup with unit tests (fast, but might require module mocks to work). |
-| `test:integration` | Tests the adapter startup with an actual instance of ioBroker. |
-| `test` | Performs a minimal test run on package files and your tests. |
-| `check` | Performs a type-check on your code (without compiling anything). |
-| `coverage` | Generates code coverage using your test files. |
-| `lint` | Runs `ESLint` to check your code for formatting errors and potential bugs. |
-| `release` | Creates a new release, see [`@alcalzone/release-script`](https://github.com/AlCalzone/release-script#usage) for more details. |
-
-### Writing tests
-When done right, testing code is invaluable, because it gives you the
-confidence to change your code while knowing exactly if and when
-something breaks. A good read on the topic of test-driven development
-is https://hackernoon.com/introduction-to-test-driven-development-tdd-61a13bc92d92.
-Although writing tests before the code might seem strange at first, but it has very
-clear upsides.
-
-The template provides you with basic tests for the adapter startup and package files.
-It is recommended that you add your own tests into the mix.
-
-
 ## License
 MIT License
 
-Copyright (c) 2022 Thorsten <thorsten@stueben.de> / <https://github.com/schmupu>
+Copyright (c) 2018-2022 Thorsten <thorsten@stueben.de> / <https://github.com/schmupu>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
