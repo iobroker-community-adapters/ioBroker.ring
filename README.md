@@ -87,7 +87,7 @@ It is recommended that you add your own tests into the mix.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 3.0.0 (2022-06-08)
 * (bluefox) Changed the russian translations
 
 ### 3.0.0-beta.13 (2022-05-30)

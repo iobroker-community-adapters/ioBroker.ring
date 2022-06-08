@@ -1,181 +1,127 @@
 {
-	"common": {
-		"name": "ring",
-		"version": "3.0.0-beta.13",
-		"title": "Ring",
-		"news": {
-			"3.0.0-beta.13": {
-				"en": "Prevent missing of events, due to socket drop within ring-api-client\nImprove device logging\n"
-			},
-			"3.0.0-beta.12": {
-				"en": "Fix error in beta.11 in regards to new installations\nHarden Event Handling to prevent rare permanent busy occasions\nAdd support for doorbell device doorbell_graham_cracker\n"
-			},
-			"3.0.0-beta.11": {
-				"en": "Add processing of new refresh token\n"
-			},
-			"3.0.0-beta.10": {
-				"en": "Add `lpd_v4` Doorbell\n"
-			},
-			"3.0.0-beta.9": {
-				"en": "Refresh location every 2 hours for more stability\n"
-			},
-			"3.0.0-beta.8": {
-				"en": "Fix writing to iobroker-data/files folder (thx to Apollon)\n"
-			},
-			"3.0.0-beta.7": {
-				"en": "Prevent crash on unsupported devices\n"
-			},
-			"3.0.0-beta.6": {
-				"en": "Livestreams/Screenshots on more Events\n"
-			},
-			"3.0.0-beta.4": {
-				"en": "Rewrite V3 (Breaking Changes listed below)\nUpdate packages\nFix in github release workflow"
-			},
-			"2.0.0-beta.2": {
-				"en": "Fix adapter checker issues"
-			},
-			"2.0.0-beta.0": {
-                "en": "Update package\nAdd JS-Controller 4.0 dependency\nOn ding --> First take snapshot then livestream"
-            },
-            "1.2.8": {
-                "en": "Update package"
-            },
-            "1.2.6": {
-                "en": "Update packages\nStop adapter on unhandled Error\nTerminate adapter on invalid ring credentials",
-                "de": "Pakete aktualisieren\nAdapter bei unbehandeltem Fehler stoppen\nAdapter bei ungültigen Ringanmeldeinformationen beenden",
-                "ru": "Пакеты обновлений\nОстановить адаптер при необработанной ошибке\nЗавершить адаптер при неверных учетных данных кольца",
-                "pt": "Pacotes de atualização\nPare o adaptador em erro não tratado\nEncerrar o adaptador com credenciais de anel inválidas",
-                "nl": "Pakketten bijwerken\nStop adapter bij onverwerkte fout\nBeëindig adapter op ongeldige ringreferenties",
-                "fr": "Mettre à jour les packages\nArrêter l'adaptateur en cas d'erreur non gérée\nMettre fin à l'adaptateur sur des informations d'identification de sonnerie non valides",
-                "it": "Aggiorna pacchetti\nArresta l'adattatore in caso di errore non gestito\nTermina l'adattatore con credenziali di anello non valide",
-                "es": "Actualizar paquetes\nDetener el adaptador en caso de error no manejado\nTerminar adaptador en credenciales de anillo no válidas",
-                "pl": "Zaktualizuj pakiety\nZatrzymaj adapter przy nieobsługiwanym błędzie\nZakończ kartę z nieprawidłowymi danymi uwierzytelniającymi dzwonek",
-                "zh-cn": "更新包\n在未处理的错误上停止适配器\n在无效的环凭据上终止适配器"
-            },
-            "1.2.5": {
-                "en": "Update packages\nStop adapter on unhandled Error\nTerminate adapter on invalid ring credentials",
-                "de": "Pakete aktualisieren\nAdapter bei unbehandeltem Fehler stoppen\nAdapter bei ungültigen Ringanmeldeinformationen beenden",
-                "ru": "Пакеты обновлений\nОстановить адаптер при необработанной ошибке\nЗавершить адаптер при неверных учетных данных кольца",
-                "pt": "Pacotes de atualização\nPare o adaptador em erro não tratado\nEncerrar o adaptador com credenciais de anel inválidas",
-                "nl": "Pakketten bijwerken\nStop adapter bij onverwerkte fout\nBeëindig adapter op ongeldige ringreferenties",
-                "fr": "Mettre à jour les packages\nArrêter l'adaptateur en cas d'erreur non gérée\nMettre fin à l'adaptateur sur des informations d'identification de sonnerie non valides",
-                "it": "Aggiorna pacchetti\nArresta l'adattatore in caso di errore non gestito\nTermina l'adattatore con credenziali di anello non valide",
-                "es": "Actualizar paquetes\nDetener el adaptador en caso de error no manejado\nTerminar adaptador en credenciales de anillo no válidas",
-                "pl": "Zaktualizuj pakiety\nZatrzymaj adapter przy nieobsługiwanym błędzie\nZakończ kartę z nieprawidłowymi danymi uwierzytelniającymi dzwonek",
-                "zh-cn": "更新包\n在未处理的错误上停止适配器\n在无效的环凭据上终止适配器"
-            },
-            "1.2.4": {
-                "en": "Update packages\nStop adapter on unhandled Error\nTerminate adapter on invalid refresh token",
-                "de": "Pakete aktualisieren\nAdapter bei unbehandeltem Fehler stoppen\nAdapter bei ungültigem Aktualisierungstoken beenden",
-                "ru": "Пакеты обновлений\nОстановить адаптер при необработанной ошибке\nЗавершить адаптер при недопустимом токене обновления",
-                "pt": "Pacotes de atualização\nPare o adaptador em erro não tratado\nEncerrar adaptador em token de atualização inválido",
-                "nl": "Pakketten bijwerken\nStop adapter bij onverwerkte fout\nBeëindig adapter op ongeldige vernieuwingstoken",
-                "fr": "Mettre à jour les packages\nArrêter l'adaptateur en cas d'erreur non gérée\nMettre fin à l'adaptateur sur un jeton d'actualisation non valide",
-                "it": "Aggiorna pacchetti\nArresta l'adattatore in caso di errore non gestito\nTermina adattatore su token di aggiornamento non valido",
-                "es": "Actualizar paquetes\nDetener el adaptador en caso de error no manejado\nTerminar adaptador en token de actualización no válido",
-                "pl": "Zaktualizuj pakiety\nZatrzymaj adapter przy nieobsługiwanym błędzie\nZakończ adapter przy nieprawidłowym tokenie odświeżania",
-                "zh-cn": "更新包\n在未处理的错误上停止适配器\n在无效的刷新令牌上终止适配器"
-            },
-            "1.2.4-1": {
-                "en": "Update packages",
-                "de": "Pakete aktualisieren",
-                "ru": "Пакеты обновлений",
-                "pt": "Pacotes de atualização",
-                "nl": "Pakketten bijwerken",
-                "fr": "Mettre à jour les packages",
-                "it": "Aggiorna pacchetti",
-                "es": "Actualizar paquetes",
-                "pl": "Zaktualizuj pakiety",
-                "zh-cn": "更新包"
-			}
-		},
-		"titleLang": {
-			"en": "Ring",
-			"de": "Ring",
-			"ru": "Ring",
-			"pt": "Ring",
-			"nl": "Ring",
-			"fr": "Ring",
-			"it": "Ring",
-			"es": "Ring",
-			"pl": "Ring",
-			"zh-cn": "环"
-		},
-		"desc": {
-			"en": "Ring Adapter",
-			"de": "Ring Adapter",
-			"ru": "Ring адаптер",
-			"pt": "Adaptador Ring",
-			"nl": "Ring adapter",
-			"fr": "Adaptateur Ring",
-			"it": "Adattatore Ring",
-			"es": "Adaptador Ring",
-			"pl": "Adapter Ring",
-			"zh-cn": "紧定环"
-		},
-		"license": "MIT",
-		"authors": [
-			"Thorsten Stueben <thorsten@stueben.de>"
-		],
-		"keywords": [
-			"ioBroker",
-			"Ring",
-			"Smart Home",
-			"home automation"
-		],
-		"platform": "Javascript/Node.js",
-		"main": "build/main.js",
-		"icon": "ring.png",
-		"enabled": true,
-		"extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.ring/master/admin/ring.png",
-		"readme": "https://github.com/iobroker-community-adapters/ioBroker.ring/blob/master/README.md",
-		"loglevel": "info",
-		"mode": "daemon",
-		"type": "hardware",
-		"compact": true,
-		"materialize": true,
-		"materializeTab": true,
-		"adminTab": {
-			"singleton": true,
-			"name": {
-				"en": "Ring Adapter",
-				"de": "Ring Adapter"
-			},
-			"link": "",
-			"fa-icon": "info"
-		},
-		"supportCustoms": true,
-		"dependencies": [
-			{
-				"js-controller": ">=4.0.0"
-			}
-		]
-	},
-	"native": {
-		"email": "email@test.foo",
-		"password": "password",
-		"twofaceauth": false,
-		"refreshtoken": "",
-		"timeout": 5,
-		"pollsec": 15,
-		"recordtime_livestream": 10,
-		"path": "",
-		"filename_livestream": "livestream%i_%d.mp4",
-		"filename_snapshot": "snapshot%i_%d.jpg",
-		"del_old_livestream": true,
-		"del_old_snapshot": true,
-		"sentry_enable": true
-	},
-	"objects": [],
-	"instanceObjects": [
-		{
-			"_id": "",
-			"type": "meta",
-			"common": {
-				"name": "Snapshots and videos from Ring",
-				"type": "meta"
-			},
-			"native": {}
-		}
-	]
+  "common": {
+    "name": "ring",
+    "version": "3.0.0",
+    "title": "Ring",
+    "news": {
+      "3.0.0": {
+        "en": "Changed the russian translations",
+        "de": "Ändern der russischen Übersetzungen",
+        "ru": "Изменены русские переводы",
+        "pt": "Mudou as traduções russas",
+        "nl": "Verander de Russen",
+        "fr": "Changement des traductions russes",
+        "it": "Cambiato le traduzioni russe",
+        "es": "Cambiaron las traducciones rusas",
+        "pl": "Zmienił russkie tłumaczenia",
+        "zh-cn": "B. 更改条约翻译"
+      },
+      "3.0.0-beta.13": {
+        "en": "Prevent missing of events, due to socket drop within ring-api-client\nImprove device logging\n"
+      },
+      "3.0.0-beta.12": {
+        "en": "Fix error in beta.11 in regards to new installations\nHarden Event Handling to prevent rare permanent busy occasions\nAdd support for doorbell device doorbell_graham_cracker\n"
+      },
+      "3.0.0-beta.11": {
+        "en": "Add processing of new refresh token\n"
+      },
+      "3.0.0-beta.10": {
+        "en": "Add `lpd_v4` Doorbell\n"
+      },
+      "3.0.0-beta.9": {
+        "en": "Refresh location every 2 hours for more stability\n"
+      },
+      "3.0.0-beta.8": {
+        "en": "Fix writing to iobroker-data/files folder (thx to Apollon)\n"
+      }
+    },
+    "titleLang": {
+      "en": "Ring",
+      "de": "Ring",
+      "ru": "Ring",
+      "pt": "Ring",
+      "nl": "Ring",
+      "fr": "Ring",
+      "it": "Ring",
+      "es": "Ring",
+      "pl": "Ring",
+      "zh-cn": "环"
+    },
+    "desc": {
+      "en": "Ring Adapter",
+      "de": "Ring Adapter",
+      "ru": "Ring адаптер",
+      "pt": "Adaptador Ring",
+      "nl": "Ring adapter",
+      "fr": "Adaptateur Ring",
+      "it": "Adattatore Ring",
+      "es": "Adaptador Ring",
+      "pl": "Adapter Ring",
+      "zh-cn": "紧定环"
+    },
+    "license": "MIT",
+    "authors": [
+      "Thorsten Stueben <thorsten@stueben.de>"
+    ],
+    "keywords": [
+      "ioBroker",
+      "Ring",
+      "Smart Home",
+      "home automation"
+    ],
+    "platform": "Javascript/Node.js",
+    "main": "build/main.js",
+    "icon": "ring.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.ring/master/admin/ring.png",
+    "readme": "https://github.com/iobroker-community-adapters/ioBroker.ring/blob/master/README.md",
+    "loglevel": "info",
+    "mode": "daemon",
+    "type": "hardware",
+    "compact": true,
+    "materialize": true,
+    "materializeTab": true,
+    "adminTab": {
+      "singleton": true,
+      "name": {
+        "en": "Ring Adapter",
+        "de": "Ring Adapter"
+      },
+      "link": "",
+      "fa-icon": "info"
+    },
+    "supportCustoms": true,
+    "dependencies": [
+      {
+        "js-controller": ">=4.0.0"
+      }
+    ]
+  },
+  "native": {
+    "email": "email@test.foo",
+    "password": "password",
+    "twofaceauth": false,
+    "refreshtoken": "",
+    "timeout": 5,
+    "pollsec": 15,
+    "recordtime_livestream": 10,
+    "path": "",
+    "filename_livestream": "livestream%i_%d.mp4",
+    "filename_snapshot": "snapshot%i_%d.jpg",
+    "del_old_livestream": true,
+    "del_old_snapshot": true,
+    "sentry_enable": true
+  },
+  "objects": [],
+  "instanceObjects": [
+    {
+      "_id": "",
+      "type": "meta",
+      "common": {
+        "name": "Snapshots and videos from Ring",
+        "type": "meta"
+      },
+      "native": {}
+    }
+  ]
 }
