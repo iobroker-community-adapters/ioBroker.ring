@@ -144,7 +144,7 @@ export class OwnRingLocation {
       .catch((reason) => { this._adapter.logCatch(`Failed setting location mode`, reason)});
   }
 
-  private updateModeObject(newMode: LocationMode, preventLog: boolean = false): void {
+  private updateModeObject(newMode: LocationMode, preventLog = false): void {
     this._currentLocationMode = newMode;
     if(!preventLog) {
       this.silly(`Recieved new LocationMode: ${newMode}`)

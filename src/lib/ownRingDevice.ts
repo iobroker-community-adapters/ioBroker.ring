@@ -1,4 +1,3 @@
-import { Location } from "ring-client-api/lib/api/location";
 import {
   CameraData,
   CameraEvent,

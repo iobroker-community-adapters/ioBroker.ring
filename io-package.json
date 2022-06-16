@@ -4,18 +4,6 @@
     "version": "3.0.2",
     "title": "Ring",
     "news": {
-      "3.0.2": {
-        "en": "Implement location mode",
-        "de": "Implementieren Standortmodus",
-        "ru": "Внедрить режим расположения",
-        "pt": "Implementar modo de localização",
-        "nl": "Implementie locatie modus",
-        "fr": "Mettre en place le mode de localisation",
-        "it": "Modalità di implementazione",
-        "es": "Aplicar el modo de ubicación",
-        "pl": "Implementacja",
-        "zh-cn": "执行地点模式"
-      },
       "3.0.1": {
         "en": "Changed the russian translations",
         "de": "Ändern der russischen Übersetzungen",

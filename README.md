@@ -87,7 +87,7 @@ It is recommended that you add your own tests into the mix.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### 3.0.2 (2022-06-16)
+### **WORK IN PROGRESS**
 * (theimo1221) Implement location mode
 
 ### 3.0.1 (2022-06-08)
