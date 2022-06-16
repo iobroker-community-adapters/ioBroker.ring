@@ -87,6 +87,9 @@ It is recommended that you add your own tests into the mix.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (theimo1221) Implement location mode
+
 ### 3.0.1 (2022-06-08)
 * (bluefox) Changed the russian translations
 

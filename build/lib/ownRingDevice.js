@@ -53,11 +53,21 @@ class OwnRingDevice {
         this._snapshotCount = 0;
         this._liveStreamCount = 0;
         this._state = EventState.Idle;
+        this.motionObserver = {
+            next: (x) => this.onMotion(x),
+            error: (err) => this.catcher(`Motion Observer recieved error`, err),
+            complete: () => this.debug("Motion Observer got a complete notification"),
+        };
+        this.dingObserver = {
+            next: (x) => this.onDing(x),
+            error: (err) => this.catcher(`Ding Observer recieved error`, err),
+            complete: () => this.debug("Ding Observer got a complete notification"),
+        };
         this._adapter = adapter;
         this._ringDevice = ringDevice;
         this.shortId = `${ringDevice.id}`;
         this.debug(`Create device`);
-        this._locationId = location.id;
+        this._locationId = location.fullId;
         this._client = apiClient;
         this.kind = OwnRingDevice.evaluateKind(ringDevice, adapter);
         this.fullId = `${this.kind}_${this.shortId}`;
@@ -127,29 +137,25 @@ class OwnRingDevice {
     get locationId() {
         return this._locationId;
     }
-    get location() {
-        const location = this._client.getLocation(this._locationId);
-        if (location === undefined) {
-            this._adapter.log.error(`Can't find a Location with id ${this._locationId}`);
-        }
-        return location;
-    }
     get ringDevice() {
         return this._ringDevice;
     }
     set ringDevice(device) {
         this._ringDevice = device;
+        this.subscribeToEvents();
+    }
+    async subscribeToEvents() {
         this.silly(`Start device subscriptions`);
-        this._ringDevice.subscribeToDingEvents().catch((r) => {
-            this.catcher(`Failed subscribing to Ding Events for ${device.name}`, r);
+        await this._ringDevice.subscribeToDingEvents().catch((r) => {
+            this.catcher(`Failed subscribing to Ding Events for ${this._ringDevice.name}`, r);
         });
-        this._ringDevice.subscribeToMotionEvents().catch((r) => {
-            this.catcher(`Failed subscribing to Motion Events for ${device.name}`, r);
+        await this._ringDevice.subscribeToMotionEvents().catch((r) => {
+            this.catcher(`Failed subscribing to Motion Events for ${this._ringDevice.name}`, r);
         });
         this._ringDevice.onData.subscribe(this.update.bind(this));
-        this._ringDevice.onMotionDetected.subscribe(this.onMotion.bind(this));
+        this._ringDevice.onMotionDetected.subscribe(this.motionObserver);
         this._ringDevice.onDoorbellPressed.subscribe(this.onDorbell.bind(this));
-        this._ringDevice.onNewNotification.subscribe(this.onDing.bind(this));
+        this._ringDevice.onNewNotification.subscribe(this.dingObserver);
     }
     processUserInput(channelID, stateID, state) {
         switch (channelID) {

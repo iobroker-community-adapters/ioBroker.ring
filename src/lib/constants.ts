@@ -1,3 +1,5 @@
+export const LOCATION_MODE_OPTIONS = ["home", "away", "disarmed", "disabled", "unset"];
+
 export const COMMON_INFO_ID: Partial<ioBroker.StateCommon> = {
   type: "string",
   role: "state",
@@ -261,6 +263,14 @@ export const COMMON_OLD_TOKEN: ioBroker.StateCommon = {
   read: true,
   write: false
 }
+export const COMMON_LOCATIONMODE: ioBroker.StateCommon = {
+  type: "string",
+  role: "text",
+  name: "Location Mode",
+  read: true,
+  write: true,
+  states: LOCATION_MODE_OPTIONS
+}
 export const CHANNEL_NAME_INFO = "Info";
 export const CHANNEL_NAME_HISTORY = "History";
 export const CHANNEL_NAME_LIGHT = "Light";
@@ -268,8 +278,8 @@ export const CHANNEL_NAME_SNAPSHOT = "Snapshot";
 export const CHANNEL_NAME_LIVESTREAM = "Livestream";
 export const CHANNEL_NAME_EVENTS = "Events";
 
-
 export const STATE_ID_LIGHT_SWITCH = "light_switch";
 export const STATE_ID_SNAPSHOT_REQUEST = "snapshot_request";
 export const STATE_ID_LIVESTREAM_REQUEST = "livestream_request";
 export const STATE_ID_DEBUG_REQUEST = "debug_request";
+export const STATE_ID_LOCATIONMODE = "locationMode";

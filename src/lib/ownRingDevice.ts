@@ -62,6 +62,7 @@ import * as fs from "fs";
 import { PushNotification } from "ring-client-api/lib/api/ring-types";
 import { FileService } from "./services/file-service";
 import * as util from "util";
+import { OwnRingLocation } from "./ownRingLocation";
 
 enum EventState {
   Idle,
@@ -147,6 +148,16 @@ export class OwnRingDevice {
   private _snapshotCount = 0;
   private _liveStreamCount = 0;
   private _state = EventState.Idle;
+  private motionObserver = {
+    next: (x: boolean) => this.onMotion(x),
+    error: (err: Error) => this.catcher(`Motion Observer recieved error`, err),
+    complete: () => this.debug("Motion Observer got a complete notification"),
+  }
+  private dingObserver = {
+    next: (x: PushNotification) => this.onDing(x),
+    error: (err: Error) => this.catcher(`Ding Observer recieved error`, err),
+    complete: () => this.debug("Ding Observer got a complete notification"),
+  }
 
   get lastLiveStreamDir(): string {
     return this._lastLiveStreamDir;
@@ -161,39 +172,35 @@ export class OwnRingDevice {
     return this._locationId;
   }
 
-  get location(): Location | undefined {
-    const location: Location | undefined = this._client.getLocation(this._locationId)
-    if (location === undefined) {
-      this._adapter.log.error(`Can't find a Location with id ${this._locationId}`);
-    }
-    return location;
-  }
-
   get ringDevice(): RingCamera {
     return this._ringDevice;
   }
 
   private set ringDevice(device) {
     this._ringDevice = device;
-    this.silly(`Start device subscriptions`);
-    this._ringDevice.subscribeToDingEvents().catch((r) => {
-      this.catcher(`Failed subscribing to Ding Events for ${device.name}`, r);
-    });
-    this._ringDevice.subscribeToMotionEvents().catch((r) => {
-      this.catcher(`Failed subscribing to Motion Events for ${device.name}`, r);
-    });
-    this._ringDevice.onData.subscribe(this.update.bind(this));
-    this._ringDevice.onMotionDetected.subscribe(this.onMotion.bind(this));
-    this._ringDevice.onDoorbellPressed.subscribe(this.onDorbell.bind(this));
-    this._ringDevice.onNewNotification.subscribe(this.onDing.bind(this));
+    this.subscribeToEvents();
   }
 
-  public constructor(ringDevice: RingCamera, location: Location, adapter: RingAdapter, apiClient: RingApiClient) {
+  private async subscribeToEvents(): Promise<void> {
+    this.silly(`Start device subscriptions`);
+    await this._ringDevice.subscribeToDingEvents().catch((r) => {
+      this.catcher(`Failed subscribing to Ding Events for ${this._ringDevice.name}`, r);
+    });
+    await this._ringDevice.subscribeToMotionEvents().catch((r) => {
+      this.catcher(`Failed subscribing to Motion Events for ${this._ringDevice.name}`, r);
+    });
+    this._ringDevice.onData.subscribe(this.update.bind(this));
+    this._ringDevice.onMotionDetected.subscribe(this.motionObserver);
+    this._ringDevice.onDoorbellPressed.subscribe(this.onDorbell.bind(this));
+    this._ringDevice.onNewNotification.subscribe(this.dingObserver);
+  }
+
+  public constructor(ringDevice: RingCamera, location: OwnRingLocation, adapter: RingAdapter, apiClient: RingApiClient) {
     this._adapter = adapter;
     this._ringDevice = ringDevice;
     this.shortId = `${ringDevice.id}`;
     this.debug(`Create device`);
-    this._locationId = location.id;
+    this._locationId = location.fullId;
     this._client = apiClient;
     this.kind = OwnRingDevice.evaluateKind(ringDevice, adapter);
     this.fullId = `${this.kind}_${this.shortId}`;

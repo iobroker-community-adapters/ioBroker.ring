@@ -124,14 +124,14 @@ class RingAdapter extends utils.Adapter {
         // The state was changed
         this.log.silly(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
         const splits = id.split(".");
-        const deviceID = splits[2];
+        const targetId = splits[2];
         let stateID = splits[3];
         let channelID = "";
         if (splits.length === 5) {
             channelID = splits[3];
             stateID = splits[4];
         }
-        this.apiClient.processUserInput(deviceID, channelID, stateID, state);
+        this.apiClient.processUserInput(targetId, channelID, stateID, state);
     }
     // If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
     // /**
@@ -149,8 +149,8 @@ class RingAdapter extends utils.Adapter {
     // 	}
     // }
     upsertState(id, common, value, subscribe = false) {
-        if (this.states[id] === value) {
-            // Unchanged Value
+        if (this.states[id] === value && !subscribe) {
+            // Unchanged and from user not changeable Value
             return;
         }
         // noinspection JSIgnoredPromiseFromCall

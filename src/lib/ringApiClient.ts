@@ -4,18 +4,18 @@ import { Location } from "ring-client-api/lib/api/location";
 import { RingCamera } from "ring-client-api";
 import { OwnRingDevice } from "./ownRingDevice";
 import { COMMON_NEW_TOKEN, COMMON_OLD_TOKEN } from "./constants";
-import util from "util";
+import { OwnRingLocation } from "./ownRingLocation";
 
 export class RingApiClient {
+  public refreshing = false;
   private devices: { [id: string]: OwnRingDevice } = {};
   private _refreshInterval: NodeJS.Timer | null = null;
-  private _refreshing = false;
 
-  get locations(): Location[] {
+  get locations(): { [id: string]: OwnRingLocation } {
     return this._locations;
   }
 
-  private _locations: Location[] = [];
+  private _locations: { [id: string]: OwnRingLocation } = {};
 
   public validateRefreshToken(): boolean {
     const token: string = this.adapter.config.refreshtoken;
@@ -37,19 +37,22 @@ export class RingApiClient {
     }
     if (!this.adapter.config.refreshtoken) {
       throw(`Refresh Token needed.`)
-    } else {
-      this._api = new RingApi({
-        refreshToken: await this.adapter.getRefreshToken(),
-        cameraStatusPollingSeconds: 600,
-      });
-      this._api.onRefreshTokenUpdated.subscribe((data) => {
-        this.adapter.log.info(
-          `Recieved new Refresh Token. Will use the new one until the token in config gets changed`
-        );
-        this.adapter.upsertState("next_refresh_token", COMMON_NEW_TOKEN, data.newRefreshToken);
-        this.adapter.upsertState("old_user_refresh_token", COMMON_OLD_TOKEN, this.adapter.config.refreshtoken);
-      });
     }
+    this._api = new RingApi({
+      controlCenterDisplayName: "iobroker.ring",
+      refreshToken: await this.adapter.getRefreshToken(),
+      systemId: `${this.adapter.host}.ring`,
+      cameraStatusPollingSeconds: 120,
+      locationModePollingSeconds: 120,
+      // debug: true
+    });
+    this._api.onRefreshTokenUpdated.subscribe((data) => {
+      this.adapter.log.info(
+        `Recieved new Refresh Token. Will use the new one until the token in config gets changed`
+      );
+      this.adapter.upsertState("next_refresh_token", COMMON_NEW_TOKEN, data.newRefreshToken);
+      this.adapter.upsertState("old_user_refresh_token", COMMON_OLD_TOKEN, this.adapter.config.refreshtoken);
+    });
     return this._api;
   }
 
@@ -71,50 +74,40 @@ export class RingApiClient {
      *  so we should reconnect ourselves
      */
     this.debug(`Refresh Ring Connection`);
-    this._refreshing = true;
+    this.refreshing = true;
     this._api?.disconnect();
     this._api = undefined;
     await this.retrieveLocations();
-    if (this._locations.length === 0 && initial) {
+    if (Object.keys(this._locations).length === 0 && initial) {
       this.adapter.terminate(`We couldn't find any locations in your Ring Account`);
       return;
     }
-    for (const l of this._locations) {
-      l.onDataUpdate.subscribe((message) => {
-        this.debug(`Recieved Location Update Event: "${message}"`);
-      });
-      l.onConnected.subscribe((connected) => {
-        this.debug(`Recieved Location Connection Status Change to ${connected}`);
-        if(!connected && !this._refreshing) {
-          this.warn(`Lost connection to Location ${l.name}... Will try a reconnect in 5s`);
-          setTimeout(() => {
-            this.refreshAll();
-          }, 5000);
-        }
-      })
-      this.silly(`Location Debug Data: ${util.inspect(l, false, 1)}`);
+    for (const key in this._locations) {
+      const l = this._locations[key];
       this.debug(`Process Location ${l.name}`);
       const devices = await l.getDevices();
       this.debug(`Recieved ${devices.length} Devices in Location ${l.name}`);
-      this.debug(`Location has ${l.cameras.length} Cameras`);
-      for (const c of l.cameras) {
+      this.debug(`Location has ${l.loc.cameras.length} Cameras`);
+      for (const c of l.loc.cameras) {
         this.updateDev(c, l);
       }
     }
-    this._refreshing = false;
+    this.refreshing = false;
     this.debug(`Refresh complete`);
   }
 
 
-  public processUserInput(deviceID: string, channelID: string, stateID: string, state: ioBroker.State): void {
-    if (!this.devices[deviceID]) {
-      this.adapter.log.error(`Recieved State Change on Subscribed State, for unknown Device "${deviceID}"`);
+  public processUserInput(targetId: string, channelID: string, stateID: string, state: ioBroker.State): void {
+    const targetDevice = this.devices[targetId];
+    const targetLocation = this._locations[targetId];
+    if (!targetDevice && !targetLocation) {
+      this.adapter.log.error(`Recieved State Change on Subscribed State, for unknown Device/Location "${targetId}"`);
       return;
+    } else if (targetDevice) {
+      targetDevice.processUserInput(channelID, stateID, state);
+    } else if (targetLocation) {
+      targetLocation.processUserInput(channelID, stateID, state);
     }
-
-    const targetDevice = this.devices[deviceID];
-
-    targetDevice.processUserInput(channelID, stateID, state);
   }
 
   public unload(): void {
@@ -126,14 +119,13 @@ export class RingApiClient {
 
   private async retrieveLocations(): Promise<void> {
     this.debug(`Retrieve Locations`);
-    await (await this.getApi()).getLocations()
-      .then(
-        (locs) => {
-          this.debug(`Recieved ${locs.length} Locations`);
-          this._locations = locs;
-        },
-        this.handleApiError.bind(this)
-      );
+    const locs = await (await this.getApi()).getLocations().catch(this.handleApiError.bind(this));
+    this.debug(`Recieved ${locs?.length} Locations`);
+    this._locations = {};
+    for(const loc of locs as Location[]) {
+      const newLoc = new OwnRingLocation(loc, this.adapter, this);
+      this._locations[newLoc.fullId] = newLoc;
+    }
   }
 
   private handleApiError(reason: any): void {
@@ -154,7 +146,7 @@ export class RingApiClient {
     this.adapter.log.warn(message);
   }
 
-  private updateDev(device: RingCamera, location: Location): void {
+  private updateDev(device: RingCamera, location: OwnRingLocation): void {
     const fullID = OwnRingDevice.getFullId(device, this.adapter);
     let ownDev: OwnRingDevice = this.devices[fullID];
     if (ownDev === undefined) {
@@ -165,7 +157,7 @@ export class RingApiClient {
     }
   }
 
-  public getLocation(locId: string): Location | undefined {
-    return this.locations.filter(l => l.id === locId)[0];
+  public getLocation(locId: string): OwnRingLocation {
+    return this.locations[locId];
   }
 }
