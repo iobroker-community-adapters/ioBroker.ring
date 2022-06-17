@@ -1,9 +1,21 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.0.3",
+    "version": "3.0.4",
     "title": "Ring",
     "news": {
+      "3.0.4": {
+        "en": "Fix Edge Case resulting in lamps being permanently on",
+        "de": "Fix Edge Fall, dass Lampen dauerhaft an",
+        "ru": "Fix Край Кейс, полученный в лампах, постоянно на",
+        "pt": "Borda fixa Caso resultando em lâmpadas sendo permanentemente em",
+        "nl": "Vertaling: Zaak resulteert in lampen die permanent op",
+        "fr": "Fix Edge Case resulting in lamps being permanently on",
+        "it": "Bordo di fissaggio Caso che risulta che le lampade sono permanentemente su",
+        "es": "Corrección Case resulting in lamps being permanently on",
+        "pl": "Fix Edge Edge Edge Edge Powoduje to, że lampy stają się na stałe",
+        "zh-cn": "Fix Edge 造成长期猛增的案件"
+      },
       "3.0.3": {
         "en": "Implement location mode",
         "de": "Implementieren Standortmodus",
@@ -39,9 +51,6 @@
       },
       "3.0.0-beta.10": {
         "en": "Add `lpd_v4` Doorbell\n"
-      },
-      "3.0.0-beta.9": {
-        "en": "Refresh location every 2 hours for more stability\n"
       }
     },
     "titleLang": {
