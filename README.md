@@ -87,6 +87,9 @@ It is recommended that you add your own tests into the mix.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (theimo1221) Fix Edge Case resulting in lamps being permanently on
+
 ### 3.0.3 (2022-06-16)
 * (theimo1221) Implement location mode
 

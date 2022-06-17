@@ -121,6 +121,10 @@ class RingAdapter extends utils.Adapter {
             this.log.silly(`state ${id} deleted`);
             return;
         }
+        if (state.ack) {
+            // As it is already ack, don't react on it (could be set by us).
+            return;
+        }
         // The state was changed
         this.log.silly(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
         const splits = id.split(".");
