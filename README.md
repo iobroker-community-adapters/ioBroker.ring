@@ -87,7 +87,7 @@ It is recommended that you add your own tests into the mix.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 3.0.5 (2022-07-05)
 * (theimo1221) Improve Log Message on failed Snapshots during eventhandling
 * (theimo1221) Add Support for doorbell oyster
 

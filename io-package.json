@@ -1,9 +1,21 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.0.4",
+    "version": "3.0.5",
     "title": "Ring",
     "news": {
+      "3.0.5": {
+        "en": "Improve Log Message on failed Snapshots during eventhandling\nAdd Support for doorbell oyster",
+        "de": "Verbessern Sie die Log-Nachricht auf fehlgeschlagenen Snapshots während der Eventhandling\nUnterstützung für Türklingel Austern hinzufügen",
+        "ru": "Улучшить Log Сообщение о неудачных снимках во время eventhandling\nДобавить Поддержка дверного звонка устрица",
+        "pt": "Melhore a Mensagem de Log em Snapshots falhados durante o tratamento de eventos\nAdicionar suporte para ostra da campainha",
+        "nl": "Improve Log Message over mislukte Snapshots tijdens het evenement\nVersterking voor deurbel oyster",
+        "fr": "Améliorez le message de connexion sur les snapshots échoués lors de l'exécution\nAjouter Support pour huître de porte",
+        "it": "Migliorare il messaggio di registro sulle snapshot fallite durante la gestione degli eventi\nAggiungi supporto per oyster del campanello",
+        "es": "Mejorar el mensaje de registro en instantáneas fallidas durante el manejo de eventos\nAñadir Soporte para timbre de puerta",
+        "pl": "Improve Log Message nie powiódł Snapshots podczas imprezy\nAddd Support for the doorbell",
+        "zh-cn": "在事件期间改进关于未获逮捕的Steshots的Tal Message\nB. 增加对大门旅舍的支持"
+      },
       "3.0.4": {
         "en": "Fix Edge Case resulting in lamps being permanently on",
         "de": "Fix Edge Fall, dass Lampen dauerhaft an",

@@ -96,6 +96,7 @@ class OwnRingDevice {
             case ring_client_api_1.RingCameraKind.doorbell_v3:
             case ring_client_api_1.RingCameraKind.doorbell_v4:
             case ring_client_api_1.RingCameraKind.doorbell_v5:
+            case ring_client_api_1.RingCameraKind.doorbell_graham_cracker:
             case ring_client_api_1.RingCameraKind.doorbell_portal:
             case ring_client_api_1.RingCameraKind.doorbell_scallop:
             case ring_client_api_1.RingCameraKind.doorbell_scallop_lite:
@@ -107,7 +108,7 @@ class OwnRingDevice {
             case ring_client_api_1.RingCameraKind.floodlight_v2:
             case ring_client_api_1.RingCameraKind.spotlightw_v2:
             case ring_client_api_1.RingCameraKind.jbox_v1:
-            case "doorbell_graham_cracker":
+            case "doorbell_oyster":
             case "lpd_v3":
             case "lpd_v4":
                 return `doorbell`;
@@ -294,7 +295,7 @@ class OwnRingDevice {
         await this.updateLiveStreamObject();
         this.debug(`Done creating livestream to ${fullPath}`);
     }
-    async takeSnapshot(uuid) {
+    async takeSnapshot(uuid, eventBased = false) {
         const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path, this._adapter.config.filename_snapshot, ++this._snapshotCount, this.shortId, this.fullId, this.kind);
         if (!(await file_service_1.FileService.prepareFolder(dirname)))
             return;
@@ -304,10 +305,17 @@ class OwnRingDevice {
             return;
         }
         const image = await this._ringDevice.getSnapshot({ uuid: uuid }).catch((reason) => {
-            this.catcher("Couldn't get Snapshot from api.", reason);
+            if (eventBased) {
+                this.info("Taking Snapshot on Event failed. Will try again after livestream finished.");
+            }
+            else {
+                this.catcher("Couldn't get Snapshot from api.", reason);
+            }
         });
         if (!image) {
-            this.info("Could not create snapshot");
+            if (!eventBased) {
+                this.info("Could not create snapshot");
+            }
             return;
         }
         this.silly(`Writing Snapshot (Length: ${image.length}) to "${fullPath}"`);
@@ -455,7 +463,7 @@ class OwnRingDevice {
             this.silly(`Start recording for Event "${EventState[state]}"...`);
             this._state = state;
             try {
-                this.takeSnapshot(uuid);
+                this.takeSnapshot(uuid, true);
                 await this.startLivestream(20);
             }
             finally {
@@ -468,7 +476,7 @@ class OwnRingDevice {
             setTimeout(() => {
                 this.debug(`delayed uuid recording`);
                 this.takeSnapshot(uuid);
-            }, 22000);
+            }, 23000);
         }
     }
 }
