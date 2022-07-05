@@ -388,7 +388,7 @@ export class OwnRingDevice {
 
   }
 
-  public async takeSnapshot(uuid?: string): Promise<void> {
+  public async takeSnapshot(uuid?: string, eventBased = false): Promise<void> {
     const {fullPath, dirname} =
       FileService.getPath(
         this._adapter.config.path,
@@ -405,10 +405,16 @@ export class OwnRingDevice {
       return;
     }
     const image = await this._ringDevice.getSnapshot({uuid: uuid}).catch((reason) => {
-      this.catcher("Couldn't get Snapshot from api.", reason);
+      if(eventBased) {
+        this.info("Taking Snapshot on Event failed. Will try again after livestream finished.");
+      } else {
+        this.catcher("Couldn't get Snapshot from api.", reason);
+      }
     });
     if (!image) {
-      this.info("Could not create snapshot");
+      if(!eventBased) {
+        this.info("Could not create snapshot");
+      }
       return;
     }
 
@@ -689,7 +695,7 @@ export class OwnRingDevice {
       this.silly(`Start recording for Event "${EventState[state]}"...`);
       this._state = state;
       try {
-        this.takeSnapshot(uuid);
+        this.takeSnapshot(uuid, true);
         await this.startLivestream(20);
       } finally {
         this._state = EventState.Idle;
@@ -701,7 +707,7 @@ export class OwnRingDevice {
       setTimeout(() => {
         this.debug(`delayed uuid recording`);
         this.takeSnapshot(uuid);
-      }, 22000);
+      }, 23000);
     }
   }
 }

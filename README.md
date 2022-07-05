@@ -87,6 +87,9 @@ It is recommended that you add your own tests into the mix.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (theimo1221) Improve Log Message on failed Snapshots during eventhandling
+
 ### 3.0.4 (2022-06-17)
 * (theimo1221) Fix Edge Case resulting in lamps being permanently on
 
