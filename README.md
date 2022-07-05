@@ -89,6 +89,7 @@ It is recommended that you add your own tests into the mix.
 -->
 ### **WORK IN PROGRESS**
 * (theimo1221) Improve Log Message on failed Snapshots during eventhandling
+* (theimo1221) Add Support for doorbell oyster
 
 ### 3.0.4 (2022-06-17)
 * (theimo1221) Fix Edge Case resulting in lamps being permanently on
