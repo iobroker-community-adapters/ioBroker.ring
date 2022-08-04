@@ -112,7 +112,7 @@
     "instrument": true
   },
   "engines": {
-    "node": "^16"
+    "node": ">=16"
   },
   "bugs": {
     "url": "https://github.com/iobroker-community-adapters/ioBroker.ring/issues"
