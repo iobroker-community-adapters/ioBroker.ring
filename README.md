@@ -87,7 +87,7 @@ It is recommended that you add your own tests into the mix.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 3.1.0 (2022-08-04)
 * (bluefox) Allowed to be used with node.js 18
 
 ### 3.0.5 (2022-07-05)

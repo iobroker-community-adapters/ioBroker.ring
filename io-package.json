@@ -1,9 +1,21 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.0.5",
+    "version": "3.1.0",
     "title": "Ring",
     "news": {
+      "3.1.0": {
+        "en": "Allowed to be used with node.js 18",
+        "de": "Erlaubt mit node.js 18",
+        "ru": "Разрешается использовать с node.js 18",
+        "pt": "Permite ser usado com node.js 18",
+        "nl": "Toegestaan om te worden gebruikt met node",
+        "fr": "Permis d'être utilisé avec node.js 18",
+        "it": "Utilizzabile con node.js 18",
+        "es": "Permitido ser utilizado con node.js 18",
+        "pl": "Wszystkie zostały użyte w węzłach 18.js",
+        "zh-cn": "获准使用第18js号。"
+      },
       "3.0.5": {
         "en": "Improve Log Message on failed Snapshots during eventhandling\nAdd Support for doorbell oyster",
         "de": "Verbessern Sie die Log-Nachricht auf fehlgeschlagenen Snapshots während der Eventhandling\nUnterstützung für Türklingel Austern hinzufügen",
