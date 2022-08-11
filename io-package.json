@@ -1,9 +1,21 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "title": "Ring",
     "news": {
+      "3.1.1": {
+        "en": "Improve Doorbell Event Logging",
+        "de": "Verbessern Sie die Türklingel Veranstaltungsprotokoll",
+        "ru": "Улучшить дверной звонок Событие Logging",
+        "pt": "Melhorar a campainha Registro de Eventos",
+        "nl": "Improver Deurbell Avond",
+        "fr": "Améliorez la porte Event Logging",
+        "it": "Migliora il campanello Registrazione eventi",
+        "es": "Mejorar Doorbell Event Logging",
+        "pl": "Improvement Doorbell Event Logging (ang.)",
+        "zh-cn": "改进Doorbell 损失"
+      },
       "3.1.0": {
         "en": "Allowed to be used with node.js 18",
         "de": "Erlaubt mit node.js 18",
