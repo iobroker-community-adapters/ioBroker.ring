@@ -87,6 +87,9 @@ It is recommended that you add your own tests into the mix.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+* (theimo1221) Improve Doorbell Event Logging
 ### 3.1.0 (2022-08-04)
 * (bluefox) Allowed to be used with node.js 18
 
@@ -95,9 +98,11 @@ It is recommended that you add your own tests into the mix.
 * (theimo1221) Add Support for doorbell oyster
 
 ### 3.0.4 (2022-06-17)
+
 * (theimo1221) Fix Edge Case resulting in lamps being permanently on
 
 ### 3.0.3 (2022-06-16)
+
 * (theimo1221) Implement location mode
 
 ### 3.0.1 (2022-06-08)

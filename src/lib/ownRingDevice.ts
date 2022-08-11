@@ -153,6 +153,11 @@ export class OwnRingDevice {
     error: (err: Error) => this.catcher(`Motion Observer recieved error`, err),
     complete: () => this.debug("Motion Observer got a complete notification"),
   }
+  private doorBellObserver = {
+    next: (x: PushNotification) => this.onDorbell(x),
+    error: (err: Error) => this.catcher(`Doorbell Observer recieved error`, err),
+    complete: () => this.debug("Doorbell Observer got a complete notification"),
+  }
   private dingObserver = {
     next: (x: PushNotification) => this.onDing(x),
     error: (err: Error) => this.catcher(`Ding Observer recieved error`, err),
@@ -191,7 +196,7 @@ export class OwnRingDevice {
     });
     this._ringDevice.onData.subscribe(this.update.bind(this));
     this._ringDevice.onMotionDetected.subscribe(this.motionObserver);
-    this._ringDevice.onDoorbellPressed.subscribe(this.onDorbell.bind(this));
+    this._ringDevice.onDoorbellPressed.subscribe(this.doorBellObserver);
     this._ringDevice.onNewNotification.subscribe(this.dingObserver);
   }
 
