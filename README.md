@@ -87,13 +87,21 @@ It is recommended that you add your own tests into the mix.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+* (theimo1221) Update Packages
+
 ### 3.1.1 (2022-08-11)
+
 * (theimo1221) Improve Doorbell Event Logging
 
 ### 3.1.0 (2022-08-04)
+
 * (bluefox) Allowed to be used with node.js 18
 
 ### 3.0.5 (2022-07-05)
+
 * (theimo1221) Improve Log Message on failed Snapshots during event handling
 * (theimo1221) Add Support for doorbell oyster
 
