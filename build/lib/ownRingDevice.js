@@ -241,7 +241,7 @@ class OwnRingDevice {
         this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_EVENTS);
         if (this._ringDevice.hasLight) {
             this.debug(`Device with Light Capabilities detected`);
-            this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_LIGHT, {name: `Light ${this.shortId}`});
+            this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_LIGHT, { name: `Light ${this.shortId}` });
             this._adapter.upsertState(`${this.lightChannelId}.${constants_1.STATE_ID_LIGHT_SWITCH}`, constants_1.COMMON_LIGHT_SWITCH, false, true);
         }
         this._lastSnapShotDir = await this._adapter.tryGetStringState(`${this.snapshotChannelId}.snapshot_file`);
@@ -424,7 +424,7 @@ class OwnRingDevice {
         if (this._ringDevice.hasLight && (Date.now() - this._lastLightCommand > 60000)) {
             // this.silly(JSON.stringify(this._ringDevice.data));
             const floodlightOn = this._ringDevice.data.health.floodlight_on;
-            this.debug(`Update Light within Health Update FLoodlight is ${floodlightOn}`);
+            this.debug(`Update Light within Health Update Floodlight is ${floodlightOn}`);
             this._adapter.upsertState(`${this.lightChannelId}.light_state`, constants_1.COMMON_LIGHT_STATE, floodlightOn);
         }
     }
