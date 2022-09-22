@@ -91,6 +91,7 @@ It is recommended that you add your own tests into the mix.
 ### **WORK IN PROGRESS**
 
 * (theimo1221) Update Packages
+* (theimo1221) Fix an issue with floodlight control
 
 ### 3.1.1 (2022-08-11)
 

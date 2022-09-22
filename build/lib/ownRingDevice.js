@@ -186,7 +186,7 @@ class OwnRingDevice {
                     this._ringDevice.setLight(targetVal).then((success) => {
                         if (success) {
                             this._adapter.upsertState(`${this.lightChannelId}.light_state`, constants_1.COMMON_LIGHT_STATE, targetVal);
-                            this._adapter.upsertState(`${this.lightChannelId}.light_switch`, constants_1.COMMON_LIGHT_SWITCH, targetVal);
+                            this._adapter.upsertState(`${this.lightChannelId}.light_switch`, constants_1.COMMON_LIGHT_SWITCH, targetVal, true);
                             setTimeout(() => {
                                 this.updateHealth.bind(this);
                             }, 65000);
@@ -241,7 +241,8 @@ class OwnRingDevice {
         this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_EVENTS);
         if (this._ringDevice.hasLight) {
             this.debug(`Device with Light Capabilities detected`);
-            this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_LIGHT, { name: `Light ${this.shortId}` });
+            this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_LIGHT, {name: `Light ${this.shortId}`});
+            this._adapter.upsertState(`${this.lightChannelId}.${constants_1.STATE_ID_LIGHT_SWITCH}`, constants_1.COMMON_LIGHT_SWITCH, false, true);
         }
         this._lastSnapShotDir = await this._adapter.tryGetStringState(`${this.snapshotChannelId}.snapshot_file`);
         this._lastLiveStreamDir = await this._adapter.tryGetStringState(`${this.liveStreamChannelId}.livestream_file`);
@@ -425,7 +426,6 @@ class OwnRingDevice {
             const floodlightOn = this._ringDevice.data.health.floodlight_on;
             this.debug(`Update Light within Health Update FLoodlight is ${floodlightOn}`);
             this._adapter.upsertState(`${this.lightChannelId}.light_state`, constants_1.COMMON_LIGHT_STATE, floodlightOn);
-            this._adapter.upsertState(`${this.lightChannelId}.${constants_1.STATE_ID_LIGHT_SWITCH}`, constants_1.COMMON_LIGHT_SWITCH, floodlightOn, true);
         }
     }
     debug(message) {
