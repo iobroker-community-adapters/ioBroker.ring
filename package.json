@@ -30,7 +30,7 @@
     "url": "https://github.com/iobroker-community-adapters/ioBroker.ring"
   },
   "dependencies": {
-    "ring-client-api": "^11.2.1",
+    "ring-client-api": "^11.3.0",
     "@iobroker/adapter-core": "^2.6.6"
   },
   "devDependencies": {
