@@ -1,9 +1,21 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.1.2",
+    "version": "3.1.3",
     "title": "Ring",
     "news": {
+      "3.1.3": {
+        "en": "Update Packages",
+        "de": "Pakete aktualisieren",
+        "ru": "Обновление пакетов",
+        "pt": "Pacotes de atualização",
+        "nl": "Update Packages",
+        "fr": "Mise à jour des paquets",
+        "it": "Pacchetti di aggiornamento",
+        "es": "Paquetes de actualización",
+        "pl": "Package Update",
+        "zh-cn": "最新包装"
+      },
       "3.1.2": {
         "en": "Update Packages\nFix an issue with floodlight control",
         "de": "Pakete aktualisieren\nProblem mit Flutlichtsteuerung beheben",
@@ -75,18 +87,6 @@
         "es": "Aplicar el modo de ubicación",
         "pl": "Implementacja",
         "zh-cn": "执行地点模式"
-      },
-      "3.0.1": {
-        "en": "Changed the russian translations",
-        "de": "Ändern der russischen Übersetzungen",
-        "ru": "Изменены русские переводы",
-        "pt": "Mudou as traduções russas",
-        "nl": "Verander de Russen",
-        "fr": "Changement des traductions russes",
-        "it": "Cambiato le traduzioni russe",
-        "es": "Cambiaron las traducciones rusas",
-        "pl": "Zmienił russkie tłumaczenia",
-        "zh-cn": "B. 更改条约翻译"
       }
     },
     "titleLang": {
