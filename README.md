@@ -12,15 +12,6 @@ Requires Admin v4 and `node 16.x`.
 
 The Ring adapter works with Ring devices like the Ring Video Doorbell and Ring Cam and shows if someone rings the doorbell or if motion is detected. The Ring Video Doorbell or Cam sends a videostream if a motion or doorbell ist detected.
 
-### SIP (before Version 3.x)
-You can use the SIP Information for a SIP Video Conference with your SIP client.
-The adapter will not provide all ring devices because the used API does not include all ring devices.
-
-You can use for example the Blink SIP client on [http://icanblink.com/](http://icanblink.com/). To get video working go into Blink's Preferences and under "Accounts", switch the tab to "Media" and deselect "Encrypt audio and video" under "RTP Options". Be careful the SIP information expire after a few seconds!
-Hopefully I will be able to support a video stream soon. Unfortunately [ring.com](https://ring.com) does not have an official API that support this feature.
-If you press the `livestream request` button you get new SIP Information for building up a SIP Video Call session. 
-If you are using the [ring.com](https://ring.com) cloud you find under history a http link to your last motion / doorbell recorded video.
-
 
 ## Install & Configuration
 
@@ -45,13 +36,31 @@ You can use special variables for your livestream and snapshot path and filename
 * `%n`: Counter since ring instance start. Example: `test_%n -> test_1`
 * `%k`: Kind of your ring device: Example: `test_%k -> test_doorbell`
 
+### FAQ
+
+## I don't recieve events, snapshots and videos on motion or detected person
+
+Congrats it's very likely that your current token was put on a blacklist by ring, denying you the push notification you´d need.
+Best way to resolve this is to remove any previous browsers/adapter tokens on the ring website and generating a new token for the adapter.
+
+In order for this adapter to properly react on events Ring must send the push notification to the used [Ring Api Client](https://github.com/dgreif/ring) for this adapter to react on it. The logic in this adapter was checked multiple times and works for plenty users, so if you experience issues regarding missing events it's unlikely the fault of this adapter. 
+
 ### V3 Rewrite Breaking Changes
 1. The Device Names got extended by their description (e.g. from `Device 1234567` to `Device 1234567 ("Floodlight Garden")`)
 2. Snapshot/Livestream Data is now in a respective channel, containing the other data points.
 3. The snapshot/livestream object got changed from type meta to state with type file.
 4. Events (Motion, Ding, etc.) are now in a respective channel.
-5. Due to `ring-api` dropping the support for node before `v16.x` this adapter needs `node v16.x`
+5. Due to `ring-api` dropping the support for node before `v16.x` this adapter needs `node v16.x` or `node v18.x`
 6. Active refreshes are reduced to once every 2 hours, as we are listening/reacting on events.
+
+### SIP (before Version 3.x)
+You can use the SIP Information for a SIP Video Conference with your SIP client.
+The adapter will not provide all ring devices because the used API does not include all ring devices.
+
+You can use for example the Blink SIP client on [http://icanblink.com/](http://icanblink.com/). To get video working go into Blink's Preferences and under "Accounts", switch the tab to "Media" and deselect "Encrypt audio and video" under "RTP Options". Be careful the SIP information expire after a few seconds!
+Hopefully I will be able to support a video stream soon. Unfortunately [ring.com](https://ring.com) does not have an official API that support this feature.
+If you press the `livestream request` button you get new SIP Information for building up a SIP Video Call session. 
+If you are using the [ring.com](https://ring.com) cloud you find under history a http link to your last motion / doorbell recorded video.
 
 ### Scripts in `package.json`
 Several npm scripts are predefined for your convenience. You can run them using `npm run <scriptname>`
