@@ -38,7 +38,7 @@ You can use special variables for your livestream and snapshot path and filename
 
 ### FAQ
 
-## I don't recieve events, snapshots and videos on motion or detected person
+#### I don't recieve events, snapshots and videos on motion or detected person
 
 Congrats it's very likely that your current token was put on a blacklist by ring, denying you the push notification you´d need.
 Best way to resolve this is to remove any previous browsers/adapter tokens on the ring website and generating a new token for the adapter.
