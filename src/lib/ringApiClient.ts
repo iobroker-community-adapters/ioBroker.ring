@@ -10,6 +10,7 @@ export class RingApiClient {
   public refreshing = false;
   private devices: { [id: string]: OwnRingDevice } = {};
   private _refreshInterval: NodeJS.Timer | null = null;
+  private _retryTimeout: NodeJS.Timer | null = null;
 
   get locations(): { [id: string]: OwnRingLocation } {
     return this._locations;
@@ -77,7 +78,23 @@ export class RingApiClient {
     this.refreshing = true;
     this._api?.disconnect();
     this._api = undefined;
-    await this.retrieveLocations();
+    if (!await this.retrieveLocations()) {
+      if (initial) {
+        this.adapter.terminate(`Failed to retrieve any locations for your ring Account.`);
+      } else {
+        if (this._retryTimeout !== null) {
+          clearTimeout(this._retryTimeout);
+          this._retryTimeout = null;
+        }
+        this.warn(`Couldn't load data from Ring Server on reconnect, will retry in 5 Minutes...`)
+        this._retryTimeout = setTimeout(this.refreshAll.bind(this), 5 * 60 * 1000);
+      }
+    } else {
+      if (this._retryTimeout !== null) {
+        clearTimeout(this._retryTimeout);
+        this._retryTimeout = null;
+      }
+    }
     if (Object.keys(this._locations).length === 0 && initial) {
       this.adapter.terminate(`We couldn't find any locations in your Ring Account`);
       return;
@@ -115,17 +132,34 @@ export class RingApiClient {
       clearInterval(this._refreshInterval);
       this._refreshInterval = null;
     }
+    if (this._retryTimeout !== null) {
+      clearTimeout(this._retryTimeout);
+      this._retryTimeout = null;
+    }
   }
 
-  private async retrieveLocations(): Promise<void> {
+  private async retrieveLocations(): Promise<boolean> {
     this.debug(`Retrieve Locations`);
-    const locs = await (await this.getApi()).getLocations().catch(this.handleApiError.bind(this));
-    this.debug(`Recieved ${locs?.length} Locations`);
-    this._locations = {};
-    for(const loc of locs as Location[]) {
-      const newLoc = new OwnRingLocation(loc, this.adapter, this);
-      this._locations[newLoc.fullId] = newLoc;
-    }
+    return new Promise<boolean>(async (res) => {
+      (await this.getApi()).getLocations()
+        .catch((reason) => {
+          this.handleApiError(reason)
+          res(false);
+        })
+        .then((locs) => {
+          if (typeof locs != "object" || (locs?.length ?? 0) == 0) {
+            this.debug("getLocations was successful, but received no array")
+            res(false);
+          }
+          this.debug(`Received ${locs?.length} Locations`);
+          this._locations = {};
+          for (const loc of locs as Location[]) {
+            const newLoc = new OwnRingLocation(loc, this.adapter, this);
+            this._locations[newLoc.fullId] = newLoc;
+          }
+          res(true);
+        });
+    });
   }
 
   private handleApiError(reason: any): void {

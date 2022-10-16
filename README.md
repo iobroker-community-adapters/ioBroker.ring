@@ -96,6 +96,11 @@ It is recommended that you add your own tests into the mix.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+* (theimo1221) #376 Handling when reconnect fails
+
 ### 3.1.3 (2022-10-04)
 
 * (theimo1221) Update Packages
