@@ -1,9 +1,22 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.1.3",
+    "version": "3.1.4",
     "title": "Ring",
     "news": {
+      "3.1.4": {
+        "en": "#376 Handling when reconnect fails",
+        "de": "#376 Handhabung bei Ausfall der Wiederverbindung",
+        "ru": "#376 Обработка при повторном подключении не работает",
+        "pt": "#376 Handling quando a reconectação falha",
+        "nl": "#376 Handling when reconnect faalt",
+        "fr": "#376 Manipulation lorsque reconnect échoue",
+        "it": "#376 Maneggiare quando la riconnette fallisce",
+        "es": "#376 Manejo cuando la reconexión falla",
+        "pl": "#376 Handling, gdy reaktywacja nie powiodła się",
+        "uk": "#376 Обробка при вимкненні",
+        "zh-cn": "第376号重新连接时遇到的问题"
+      },
       "3.1.3": {
         "en": "Update Packages",
         "de": "Pakete aktualisieren",
@@ -75,18 +88,6 @@
         "es": "Corrección Case resulting in lamps being permanently on",
         "pl": "Fix Edge Edge Edge Edge Powoduje to, że lampy stają się na stałe",
         "zh-cn": "Fix Edge 造成长期猛增的案件"
-      },
-      "3.0.3": {
-        "en": "Implement location mode",
-        "de": "Implementieren Standortmodus",
-        "ru": "Внедрить режим расположения",
-        "pt": "Implementar modo de localização",
-        "nl": "Implementie locatie modus",
-        "fr": "Mettre en place le mode de localisation",
-        "it": "Modalità di implementazione",
-        "es": "Aplicar el modo de ubicación",
-        "pl": "Implementacja",
-        "zh-cn": "执行地点模式"
       }
     },
     "titleLang": {
