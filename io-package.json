@@ -1,9 +1,22 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.1.4",
+    "version": "3.1.5",
     "title": "Ring",
     "news": {
+      "3.1.5": {
+        "en": "Update Packages",
+        "de": "Pakete aktualisieren",
+        "ru": "Обновление пакетов",
+        "pt": "Pacotes de atualização",
+        "nl": "Update Packages",
+        "fr": "Mise à jour des paquets",
+        "it": "Pacchetti di aggiornamento",
+        "es": "Paquetes de actualización",
+        "pl": "Package Update",
+        "uk": "Оновлення пакетів",
+        "zh-cn": "最新包装"
+      },
       "3.1.4": {
         "en": "#376 Handling when reconnect fails",
         "de": "#376 Handhabung bei Ausfall der Wiederverbindung",
@@ -76,18 +89,6 @@
         "es": "Mejorar el mensaje de registro en instantáneas fallidas durante el manejo de eventos\nAñadir Soporte para timbre de puerta",
         "pl": "Improve Log Message nie powiódł Snapshots podczas imprezy\nAddd Support for the doorbell",
         "zh-cn": "在事件期间改进关于未获逮捕的Steshots的Tal Message\nB. 增加对大门旅舍的支持"
-      },
-      "3.0.4": {
-        "en": "Fix Edge Case resulting in lamps being permanently on",
-        "de": "Fix Edge Fall, dass Lampen dauerhaft an",
-        "ru": "Fix Край Кейс, полученный в лампах, постоянно на",
-        "pt": "Borda fixa Caso resultando em lâmpadas sendo permanentemente em",
-        "nl": "Vertaling: Zaak resulteert in lampen die permanent op",
-        "fr": "Fix Edge Case resulting in lamps being permanently on",
-        "it": "Bordo di fissaggio Caso che risulta che le lampade sono permanentemente su",
-        "es": "Corrección Case resulting in lamps being permanently on",
-        "pl": "Fix Edge Edge Edge Edge Powoduje to, że lampy stają się na stałe",
-        "zh-cn": "Fix Edge 造成长期猛增的案件"
       }
     },
     "titleLang": {
