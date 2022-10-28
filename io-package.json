@@ -1,9 +1,22 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.1.6",
+    "version": "3.1.7",
     "title": "Ring",
     "news": {
+      "3.1.7": {
+        "en": "Update Packages",
+        "de": "Pakete aktualisieren",
+        "ru": "Обновление пакетов",
+        "pt": "Pacotes de atualização",
+        "nl": "Update Packages",
+        "fr": "Mise à jour des paquets",
+        "it": "Pacchetti di aggiornamento",
+        "es": "Paquetes de actualización",
+        "pl": "Package Update",
+        "uk": "Оновлення пакетів",
+        "zh-cn": "最新包装"
+      },
       "3.1.6": {
         "en": "Inline subscription instead of properties for Event observer\nUpdate Packages",
         "de": "Inline-Abonnement statt Eigenschaften für Event-Beobachter\nPakete aktualisieren",
@@ -78,18 +91,6 @@
         "es": "Mejorar Doorbell Event Logging",
         "pl": "Improvement Doorbell Event Logging (ang.)",
         "zh-cn": "改进Doorbell 损失"
-      },
-      "3.1.0": {
-        "en": "Allowed to be used with node.js 18",
-        "de": "Erlaubt mit node.js 18",
-        "ru": "Разрешается использовать с node.js 18",
-        "pt": "Permite ser usado com node.js 18",
-        "nl": "Toegestaan om te worden gebruikt met node",
-        "fr": "Permis d'être utilisé avec node.js 18",
-        "it": "Utilizzabile con node.js 18",
-        "es": "Permitido ser utilizado con node.js 18",
-        "pl": "Wszystkie zostały użyte w węzłach 18.js",
-        "zh-cn": "获准使用第18js号。"
       }
     },
     "titleLang": {
