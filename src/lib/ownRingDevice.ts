@@ -148,21 +148,6 @@ export class OwnRingDevice {
   private _snapshotCount = 0;
   private _liveStreamCount = 0;
   private _state = EventState.Idle;
-  private motionObserver = {
-    next: (x: boolean) => this.onMotion(x),
-    error: (err: Error) => this.catcher(`Motion Observer recieved error`, err),
-    complete: () => this.debug("Motion Observer got a complete notification"),
-  }
-  private doorBellObserver = {
-    next: (x: PushNotification) => this.onDorbell(x),
-    error: (err: Error) => this.catcher(`Doorbell Observer recieved error`, err),
-    complete: () => this.debug("Doorbell Observer got a complete notification"),
-  }
-  private dingObserver = {
-    next: (x: PushNotification) => this.onDing(x),
-    error: (err: Error) => this.catcher(`Ding Observer recieved error`, err),
-    complete: () => this.debug("Ding Observer got a complete notification"),
-  }
 
   get lastLiveStreamDir(): string {
     return this._lastLiveStreamDir;
@@ -195,9 +180,36 @@ export class OwnRingDevice {
       this.catcher(`Failed subscribing to Motion Events for ${this._ringDevice.name}`, r);
     });
     this._ringDevice.onData.subscribe(this.update.bind(this));
-    this._ringDevice.onMotionDetected.subscribe(this.motionObserver);
-    this._ringDevice.onDoorbellPressed.subscribe(this.doorBellObserver);
-    this._ringDevice.onNewNotification.subscribe(this.dingObserver);
+    this._ringDevice.onMotionDetected.subscribe(
+      {
+        next: (motion: boolean) => {
+          this.onMotion(motion)
+        },
+        error: (err: Error) => {
+          this.catcher(`Motion Observer recieved error`, err)
+        },
+      }
+    );
+    this._ringDevice.onDoorbellPressed.subscribe(
+      {
+        next: (ding: PushNotification) => {
+          this.onDorbell(ding)
+        },
+        error: (err: Error) => {
+          this.catcher(`Dorbell Observer recieved error`, err)
+        },
+      }
+    );
+    this._ringDevice.onNewNotification.subscribe(
+      {
+        next: (ding: PushNotification) => {
+          this.onDing(ding)
+        },
+        error: (err: Error) => {
+          this.catcher(`Ding Observer recieved error`, err)
+        },
+      }
+    );
   }
 
   public constructor(ringDevice: RingCamera, location: OwnRingLocation, adapter: RingAdapter, apiClient: RingApiClient) {

@@ -53,21 +53,6 @@ class OwnRingDevice {
         this._snapshotCount = 0;
         this._liveStreamCount = 0;
         this._state = EventState.Idle;
-        this.motionObserver = {
-            next: (x) => this.onMotion(x),
-            error: (err) => this.catcher(`Motion Observer recieved error`, err),
-            complete: () => this.debug("Motion Observer got a complete notification"),
-        };
-        this.doorBellObserver = {
-            next: (x) => this.onDorbell(x),
-            error: (err) => this.catcher(`Doorbell Observer recieved error`, err),
-            complete: () => this.debug("Doorbell Observer got a complete notification"),
-        };
-        this.dingObserver = {
-            next: (x) => this.onDing(x),
-            error: (err) => this.catcher(`Ding Observer recieved error`, err),
-            complete: () => this.debug("Ding Observer got a complete notification"),
-        };
         this._adapter = adapter;
         this._ringDevice = ringDevice;
         this.shortId = `${ringDevice.id}`;
@@ -159,9 +144,30 @@ class OwnRingDevice {
             this.catcher(`Failed subscribing to Motion Events for ${this._ringDevice.name}`, r);
         });
         this._ringDevice.onData.subscribe(this.update.bind(this));
-        this._ringDevice.onMotionDetected.subscribe(this.motionObserver);
-        this._ringDevice.onDoorbellPressed.subscribe(this.doorBellObserver);
-        this._ringDevice.onNewNotification.subscribe(this.dingObserver);
+        this._ringDevice.onMotionDetected.subscribe({
+            next: (motion) => {
+                this.onMotion(motion);
+            },
+            error: (err) => {
+                this.catcher(`Motion Observer recieved error`, err);
+            },
+        });
+        this._ringDevice.onDoorbellPressed.subscribe({
+            next: (ding) => {
+                this.onDorbell(ding);
+            },
+            error: (err) => {
+                this.catcher(`Dorbell Observer recieved error`, err);
+            },
+        });
+        this._ringDevice.onNewNotification.subscribe({
+            next: (ding) => {
+                this.onDing(ding);
+            },
+            error: (err) => {
+                this.catcher(`Ding Observer recieved error`, err);
+            },
+        });
     }
     processUserInput(channelID, stateID, state) {
         switch (channelID) {

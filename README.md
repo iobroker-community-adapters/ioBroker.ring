@@ -96,6 +96,9 @@ It is recommended that you add your own tests into the mix.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+
+* (theimo1221) Inline subscription instead of properties for Event observer
 ### 3.1.5 (2022-10-16)
 
 * (theimo1221) Update Packages
