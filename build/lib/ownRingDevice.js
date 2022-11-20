@@ -131,17 +131,16 @@ class OwnRingDevice {
             },
         });
     }
-
     constructor(ringDevice, location, adapter, apiClient) {
         this._requestingSnapshot = false;
         this._requestingLiveStream = false;
         this._lastLightCommand = 0;
-        this._lastLiveStreamUrl = '';
-        this._lastLiveStreamDir = '';
+        this._lastLiveStreamUrl = "";
+        this._lastLiveStreamDir = "";
         this._lastLiveStreamVideo = null;
         this._lastLiveStreamTimestamp = 0;
-        this._lastSnapShotUrl = '';
-        this._lastSnapShotDir = '';
+        this._lastSnapShotUrl = "";
+        this._lastSnapShotDir = "";
         this._lastSnapshotImage = null;
         this._lastSnapshotTimestamp = 0;
         this._snapshotCount = 0;
@@ -170,10 +169,9 @@ class OwnRingDevice {
         setTimeout(this.takeSnapshot.bind(this), 5000);
         this.ringDevice = ringDevice; // subscribes to the events
     }
-
     processUserInput(channelID, stateID, state) {
         switch (channelID) {
-            case '':
+            case "":
                 if (stateID !== constants_1.STATE_ID_DEBUG_REQUEST) {
                     return;
                 }

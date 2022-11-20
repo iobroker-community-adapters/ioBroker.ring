@@ -1,9 +1,22 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.1.7",
+    "version": "3.1.8",
     "title": "Ring",
     "news": {
+      "3.1.8": {
+        "en": "Update Packages\nCompliance to newest ring api version",
+        "de": "Pakete aktualisieren\nEinhaltung der neuesten Ring-Api-Version",
+        "ru": "Обновление пакетов\nСоблюдение новейшей версии api кольца",
+        "pt": "Pacotes de atualização\nConformidade com a versão mais recente do api do anel",
+        "nl": "Update Packages\nQuality over Quantity (QoQ) Releases Vertaling:",
+        "fr": "Mise à jour des paquets\nConformité à la nouvelle version ring api",
+        "it": "Pacchetti di aggiornamento\nCompliance alla versione più recente",
+        "es": "Paquetes de actualización\nCumplimiento de la versión api más reciente",
+        "pl": "Package Update\nPorównanie do nowej wersji apiowej",
+        "uk": "Оновлення пакетів\nВідповідність найновішої версії кільце Api",
+        "zh-cn": "最新包装\n遵守新的环球版本"
+      },
       "3.1.7": {
         "en": "Update Packages",
         "de": "Pakete aktualisieren",
@@ -79,18 +92,6 @@
         "es": "Paquetes de actualización\nArreglar un problema con control de la luz de inundación",
         "pl": "Package Update\n5. problem z kontrolą oświetlenia powodziowego",
         "zh-cn": "最新包装\n确定水灾控制问题"
-      },
-      "3.1.1": {
-        "en": "Improve Doorbell Event Logging",
-        "de": "Verbessern Sie die Türklingel Veranstaltungsprotokoll",
-        "ru": "Улучшить дверной звонок Событие Logging",
-        "pt": "Melhorar a campainha Registro de Eventos",
-        "nl": "Improver Deurbell Avond",
-        "fr": "Améliorez la porte Event Logging",
-        "it": "Migliora il campanello Registrazione eventi",
-        "es": "Mejorar Doorbell Event Logging",
-        "pl": "Improvement Doorbell Event Logging (ang.)",
-        "zh-cn": "改进Doorbell 损失"
       }
     },
     "titleLang": {
