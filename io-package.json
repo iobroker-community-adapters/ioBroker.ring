@@ -1,9 +1,22 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.1.8",
+    "version": "3.1.9",
     "title": "Ring",
     "news": {
+      "3.1.9": {
+        "en": "#395 Resolve Package-lock.json issues",
+        "de": "#395 Resolve Package-lock.json Probleme",
+        "ru": "#395 Решить пакет-lock.json проблемы",
+        "pt": "#395 Resolve problemas Package-lock.json",
+        "nl": "395 Resolve Package-lock",
+        "fr": "#395 Resolve Package-lock.json issues",
+        "it": "#395 Risolvere i problemi del pacchetto-lock.json",
+        "es": "#395 Resolve Paquete-lock.json números",
+        "pl": "395 Resolve Package-lock (ang.)",
+        "uk": "#395 Вирішити пакет-lock.json",
+        "zh-cn": "#395 溶剂包装"
+      },
       "3.1.8": {
         "en": "Update Packages\nCompliance to newest ring api version",
         "de": "Pakete aktualisieren\nEinhaltung der neuesten Ring-Api-Version",
@@ -80,18 +93,6 @@
         "es": "Paquetes de actualización",
         "pl": "Package Update",
         "zh-cn": "最新包装"
-      },
-      "3.1.2": {
-        "en": "Update Packages\nFix an issue with floodlight control",
-        "de": "Pakete aktualisieren\nProblem mit Flutlichtsteuerung beheben",
-        "ru": "Обновление пакетов\nИсправление проблемы с управлением наводнения",
-        "pt": "Pacotes de atualização\nCorrigir um problema com controle de holofotes",
-        "nl": "Update Packages\nMaak een probleem met overstroming",
-        "fr": "Mise à jour des paquets\nFixer un problème avec le contrôle des projecteurs",
-        "it": "Pacchetti di aggiornamento\nRisolvere un problema con il controllo della luce",
-        "es": "Paquetes de actualización\nArreglar un problema con control de la luz de inundación",
-        "pl": "Package Update\n5. problem z kontrolą oświetlenia powodziowego",
-        "zh-cn": "最新包装\n确定水灾控制问题"
       }
     },
     "titleLang": {
