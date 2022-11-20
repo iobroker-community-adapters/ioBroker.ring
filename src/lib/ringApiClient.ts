@@ -1,7 +1,5 @@
-import { RingApi } from "ring-client-api/lib/api";
+import { Location, RingApi, RingCamera } from "ring-client-api";
 import { RingAdapter } from "../main";
-import { Location } from "ring-client-api/lib/location";
-import { RingCamera } from "ring-client-api";
 import { OwnRingDevice } from "./ownRingDevice";
 import { COMMON_NEW_TOKEN, COMMON_OLD_TOKEN } from "./constants";
 import { OwnRingLocation } from "./ownRingLocation";

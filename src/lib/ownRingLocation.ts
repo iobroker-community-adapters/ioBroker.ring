@@ -1,8 +1,7 @@
-import { Location } from "ring-client-api/lib/location";
 import util from "util";
 import { RingAdapter } from "../main";
 import { RingApiClient } from "./ringApiClient";
-import { LocationMode, LocationModeInput, RingDevice } from "ring-client-api";
+import { Location, LocationMode, LocationModeInput, RingDevice } from "ring-client-api";
 import {
   COMMON_DEBUG_REQUEST,
   COMMON_LOCATIONMODE,

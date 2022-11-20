@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RingApiClient = void 0;
-const api_1 = require("ring-client-api/lib/api");
-const ownRingDevice_1 = require("./ownRingDevice");
+const ring_client_api_1 = require('ring-client-api');
+const ownRingDevice_1 = require('./ownRingDevice');
 const constants_1 = require("./constants");
 const ownRingLocation_1 = require("./ownRingLocation");
 class RingApiClient {
@@ -28,8 +28,8 @@ class RingApiClient {
         if (!this.adapter.config.refreshtoken) {
             throw (`Refresh Token needed.`);
         }
-        this._api = new api_1.RingApi({
-            controlCenterDisplayName: "iobroker.ring",
+        this._api = new ring_client_api_1.RingApi({
+            controlCenterDisplayName: 'iobroker.ring',
             refreshToken: await this.adapter.getRefreshToken(),
             systemId: `${this.adapter.host}.ring`,
             cameraStatusPollingSeconds: 120,
