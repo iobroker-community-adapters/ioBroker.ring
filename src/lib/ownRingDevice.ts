@@ -1,9 +1,11 @@
 import {
+  AnyCameraData,
   CameraData,
   CameraEvent,
   CameraEventResponse,
   CameraHealth,
   DingKind,
+  PushNotification,
   RingCamera,
   RingCameraKind
 } from "ring-client-api";
@@ -58,7 +60,6 @@ import {
 } from "./constants";
 import { LastAction } from "./lastAction";
 import * as fs from "fs";
-import { PushNotification } from "ring-client-api/lib/api/ring-types";
 import { FileService } from "./services/file-service";
 import * as util from "util";
 import { OwnRingLocation } from "./ownRingLocation";
@@ -229,7 +230,7 @@ export class OwnRingDevice {
     this.eventsChannelId = `${this.fullId}.${CHANNEL_NAME_EVENTS}`;
 
     this.recreateDeviceObjectTree();
-    this.updateDeviceInfoObject(ringDevice.data);
+    this.updateDeviceInfoObject(ringDevice.data as CameraData);
     this.updateHealth();
 
     // noinspection JSIgnoredPromiseFromCall
@@ -351,12 +352,12 @@ export class OwnRingDevice {
   public updateByDevice(ringDevice: RingCamera): void {
     this.ringDevice = ringDevice;
     this._state = EventState.Idle;
-    this.update(ringDevice.data);
+    this.update(ringDevice.data as CameraData);
   }
 
-  public update(data: CameraData): void {
+  public update(data: AnyCameraData): void {
     this.debug(`Recieved Update`);
-    this.updateDeviceInfoObject(data);
+    this.updateDeviceInfoObject(data as CameraData);
     this.updateHealth();
     // noinspection JSIgnoredPromiseFromCall
     this.updateHistory();
@@ -498,7 +499,7 @@ export class OwnRingDevice {
     this._adapter.upsertState(
       `${this.infoChannelId}.kind`,
       COMMON_INFO_KIND,
-      data.kind
+      data.kind as string
     );
     this._adapter.upsertState(
       `${this.infoChannelId}.description`,

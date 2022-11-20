@@ -1,11 +1,14 @@
-import { Location } from "ring-client-api/lib/api/location";
+import { Location } from "ring-client-api/lib/location";
 import util from "util";
 import { RingAdapter } from "../main";
 import { RingApiClient } from "./ringApiClient";
 import { LocationMode, LocationModeInput, RingDevice } from "ring-client-api";
 import {
-  COMMON_DEBUG_REQUEST, COMMON_LOCATIONMODE, LOCATION_MODE_OPTIONS,
-  STATE_ID_DEBUG_REQUEST, STATE_ID_LOCATIONMODE,
+  COMMON_DEBUG_REQUEST,
+  COMMON_LOCATIONMODE,
+  LOCATION_MODE_OPTIONS,
+  STATE_ID_DEBUG_REQUEST,
+  STATE_ID_LOCATIONMODE,
 } from "./constants";
 
 export class OwnRingLocation {

@@ -7,16 +7,32 @@ exports.OwnRingLocation = void 0;
 const util_1 = __importDefault(require("util"));
 const constants_1 = require("./constants");
 class OwnRingLocation {
-    constructor(location, adapter, apiClient) {
-        this._currentLocationMode = "unset";
-        this._loc = location;
-        this._fullId = `Location_${this.id}`;
-        this._adapter = adapter;
-        this._client = apiClient;
-        this._loc.onDataUpdate.subscribe((message) => {
-            this.debug(`Recieved Location Update Event: "${message}"`);
-        });
-        this._loc.onConnected.subscribe((connected) => {
+  get loc() {
+    return this._loc;
+  }
+
+  get id() {
+    return this._loc.id;
+  }
+
+  get fullId() {
+    return this._fullId;
+  }
+
+  get name() {
+    return this._loc.name;
+  }
+
+  constructor(location, adapter, apiClient) {
+    this._currentLocationMode = 'unset';
+    this._loc = location;
+    this._fullId = `Location_${this.id}`;
+    this._adapter = adapter;
+    this._client = apiClient;
+    this._loc.onDataUpdate.subscribe((message) => {
+      this.debug(`Recieved Location Update Event: "${message}"`);
+    });
+    this._loc.onConnected.subscribe((connected) => {
             this.debug(`Recieved Location Connection Status Change to ${connected}`);
             if (!connected && !apiClient.refreshing) {
                 this.warn(`Lost connection to Location ${this._loc.name}... Will try a reconnect in 5s`);
@@ -31,18 +47,6 @@ class OwnRingLocation {
         this.silly(`Location Debug Data: ${util_1.default.inspect(this._loc, false, 2)}`);
         this.recreateDeviceObjectTree();
         this.getLocationMode();
-    }
-    get loc() {
-        return this._loc;
-    }
-    get id() {
-        return this._loc.id;
-    }
-    get fullId() {
-        return this._fullId;
-    }
-    get name() {
-        return this._loc.name;
     }
     async recreateDeviceObjectTree() {
         this.silly(`Recreate LocationObjectTree`);

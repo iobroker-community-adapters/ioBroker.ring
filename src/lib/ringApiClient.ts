@@ -1,6 +1,6 @@
-import { RingApi } from "ring-client-api/lib/api/api";
+import { RingApi } from "ring-client-api/lib/api";
 import { RingAdapter } from "../main";
-import { Location } from "ring-client-api/lib/api/location";
+import { Location } from "ring-client-api/lib/location";
 import { RingCamera } from "ring-client-api";
 import { OwnRingDevice } from "./ownRingDevice";
 import { COMMON_NEW_TOKEN, COMMON_OLD_TOKEN } from "./constants";
@@ -142,7 +142,7 @@ export class RingApiClient {
     this.debug(`Retrieve Locations`);
     return new Promise<boolean>(async (res) => {
       (await this.getApi()).getLocations()
-        .catch((reason) => {
+        .catch((reason: any) => {
           this.handleApiError(reason)
           res(false);
         })

@@ -123,6 +123,7 @@ It is recommended that you add your own tests into the mix.
 ### **WORK IN PROGRESS**
 
 * (theimo1221) Update Packages
+* (theimo1221) Compliance to newest ring api version
 
 ### 3.1.7 (2022-10-28)
 

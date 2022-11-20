@@ -1,19 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RingApiClient = void 0;
-const api_1 = require("ring-client-api/lib/api/api");
-const ownRingDevice_1 = require("./ownRingDevice");
+const api_1 = require('ring-client-api/lib/api');
+const ownRingDevice_1 = require('./ownRingDevice');
 const constants_1 = require("./constants");
 const ownRingLocation_1 = require("./ownRingLocation");
 class RingApiClient {
-    constructor(adapter) {
-        this.refreshing = false;
-        this.devices = {};
-        this._refreshInterval = null;
-        this._retryTimeout = null;
-        this._locations = {};
-        this.adapter = adapter;
-    }
     get locations() {
         return this._locations;
     }
@@ -41,26 +33,37 @@ class RingApiClient {
             refreshToken: await this.adapter.getRefreshToken(),
             systemId: `${this.adapter.host}.ring`,
             cameraStatusPollingSeconds: 120,
-            locationModePollingSeconds: 120,
-            // debug: true
+          locationModePollingSeconds: 120,
+          // debug: true
         });
-        this._api.onRefreshTokenUpdated.subscribe((data) => {
-            this.adapter.log.info(`Recieved new Refresh Token. Will use the new one until the token in config gets changed`);
-            this.adapter.upsertState("next_refresh_token", constants_1.COMMON_NEW_TOKEN, data.newRefreshToken);
-            this.adapter.upsertState("old_user_refresh_token", constants_1.COMMON_OLD_TOKEN, this.adapter.config.refreshtoken);
-        });
-        return this._api;
+      this._api.onRefreshTokenUpdated.subscribe((data) => {
+        this.adapter.log.info(`Recieved new Refresh Token. Will use the new one until the token in config gets changed`);
+        this.adapter.upsertState('next_refresh_token', constants_1.COMMON_NEW_TOKEN, data.newRefreshToken);
+        this.adapter.upsertState('old_user_refresh_token', constants_1.COMMON_OLD_TOKEN, this.adapter.config.refreshtoken);
+      });
+      return this._api;
     }
-    async init() {
-        await this.refreshAll(true);
-        this._refreshInterval = setInterval(this.refreshAll.bind(this), 120 * 60 * 1000);
-    }
-    async refreshAll(initial = false) {
-        var _a;
-        /**
-         *  TH 2022-05-30: It seems like Ring Api drops it's socket connection from time to time
-         *  so we should reconnect ourselves
-         */
+
+  constructor(adapter) {
+    this.refreshing = false;
+    this.devices = {};
+    this._refreshInterval = null;
+    this._retryTimeout = null;
+    this._locations = {};
+    this.adapter = adapter;
+  }
+
+  async init() {
+    await this.refreshAll(true);
+    this._refreshInterval = setInterval(this.refreshAll.bind(this), 120 * 60 * 1000);
+  }
+
+  async refreshAll(initial = false) {
+    var _a;
+    /**
+     *  TH 2022-05-30: It seems like Ring Api drops it's socket connection from time to time
+     *  so we should reconnect ourselves
+     */
         this.debug(`Refresh Ring Connection`);
         this.refreshing = true;
         (_a = this._api) === null || _a === void 0 ? void 0 : _a.disconnect();

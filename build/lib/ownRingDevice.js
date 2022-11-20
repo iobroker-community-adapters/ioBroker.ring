@@ -38,44 +38,6 @@ var EventState;
     EventState[EventState["ReactingOnDoorbell"] = 3] = "ReactingOnDoorbell";
 })(EventState || (EventState = {}));
 class OwnRingDevice {
-    constructor(ringDevice, location, adapter, apiClient) {
-        this._requestingSnapshot = false;
-        this._requestingLiveStream = false;
-        this._lastLightCommand = 0;
-        this._lastLiveStreamUrl = "";
-        this._lastLiveStreamDir = "";
-        this._lastLiveStreamVideo = null;
-        this._lastLiveStreamTimestamp = 0;
-        this._lastSnapShotUrl = "";
-        this._lastSnapShotDir = "";
-        this._lastSnapshotImage = null;
-        this._lastSnapshotTimestamp = 0;
-        this._snapshotCount = 0;
-        this._liveStreamCount = 0;
-        this._state = EventState.Idle;
-        this._adapter = adapter;
-        this._ringDevice = ringDevice;
-        this.shortId = `${ringDevice.id}`;
-        this.debug(`Create device`);
-        this._locationId = location.fullId;
-        this._client = apiClient;
-        this.kind = OwnRingDevice.evaluateKind(ringDevice, adapter);
-        this.fullId = `${this.kind}_${this.shortId}`;
-        this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
-        this.historyChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HISTORY}`;
-        this.lightChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIGHT}`;
-        this.snapshotChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_SNAPSHOT}`;
-        this.liveStreamChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIVESTREAM}`;
-        this.eventsChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_EVENTS}`;
-        this.recreateDeviceObjectTree();
-        this.updateDeviceInfoObject(ringDevice.data);
-        this.updateHealth();
-        // noinspection JSIgnoredPromiseFromCall
-        this.updateHistory();
-        this.updateLiveStreamObject();
-        setTimeout(this.takeSnapshot.bind(this), 5000);
-        this.ringDevice = ringDevice; // subscribes to the events
-    }
     static getFullId(device, adapter) {
         return `${this.evaluateKind(device, adapter)}_${device.id}`;
     }
@@ -169,9 +131,49 @@ class OwnRingDevice {
             },
         });
     }
+
+    constructor(ringDevice, location, adapter, apiClient) {
+        this._requestingSnapshot = false;
+        this._requestingLiveStream = false;
+        this._lastLightCommand = 0;
+        this._lastLiveStreamUrl = '';
+        this._lastLiveStreamDir = '';
+        this._lastLiveStreamVideo = null;
+        this._lastLiveStreamTimestamp = 0;
+        this._lastSnapShotUrl = '';
+        this._lastSnapShotDir = '';
+        this._lastSnapshotImage = null;
+        this._lastSnapshotTimestamp = 0;
+        this._snapshotCount = 0;
+        this._liveStreamCount = 0;
+        this._state = EventState.Idle;
+        this._adapter = adapter;
+        this._ringDevice = ringDevice;
+        this.shortId = `${ringDevice.id}`;
+        this.debug(`Create device`);
+        this._locationId = location.fullId;
+        this._client = apiClient;
+        this.kind = OwnRingDevice.evaluateKind(ringDevice, adapter);
+        this.fullId = `${this.kind}_${this.shortId}`;
+        this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
+        this.historyChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HISTORY}`;
+        this.lightChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIGHT}`;
+        this.snapshotChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_SNAPSHOT}`;
+        this.liveStreamChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIVESTREAM}`;
+        this.eventsChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_EVENTS}`;
+        this.recreateDeviceObjectTree();
+        this.updateDeviceInfoObject(ringDevice.data);
+        this.updateHealth();
+        // noinspection JSIgnoredPromiseFromCall
+        this.updateHistory();
+        this.updateLiveStreamObject();
+        setTimeout(this.takeSnapshot.bind(this), 5000);
+        this.ringDevice = ringDevice; // subscribes to the events
+    }
+
     processUserInput(channelID, stateID, state) {
         switch (channelID) {
-            case "":
+            case '':
                 if (stateID !== constants_1.STATE_ID_DEBUG_REQUEST) {
                     return;
                 }
