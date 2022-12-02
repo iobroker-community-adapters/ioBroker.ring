@@ -123,6 +123,7 @@ It is recommended that you add your own tests into the mix.
 ### **WORK IN PROGRESS**
 
 * (theimo1221) Update Packages
+* (theimo1221) #373 Increase logging and change recording order on Doorbell Event
 
 ### 3.1.9 (2022-11-20)
 

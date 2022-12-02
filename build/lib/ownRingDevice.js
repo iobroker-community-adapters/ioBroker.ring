@@ -447,27 +447,28 @@ class OwnRingDevice {
         this._adapter.logCatch(message, reason);
     }
     onDing(value) {
-        this.debug(`Recieved Ding Event (${value})`);
+        var _a;
+        this.debug(`Recieved Ding Event (${util.inspect(value, true, 1)})`);
         this.conditionalRecording(EventState.ReactingOnDing, value.ding.image_uuid);
         this._adapter.upsertState(`${this.eventsChannelId}.type`, constants_1.COMMON_EVENTS_TYPE, value.subtype);
-        this._adapter.upsertState(`${this.eventsChannelId}.detectionType`, constants_1.COMMON_EVENTS_DETECTIONTYPE, value.ding.detection_type);
+        this._adapter.upsertState(`${this.eventsChannelId}.detectionType`, constants_1.COMMON_EVENTS_DETECTIONTYPE, (_a = value.ding.detection_type) !== null && _a !== void 0 ? _a : value.subtype);
         this._adapter.upsertState(`${this.eventsChannelId}.created_at`, constants_1.COMMON_EVENTS_MOMENT, Date.now());
         this._adapter.upsertState(`${this.eventsChannelId}.message`, constants_1.COMMON_EVENTS_MESSAGE, value.aps.alert);
     }
     onMotion(value) {
-        this.debug(`Recieved Motion Event (${value})`);
+        this.debug(`Recieved Motion Event (${util.inspect(value, true, 1)})`);
         this._adapter.upsertState(`${this.eventsChannelId}.motion`, constants_1.COMMON_MOTION, value);
         if (value) {
             this.conditionalRecording(EventState.ReactingOnMotion);
         }
     }
     onDorbell(value) {
-        this.debug(`Recieved Doorbell Event (${value})`);
-        this.conditionalRecording(EventState.ReactingOnDoorbell, value.ding.image_uuid);
+        this.debug(`Recieved Doorbell Event (${util.inspect(value, true, 1)})`);
         this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, constants_1.COMMON_EVENTS_DOORBELL, true);
         setTimeout(() => {
             this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, constants_1.COMMON_EVENTS_DOORBELL, false);
         }, 5000);
+        this.conditionalRecording(EventState.ReactingOnDoorbell, value.ding.image_uuid);
     }
     async conditionalRecording(state, uuid) {
         if (this._state === EventState.Idle) {

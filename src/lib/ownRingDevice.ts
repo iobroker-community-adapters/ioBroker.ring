@@ -685,16 +685,20 @@ export class OwnRingDevice {
   }
 
   private onDing(value: PushNotification): void {
-    this.debug(`Recieved Ding Event (${value})`);
+    this.debug(`Recieved Ding Event (${util.inspect(value, true, 1)})`);
     this.conditionalRecording(EventState.ReactingOnDing, value.ding.image_uuid);
     this._adapter.upsertState(`${this.eventsChannelId}.type`, COMMON_EVENTS_TYPE, value.subtype);
-    this._adapter.upsertState(`${this.eventsChannelId}.detectionType`, COMMON_EVENTS_DETECTIONTYPE, value.ding.detection_type);
+    this._adapter.upsertState(
+      `${this.eventsChannelId}.detectionType`,
+      COMMON_EVENTS_DETECTIONTYPE,
+      value.ding.detection_type ?? value.subtype
+    );
     this._adapter.upsertState(`${this.eventsChannelId}.created_at`, COMMON_EVENTS_MOMENT, Date.now());
     this._adapter.upsertState(`${this.eventsChannelId}.message`, COMMON_EVENTS_MESSAGE, value.aps.alert);
   }
 
   private onMotion(value: boolean): void {
-    this.debug(`Recieved Motion Event (${value})`);
+    this.debug(`Recieved Motion Event (${util.inspect(value, true, 1)})`);
     this._adapter.upsertState(`${this.eventsChannelId}.motion`, COMMON_MOTION, value);
     if (value) {
       this.conditionalRecording(EventState.ReactingOnMotion);
@@ -702,12 +706,12 @@ export class OwnRingDevice {
   }
 
   private onDorbell(value: PushNotification): void {
-    this.debug(`Recieved Doorbell Event (${value})`);
-    this.conditionalRecording(EventState.ReactingOnDoorbell, value.ding.image_uuid);
+    this.debug(`Recieved Doorbell Event (${util.inspect(value, true, 1)})`);
     this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, COMMON_EVENTS_DOORBELL, true);
     setTimeout(() => {
       this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, COMMON_EVENTS_DOORBELL, false);
     }, 5000);
+    this.conditionalRecording(EventState.ReactingOnDoorbell, value.ding.image_uuid);
   }
 
   private async conditionalRecording(state: EventState, uuid?: string): Promise<void> {
