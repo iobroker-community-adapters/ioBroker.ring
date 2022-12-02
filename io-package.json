@@ -1,9 +1,22 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.2.0",
+    "version": "3.2.1",
     "title": "Ring",
     "news": {
+      "3.2.1": {
+        "en": "Redeploy",
+        "de": "Beschäftigung",
+        "ru": "Переработка",
+        "pt": "Responsabilidade",
+        "nl": "Redeploy",
+        "fr": "Transferts",
+        "it": "Redeploy",
+        "es": "Redistribución",
+        "pl": "Redeploy",
+        "uk": "Червоноплой",
+        "zh-cn": "调动"
+      },
       "3.2.0": {
         "en": "Update Packages\n#373 Increase logging and change recording order on Doorbell Event",
         "de": "Pakete aktualisieren\n#373 Erhöhen Sie Protokollierungs- und Änderungsauftrag auf Doorbell Event",
@@ -81,19 +94,6 @@
         "pl": "Package Update",
         "uk": "Оновлення пакетів",
         "zh-cn": "最新包装"
-      },
-      "3.1.4": {
-        "en": "#376 Handling when reconnect fails",
-        "de": "#376 Handhabung bei Ausfall der Wiederverbindung",
-        "ru": "#376 Обработка при повторном подключении не работает",
-        "pt": "#376 Handling quando a reconectação falha",
-        "nl": "#376 Handling when reconnect faalt",
-        "fr": "#376 Manipulation lorsque reconnect échoue",
-        "it": "#376 Maneggiare quando la riconnette fallisce",
-        "es": "#376 Manejo cuando la reconexión falla",
-        "pl": "#376 Handling, gdy reaktywacja nie powiodła się",
-        "uk": "#376 Обробка при вимкненні",
-        "zh-cn": "第376号重新连接时遇到的问题"
       }
     },
     "titleLang": {
