@@ -29,12 +29,12 @@ class RingApiClient {
             throw (`Refresh Token needed.`);
         }
         this._api = new ring_client_api_1.RingApi({
-          controlCenterDisplayName: 'iobroker.ring',
-          refreshToken: await this.adapter.getRefreshToken(),
-          systemId: `${this.adapter.host}.ring_v${this.adapter.version}_${Math.random() * Math.pow(10, 6)}`,
-          cameraStatusPollingSeconds: 120,
-          locationModePollingSeconds: 120,
-          // debug: true
+            controlCenterDisplayName: "iobroker.ring",
+            refreshToken: await this.adapter.getRefreshToken(),
+            systemId: `${this.adapter.host}.ring_v${this.adapter.version}_${Math.random() * Math.pow(10, 6)}`,
+            cameraStatusPollingSeconds: 120,
+            locationModePollingSeconds: 120,
+            // debug: true
         });
         this._api.onRefreshTokenUpdated.subscribe((data) => {
             this.adapter.log.info(`Recieved new Refresh Token. Will use the new one until the token in config gets changed`);

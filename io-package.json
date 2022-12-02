@@ -1,9 +1,22 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.2.1",
+    "version": "3.2.2",
     "title": "Ring",
     "news": {
+      "3.2.2": {
+        "en": "#373 Fix event receiving for iobroker instances without unique hostname",
+        "de": "#373 Fix Event empfangen für iobroker Instanzen ohne einzigartigen Hostnamen",
+        "ru": "#373 Fix event прием для инстанций iobroker без уникального имени хоста",
+        "pt": "#373 Corrigir evento recebendo para instâncias iobroker sem nome de host único",
+        "nl": "♪373 Fix event ontvangen voor iobroker instances zonder unieke naam",
+        "fr": "#373 Réception d'événements fixes pour les instances iobroker sans nom d'hôte unique",
+        "it": "#373 Evento fisso che riceve per istanze iobroker senza nome host unico",
+        "es": "#373 Arregla el evento recibiendo para instancias de iobroker sin nombre de host único",
+        "pl": "#373 wydarzenia Fix otrzymujące instancje iobrokerowe bez unikalnej nazwy hostname",
+        "uk": "#373 Фіксований захід для екземплярів iobroker без унікального імені хоста",
+        "zh-cn": "第373 Fix号活动,在无人独有的旅名的情况下接收iobroker案"
+      },
       "3.2.1": {
         "en": "Redeploy",
         "de": "Beschäftigung",
@@ -81,19 +94,6 @@
         "pl": "Inline subskrypcja zamiast własności obserwatora zdarzeń\nPackage Update",
         "uk": "Інлайн підписка замість властивостей спостерігача подій\nОновлення пакетів",
         "zh-cn": "说明而不是为活动观察员提供财产\n最新包装"
-      },
-      "3.1.5": {
-        "en": "Update Packages",
-        "de": "Pakete aktualisieren",
-        "ru": "Обновление пакетов",
-        "pt": "Pacotes de atualização",
-        "nl": "Update Packages",
-        "fr": "Mise à jour des paquets",
-        "it": "Pacchetti di aggiornamento",
-        "es": "Paquetes de actualización",
-        "pl": "Package Update",
-        "uk": "Оновлення пакетів",
-        "zh-cn": "最新包装"
       }
     },
     "titleLang": {
