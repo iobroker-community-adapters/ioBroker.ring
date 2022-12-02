@@ -1,9 +1,22 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.1.9",
+    "version": "3.2.0",
     "title": "Ring",
     "news": {
+      "3.2.0": {
+        "en": "Update Packages\n#373 Increase logging and change recording order on Doorbell Event",
+        "de": "Pakete aktualisieren\n#373 Erhöhen Sie Protokollierungs- und Änderungsauftrag auf Doorbell Event",
+        "ru": "Обновление пакетов\n#373 Увеличить логистику и изменить порядок записи на мероприятии Doorbell",
+        "pt": "Pacotes de atualização\n#373 Aumentar a ordem de gravação e alteração no Evento da campainha",
+        "nl": "Update Packages\n♪373 Increase logging and change recording order on Doorbell Event ♪",
+        "fr": "Mise à jour des paquets\n#373 Augmenter l'ordre d'enregistrement et de modification de Doorbell Event",
+        "it": "Pacchetti di aggiornamento\n#373 Aumentare logging e modificare l'ordine di registrazione su Doorbell Event",
+        "es": "Paquetes de actualización\n#373 Aumentar el orden de registro y cambiar el orden de grabación en Doorbell Event",
+        "pl": "Package Update\n#373 Increase logowanie i zmiany kolejności na Doorbell Event",
+        "uk": "Оновлення пакетів\n#373 Підвищений вхід і зміна замовлення запису на Двербелл Захід",
+        "zh-cn": "最新包装\n#373 增加Doorbell事件的伐木和改变记录令"
+      },
       "3.1.9": {
         "en": "#395 Resolve Package-lock.json issues",
         "de": "#395 Resolve Package-lock.json Probleme",
@@ -81,18 +94,6 @@
         "pl": "#376 Handling, gdy reaktywacja nie powiodła się",
         "uk": "#376 Обробка при вимкненні",
         "zh-cn": "第376号重新连接时遇到的问题"
-      },
-      "3.1.3": {
-        "en": "Update Packages",
-        "de": "Pakete aktualisieren",
-        "ru": "Обновление пакетов",
-        "pt": "Pacotes de atualização",
-        "nl": "Update Packages",
-        "fr": "Mise à jour des paquets",
-        "it": "Pacchetti di aggiornamento",
-        "es": "Paquetes de actualización",
-        "pl": "Package Update",
-        "zh-cn": "最新包装"
       }
     },
     "titleLang": {
