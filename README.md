@@ -119,8 +119,7 @@ It is recommended that you add your own tests into the mix.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 3.2.3 (2022-12-15)
 
 * (theimo1221) Update Packages
 * (theimo1221) #385 Experimental Ring Intercom support

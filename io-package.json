@@ -1,9 +1,22 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.2.2",
+    "version": "3.2.3",
     "title": "Ring",
     "news": {
+      "3.2.3": {
+        "en": "Update Packages\n#385 Experimental Ring Intercom support",
+        "de": "Pakete aktualisieren\n#385 Experimental Ring Intercom Unterstützung",
+        "ru": "Обновление пакетов\n#385 Экспериментальный Поддержка Ring Intercom",
+        "pt": "Pacotes de atualização\n#385 Experimental Suporte ao Ring Intercom",
+        "nl": "Update Packages\n#385 Experimental Ring Intercom",
+        "fr": "Mise à jour des paquets\n#385 Experimental Soutien Ring Intercom",
+        "it": "Pacchetti di aggiornamento\n#385 Experimental Supporto per citofono",
+        "es": "Paquetes de actualización\n#385 Experimental Soporte de intercomunicación",
+        "pl": "Package Update\n#385 (ang.). Ring Intercom",
+        "uk": "Оновлення пакетів\n#385 Експериментальне Кільцева підтримка",
+        "zh-cn": "最新包装\n第385号实验 部门间支助"
+      },
       "3.2.2": {
         "en": "#373 Fix event receiving for iobroker instances without unique hostname",
         "de": "#373 Fix Event empfangen für iobroker Instanzen ohne einzigartigen Hostnamen",
@@ -81,19 +94,6 @@
         "pl": "Package Update",
         "uk": "Оновлення пакетів",
         "zh-cn": "最新包装"
-      },
-      "3.1.6": {
-        "en": "Inline subscription instead of properties for Event observer\nUpdate Packages",
-        "de": "Inline-Abonnement statt Eigenschaften für Event-Beobachter\nPakete aktualisieren",
-        "ru": "Инлайн подписка вместо свойств для наблюдателя событий\nОбновление пакетов",
-        "pt": "Assinatura em linha em vez de propriedades para o observador do evento\nPacotes de atualização",
-        "nl": "Inline abonnement in plaats van eigendommen voor event waarnemer\nUpdate Packages",
-        "fr": "Abonnement en ligne au lieu des propriétés pour Event observer\nMise à jour des paquets",
-        "it": "Abbonamento in linea invece delle proprietà per l'osservatore Evento\nPacchetti di aggiornamento",
-        "es": "Suscripción en línea en lugar de propiedades para el observador de evento\nPaquetes de actualización",
-        "pl": "Inline subskrypcja zamiast własności obserwatora zdarzeń\nPackage Update",
-        "uk": "Інлайн підписка замість властивостей спостерігача подій\nОновлення пакетів",
-        "zh-cn": "说明而不是为活动观察员提供财产\n最新包装"
       }
     },
     "titleLang": {

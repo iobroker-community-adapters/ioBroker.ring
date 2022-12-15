@@ -1,26 +1,27 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', {value: true});
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.RingApiClient = void 0;
-const ring_client_api_1 = require('ring-client-api');
-const ownRingCamera_1 = require('./ownRingCamera');
-const constants_1 = require('./constants');
-const ownRingLocation_1 = require('./ownRingLocation');
-const ownRingDevice_1 = require('./ownRingDevice');
-const ownRingIntercom_1 = require('./ownRingIntercom');
-
+const ring_client_api_1 = require("ring-client-api");
+const ownRingCamera_1 = require("./ownRingCamera");
+const constants_1 = require("./constants");
+const ownRingLocation_1 = require("./ownRingLocation");
+const ownRingDevice_1 = require("./ownRingDevice");
+const ownRingIntercom_1 = require("./ownRingIntercom");
 class RingApiClient {
     get locations() {
         return this._locations;
     }
-
-    constructor(adapter) {
-        this.refreshing = false;
-        this.cameras = {};
-        this.intercoms = {};
-        this._refreshInterval = null;
-        this._retryTimeout = null;
-        this._locations = {};
-        this.adapter = adapter;
+    validateRefreshToken() {
+        const token = this.adapter.config.refreshtoken;
+        if (!token || token === "") {
+            this.adapter.log.error(`Refresh Token missing.`);
+            return false;
+        }
+        if (token.length < 10) {
+            this.adapter.log.error(`Refresh Token is odly short.`);
+            return false;
+        }
+        return true;
     }
     async getApi() {
         if (this._api) {
@@ -44,24 +45,19 @@ class RingApiClient {
         });
         return this._api;
     }
-
-    validateRefreshToken() {
-        const token = this.adapter.config.refreshtoken;
-        if (!token || token === '') {
-            this.adapter.log.error(`Refresh Token missing.`);
-            return false;
-        }
-        if (token.length < 10) {
-            this.adapter.log.error(`Refresh Token is odly short.`);
-            return false;
-        }
-        return true;
+    constructor(adapter) {
+        this.refreshing = false;
+        this.cameras = {};
+        this.intercoms = {};
+        this._refreshInterval = null;
+        this._retryTimeout = null;
+        this._locations = {};
+        this.adapter = adapter;
     }
     async init() {
         await this.refreshAll(true);
         this._refreshInterval = setInterval(this.refreshAll.bind(this), 120 * 60 * 1000);
     }
-
     async refreshAll(initial = false) {
         var _a;
         /**
@@ -165,41 +161,37 @@ class RingApiClient {
         this.adapter.log.debug(`Failure reason:\n${reason}`);
         this.adapter.log.debug(`Call Stack: \n${(new Error()).stack}`);
     }
-
     silly(message) {
         this.adapter.log.silly(message);
     }
-
     debug(message) {
         this.adapter.log.debug(message);
     }
-
     warn(message) {
         this.adapter.log.warn(message);
     }
-
     updateCamera(camera, location) {
         const fullID = ownRingCamera_1.OwnRingCamera.getFullId(camera, this.adapter);
         let ownRingCamera = this.cameras[fullID];
         if (ownRingCamera === undefined) {
             ownRingCamera = new ownRingCamera_1.OwnRingCamera(camera, location, this.adapter, this);
             this.cameras[fullID] = ownRingCamera;
-        } else {
+        }
+        else {
             ownRingCamera.updateByDevice(camera);
         }
     }
-
     updateIntercom(intercom, location) {
         const fullID = ownRingDevice_1.OwnRingDevice.getFullId(intercom, this.adapter);
         let ownRingIntercom = this.intercoms[fullID];
         if (ownRingIntercom === undefined) {
             ownRingIntercom = new ownRingIntercom_1.OwnRingIntercom(intercom, location, this.adapter, this);
             this.intercoms[fullID] = ownRingIntercom;
-        } else {
+        }
+        else {
             ownRingIntercom.updateByDevice(intercom);
         }
     }
-
     getLocation(locId) {
         return this.locations[locId];
     }
