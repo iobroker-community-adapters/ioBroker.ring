@@ -3,10 +3,22 @@ import { IntercomHandsetAudioData, RingIntercom } from "ring-client-api";
 import { OwnRingLocation } from "./ownRingLocation";
 import { RingAdapter } from "../main";
 import { RingApiClient } from "./ringApiClient";
-import { COMMON_DEBUG_REQUEST, STATE_ID_DEBUG_REQUEST, } from "./constants";
+import {
+  CHANNEL_NAME_EVENTS,
+  CHANNEL_NAME_INFO,
+  COMMON_DEBUG_REQUEST,
+  COMMON_EVENTS_INTERCOM_DING,
+  COMMON_INFO_DESCRIPTION,
+  COMMON_INFO_ID,
+  COMMON_INFO_KIND,
+  STATE_ID_DEBUG_REQUEST,
+} from "./constants";
 import util from "util";
 
 export class OwnRingIntercom extends OwnRingDevice {
+  private readonly infoChannelId: string;
+  private readonly eventsChannelId: string;
+
   public constructor(ringDevice: RingIntercom, location: OwnRingLocation, adapter: RingAdapter, apiClient: RingApiClient) {
     super(
       location,
@@ -18,6 +30,10 @@ export class OwnRingIntercom extends OwnRingDevice {
     );
     this._ringDevice = ringDevice;
     this.debug(`Create device`);
+    this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
+    this.eventsChannelId = `${this.fullId}.${CHANNEL_NAME_EVENTS}`;
+
+    this.recreateDeviceObjectTree()
   }
 
   private _ringDevice: RingIntercom;
@@ -62,6 +78,8 @@ export class OwnRingIntercom extends OwnRingDevice {
     this._adapter.createDevice(this.fullId, {
       name: `Device ${this.shortId} ("${this._ringDevice.data.description}")`
     });
+    this._adapter.createChannel(this.fullId, CHANNEL_NAME_INFO, {name: `Info ${this.shortId}`});
+    this._adapter.createChannel(this.fullId, CHANNEL_NAME_EVENTS);
     this._adapter.upsertState(
       `${this.fullId}.${STATE_ID_DEBUG_REQUEST}`,
       COMMON_DEBUG_REQUEST,
@@ -70,11 +88,51 @@ export class OwnRingIntercom extends OwnRingDevice {
     );
   }
 
-  private update(_data: IntercomHandsetAudioData): void {
-    // TODO: FIll
+  private update(data: IntercomHandsetAudioData): void {
+    this.debug(`Recieved Update`);
+    this.updateDeviceInfoObject(data);
   }
 
-  private subscribeToEvents(): void {
-    // TODO: FIll
+  private async subscribeToEvents(): Promise<void> {
+    this.silly(`Start device subscriptions`);
+    await this._ringDevice.subscribeToDingEvents().catch((r) => {
+      this.catcher(`Failed subscribing to Ding Events for ${this._ringDevice.name}`, r);
+    });
+    this._ringDevice.onDing.subscribe(
+      {
+        next: () => {
+          this.onDing()
+        },
+        error: (err: Error) => {
+          this.catcher(`Ding Observer recieved error`, err)
+        },
+      }
+    )
+  }
+
+  private updateDeviceInfoObject(data: IntercomHandsetAudioData): void {
+    this._adapter.upsertState(
+      `${this.infoChannelId}.id`,
+      COMMON_INFO_ID,
+      data.device_id
+    );
+    this._adapter.upsertState(
+      `${this.infoChannelId}.kind`,
+      COMMON_INFO_KIND,
+      data.kind as string
+    );
+    this._adapter.upsertState(
+      `${this.infoChannelId}.description`,
+      COMMON_INFO_DESCRIPTION,
+      data.description
+    );
+  }
+
+  private onDing(): void {
+    this.debug(`Recieved Ding Event`);
+    this._adapter.upsertState(`${this.eventsChannelId}.ding`, COMMON_EVENTS_INTERCOM_DING, true);
+    setTimeout(() => {
+      this._adapter.upsertState(`${this.eventsChannelId}.ding`, COMMON_EVENTS_INTERCOM_DING, false);
+    }, 5000);
   }
 }

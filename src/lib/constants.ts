@@ -214,6 +214,13 @@ export const COMMON_EVENTS_DOORBELL: ioBroker.StateCommon = {
   read: true,
   write: false
 }
+export const COMMON_EVENTS_INTERCOM_DING: ioBroker.StateCommon = {
+  type: "boolean",
+  role: "sensor.door",
+  name: "If there is a Ding event on Intercom",
+  read: true,
+  write: false
+}
 export const COMMON_EVENTS_TYPE: ioBroker.StateCommon = {
   type: "string",
   role: "text",

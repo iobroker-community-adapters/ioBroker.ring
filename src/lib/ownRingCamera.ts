@@ -72,12 +72,12 @@ enum EventState {
 }
 
 export class OwnRingCamera extends OwnRingDevice {
-  private infoChannelId: string;
-  private historyChannelId: string;
-  private lightChannelId: string;
-  private eventsChannelId: string;
-  private snapshotChannelId: string;
-  private liveStreamChannelId: string;
+  private readonly infoChannelId: string;
+  private readonly historyChannelId: string;
+  private readonly lightChannelId: string;
+  private readonly eventsChannelId: string;
+  private readonly snapshotChannelId: string;
+  private readonly liveStreamChannelId: string;
   private _ringDevice: RingCamera;
   private lastAction: LastAction | undefined;
   private _requestingSnapshot = false;
