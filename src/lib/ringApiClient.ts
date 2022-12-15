@@ -1,12 +1,15 @@
-import { Location, RingApi, RingCamera } from "ring-client-api";
+import { Location, RingApi, RingCamera, RingIntercom } from "ring-client-api";
 import { RingAdapter } from "../main";
-import { OwnRingDevice } from "./ownRingDevice";
+import { OwnRingCamera } from "./ownRingCamera";
 import { COMMON_NEW_TOKEN, COMMON_OLD_TOKEN } from "./constants";
 import { OwnRingLocation } from "./ownRingLocation";
+import { OwnRingDevice } from "./ownRingDevice";
+import { OwnRingIntercom } from "./ownRingIntercom";
 
 export class RingApiClient {
   public refreshing = false;
-  private devices: { [id: string]: OwnRingDevice } = {};
+  private cameras: { [id: string]: OwnRingCamera } = {};
+  private intercoms: { [id: string]: OwnRingIntercom } = {};
   private _refreshInterval: NodeJS.Timer | null = null;
   private _retryTimeout: NodeJS.Timer | null = null;
 
@@ -104,7 +107,11 @@ export class RingApiClient {
       this.debug(`Recieved ${devices.length} Devices in Location ${l.name}`);
       this.debug(`Location has ${l.loc.cameras.length} Cameras`);
       for (const c of l.loc.cameras) {
-        this.updateDev(c, l);
+        this.updateCamera(c, l);
+      }
+      this.debug(`Location has ${l.loc.intercoms.length} Intercoms`);
+      for (const i of l.loc.intercoms) {
+        this.updateIntercom(i, l);
       }
     }
     this.refreshing = false;
@@ -113,7 +120,7 @@ export class RingApiClient {
 
 
   public processUserInput(targetId: string, channelID: string, stateID: string, state: ioBroker.State): void {
-    const targetDevice = this.devices[targetId];
+    const targetDevice = this.cameras[targetId];
     const targetLocation = this._locations[targetId];
     if (!targetDevice && !targetLocation) {
       this.adapter.log.error(`Recieved State Change on Subscribed State, for unknown Device/Location "${targetId}"`);
@@ -178,14 +185,25 @@ export class RingApiClient {
     this.adapter.log.warn(message);
   }
 
-  private updateDev(device: RingCamera, location: OwnRingLocation): void {
-    const fullID = OwnRingDevice.getFullId(device, this.adapter);
-    let ownDev: OwnRingDevice = this.devices[fullID];
-    if (ownDev === undefined) {
-      ownDev = new OwnRingDevice(device, location, this.adapter, this);
-      this.devices[fullID] = ownDev;
+  private updateCamera(camera: RingCamera, location: OwnRingLocation): void {
+    const fullID = OwnRingCamera.getFullId(camera, this.adapter);
+    let ownRingCamera: OwnRingCamera = this.cameras[fullID];
+    if (ownRingCamera === undefined) {
+      ownRingCamera = new OwnRingCamera(camera, location, this.adapter, this);
+      this.cameras[fullID] = ownRingCamera;
     } else {
-      ownDev.updateByDevice(device);
+      ownRingCamera.updateByDevice(camera);
+    }
+  }
+
+  private updateIntercom(intercom: RingIntercom, location: OwnRingLocation): void {
+    const fullID = OwnRingDevice.getFullId(intercom, this.adapter);
+    let ownRingIntercom: OwnRingIntercom = this.intercoms[fullID];
+    if (ownRingIntercom === undefined) {
+      ownRingIntercom = new OwnRingIntercom(intercom, location, this.adapter, this);
+      this.intercoms[fullID] = ownRingIntercom;
+    } else {
+      ownRingIntercom.updateByDevice(intercom);
     }
   }
 
