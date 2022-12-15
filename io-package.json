@@ -1,9 +1,22 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.2.3",
+    "version": "3.2.4",
     "title": "Ring",
     "news": {
+      "3.2.4": {
+        "en": "#385 Fix for Unlock Request on intercoms",
+        "de": "#385 Fix for Unlock Request on intercoms",
+        "ru": "#385 Fix для разблокировки Запрос на intercoms",
+        "pt": "#385 Fix for Unlock Request on intercoms",
+        "nl": "#385 Fix for Unlock Request on intercom",
+        "fr": "#385 Fix for Unlock Request on intercoms",
+        "it": "#385 Fissa per sbloccare la richiesta sugli intercomi",
+        "es": "#385 Fijar para desbloquear Solicitud de intercomunicación",
+        "pl": "385 Fix for Unlock Request on Intercoms (ang.)",
+        "uk": "#385 Фіксація для розблокування Запит на домофони",
+        "zh-cn": "第385 Fix号 要求停止相互间联系"
+      },
       "3.2.3": {
         "en": "Update Packages\n#385 Experimental Ring Intercom support",
         "de": "Pakete aktualisieren\n#385 Experimental Ring Intercom Unterstützung",
@@ -81,19 +94,6 @@
         "pl": "Package Update\nPorównanie do nowej wersji apiowej",
         "uk": "Оновлення пакетів\nВідповідність найновішої версії кільце Api",
         "zh-cn": "最新包装\n遵守新的环球版本"
-      },
-      "3.1.7": {
-        "en": "Update Packages",
-        "de": "Pakete aktualisieren",
-        "ru": "Обновление пакетов",
-        "pt": "Pacotes de atualização",
-        "nl": "Update Packages",
-        "fr": "Mise à jour des paquets",
-        "it": "Pacchetti di aggiornamento",
-        "es": "Paquetes de actualización",
-        "pl": "Package Update",
-        "uk": "Оновлення пакетів",
-        "zh-cn": "最新包装"
       }
     },
     "titleLang": {

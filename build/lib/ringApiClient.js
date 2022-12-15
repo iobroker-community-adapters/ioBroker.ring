@@ -115,9 +115,11 @@ class RingApiClient {
         if (!targetDevice && !targetLocation) {
             this.adapter.log.error(`Recieved State Change on Subscribed State, for unknown Device/Location "${targetId}"`);
             return;
-        } else if (targetDevice) {
+        }
+        else if (targetDevice) {
             targetDevice.processUserInput(channelID, stateID, state);
-        } else if (targetLocation) {
+        }
+        else if (targetLocation) {
             targetLocation.processUserInput(channelID, stateID, state);
         }
     }
