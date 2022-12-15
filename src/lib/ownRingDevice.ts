@@ -1,6 +1,6 @@
 import { RingAdapter } from "../main";
 import { RingApiClient } from "./ringApiClient";
-import { RingCamera, RingCameraKind } from "ring-client-api";
+import { RingCamera, RingCameraKind, RingDeviceType, RingIntercom } from "ring-client-api";
 import util from "util";
 import { OwnRingLocation } from "./ownRingLocation";
 
@@ -37,12 +37,12 @@ export abstract class OwnRingDevice {
     return this._locationId;
   }
 
-  public static getFullId(device: RingCamera, adapter: RingAdapter): string {
-    return `${this.evaluateKind(device, adapter)}_${device.id}`;
+  public static getFullId(device: RingCamera | RingIntercom, adapter: RingAdapter): string {
+    return `${this.evaluateKind(device.deviceType as string, adapter, device)}_${device.id}`;
   }
 
-  public static evaluateKind(device: RingCamera, adapter: RingAdapter): string {
-    switch (device.deviceType as RingCameraKind | string) {
+  public static evaluateKind(deviceType: string, adapter: RingAdapter, device: any): string {
+    switch (deviceType) {
       case RingCameraKind.doorbot:
       case RingCameraKind.doorbell:
       case RingCameraKind.doorbell_v3:
@@ -75,9 +75,11 @@ export abstract class OwnRingDevice {
       case RingCameraKind.stickup_cam_lunar:
       case RingCameraKind.stickup_cam_elite:
         return `stickup`
+      case RingDeviceType.IntercomHandsetAudio:
+        return `intercom`
       default:
         adapter.log.error(
-          `Device with Type ${device.deviceType} not yet supported, please inform dev Team via Github`
+          `Device with Type ${deviceType} not yet supported, please inform dev Team via Github`
         );
         adapter.log.info(`Unsupported Device Info: ${util.inspect(device, false, 1)}`);
     }

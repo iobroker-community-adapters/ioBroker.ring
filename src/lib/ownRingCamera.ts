@@ -158,7 +158,7 @@ export class OwnRingCamera extends OwnRingDevice {
       location,
       adapter,
       apiClient,
-      OwnRingCamera.evaluateKind(ringDevice, adapter),
+      OwnRingCamera.evaluateKind(ringDevice.deviceType as string, adapter, ringDevice),
       `${ringDevice.id}`,
       ringDevice.data.description
     );
