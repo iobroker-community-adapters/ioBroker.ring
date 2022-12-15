@@ -120,7 +120,7 @@ export class RingApiClient {
 
 
   public processUserInput(targetId: string, channelID: string, stateID: string, state: ioBroker.State): void {
-    const targetDevice = this.cameras[targetId];
+    const targetDevice = this.cameras[targetId] ?? this.intercoms[targetId];
     const targetLocation = this._locations[targetId];
     if (!targetDevice && !targetLocation) {
       this.adapter.log.error(`Recieved State Change on Subscribed State, for unknown Device/Location "${targetId}"`);

@@ -109,16 +109,15 @@ class RingApiClient {
         this.debug(`Refresh complete`);
     }
     processUserInput(targetId, channelID, stateID, state) {
-        const targetDevice = this.cameras[targetId];
+        var _a;
+        const targetDevice = (_a = this.cameras[targetId]) !== null && _a !== void 0 ? _a : this.intercoms[targetId];
         const targetLocation = this._locations[targetId];
         if (!targetDevice && !targetLocation) {
             this.adapter.log.error(`Recieved State Change on Subscribed State, for unknown Device/Location "${targetId}"`);
             return;
-        }
-        else if (targetDevice) {
+        } else if (targetDevice) {
             targetDevice.processUserInput(channelID, stateID, state);
-        }
-        else if (targetLocation) {
+        } else if (targetLocation) {
             targetLocation.processUserInput(channelID, stateID, state);
         }
     }
