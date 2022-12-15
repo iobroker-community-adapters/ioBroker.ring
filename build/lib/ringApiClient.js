@@ -1,25 +1,26 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+'use strict';
+Object.defineProperty(exports, '__esModule', {value: true});
 exports.RingApiClient = void 0;
-const ring_client_api_1 = require("ring-client-api");
-const ownRingDevice_1 = require("./ownRingDevice");
-const constants_1 = require("./constants");
-const ownRingLocation_1 = require("./ownRingLocation");
+const ring_client_api_1 = require('ring-client-api');
+const ownRingCamera_1 = require('./ownRingCamera');
+const constants_1 = require('./constants');
+const ownRingLocation_1 = require('./ownRingLocation');
+const ownRingDevice_1 = require('./ownRingDevice');
+const ownRingIntercom_1 = require('./ownRingIntercom');
+
 class RingApiClient {
     get locations() {
         return this._locations;
     }
-    validateRefreshToken() {
-        const token = this.adapter.config.refreshtoken;
-        if (!token || token === "") {
-            this.adapter.log.error(`Refresh Token missing.`);
-            return false;
-        }
-        if (token.length < 10) {
-            this.adapter.log.error(`Refresh Token is odly short.`);
-            return false;
-        }
-        return true;
+
+    constructor(adapter) {
+        this.refreshing = false;
+        this.cameras = {};
+        this.intercoms = {};
+        this._refreshInterval = null;
+        this._retryTimeout = null;
+        this._locations = {};
+        this.adapter = adapter;
     }
     async getApi() {
         if (this._api) {
@@ -43,18 +44,24 @@ class RingApiClient {
         });
         return this._api;
     }
-    constructor(adapter) {
-        this.refreshing = false;
-        this.devices = {};
-        this._refreshInterval = null;
-        this._retryTimeout = null;
-        this._locations = {};
-        this.adapter = adapter;
+
+    validateRefreshToken() {
+        const token = this.adapter.config.refreshtoken;
+        if (!token || token === '') {
+            this.adapter.log.error(`Refresh Token missing.`);
+            return false;
+        }
+        if (token.length < 10) {
+            this.adapter.log.error(`Refresh Token is odly short.`);
+            return false;
+        }
+        return true;
     }
     async init() {
         await this.refreshAll(true);
         this._refreshInterval = setInterval(this.refreshAll.bind(this), 120 * 60 * 1000);
     }
+
     async refreshAll(initial = false) {
         var _a;
         /**
@@ -95,14 +102,18 @@ class RingApiClient {
             this.debug(`Recieved ${devices.length} Devices in Location ${l.name}`);
             this.debug(`Location has ${l.loc.cameras.length} Cameras`);
             for (const c of l.loc.cameras) {
-                this.updateDev(c, l);
+                this.updateCamera(c, l);
+            }
+            this.debug(`Location has ${l.loc.intercoms.length} Intercoms`);
+            for (const i of l.loc.intercoms) {
+                this.updateIntercom(i, l);
             }
         }
         this.refreshing = false;
         this.debug(`Refresh complete`);
     }
     processUserInput(targetId, channelID, stateID, state) {
-        const targetDevice = this.devices[targetId];
+        const targetDevice = this.cameras[targetId];
         const targetLocation = this._locations[targetId];
         if (!targetDevice && !targetLocation) {
             this.adapter.log.error(`Recieved State Change on Subscribed State, for unknown Device/Location "${targetId}"`);
@@ -154,26 +165,41 @@ class RingApiClient {
         this.adapter.log.debug(`Failure reason:\n${reason}`);
         this.adapter.log.debug(`Call Stack: \n${(new Error()).stack}`);
     }
+
     silly(message) {
         this.adapter.log.silly(message);
     }
+
     debug(message) {
         this.adapter.log.debug(message);
     }
+
     warn(message) {
         this.adapter.log.warn(message);
     }
-    updateDev(device, location) {
-        const fullID = ownRingDevice_1.OwnRingDevice.getFullId(device, this.adapter);
-        let ownDev = this.devices[fullID];
-        if (ownDev === undefined) {
-            ownDev = new ownRingDevice_1.OwnRingDevice(device, location, this.adapter, this);
-            this.devices[fullID] = ownDev;
-        }
-        else {
-            ownDev.updateByDevice(device);
+
+    updateCamera(camera, location) {
+        const fullID = ownRingCamera_1.OwnRingCamera.getFullId(camera, this.adapter);
+        let ownRingCamera = this.cameras[fullID];
+        if (ownRingCamera === undefined) {
+            ownRingCamera = new ownRingCamera_1.OwnRingCamera(camera, location, this.adapter, this);
+            this.cameras[fullID] = ownRingCamera;
+        } else {
+            ownRingCamera.updateByDevice(camera);
         }
     }
+
+    updateIntercom(intercom, location) {
+        const fullID = ownRingDevice_1.OwnRingDevice.getFullId(intercom, this.adapter);
+        let ownRingIntercom = this.intercoms[fullID];
+        if (ownRingIntercom === undefined) {
+            ownRingIntercom = new ownRingIntercom_1.OwnRingIntercom(intercom, location, this.adapter, this);
+            this.intercoms[fullID] = ownRingIntercom;
+        } else {
+            ownRingIntercom.updateByDevice(intercom);
+        }
+    }
+
     getLocation(locId) {
         return this.locations[locId];
     }

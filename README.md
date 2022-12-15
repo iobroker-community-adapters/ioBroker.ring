@@ -123,6 +123,7 @@ It is recommended that you add your own tests into the mix.
 ### **WORK IN PROGRESS**
 
 * (theimo1221) Update Packages
+* (theimo1221) #385 Experimental Ring Intercom support
 
 ### 3.2.2 (2022-12-02)
 

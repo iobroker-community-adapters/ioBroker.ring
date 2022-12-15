@@ -1,16 +1,17 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.STATE_ID_LOCATIONMODE = exports.STATE_ID_DEBUG_REQUEST = exports.STATE_ID_LIVESTREAM_REQUEST = exports.STATE_ID_SNAPSHOT_REQUEST = exports.STATE_ID_LIGHT_SWITCH = exports.CHANNEL_NAME_EVENTS = exports.CHANNEL_NAME_LIVESTREAM = exports.CHANNEL_NAME_SNAPSHOT = exports.CHANNEL_NAME_LIGHT = exports.CHANNEL_NAME_HISTORY = exports.CHANNEL_NAME_INFO = exports.COMMON_LOCATIONMODE = exports.COMMON_OLD_TOKEN = exports.COMMON_NEW_TOKEN = exports.COMMON_DEBUG_REQUEST = exports.COMMON_EVENTS_MOMENT = exports.COMMON_EVENTS_MESSAGE = exports.COMMON_EVENTS_DETECTIONTYPE = exports.COMMON_EVENTS_TYPE = exports.COMMON_EVENTS_DOORBELL = exports.COMMON_MOTION = exports.COMMON_LIVESTREAM_FILE = exports.COMMON_LIVESTREAM_URL = exports.COMMON_LIVESTREAM_REQUEST = exports.COMMON_LIVESTREAM_MOMENT = exports.COMMON_LIVESTREAM_LIVESTREAM = exports.COMMON_SNAPSHOT_MOMENT = exports.COMMON_SNAPSHOT_SNAPSHOT = exports.COMMON_SNAPSHOT_REQUEST = exports.COMMON_SNAPSHOT_FILE = exports.COMMON_SNAPSHOT_URL = exports.COMMON_HISTORY_KIND = exports.COMMON_HISTORY_CREATED_AT = exports.COMMON_HISTORY_URL = exports.COMMON_LIGHT_STATE = exports.COMMON_LIGHT_SWITCH = exports.COMMON_INFO_HAS_SIREN = exports.COMMON_INFO_HAS_BATTERY = exports.COMMON_INFO_HAS_LIGHT = exports.COMMON_INFO_FIRMWARE = exports.COMMON_INFO_LATEST_SIGNAL_CATEGORY = exports.COMMON_INFO_LATEST_SIGNAL_STRENGTH = exports.COMMON_INFO_WIFI_NAME = exports.COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY = exports.COMMON_INFO_BATTERY_PERCENTAGE = exports.COMMON_INFO_KIND = exports.COMMON_INFO_EXTERNAL_CONNECTION = exports.COMMON_INFO_DESCRIPTION = exports.COMMON_INFO_ID = exports.LOCATION_MODE_OPTIONS = void 0;
-exports.LOCATION_MODE_OPTIONS = ["home", "away", "disarmed", "disabled", "unset"];
+'use strict';
+Object.defineProperty(exports, '__esModule', {value: true});
+exports.STATE_ID_LIVESTREAM_REQUEST = exports.STATE_ID_SNAPSHOT_REQUEST = exports.STATE_ID_LIGHT_SWITCH = exports.CHANNEL_NAME_EVENTS = exports.CHANNEL_NAME_LIVESTREAM = exports.CHANNEL_NAME_SNAPSHOT = exports.CHANNEL_NAME_LIGHT = exports.CHANNEL_NAME_HISTORY = exports.CHANNEL_NAME_INFO = exports.COMMON_LOCATIONMODE = exports.COMMON_OLD_TOKEN = exports.COMMON_NEW_TOKEN = exports.COMMON_INTERCOM_UNLOCK_REQUEST = exports.COMMON_DEBUG_REQUEST = exports.COMMON_EVENTS_MOMENT = exports.COMMON_EVENTS_MESSAGE = exports.COMMON_EVENTS_DETECTIONTYPE = exports.COMMON_EVENTS_TYPE = exports.COMMON_EVENTS_INTERCOM_DING = exports.COMMON_EVENTS_DOORBELL = exports.COMMON_MOTION = exports.COMMON_LIVESTREAM_FILE = exports.COMMON_LIVESTREAM_URL = exports.COMMON_LIVESTREAM_REQUEST = exports.COMMON_LIVESTREAM_MOMENT = exports.COMMON_LIVESTREAM_LIVESTREAM = exports.COMMON_SNAPSHOT_MOMENT = exports.COMMON_SNAPSHOT_SNAPSHOT = exports.COMMON_SNAPSHOT_REQUEST = exports.COMMON_SNAPSHOT_FILE = exports.COMMON_SNAPSHOT_URL = exports.COMMON_HISTORY_KIND = exports.COMMON_HISTORY_CREATED_AT = exports.COMMON_HISTORY_URL = exports.COMMON_LIGHT_STATE = exports.COMMON_LIGHT_SWITCH = exports.COMMON_INFO_HAS_SIREN = exports.COMMON_INFO_HAS_BATTERY = exports.COMMON_INFO_HAS_LIGHT = exports.COMMON_INFO_FIRMWARE = exports.COMMON_INFO_LATEST_SIGNAL_CATEGORY = exports.COMMON_INFO_LATEST_SIGNAL_STRENGTH = exports.COMMON_INFO_WIFI_NAME = exports.COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY = exports.COMMON_INFO_BATTERY_PERCENTAGE = exports.COMMON_INFO_KIND = exports.COMMON_INFO_EXTERNAL_CONNECTION = exports.COMMON_INFO_DESCRIPTION = exports.COMMON_INFO_ID = exports.LOCATION_MODE_OPTIONS = void 0;
+exports.STATE_ID_LOCATIONMODE = exports.STATE_ID_INTERCOM_UNLOCK = exports.STATE_ID_DEBUG_REQUEST = void 0;
+exports.LOCATION_MODE_OPTIONS = ['home', 'away', 'disarmed', 'disabled', 'unset'];
 exports.COMMON_INFO_ID = {
-    type: "string",
-    role: "state",
-    name: "Device ID",
+    type: 'string',
+    role: 'state',
+    name: 'Device ID',
     read: true,
     write: false,
 };
 exports.COMMON_INFO_DESCRIPTION = {
-    type: "string",
+    type: 'string',
     role: "text",
     name: "Device Name",
     read: true,
@@ -203,26 +204,33 @@ exports.COMMON_LIVESTREAM_FILE = {
 exports.COMMON_MOTION = {
     type: "boolean",
     role: "sensor.motion",
-    name: "If there is a Motion Event",
+    name: 'If there is a Motion Event',
     read: true,
     write: false
 };
 exports.COMMON_EVENTS_DOORBELL = {
-    type: "boolean",
-    role: "sensor.door",
-    name: "If there is a Doorbell Press Event",
+    type: 'boolean',
+    role: 'sensor.door',
+    name: 'If there is a Doorbell Press Event',
+    read: true,
+    write: false
+};
+exports.COMMON_EVENTS_INTERCOM_DING = {
+    type: 'boolean',
+    role: 'sensor.door',
+    name: 'If there is a Ding event on Intercom',
     read: true,
     write: false
 };
 exports.COMMON_EVENTS_TYPE = {
-    type: "string",
-    role: "text",
-    name: "The Kind of the Ding Event",
+    type: 'string',
+    role: 'text',
+    name: 'The Kind of the Ding Event',
     read: true,
     write: false
 };
 exports.COMMON_EVENTS_DETECTIONTYPE = {
-    type: "string",
+    type: 'string',
     role: "text",
     name: "The detection type of the Ding Event",
     read: true,
@@ -238,26 +246,33 @@ exports.COMMON_EVENTS_MESSAGE = {
 exports.COMMON_EVENTS_MOMENT = {
     type: "number",
     role: "date",
-    name: "The moment the ding event occured",
+    name: 'The moment the ding event occured',
     read: true,
     write: false
 };
 exports.COMMON_DEBUG_REQUEST = {
-    type: "boolean",
-    role: "button",
-    name: "Request Debug Output",
+    type: 'boolean',
+    role: 'button',
+    name: 'Request Debug Output',
+    read: false,
+    write: true
+};
+exports.COMMON_INTERCOM_UNLOCK_REQUEST = {
+    type: 'boolean',
+    role: 'button',
+    name: 'Request Intercom door unlock',
     read: false,
     write: true
 };
 exports.COMMON_NEW_TOKEN = {
-    type: "string",
-    role: "text",
-    name: "Next Refresh Token",
+    type: 'string',
+    role: 'text',
+    name: 'Next Refresh Token',
     read: true,
     write: false
 };
 exports.COMMON_OLD_TOKEN = {
-    type: "string",
+    type: 'string',
     role: "text",
     name: "Outdated user token",
     read: true,
@@ -280,6 +295,7 @@ exports.CHANNEL_NAME_EVENTS = "Events";
 exports.STATE_ID_LIGHT_SWITCH = "light_switch";
 exports.STATE_ID_SNAPSHOT_REQUEST = "snapshot_request";
 exports.STATE_ID_LIVESTREAM_REQUEST = "livestream_request";
-exports.STATE_ID_DEBUG_REQUEST = "debug_request";
-exports.STATE_ID_LOCATIONMODE = "locationMode";
+exports.STATE_ID_DEBUG_REQUEST = 'debug_request';
+exports.STATE_ID_INTERCOM_UNLOCK = 'intercom_unlock_request';
+exports.STATE_ID_LOCATIONMODE = 'locationMode';
 //# sourceMappingURL=constants.js.map
