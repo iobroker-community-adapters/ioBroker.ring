@@ -11,7 +11,9 @@ import {
   COMMON_INFO_DESCRIPTION,
   COMMON_INFO_ID,
   COMMON_INFO_KIND,
+  COMMON_INTERCOM_UNLOCK_REQUEST,
   STATE_ID_DEBUG_REQUEST,
+  STATE_ID_INTERCOM_UNLOCK,
 } from "./constants";
 import util from "util";
 
@@ -50,17 +52,31 @@ export class OwnRingIntercom extends OwnRingDevice {
   public processUserInput(channelID: string, stateID: string, state: ioBroker.State): void {
     switch (channelID) {
       case "":
-        if (stateID !== STATE_ID_DEBUG_REQUEST) {
-          return;
-        }
-        const targetVal = state.val as boolean;
-        if (targetVal) {
-          this._adapter.log.info(`Device Debug Data for ${this.shortId}: ${util.inspect(this._ringDevice, false, 1)}`);
-          this._adapter.upsertState(
-            `${this.fullId}.${STATE_ID_DEBUG_REQUEST}`,
-            COMMON_DEBUG_REQUEST,
-            false
-          );
+        const targetBoolVal = state.val as boolean;
+        switch (stateID) {
+          case STATE_ID_DEBUG_REQUEST:
+            if (targetBoolVal) {
+              this._adapter.log.info(`Device Debug Data for ${this.shortId}: ${util.inspect(this._ringDevice, false, 1)}`);
+              this._adapter.upsertState(
+                `${this.fullId}.${STATE_ID_DEBUG_REQUEST}`,
+                COMMON_DEBUG_REQUEST,
+                false
+              );
+            }
+            break;
+          case STATE_ID_INTERCOM_UNLOCK:
+            if (targetBoolVal) {
+              this._adapter.log.info(`Unlock door request for ${this.shortId}.`);
+              this._ringDevice.unlock().catch((reason) => {
+                this.catcher("Couldn't unlock door.", reason);
+              });
+              this._adapter.upsertState(
+                `${this.fullId}.${STATE_ID_INTERCOM_UNLOCK}`,
+                COMMON_DEBUG_REQUEST,
+                false
+              );
+            }
+            break;
         }
         return;
       default:
@@ -83,6 +99,12 @@ export class OwnRingIntercom extends OwnRingDevice {
     this._adapter.upsertState(
       `${this.fullId}.${STATE_ID_DEBUG_REQUEST}`,
       COMMON_DEBUG_REQUEST,
+      false,
+      true
+    );
+    this._adapter.upsertState(
+      `${this.fullId}.${STATE_ID_INTERCOM_UNLOCK}`,
+      COMMON_INTERCOM_UNLOCK_REQUEST,
       false,
       true
     );

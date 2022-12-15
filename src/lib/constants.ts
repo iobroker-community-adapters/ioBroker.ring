@@ -256,6 +256,13 @@ export const COMMON_DEBUG_REQUEST: ioBroker.StateCommon = {
   read: false,
   write: true
 }
+export const COMMON_INTERCOM_UNLOCK_REQUEST: ioBroker.StateCommon = {
+  type: "boolean",
+  role: "button",
+  name: "Request Intercom door unlock",
+  read: false,
+  write: true
+}
 export const COMMON_NEW_TOKEN: ioBroker.StateCommon = {
   type: "string",
   role: "text",
@@ -289,4 +296,5 @@ export const STATE_ID_LIGHT_SWITCH = "light_switch";
 export const STATE_ID_SNAPSHOT_REQUEST = "snapshot_request";
 export const STATE_ID_LIVESTREAM_REQUEST = "livestream_request";
 export const STATE_ID_DEBUG_REQUEST = "debug_request";
+export const STATE_ID_INTERCOM_UNLOCK = "intercom_unlock_request";
 export const STATE_ID_LOCATIONMODE = "locationMode";
