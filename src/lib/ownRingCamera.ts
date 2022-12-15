@@ -5,7 +5,6 @@ import {
   CameraEventResponse,
   CameraHealth,
   DingKind,
-  PushNotification,
   RingCamera,
   RingCameraKind
 } from "ring-client-api";
@@ -63,6 +62,7 @@ import * as fs from "fs";
 import { FileService } from "./services/file-service";
 import * as util from "util";
 import { OwnRingLocation } from "./ownRingLocation";
+import { PushNotificationDing } from "ring-client-api/lib/ring-types";
 
 enum EventState {
   Idle,
@@ -71,7 +71,7 @@ enum EventState {
   ReactingOnDoorbell
 }
 
-export class OwnRingDevice {
+export class OwnRingCamera {
 
   public static getFullId(device: RingCamera, adapter: RingAdapter): string {
     return `${this.evaluateKind(device, adapter)}_${device.id}`;
@@ -193,7 +193,7 @@ export class OwnRingDevice {
     );
     this._ringDevice.onDoorbellPressed.subscribe(
       {
-        next: (ding: PushNotification) => {
+        next: (ding: PushNotificationDing) => {
           this.onDorbell(ding)
         },
         error: (err: Error) => {
@@ -203,7 +203,7 @@ export class OwnRingDevice {
     );
     this._ringDevice.onNewNotification.subscribe(
       {
-        next: (ding: PushNotification) => {
+        next: (ding: PushNotificationDing) => {
           this.onDing(ding)
         },
         error: (err: Error) => {
@@ -220,7 +220,7 @@ export class OwnRingDevice {
     this.debug(`Create device`);
     this._locationId = location.fullId;
     this._client = apiClient;
-    this.kind = OwnRingDevice.evaluateKind(ringDevice, adapter);
+    this.kind = OwnRingCamera.evaluateKind(ringDevice, adapter);
     this.fullId = `${this.kind}_${this.shortId}`;
     this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
     this.historyChannelId = `${this.fullId}.${CHANNEL_NAME_HISTORY}`;
@@ -684,7 +684,7 @@ export class OwnRingDevice {
     this._adapter.logCatch(message, reason);
   }
 
-  private onDing(value: PushNotification): void {
+  private onDing(value: PushNotificationDing): void {
     this.debug(`Recieved Ding Event (${util.inspect(value, true, 1)})`);
     this.conditionalRecording(EventState.ReactingOnDing, value.ding.image_uuid);
     this._adapter.upsertState(`${this.eventsChannelId}.type`, COMMON_EVENTS_TYPE, value.subtype);
@@ -705,7 +705,7 @@ export class OwnRingDevice {
     }
   }
 
-  private onDorbell(value: PushNotification): void {
+  private onDorbell(value: PushNotificationDing): void {
     this.debug(`Recieved Doorbell Event (${util.inspect(value, true, 1)})`);
     this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, COMMON_EVENTS_DOORBELL, true);
     setTimeout(() => {
