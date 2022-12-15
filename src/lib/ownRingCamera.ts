@@ -5,8 +5,7 @@ import {
   CameraEventResponse,
   CameraHealth,
   DingKind,
-  RingCamera,
-  RingCameraKind
+  RingCamera
 } from "ring-client-api";
 import { RingAdapter } from "../main";
 import { RingApiClient } from "./ringApiClient";
@@ -63,6 +62,7 @@ import { FileService } from "./services/file-service";
 import * as util from "util";
 import { OwnRingLocation } from "./ownRingLocation";
 import { PushNotificationDing } from "ring-client-api/lib/ring-types";
+import { OwnRingDevice } from "./ownRingDevice";
 
 enum EventState {
   Idle,
@@ -71,68 +71,13 @@ enum EventState {
   ReactingOnDoorbell
 }
 
-export class OwnRingCamera {
-
-  public static getFullId(device: RingCamera, adapter: RingAdapter): string {
-    return `${this.evaluateKind(device, adapter)}_${device.id}`;
-  }
-
-  public static evaluateKind(device: RingCamera, adapter: RingAdapter): string {
-    switch (device.deviceType as RingCameraKind | string) {
-      case RingCameraKind.doorbot:
-      case RingCameraKind.doorbell:
-      case RingCameraKind.doorbell_v3:
-      case RingCameraKind.doorbell_v4:
-      case RingCameraKind.doorbell_v5:
-      case RingCameraKind.doorbell_graham_cracker:
-      case RingCameraKind.doorbell_portal:
-      case RingCameraKind.doorbell_scallop:
-      case RingCameraKind.doorbell_scallop_lite:
-      case RingCameraKind.hp_cam_v1:
-      case RingCameraKind.hp_cam_v2:
-      case RingCameraKind.lpd_v1:
-      case RingCameraKind.lpd_v2:
-      case RingCameraKind.floodlight_v1:
-      case RingCameraKind.floodlight_v2:
-      case RingCameraKind.spotlightw_v2:
-      case RingCameraKind.jbox_v1:
-      case "doorbell_oyster":
-      case "lpd_v3":
-      case "lpd_v4":
-        return `doorbell`;
-      case RingCameraKind.cocoa_camera:
-      case RingCameraKind.cocoa_doorbell:
-      case RingCameraKind.cocoa_floodlight:
-        return `cocoa`;
-      case RingCameraKind.stickup_cam:
-      case RingCameraKind.stickup_cam_v3:
-      case RingCameraKind.stickup_cam_v4:
-      case RingCameraKind.stickup_cam_mini:
-      case RingCameraKind.stickup_cam_lunar:
-      case RingCameraKind.stickup_cam_elite:
-        return `stickup`
-      default:
-        adapter.log.error(
-          `Device with Type ${device.deviceType} not yet supported, please inform dev Team via Github`
-        );
-        adapter.log.info(`Unsupported Device Info: ${util.inspect(device, false, 1)}`);
-    }
-    return "unknown";
-  }
-
-  private fullId: string;
+export class OwnRingCamera extends OwnRingDevice {
   private infoChannelId: string;
   private historyChannelId: string;
-  private kind: string;
   private lightChannelId: string;
   private eventsChannelId: string;
   private snapshotChannelId: string;
   private liveStreamChannelId: string;
-  private shortId: string;
-
-  private _adapter: RingAdapter;
-  private _client: RingApiClient;
-  private _locationId: string;
   private _ringDevice: RingCamera;
   private lastAction: LastAction | undefined;
   private _requestingSnapshot = false;
@@ -156,11 +101,6 @@ export class OwnRingCamera {
 
   get lastSnapShotDir(): string {
     return this._lastSnapShotDir;
-  }
-
-
-  get locationId(): string {
-    return this._locationId;
   }
 
   get ringDevice(): RingCamera {
@@ -214,14 +154,16 @@ export class OwnRingCamera {
   }
 
   public constructor(ringDevice: RingCamera, location: OwnRingLocation, adapter: RingAdapter, apiClient: RingApiClient) {
-    this._adapter = adapter;
+    super(
+      location,
+      adapter,
+      apiClient,
+      OwnRingCamera.evaluateKind(ringDevice, adapter),
+      `${ringDevice.id}`,
+      ringDevice.data.description
+    );
     this._ringDevice = ringDevice;
-    this.shortId = `${ringDevice.id}`;
     this.debug(`Create device`);
-    this._locationId = location.fullId;
-    this._client = apiClient;
-    this.kind = OwnRingCamera.evaluateKind(ringDevice, adapter);
-    this.fullId = `${this.kind}_${this.shortId}`;
     this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
     this.historyChannelId = `${this.fullId}.${CHANNEL_NAME_HISTORY}`;
     this.lightChannelId = `${this.fullId}.${CHANNEL_NAME_LIGHT}`;
@@ -241,13 +183,12 @@ export class OwnRingCamera {
   }
 
 
-  public processUserInput(channelID: string, stateID: string, state: ioBroker.State): void {
+  public override processUserInput(channelID: string, stateID: string, state: ioBroker.State): void {
     switch (channelID) {
       case "":
         if (stateID !== STATE_ID_DEBUG_REQUEST) {
           return;
         }
-
         const targetVal = state.val as boolean;
         if (targetVal) {
           this._adapter.log.info(`Device Debug Data for ${this.shortId}: ${util.inspect(this._ringDevice, false, 1)}`);
@@ -319,7 +260,7 @@ export class OwnRingCamera {
     }
   }
 
-  private async recreateDeviceObjectTree(): Promise<void> {
+  protected async recreateDeviceObjectTree(): Promise<void> {
     this.silly(`Recreate DeviceObjectTree`);
     this._adapter.createDevice(this.fullId, {
       name: `Device ${this.shortId} ("${this._ringDevice.data.description}")`
@@ -666,22 +607,6 @@ export class OwnRingCamera {
         floodlightOn
       );
     }
-  }
-
-  private debug(message: string): void {
-    this._adapter.log.debug(`Device ${this.shortId} ("${this.ringDevice.data.description}"): ${message}`);
-  }
-
-  private silly(message: string): void {
-    this._adapter.log.silly(`Device ${this.shortId} ("${this.ringDevice.data.description}"): ${message}`);
-  }
-
-  private info(message: string): void {
-    this._adapter.log.info(`Device ${this.shortId} ("${this.ringDevice.data.description}"): ${message}`);
-  }
-
-  private catcher(message: string, reason: any): void {
-    this._adapter.logCatch(message, reason);
   }
 
   private onDing(value: PushNotificationDing): void {
