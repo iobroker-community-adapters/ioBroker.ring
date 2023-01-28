@@ -411,7 +411,7 @@ It is recommended that you add your own tests into the mix.
 
 MIT License
 
-Copyright (c) 2018-2022 Thorsten <thorsten@stueben.de> / <https://github.com/schmupu>
+Copyright (c) 2018-2023 Thorsten <thorsten@stueben.de> / <https://github.com/schmupu>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
