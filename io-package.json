@@ -1,9 +1,22 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.2.4",
+    "version": "3.2.5",
     "title": "Ring",
     "news": {
+      "3.2.5": {
+        "en": "Update Packages",
+        "de": "Pakete aktualisieren",
+        "ru": "Обновление пакетов",
+        "pt": "Pacotes de atualização",
+        "nl": "Update Packages",
+        "fr": "Mise à jour des paquets",
+        "it": "Pacchetti di aggiornamento",
+        "es": "Paquetes de actualización",
+        "pl": "Package Update",
+        "uk": "Оновлення пакетів",
+        "zh-cn": "最新包装"
+      },
       "3.2.4": {
         "en": "#385 Fix for Unlock Request on intercoms",
         "de": "#385 Fix for Unlock Request on intercoms",
@@ -81,19 +94,6 @@
         "pl": "395 Resolve Package-lock (ang.)",
         "uk": "#395 Вирішити пакет-lock.json",
         "zh-cn": "#395 溶剂包装"
-      },
-      "3.1.8": {
-        "en": "Update Packages\nCompliance to newest ring api version",
-        "de": "Pakete aktualisieren\nEinhaltung der neuesten Ring-Api-Version",
-        "ru": "Обновление пакетов\nСоблюдение новейшей версии api кольца",
-        "pt": "Pacotes de atualização\nConformidade com a versão mais recente do api do anel",
-        "nl": "Update Packages\nQuality over Quantity (QoQ) Releases Vertaling:",
-        "fr": "Mise à jour des paquets\nConformité à la nouvelle version ring api",
-        "it": "Pacchetti di aggiornamento\nCompliance alla versione più recente",
-        "es": "Paquetes de actualización\nCumplimiento de la versión api más reciente",
-        "pl": "Package Update\nPorównanie do nowej wersji apiowej",
-        "uk": "Оновлення пакетів\nВідповідність найновішої версії кільце Api",
-        "zh-cn": "最新包装\n遵守新的环球版本"
       }
     },
     "titleLang": {
