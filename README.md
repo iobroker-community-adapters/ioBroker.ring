@@ -119,6 +119,11 @@ It is recommended that you add your own tests into the mix.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+* (theimo1221) Update Packages
+
 ### 3.2.4 (2022-12-15)
 
 * (theimo1221) #385 Fix for Unlock Request on intercoms
