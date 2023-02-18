@@ -43,6 +43,13 @@ class RingApiClient {
             this.adapter.upsertState("next_refresh_token", constants_1.COMMON_NEW_TOKEN, data.newRefreshToken);
             this.adapter.upsertState("old_user_refresh_token", constants_1.COMMON_OLD_TOKEN, this.adapter.config.refreshtoken);
         });
+        const profile = await this._api.getProfile()
+            .catch((reason) => {
+            this.handleApiError(reason);
+        });
+        if (profile === undefined) {
+            this.warn("Couldn't Retrieve profile, please make sure your api-token is fresh and correct");
+        }
         return this._api;
     }
     constructor(adapter) {
@@ -71,15 +78,14 @@ class RingApiClient {
         if (!await this.retrieveLocations()) {
             if (initial) {
                 this.adapter.terminate(`Failed to retrieve any locations for your ring Account.`);
+                return;
             }
-            else {
-                if (this._retryTimeout !== null) {
-                    clearTimeout(this._retryTimeout);
-                    this._retryTimeout = null;
-                }
-                this.warn(`Couldn't load data from Ring Server on reconnect, will retry in 5 Minutes...`);
-                this._retryTimeout = setTimeout(this.refreshAll.bind(this), 5 * 60 * 1000);
+            if (this._retryTimeout !== null) {
+                clearTimeout(this._retryTimeout);
+                this._retryTimeout = null;
             }
+            this.warn(`Couldn't load data from Ring Server on reconnect, will retry in 5 Minutes...`);
+            this._retryTimeout = setTimeout(this.refreshAll.bind(this), 5 * 60 * 1000);
         }
         else {
             if (this._retryTimeout !== null) {
@@ -146,6 +152,7 @@ class RingApiClient {
                 if (typeof locs != "object" || ((_a = locs === null || locs === void 0 ? void 0 : locs.length) !== null && _a !== void 0 ? _a : 0) == 0) {
                     this.debug("getLocations was successful, but received no array");
                     res(false);
+                    return;
                 }
                 this.debug(`Received ${locs === null || locs === void 0 ? void 0 : locs.length} Locations`);
                 this._locations = {};

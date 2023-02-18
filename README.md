@@ -119,8 +119,7 @@ It is recommended that you add your own tests into the mix.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 3.2.6 (2023-02-18)
 
 * (theimo1221) Improve behaviour on initial Location load fail
 * (theimo1221) Update Packages

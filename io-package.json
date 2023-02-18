@@ -1,9 +1,22 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.2.5",
+    "version": "3.2.6",
     "title": "Ring",
     "news": {
+      "3.2.6": {
+        "en": "Improve behaviour on initial Location load fail\nUpdate Packages",
+        "de": "Verbessern Sie das Verhalten bei anfänglichem Standortlastausfall\nPakete aktualisieren",
+        "ru": "Улучшить поведение на начальном уровне невыполнение нагрузки\nОбновление пакетов",
+        "pt": "Melhorar o comportamento na falha inicial da carga de Localização\nPacotes de atualização",
+        "nl": "Improviseer gedrag op de eerste locatielading falen\nUpdate Packages",
+        "fr": "Améliorez le comportement sur la charge initiale\nMise à jour des paquets",
+        "it": "Migliorare il comportamento sul guasto del carico iniziale\nPacchetti di aggiornamento",
+        "es": "Mejorar el comportamiento en la carga inicial\nPaquetes de actualización",
+        "pl": "Powodzenie na wstępny ładunek w Location nie powiodło się\nPackage Update",
+        "uk": "Поліпшення поведінки на початковому завантаження локації\nОновлення пакетів",
+        "zh-cn": "改善初始装货行为失败\n最新包装"
+      },
       "3.2.5": {
         "en": "Update Packages",
         "de": "Pakete aktualisieren",
@@ -81,19 +94,6 @@
         "pl": "Package Update\n#373 Increase logowanie i zmiany kolejności na Doorbell Event",
         "uk": "Оновлення пакетів\n#373 Підвищений вхід і зміна замовлення запису на Двербелл Захід",
         "zh-cn": "最新包装\n#373 增加Doorbell事件的伐木和改变记录令"
-      },
-      "3.1.9": {
-        "en": "#395 Resolve Package-lock.json issues",
-        "de": "#395 Resolve Package-lock.json Probleme",
-        "ru": "#395 Решить пакет-lock.json проблемы",
-        "pt": "#395 Resolve problemas Package-lock.json",
-        "nl": "395 Resolve Package-lock",
-        "fr": "#395 Resolve Package-lock.json issues",
-        "it": "#395 Risolvere i problemi del pacchetto-lock.json",
-        "es": "#395 Resolve Paquete-lock.json números",
-        "pl": "395 Resolve Package-lock (ang.)",
-        "uk": "#395 Вирішити пакет-lock.json",
-        "zh-cn": "#395 溶剂包装"
       }
     },
     "titleLang": {
