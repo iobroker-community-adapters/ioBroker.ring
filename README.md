@@ -123,6 +123,7 @@ It is recommended that you add your own tests into the mix.
 ### **WORK IN PROGRESS**
 
 * (theimo1221) Improve behaviour on initial Location load fail
+* (theimo1221) Update Packages
 
 ### 3.2.5 (2023-01-28)
 
