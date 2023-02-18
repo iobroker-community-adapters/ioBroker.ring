@@ -55,6 +55,13 @@ export class RingApiClient {
       this.adapter.upsertState("next_refresh_token", COMMON_NEW_TOKEN, data.newRefreshToken);
       this.adapter.upsertState("old_user_refresh_token", COMMON_OLD_TOKEN, this.adapter.config.refreshtoken);
     });
+    const profile = await this._api.getProfile()
+      .catch((reason: any) => {
+        this.handleApiError(reason)
+      })
+    if (profile === undefined) {
+      this.warn("Couldn't Retrieve profile, please make sure your api-token is fresh and correct")
+    }
     return this._api;
   }
 
@@ -82,14 +89,14 @@ export class RingApiClient {
     if (!await this.retrieveLocations()) {
       if (initial) {
         this.adapter.terminate(`Failed to retrieve any locations for your ring Account.`);
-      } else {
-        if (this._retryTimeout !== null) {
-          clearTimeout(this._retryTimeout);
-          this._retryTimeout = null;
-        }
-        this.warn(`Couldn't load data from Ring Server on reconnect, will retry in 5 Minutes...`)
-        this._retryTimeout = setTimeout(this.refreshAll.bind(this), 5 * 60 * 1000);
+        return;
       }
+      if (this._retryTimeout !== null) {
+        clearTimeout(this._retryTimeout);
+        this._retryTimeout = null;
+      }
+      this.warn(`Couldn't load data from Ring Server on reconnect, will retry in 5 Minutes...`)
+      this._retryTimeout = setTimeout(this.refreshAll.bind(this), 5 * 60 * 1000);
     } else {
       if (this._retryTimeout !== null) {
         clearTimeout(this._retryTimeout);
@@ -155,6 +162,7 @@ export class RingApiClient {
           if (typeof locs != "object" || (locs?.length ?? 0) == 0) {
             this.debug("getLocations was successful, but received no array")
             res(false);
+            return;
           }
           this.debug(`Received ${locs?.length} Locations`);
           this._locations = {};
