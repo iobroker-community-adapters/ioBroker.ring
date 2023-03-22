@@ -48,9 +48,7 @@ export class RingAdapter extends utils.Adapter {
     const dataDir = (this.systemConfig) ? this.systemConfig.dataDir : "";
     this.log.silly(`DataDir: ${dataDir}`);
     if (!this.config.path) {
-      this.config.path = path.normalize(
-        `${utils.controllerDir}/${dataDir}files/${this.namespace}`
-      );
+      this.config.path = path.join(utils.getAbsoluteDefaultDataDir(), "files", this.namespace)
       this.log.debug(`New Config Path: "${this.config.path}"`);
     }
     await FileService.prepareFolder(this.config.path);
