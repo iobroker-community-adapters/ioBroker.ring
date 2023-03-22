@@ -1,9 +1,22 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.2.6",
+    "version": "3.2.7",
     "title": "Ring",
     "news": {
+      "3.2.7": {
+        "en": "prepare js-controller v5",
+        "de": "js-controller v5",
+        "ru": "подготовить js-контроллер v5",
+        "pt": "preparar js-controller v5",
+        "nl": "bereid js-controller v5",
+        "fr": "préparer js-controller v5",
+        "it": "preparare js-controller v5",
+        "es": "preparar js-controller v5",
+        "pl": "js-kontroler v5",
+        "uk": "підготовка js-controller v5",
+        "zh-cn": "j 准备控制勒诉5"
+      },
       "3.2.6": {
         "en": "Improve behaviour on initial Location load fail\nUpdate Packages",
         "de": "Verbessern Sie das Verhalten bei anfänglichem Standortlastausfall\nPakete aktualisieren",
@@ -81,19 +94,6 @@
         "pl": "Redeploy",
         "uk": "Червоноплой",
         "zh-cn": "调动"
-      },
-      "3.2.0": {
-        "en": "Update Packages\n#373 Increase logging and change recording order on Doorbell Event",
-        "de": "Pakete aktualisieren\n#373 Erhöhen Sie Protokollierungs- und Änderungsauftrag auf Doorbell Event",
-        "ru": "Обновление пакетов\n#373 Увеличить логистику и изменить порядок записи на мероприятии Doorbell",
-        "pt": "Pacotes de atualização\n#373 Aumentar a ordem de gravação e alteração no Evento da campainha",
-        "nl": "Update Packages\n♪373 Increase logging and change recording order on Doorbell Event ♪",
-        "fr": "Mise à jour des paquets\n#373 Augmenter l'ordre d'enregistrement et de modification de Doorbell Event",
-        "it": "Pacchetti di aggiornamento\n#373 Aumentare logging e modificare l'ordine di registrazione su Doorbell Event",
-        "es": "Paquetes de actualización\n#373 Aumentar el orden de registro y cambiar el orden de grabación en Doorbell Event",
-        "pl": "Package Update\n#373 Increase logowanie i zmiany kolejności na Doorbell Event",
-        "uk": "Оновлення пакетів\n#373 Підвищений вхід і зміна замовлення запису на Двербелл Захід",
-        "zh-cn": "最新包装\n#373 增加Doorbell事件的伐木和改变记录令"
       }
     },
     "titleLang": {
