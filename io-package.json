@@ -1,9 +1,22 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.2.7",
+    "version": "3.3.0",
     "title": "Ring",
     "news": {
+      "3.3.0": {
+        "en": "Update Packages\nDevice with Type stickup_cam_longfin not yet supported #483",
+        "de": "Pakete aktualisieren\nGerät mit Typ stickup_cam_longfin noch nicht unterstützt #483",
+        "ru": "Обновление пакетов\nУстройство с типом Stickup_cam_longfin еще не поддерживается #483",
+        "pt": "Pacotes de atualização\nDispositivo com Tipo stickup_cam_longfin ainda não suportado #483",
+        "nl": "Update Packages\nQuality over Quantity (QoQ) Releases Vertaling:",
+        "fr": "Mise à jour des paquets\nAppareil avec Type stickup_cam_longfin pas encore supporté #483",
+        "it": "Pacchetti di aggiornamento\nDispositivo con Tipo stickup_cam_longfin non ancora supportato #483",
+        "es": "Paquetes de actualización\nDispositivo con tipo stickup_cam_longfin aún no soportado #483",
+        "pl": "Package Update\nUwaga z Type stickup_longfinem nie była jeszcze wspierana",
+        "uk": "Оновлення пакетів\nПристрої з Type stickup_cam_longfin ще не підтримується #483",
+        "zh-cn": "最新包装\n第483号行动"
+      },
       "3.2.7": {
         "en": "prepare js-controller v5",
         "de": "js-controller v5",
@@ -81,19 +94,6 @@
         "pl": "#373 wydarzenia Fix otrzymujące instancje iobrokerowe bez unikalnej nazwy hostname",
         "uk": "#373 Фіксований захід для екземплярів iobroker без унікального імені хоста",
         "zh-cn": "第373 Fix号活动,在无人独有的旅名的情况下接收iobroker案"
-      },
-      "3.2.1": {
-        "en": "Redeploy",
-        "de": "Beschäftigung",
-        "ru": "Переработка",
-        "pt": "Responsabilidade",
-        "nl": "Redeploy",
-        "fr": "Transferts",
-        "it": "Redeploy",
-        "es": "Redistribución",
-        "pl": "Redeploy",
-        "uk": "Червоноплой",
-        "zh-cn": "调动"
       }
     },
     "titleLang": {
