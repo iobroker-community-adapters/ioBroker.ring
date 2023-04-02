@@ -119,7 +119,13 @@ It is recommended that you add your own tests into the mix.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+* (theimo1221) Update Packages
+
 ### 3.2.7 (2023-03-22)
+
 * (foxriver76) prepare js-controller v5
 
 ### 3.2.6 (2023-02-18)
