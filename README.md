@@ -123,6 +123,7 @@ It is recommended that you add your own tests into the mix.
 ### **WORK IN PROGRESS**
 
 * (theimo1221) Update Packages
+* (theimo1221) Device with Type stickup_cam_longfin not yet supported #483
 
 ### 3.2.7 (2023-03-22)
 

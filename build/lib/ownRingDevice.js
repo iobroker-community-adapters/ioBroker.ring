@@ -39,7 +39,8 @@ class OwnRingDevice {
             case ring_client_api_1.RingCameraKind.lpd_v2:
             case ring_client_api_1.RingCameraKind.floodlight_v1:
             case ring_client_api_1.RingCameraKind.floodlight_v2:
-            case ring_client_api_1.RingCameraKind.spotlightw_v2:
+          case ring_client_api_1.RingCameraKind.floodlight_pro:
+          case ring_client_api_1.RingCameraKind.spotlightw_v2:
             case ring_client_api_1.RingCameraKind.jbox_v1:
             case "doorbell_oyster":
             case "lpd_v3":
@@ -54,10 +55,11 @@ class OwnRingDevice {
             case ring_client_api_1.RingCameraKind.stickup_cam_v4:
             case ring_client_api_1.RingCameraKind.stickup_cam_mini:
             case ring_client_api_1.RingCameraKind.stickup_cam_lunar:
-            case ring_client_api_1.RingCameraKind.stickup_cam_elite:
-                return `stickup`;
-            case ring_client_api_1.RingDeviceType.IntercomHandsetAudio:
-                return `intercom`;
+          case ring_client_api_1.RingCameraKind.stickup_cam_elite:
+          case ring_client_api_1.RingCameraKind.stickup_cam_longfin:
+            return `stickup`;
+          case ring_client_api_1.RingDeviceType.IntercomHandsetAudio:
+            return `intercom`;
             default:
                 adapter.log.error(`Device with Type ${deviceType} not yet supported, please inform dev Team via Github`);
                 adapter.log.info(`Unsupported Device Info: ${util_1.default.inspect(device, false, 1)}`);

@@ -58,6 +58,7 @@ export abstract class OwnRingDevice {
       case RingCameraKind.lpd_v2:
       case RingCameraKind.floodlight_v1:
       case RingCameraKind.floodlight_v2:
+      case RingCameraKind.floodlight_pro:
       case RingCameraKind.spotlightw_v2:
       case RingCameraKind.jbox_v1:
       case "doorbell_oyster":
@@ -74,6 +75,7 @@ export abstract class OwnRingDevice {
       case RingCameraKind.stickup_cam_mini:
       case RingCameraKind.stickup_cam_lunar:
       case RingCameraKind.stickup_cam_elite:
+      case RingCameraKind.stickup_cam_longfin:
         return `stickup`
       case RingDeviceType.IntercomHandsetAudio:
         return `intercom`

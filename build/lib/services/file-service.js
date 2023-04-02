@@ -102,6 +102,6 @@ class FileService {
         return fullPath.split(adapter.namespace)[1];
     }
 }
-exports.FileService = FileService;
 FileService.IOBROKER_FILES_REGEX = new RegExp(/.*iobroker-data\/files.*/);
+exports.FileService = FileService;
 //# sourceMappingURL=file-service.js.map
