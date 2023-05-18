@@ -1,9 +1,22 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.3.0",
+    "version": "3.3.1",
     "title": "Ring",
     "news": {
+      "3.3.1": {
+        "en": "Update Packages",
+        "de": "Pakete aktualisieren",
+        "ru": "Обновление пакетов",
+        "pt": "Pacotes de atualização",
+        "nl": "Update Packages",
+        "fr": "Mise à jour des paquets",
+        "it": "Pacchetti di aggiornamento",
+        "es": "Paquetes de actualización",
+        "pl": "Package Update",
+        "uk": "Оновлення пакетів",
+        "zh-cn": "最新包装"
+      },
       "3.3.0": {
         "en": "Update Packages\nDevice with Type stickup_cam_longfin not yet supported #483",
         "de": "Pakete aktualisieren\nGerät mit Typ stickup_cam_longfin noch nicht unterstützt #483",
@@ -81,19 +94,6 @@
         "pl": "Package Update\n#385 (ang.). Ring Intercom",
         "uk": "Оновлення пакетів\n#385 Експериментальне Кільцева підтримка",
         "zh-cn": "最新包装\n第385号实验 部门间支助"
-      },
-      "3.2.2": {
-        "en": "#373 Fix event receiving for iobroker instances without unique hostname",
-        "de": "#373 Fix Event empfangen für iobroker Instanzen ohne einzigartigen Hostnamen",
-        "ru": "#373 Fix event прием для инстанций iobroker без уникального имени хоста",
-        "pt": "#373 Corrigir evento recebendo para instâncias iobroker sem nome de host único",
-        "nl": "♪373 Fix event ontvangen voor iobroker instances zonder unieke naam",
-        "fr": "#373 Réception d'événements fixes pour les instances iobroker sans nom d'hôte unique",
-        "it": "#373 Evento fisso che riceve per istanze iobroker senza nome host unico",
-        "es": "#373 Arregla el evento recibiendo para instancias de iobroker sin nombre de host único",
-        "pl": "#373 wydarzenia Fix otrzymujące instancje iobrokerowe bez unikalnej nazwy hostname",
-        "uk": "#373 Фіксований захід для екземплярів iobroker без унікального імені хоста",
-        "zh-cn": "第373 Fix号活动,在无人独有的旅名的情况下接收iobroker案"
       }
     },
     "titleLang": {
