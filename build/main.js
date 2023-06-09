@@ -263,7 +263,7 @@ class RingAdapter extends utils.Adapter {
     }
 }
 exports.RingAdapter = RingAdapter;
-RingAdapter.isWindows = process.platform.startsWith('win');
+RingAdapter.isWindows = process.platform.startsWith("win");
 if (require.main !== module) {
     // Export the constructor in compact mode
     module.exports = (options) => new RingAdapter(options);

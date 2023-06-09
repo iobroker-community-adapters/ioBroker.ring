@@ -1,9 +1,22 @@
 {
   "common": {
     "name": "ring",
-    "version": "3.3.1",
+    "version": "3.4.0",
     "title": "Ring",
     "news": {
+      "3.4.0": {
+        "en": "Update Packages (which allows node 20 now)",
+        "de": "Update-Pakete (was den Knoten 20 jetzt erlaubt)",
+        "ru": "Обновление пакетов (что позволяет node 20 сейчас)",
+        "pt": "Atualizar Pacotes (que permite o nó 20 agora)",
+        "nl": "Vertaling:",
+        "fr": "Mise à jour des paquets (qui permet node 20 maintenant)",
+        "it": "Pacchetti di aggiornamento (che permette nodo 20 ora)",
+        "es": "Paquetes de actualización (que permite el nodo 20 ahora)",
+        "pl": "Update Packages (ang.)",
+        "uk": "Оновлення пакетів (що дозволяє встановити 20 тепер)",
+        "zh-cn": "最新包装(现在不允许20个)"
+      },
       "3.3.1": {
         "en": "Update Packages",
         "de": "Pakete aktualisieren",
@@ -81,19 +94,6 @@
         "pl": "385 Fix for Unlock Request on Intercoms (ang.)",
         "uk": "#385 Фіксація для розблокування Запит на домофони",
         "zh-cn": "第385 Fix号 要求停止相互间联系"
-      },
-      "3.2.3": {
-        "en": "Update Packages\n#385 Experimental Ring Intercom support",
-        "de": "Pakete aktualisieren\n#385 Experimental Ring Intercom Unterstützung",
-        "ru": "Обновление пакетов\n#385 Экспериментальный Поддержка Ring Intercom",
-        "pt": "Pacotes de atualização\n#385 Experimental Suporte ao Ring Intercom",
-        "nl": "Update Packages\n#385 Experimental Ring Intercom",
-        "fr": "Mise à jour des paquets\n#385 Experimental Soutien Ring Intercom",
-        "it": "Pacchetti di aggiornamento\n#385 Experimental Supporto per citofono",
-        "es": "Paquetes de actualización\n#385 Experimental Soporte de intercomunicación",
-        "pl": "Package Update\n#385 (ang.). Ring Intercom",
-        "uk": "Оновлення пакетів\n#385 Експериментальне Кільцева підтримка",
-        "zh-cn": "最新包装\n第385号实验 部门间支助"
       }
     },
     "titleLang": {
