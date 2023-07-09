@@ -1,8 +1,51 @@
 {
   "common": {
+    "adminTab": {
+      "singleton": true,
+      "name": {
+        "en": "Ring Adapter",
+        "de": "Ring Adapter"
+      },
+      "link": "",
+      "fa-icon": "info"
+    },
+    "authors": [
+      "Thorsten Stueben <thorsten@stueben.de>"
+    ],
+    "compact": true,
+    "dependencies": [
+      {
+        "js-controller": ">=4.0.0"
+      }
+    ],
+    "desc": {
+      "en": "Ring Adapter",
+      "de": "Ring Adapter",
+      "ru": "Ring адаптер",
+      "pt": "Adaptador Ring",
+      "nl": "Ring adapter",
+      "fr": "Adaptateur Ring",
+      "it": "Adattatore Ring",
+      "es": "Adaptador Ring",
+      "pl": "Adapter Ring",
+      "zh-cn": "紧定环"
+    },
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.ring/master/admin/ring.png",
+    "icon": "ring.png",
+    "keywords": [
+      "ioBroker",
+      "Ring",
+      "Smart Home",
+      "home automation"
+    ],
+    "license": "MIT",
+    "loglevel": "info",
+    "main": "build/main.js",
+    "materialize": true,
+    "materializeTab": true,
+    "mode": "daemon",
     "name": "ring",
-    "version": "3.4.0",
-    "title": "Ring",
     "news": {
       "3.4.0": {
         "en": "Update Packages (which allows node 20 now)",
@@ -96,6 +139,10 @@
         "zh-cn": "第385 Fix号 要求停止相互间联系"
       }
     },
+    "platform": "Javascript/Node.js",
+    "readme": "https://github.com/iobroker-community-adapters/ioBroker.ring/blob/master/README.md",
+    "supportCustoms": false,
+    "title": "Ring",
     "titleLang": {
       "en": "Ring",
       "de": "Ring",
@@ -108,72 +155,9 @@
       "pl": "Ring",
       "zh-cn": "环"
     },
-    "desc": {
-      "en": "Ring Adapter",
-      "de": "Ring Adapter",
-      "ru": "Ring адаптер",
-      "pt": "Adaptador Ring",
-      "nl": "Ring adapter",
-      "fr": "Adaptateur Ring",
-      "it": "Adattatore Ring",
-      "es": "Adaptador Ring",
-      "pl": "Adapter Ring",
-      "zh-cn": "紧定环"
-    },
-    "license": "MIT",
-    "authors": [
-      "Thorsten Stueben <thorsten@stueben.de>"
-    ],
-    "keywords": [
-      "ioBroker",
-      "Ring",
-      "Smart Home",
-      "home automation"
-    ],
-    "platform": "Javascript/Node.js",
-    "main": "build/main.js",
-    "icon": "ring.png",
-    "enabled": true,
-    "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.ring/master/admin/ring.png",
-    "readme": "https://github.com/iobroker-community-adapters/ioBroker.ring/blob/master/README.md",
-    "loglevel": "info",
-    "mode": "daemon",
     "type": "hardware",
-    "compact": true,
-    "materialize": true,
-    "materializeTab": true,
-    "adminTab": {
-      "singleton": true,
-      "name": {
-        "en": "Ring Adapter",
-        "de": "Ring Adapter"
-      },
-      "link": "",
-      "fa-icon": "info"
-    },
-    "supportCustoms": false,
-    "dependencies": [
-      {
-        "js-controller": ">=4.0.0"
-      }
-    ]
+    "version": "3.4.0"
   },
-  "native": {
-    "email": "email@test.foo",
-    "password": "password",
-    "twofaceauth": false,
-    "refreshtoken": "",
-    "timeout": 5,
-    "pollsec": 15,
-    "recordtime_livestream": 10,
-    "path": "",
-    "filename_livestream": "livestream%i_%d.mp4",
-    "filename_snapshot": "snapshot%i_%d.jpg",
-    "del_old_livestream": true,
-    "del_old_snapshot": true,
-    "sentry_enable": true
-  },
-  "objects": [],
   "instanceObjects": [
     {
       "_id": "",
@@ -184,5 +168,21 @@
       },
       "native": {}
     }
-  ]
+  ],
+  "native": {
+    "del_old_livestream": true,
+    "del_old_snapshot": true,
+    "email": "email@test.foo",
+    "filename_livestream": "livestream%i_%d.mp4",
+    "filename_snapshot": "snapshot%i_%d.jpg",
+    "password": "password",
+    "path": "",
+    "pollsec": 15,
+    "recordtime_livestream": 10,
+    "refreshtoken": "",
+    "sentry_enable": true,
+    "timeout": 5,
+    "twofaceauth": false
+  },
+  "objects": []
 }
