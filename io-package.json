@@ -13,6 +13,8 @@
       "Thorsten Stueben <thorsten@stueben.de>"
     ],
     "compact": true,
+    "connectionType": "cloud",
+    "dataSource": "push",
     "dependencies": [
       {
         "js-controller": ">=4.0.0"
