@@ -36,7 +36,17 @@ systemDictionary = {
 		"pl": "on save adapter restarts with new config immediately"
 	},
 	"ringdescription": {
-		"en": "This adapter needs a valid refresh token. You can generate one following the description in the readme.",
+		'en': 'This adapter needs a valid refresh token. You can generate one following the description in the readme.',
+		'de': 'Dieser Adapter benötigt einen gültigen Erfrischungstoken. Sie können eine nach der Beschreibung im Readme generieren.',
+		'ru': 'Этот адаптер нужен действительный токен обновления. Вы можете генерировать одно после описания в читаеме.',
+		'pt': 'Este adaptador precisa de um token de atualização válido. Você pode gerar um seguindo a descrição no readme.',
+		'nl': 'Deze adapter heeft een geldige verfrissing nodig. Je kunt er een genereren die de beschrijving in de lezing volgt.',
+		'fr': 'Cet adaptateur a besoin d\'un jeton de rafraîchissement valide. Vous pouvez en produire une après la description dans le readme.',
+		'it': 'Questo adattatore ha bisogno di un token di aggiornamento valido. È possibile generare uno seguendo la descrizione nel testo.',
+		'es': 'Este adaptador necesita un token de refresco válido. Usted puede generar uno siguiendo la descripción en el readme.',
+		'pl': 'Ta adapter potrzebuje prawidłowego odświeżenia. Możesz generować jeden po opisie w tekście.',
+		'uk': 'Цей адаптер потребує дійсного освіжаючого токена. Ви можете створити один наступний опис у чителю.',
+		'zh-cn': '这种适应者需要一个有效的驳斥。 你可以在阅读主题中作一发言。.'
 	},
 	"User": {
 		"en": "User",

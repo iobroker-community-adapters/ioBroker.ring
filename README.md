@@ -88,6 +88,11 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+* (theimo1221) Compliance to adapter-checker
+
 ### 3.4.0 (2023-06-09)
 
 * (theimo1221) Update Packages (which allows node 20 now)
