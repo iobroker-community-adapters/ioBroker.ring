@@ -151,7 +151,7 @@
       "link": "",
       "fa-icon": "info"
     },
-    "supportCustoms": true,
+    "supportCustoms": false,
     "dependencies": [
       {
         "js-controller": ">=4.0.0"
