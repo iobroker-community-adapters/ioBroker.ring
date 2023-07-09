@@ -37,10 +37,9 @@
     "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.ring/master/admin/ring.png",
     "icon": "ring.png",
     "keywords": [
-      "ioBroker",
       "Ring",
-      "Smart Home",
-      "home automation"
+      "Camera",
+      "Doorbell"
     ],
     "license": "MIT",
     "loglevel": "info",
