@@ -92,6 +92,7 @@ doorbell recorded video.
 ### **WORK IN PROGRESS**
 
 * (theimo1221) Compliance to adapter-checker
+* (theimo1221) Update Packages
 
 ### 3.4.0 (2023-06-09)
 
