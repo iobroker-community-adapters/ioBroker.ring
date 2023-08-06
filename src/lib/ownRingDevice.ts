@@ -77,6 +77,7 @@ export abstract class OwnRingDevice {
       case RingCameraKind.stickup_cam_lunar:
       case RingCameraKind.stickup_cam_elite:
       case RingCameraKind.stickup_cam_longfin:
+      case "stickup_cam_longfin":
         return `stickup`
       case RingDeviceType.IntercomHandsetAudio:
         return `intercom`
