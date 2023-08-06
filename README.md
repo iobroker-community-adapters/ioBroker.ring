@@ -93,6 +93,7 @@ doorbell recorded video.
 
 * (theimo1221) Compliance to adapter-checker
 * (theimo1221) Update Packages
+* (theimo1221) #548 Debounce Doorbell Presses
 
 ### 3.4.0 (2023-06-09)
 

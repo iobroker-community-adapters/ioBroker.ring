@@ -94,6 +94,7 @@ export class OwnRingCamera extends OwnRingDevice {
   private _snapshotCount = 0;
   private _liveStreamCount = 0;
   private _state = EventState.Idle;
+  private _doorbellEventActive: boolean = false;
 
   get lastLiveStreamDir(): string {
     return this._lastLiveStreamDir;
@@ -631,11 +632,20 @@ export class OwnRingCamera extends OwnRingDevice {
   }
 
   private onDorbell(value: PushNotificationDing): void {
+    if (this._doorbellEventActive) {
+      this.debug(`Recieved Doorbell Event, but we are already reacting. Ignoring.`)
+      return;
+    }
+    this.info("Doorbell pressed --> Will ignore additional presses for the next 25s.")
     this.debug(`Recieved Doorbell Event (${util.inspect(value, true, 1)})`);
+    this._doorbellEventActive = true;
     this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, COMMON_EVENTS_DOORBELL, true);
     setTimeout(() => {
       this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, COMMON_EVENTS_DOORBELL, false);
     }, 5000);
+    setTimeout(() => {
+      this._doorbellEventActive = false;
+    }, 25000);
     this.conditionalRecording(EventState.ReactingOnDoorbell, value.ding.image_uuid);
   }
 
