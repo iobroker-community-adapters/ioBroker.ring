@@ -101,7 +101,8 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._snapshotCount = 0;
         this._liveStreamCount = 0;
         this._state = EventState.Idle;
-        this._ringDevice = ringDevice;
+      this._doorbellEventActive = false;
+      this._ringDevice = ringDevice;
         this.debug(`Create device`);
         this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
         this.historyChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HISTORY}`;
@@ -400,12 +401,21 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         }
     }
     onDorbell(value) {
-        this.debug(`Recieved Doorbell Event (${util.inspect(value, true, 1)})`);
-        this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, constants_1.COMMON_EVENTS_DOORBELL, true);
-        setTimeout(() => {
-            this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, constants_1.COMMON_EVENTS_DOORBELL, false);
-        }, 5000);
-        this.conditionalRecording(EventState.ReactingOnDoorbell, value.ding.image_uuid);
+      if (this._doorbellEventActive) {
+        this.debug(`Recieved Doorbell Event, but we are already reacting. Ignoring.`);
+        return;
+      }
+      this.info('Doorbell pressed --> Will ignore additional presses for the next 25s.');
+      this.debug(`Recieved Doorbell Event (${util.inspect(value, true, 1)})`);
+      this._doorbellEventActive = true;
+      this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, constants_1.COMMON_EVENTS_DOORBELL, true);
+      setTimeout(() => {
+        this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, constants_1.COMMON_EVENTS_DOORBELL, false);
+      }, 5000);
+      setTimeout(() => {
+        this._doorbellEventActive = false;
+      }, 25000);
+      this.conditionalRecording(EventState.ReactingOnDoorbell, value.ding.image_uuid);
     }
     async conditionalRecording(state, uuid) {
         if (this._state === EventState.Idle) {

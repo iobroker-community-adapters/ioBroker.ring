@@ -5,6 +5,7 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 import * as utils from "@iobroker/adapter-core";
+import { Adapter } from "@iobroker/adapter-core";
 import { RingApiClient } from "./lib/ringApiClient";
 import path from "path";
 import { FileService } from "./lib/services/file-service";
@@ -12,10 +13,14 @@ import { FileService } from "./lib/services/file-service";
 // Load your modules here, e.g.:
 // import * as fs from "fs";
 
-export class RingAdapter extends utils.Adapter {
+export class RingAdapter extends Adapter {
   private apiClient: RingApiClient | undefined;
   public static isWindows: boolean = process.platform.startsWith("win");
   private states: { [id: string]: ioBroker.StateValue } = {};
+
+  public get absoluteInstanceDir(): string {
+    return utils.getAbsoluteInstanceDataDir(this as unknown as ioBroker.Adapter);
+  }
 
   public constructor(options: Partial<utils.AdapterOptions> = {}) {
     options.systemConfig = true;

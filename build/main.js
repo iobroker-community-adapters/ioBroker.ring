@@ -32,26 +32,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RingAdapter = void 0;
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
-const utils = __importStar(require("@iobroker/adapter-core"));
+const adapter_core_1 = require('@iobroker/adapter-core');
+const utils = __importStar(require('@iobroker/adapter-core'));
 const ringApiClient_1 = require("./lib/ringApiClient");
 const path_1 = __importDefault(require("path"));
 const file_service_1 = require("./lib/services/file-service");
 // Load your modules here, e.g.:
 // import * as fs from "fs";
-class RingAdapter extends utils.Adapter {
-    constructor(options = {}) {
-        options.systemConfig = true;
-        super({
-            ...options,
-            name: "ring",
-        });
-        this.states = {};
-        this.on("ready", this.onReady.bind(this));
-        this.on("stateChange", this.onStateChange.bind(this));
-        // this.on("objectChange", this.onObjectChange.bind(this));
+class RingAdapter extends adapter_core_1.Adapter {
+  constructor(options = {}) {
+    options.systemConfig = true;
+    super({
+      ...options,
+      name: 'ring',
+    });
+    this.states = {};
+    this.on('ready', this.onReady.bind(this));
+    this.on('stateChange', this.onStateChange.bind(this));
+    // this.on("objectChange", this.onObjectChange.bind(this));
         // this.on("message", this.onMessage.bind(this));
         this.on("unload", this.onUnload.bind(this));
     }
+
+  get absoluteInstanceDir() {
+    return utils.getAbsoluteInstanceDataDir(this);
+  }
     /**
      * Is called when databases are connected and adapter received configuration.
      */

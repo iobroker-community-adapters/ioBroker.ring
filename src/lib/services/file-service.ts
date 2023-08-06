@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 import { RingAdapter } from "../../main";
-import * as utils from "@iobroker/adapter-core";
+import "@iobroker/types";
 
 export class FileService {
   public static readonly IOBROKER_FILES_REGEX = new RegExp(/.*iobroker-data\/files.*/);
@@ -72,7 +72,7 @@ export class FileService {
   }
 
   public static async getTempDir(adapter: RingAdapter): Promise<string> {
-    const tempPath = path.join(utils.getAbsoluteInstanceDataDir(adapter));
+    const tempPath = path.join(adapter.absoluteInstanceDir);
     await this.prepareFolder(tempPath);
     return tempPath;
   }
