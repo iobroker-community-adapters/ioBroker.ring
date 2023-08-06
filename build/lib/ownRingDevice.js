@@ -48,7 +48,7 @@ class OwnRingDevice {
                 return `doorbell`;
             case ring_client_api_1.RingCameraKind.cocoa_camera:
             case ring_client_api_1.RingCameraKind.cocoa_doorbell:
-            case 'cocoa_doorbell_v2':
+            case "cocoa_doorbell_v2":
             case ring_client_api_1.RingCameraKind.cocoa_floodlight:
                 return `cocoa`;
             case ring_client_api_1.RingCameraKind.stickup_cam:
@@ -58,7 +58,7 @@ class OwnRingDevice {
             case ring_client_api_1.RingCameraKind.stickup_cam_lunar:
             case ring_client_api_1.RingCameraKind.stickup_cam_elite:
             case ring_client_api_1.RingCameraKind.stickup_cam_longfin:
-            case 'stickup_cam_longfin':
+            case "stickup_cam_longfin":
                 return `stickup`;
             case ring_client_api_1.RingDeviceType.IntercomHandsetAudio:
                 return `intercom`;

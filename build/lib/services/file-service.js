@@ -7,7 +7,7 @@ exports.FileService = void 0;
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const main_1 = require("../../main");
-require('@iobroker/types');
+require("@iobroker/types");
 class FileService {
     static getPath(basePath, extendedPath, count, shortId, fullId, kind) {
         const fullPath = path_1.default.join(basePath, fullId, extendedPath)
@@ -60,7 +60,7 @@ class FileService {
         return "";
     }
     static async getTempDir(adapter) {
-      const tempPath = path_1.default.join(adapter.absoluteInstanceDir);
+        const tempPath = path_1.default.join(adapter.absoluteInstanceDir);
         await this.prepareFolder(tempPath);
         return tempPath;
     }

@@ -88,8 +88,7 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 3.4.1 (2023-08-06)
 
 * (theimo1221) Compliance to adapter-checker
 * (theimo1221) Update Packages
