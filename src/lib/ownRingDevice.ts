@@ -67,6 +67,7 @@ export abstract class OwnRingDevice {
         return `doorbell`;
       case RingCameraKind.cocoa_camera:
       case RingCameraKind.cocoa_doorbell:
+      case "cocoa_doorbell_v2":
       case RingCameraKind.cocoa_floodlight:
         return `cocoa`;
       case RingCameraKind.stickup_cam:

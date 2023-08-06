@@ -93,7 +93,8 @@ doorbell recorded video.
 
 * (theimo1221) Compliance to adapter-checker
 * (theimo1221) Update Packages
-* (theimo1221) #548 Debounce Doorbell Presses
+* (theimo1221) Debounce Doorbell Presses
+* (theimo1221) Add Support for cocoa_doorbell_v2
 
 ### 3.4.0 (2023-06-09)
 
