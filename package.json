@@ -29,6 +29,9 @@
     "type": "git",
     "url": "https://github.com/iobroker-community-adapters/ioBroker.ring"
   },
+  "engines": {
+    "node": ">=16"
+  },
   "dependencies": {
     "ring-client-api": "^11.8.1",
     "@iobroker/adapter-core": "^3.0.3"
@@ -111,9 +114,6 @@
     ],
     "sourceMap": true,
     "instrument": true
-  },
-  "engines": {
-    "node": ">=16"
   },
   "bugs": {
     "url": "https://github.com/iobroker-community-adapters/ioBroker.ring/issues"
