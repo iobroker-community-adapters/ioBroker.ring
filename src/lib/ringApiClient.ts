@@ -10,8 +10,8 @@ export class RingApiClient {
   public refreshing = false;
   private cameras: { [id: string]: OwnRingCamera } = {};
   private intercoms: { [id: string]: OwnRingIntercom } = {};
-  private _refreshInterval: NodeJS.Timer | null = null;
-  private _retryTimeout: NodeJS.Timer | null = null;
+  private _refreshInterval: NodeJS.Timeout | null = null;
+  private _retryTimeout: NodeJS.Timeout | null = null;
 
   get locations(): { [id: string]: OwnRingLocation } {
     return this._locations;
