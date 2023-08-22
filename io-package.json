@@ -49,6 +49,19 @@
     "mode": "daemon",
     "name": "ring",
     "news": {
+      "4.0.0": {
+        "en": "!!Breaking Change!! From now on Node 18 or 20 is required, Node 16 is not supported anymore\nUpdate Ring-Api to V12 which needs Node 18 or 20\nUpdate Packages",
+        "de": "! Ändern! Ab sofort ist Node 18 oder 20 erforderlich, Node 16 wird nicht mehr unterstützt\nAktualisieren Ring-Api auf V12, die Node 18 oder 20 benötigt\nPakete aktualisieren",
+        "ru": "! Перерыв перемен! Теперь Node 18 или 20 требуется, Node 16 больше не поддерживается\nОбновить Ring-Api на V12, который нуждается в Node 18 или 20\nОбновление пакетов",
+        "pt": "! A quebrar a mudança! De agora em Node 18 ou 20 é necessário, Node 16 não é suportado mais\nAtualizar Ring-Api para V12 que precisa Node 18 ou 20\nPacotes de atualização",
+        "nl": "! Verandering. Vanaf nu is Node 18 of 20 nodig, Node 16 is niet meer gesteund\nUpdate Ring-Api naar V12 die Node 18 of 20 nodig heeft\nUpdate Packages",
+        "fr": "! Briser le changement ! A partir de maintenant le Node 18 ou 20 est requis, le Node 16 n'est plus supporté\nMettre à jour Ring-Api à V12 qui a besoin de No 18 ou 20\nMise à jour des paquets",
+        "it": "! Breaking Change! D'ora in poi il Nodo 18 o 20 è richiesto, Node 16 non è più supportato\nAggiornare Ring-Api a V12 che ha bisogno di Nodo 18 o 20\nPacchetti di aggiornamento",
+        "es": "! Cambio de ruptura! De ahora en adelante se requiere Nodo 18 o 20, Nodo 16 ya no es compatible\nActualizar Ring-Api a V12 que necesita Nodo 18 o 20\nPaquetes de actualización",
+        "pl": "! Breaking Change (ang.). Od tego czasu wymagana jest zmiana numeru 18 lub 20, nie jest ona już wspierana\nPierścień-Api potrzebuje 18 lub 20 lat\nPackage Update",
+        "uk": "! Змінити зміни! Відтепер на Node 18 або 20 не потрібно, Node 16 не підтримується більше\nUpdate Ring-Api до V12, який потребує Node 18 або 20\nОновлення пакетів",
+        "zh-cn": "! 打破变革! 从现在第18号或第20号要求来看,第16号建议没有得到任何支持。\n第18或20号需要更新到V12\n最新包装"
+      },
       "3.4.1": {
         "en": "Compliance to adapter-checker\nUpdate Packages\nDebounce Doorbell Presses\nAdd Support for cocoa_doorbell_v2\nAdd Support for stickup_cam_longfin\nFix compatibility and recompile",
         "de": "Einhaltung des Adapter-Checkers\nPakete aktualisieren\nTürklingelpressen aussprechen\nUnterstützung für Kakao_doorbell_v2 hinzufügen\nSupport für stickup_cam_longfin hinzufügen\nKompatibilität und Recompile beheben",
@@ -126,19 +139,6 @@
         "pl": "Powodzenie na wstępny ładunek w Location nie powiodło się\nPackage Update",
         "uk": "Поліпшення поведінки на початковому завантаження локації\nОновлення пакетів",
         "zh-cn": "改善初始装货行为失败\n最新包装"
-      },
-      "3.2.5": {
-        "en": "Update Packages",
-        "de": "Pakete aktualisieren",
-        "ru": "Обновление пакетов",
-        "pt": "Pacotes de atualização",
-        "nl": "Update Packages",
-        "fr": "Mise à jour des paquets",
-        "it": "Pacchetti di aggiornamento",
-        "es": "Paquetes de actualización",
-        "pl": "Package Update",
-        "uk": "Оновлення пакетів",
-        "zh-cn": "最新包装"
       }
     },
     "platform": "Javascript/Node.js",
@@ -158,7 +158,7 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "3.4.1"
+    "version": "4.0.0"
   },
   "instanceObjects": [
     {
