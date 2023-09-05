@@ -444,7 +444,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this.conditionalRecording(EventState.ReactingOnDoorbell, value.ding.image_uuid);
     }
     async conditionalRecording(state, uuid) {
-       if (this._autoSnapshot || this._autoLiveStream) {
+       if (! (this._autoSnapshot && this._autoLiveStream)) {
            if (this._state === EventState.Idle) {
                this.silly(`Start recording for Event "${EventState[state]}"...`);
                this._state = state;
