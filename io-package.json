@@ -1,4 +1,4 @@
-{
+
   "common": {
     "adminTab": {
       "singleton": true,
@@ -158,7 +158,8 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "4.0.0"
+    "version": "4.0.0",
+    "installedFrom": "iobroker-community-adapters/ioBroker.ring"
   },
   "instanceObjects": [
     {
@@ -181,6 +182,8 @@
     "path": "",
     "pollsec": 15,
     "recordtime_livestream": 10,
+    "auto_snapshot": true,
+    "auto_livestream": true,
     "refreshtoken": "",
     "sentry_enable": true,
     "timeout": 5,
