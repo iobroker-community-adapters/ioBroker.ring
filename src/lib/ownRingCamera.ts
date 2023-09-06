@@ -677,28 +677,26 @@ export class OwnRingCamera extends OwnRingDevice {
   }
 
   private async conditionalRecording(state: EventState, uuid?: string): Promise<void> {
-    if (!(this._autoSnapshot && this._autoLiveStream)) {
-      if (this._state === EventState.Idle) {
-        this.silly(`Start recording for Event "${EventState[state]}"...`);
-        this._state = state;
-        try {
-          await this.takeSnapshot(uuid, true);
-          await this.startLivestream(20);
-        } finally {
-          this._state = EventState.Idle;
-        }
-        return;
+    if (this._state !== EventState.Idle) {
+      this.silly(`Would have recorded due to "${EventState[state]}", but we are already reacting.`);
+      if (this._autoSnapshot && uuid) {
+        setTimeout(() => {
+          this.debug(`delayed uuid recording`);
+          this.takeSnapshot(uuid);
+        }, this._durationLiveStream * 1000 + 3000);
       }
-      if (this._autoSnapshot) {
-        this.silly(`Would have recorded due to "${EventState[state]}", but we are already reacting.`);
-        if (uuid) {
-          setTimeout(() => {
-            this.debug(`delayed uuid recording`);
-            this.takeSnapshot(uuid);
-          }, this._durationLiveStream * 1000 + 3000);
-        }
-      }
+      return
     }
+
+    this.silly(`Start recording for Event "${EventState[state]}"...`);
+    this._state = state;
+    try {
+      this._autoSnapshot && await this.takeSnapshot(uuid, true);
+      this._autoLiveStream && await this.startLivestream(20);
+    } finally {
+      this._state = EventState.Idle;
+    }
+    return;
   }
 }
 
