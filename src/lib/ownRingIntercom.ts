@@ -30,7 +30,7 @@ export class OwnRingIntercom extends OwnRingDevice {
       `${ringDevice.id}`,
       ringDevice.data.description
     );
-    this._ringDevice = ringDevice;
+    this.ringDevice = ringDevice; // subscribes to the events
     this.debug(`Create device`);
     this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
     this.eventsChannelId = `${this.fullId}.${CHANNEL_NAME_EVENTS}`;
@@ -155,6 +155,6 @@ export class OwnRingIntercom extends OwnRingDevice {
     this._adapter.upsertState(`${this.eventsChannelId}.ding`, COMMON_EVENTS_INTERCOM_DING, true);
     setTimeout(() => {
       this._adapter.upsertState(`${this.eventsChannelId}.ding`, COMMON_EVENTS_INTERCOM_DING, false);
-    }, 5000);
+    }, 100);
   }
 }
