@@ -30,7 +30,7 @@ export class OwnRingIntercom extends OwnRingDevice {
       `${ringDevice.id}`,
       ringDevice.data.description
     );
-    this.ringDevice = ringDevice; // subscribes to the events
+    this._ringDevice = ringDevice; // subscribes to the events
     this.debug(`Create device`);
     this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
     this.eventsChannelId = `${this.fullId}.${CHANNEL_NAME_EVENTS}`;

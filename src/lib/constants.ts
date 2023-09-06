@@ -186,12 +186,12 @@ export const COMMON_LIVESTREAM_REQUEST: Partial<ioBroker.StateCommon> = {
   read: false,
   write: true
 }
-export const COMMON_LIVESTREAM_DURATION: Partial<ioBroker.StateCommon< = {
-    type: "number",
-    role: "value",
-    name: "Set duration of Livestream",
-    read: false,
-    write: true
+export const COMMON_LIVESTREAM_DURATION: Partial<ioBroker.StateCommon> = {
+  type: "number",
+  role: "value",
+  name: "Set duration of Livestream",
+  read: false,
+  write: true
 };
 export const COMMON_LIVESTREAM_URL: Partial<ioBroker.StateCommon> = {
   type: "string",
