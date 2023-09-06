@@ -80,6 +80,7 @@ export class OwnRingCamera extends OwnRingDevice {
   private readonly eventsChannelId: string;
   private readonly snapshotChannelId: string;
   private readonly liveStreamChannelId: string;
+  private _ringDevice: RingCamera;
   private lastAction: LastAction | undefined;
   private _requestingSnapshot = false;
   private _requestingLiveStream = false;
@@ -88,15 +89,34 @@ export class OwnRingCamera extends OwnRingDevice {
   private _autoSnapshot = this._adapter.config.auto_snapshot;
   private _lastLightCommand = 0;
   private _lastLiveStreamUrl = "";
+  private _lastLiveStreamDir = "";
   private _lastLiveStreamVideo: Buffer | null = null;
   private _lastLiveStreamTimestamp = 0;
   private _lastSnapShotUrl = "";
+  private _lastSnapShotDir = "";
   private _lastSnapshotImage: Buffer | null = null;
   private _lastSnapshotTimestamp = 0;
   private _snapshotCount = 0;
   private _liveStreamCount = 0;
   private _state = EventState.Idle;
   private _doorbellEventActive: boolean = false;
+
+  get lastLiveStreamDir(): string {
+    return this._lastLiveStreamDir;
+  }
+
+  get lastSnapShotDir(): string {
+    return this._lastSnapShotDir;
+  }
+
+  get ringDevice(): RingCamera {
+    return this._ringDevice;
+  }
+
+  private set ringDevice(device) {
+    this._ringDevice = device;
+    this.subscribeToEvents();
+  }
 
   public constructor(ringDevice: RingCamera, location: OwnRingLocation, adapter: RingAdapter, apiClient: RingApiClient) {
     super(
@@ -124,29 +144,6 @@ export class OwnRingCamera extends OwnRingDevice {
     this._autoSnapshot ? setTimeout(this.takeSnapshot.bind(this), 50) : this.updateSnapshotObject();
     this.updateLiveStreamObject();
     this.ringDevice = ringDevice; // subscribes to the events
-  }
-
-  private _ringDevice: RingCamera;
-
-  get ringDevice(): RingCamera {
-    return this._ringDevice;
-  }
-
-  private set ringDevice(device) {
-    this._ringDevice = device;
-    this.subscribeToEvents();
-  }
-
-  private _lastLiveStreamDir = "";
-
-  get lastLiveStreamDir(): string {
-    return this._lastLiveStreamDir;
-  }
-
-  private _lastSnapShotDir = "";
-
-  get lastSnapShotDir(): string {
-    return this._lastSnapShotDir;
   }
 
   public override processUserInput(channelID: string, stateID: string, state: ioBroker.State): void {
