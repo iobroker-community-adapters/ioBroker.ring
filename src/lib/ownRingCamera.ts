@@ -187,7 +187,7 @@ export class OwnRingCamera extends OwnRingDevice {
   }
 
 
-  public override processUserInput(channelID: string, stateID: string, state: ioBroker.State): void {
+  public override async processUserInput(channelID: string, stateID: string, state: ioBroker.State): void {
     switch (channelID) {
       case "":
         if (stateID !== STATE_ID_DEBUG_REQUEST) {
