@@ -8,35 +8,20 @@ const ownRingDevice_1 = require("./ownRingDevice");
 const constants_1 = require("./constants");
 const util_1 = __importDefault(require("util"));
 class OwnRingIntercom extends ownRingDevice_1.OwnRingDevice {
+    constructor(ringDevice, location, adapter, apiClient) {
+        super(location, adapter, apiClient, ownRingDevice_1.OwnRingDevice.evaluateKind(ringDevice.deviceType, adapter, ringDevice), `${ringDevice.id}`, ringDevice.data.description);
+        this._ringDevice = ringDevice; // subscribes to the events
+        this.debug(`Create device`);
+        this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
+        this.eventsChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_EVENTS}`;
+        this.recreateDeviceObjectTree();
+    }
     get ringDevice() {
         return this._ringDevice;
     }
     set ringDevice(device) {
         this._ringDevice = device;
         this.subscribeToEvents();
-    }
-    async subscribeToEvents() {
-        this.silly(`Start device subscriptions`);
-        await this._ringDevice.subscribeToDingEvents().catch((r) => {
-            this.catcher(`Failed subscribing to Ding Events for ${this._ringDevice.name}`, r);
-        });
-        this._ringDevice.onDing.subscribe({
-            next: () => {
-                this.onDing();
-            },
-            error: (err) => {
-                this.catcher(`Ding Observer recieved error`, err);
-            },
-        });
-    }
-    constructor(ringDevice, location, adapter, apiClient) {
-        super(location, adapter, apiClient, ownRingDevice_1.OwnRingDevice.evaluateKind(ringDevice.deviceType, adapter, ringDevice), `${ringDevice.id}`, ringDevice.data.description);
-        this.debug(`Create device`);
-        this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
-        this.eventsChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_EVENTS}`;
-        this.ringDevice = ringDevice; // subscribes to the events
-        this.recreateDeviceObjectTree();
-        // this.subscribeToEvents();
     }
     processUserInput(channelID, stateID, state) {
         switch (channelID) {
@@ -81,6 +66,20 @@ class OwnRingIntercom extends ownRingDevice_1.OwnRingDevice {
     update(data) {
         this.debug(`Recieved Update`);
         this.updateDeviceInfoObject(data);
+    }
+    async subscribeToEvents() {
+        this.silly(`Start device subscriptions`);
+        await this._ringDevice.subscribeToDingEvents().catch((r) => {
+            this.catcher(`Failed subscribing to Ding Events for ${this._ringDevice.name}`, r);
+        });
+        this._ringDevice.onDing.subscribe({
+            next: () => {
+                this.onDing();
+            },
+            error: (err) => {
+                this.catcher(`Ding Observer recieved error`, err);
+            },
+        });
     }
     updateDeviceInfoObject(data) {
         this._adapter.upsertState(`${this.infoChannelId}.id`, constants_1.COMMON_INFO_ID, data.device_id);
