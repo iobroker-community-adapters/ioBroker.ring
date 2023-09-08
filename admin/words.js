@@ -1,4 +1,4 @@
-/*global systemDictionary:true */
+/* global systemDictionary:true */
 'use strict';
 
 systemDictionary = {
@@ -36,18 +36,18 @@ systemDictionary = {
         "pl": "on save adapter restarts with new config immediately"
     },
     "ringdescription": {
-        'en': 'This adapter needs a valid refresh token. You can generate one following the description in the readme.',
-        'de': 'Dieser Adapter benötigt einen gültigen Erfrischungstoken. Sie können eine nach der Beschreibung im Readme generieren.',
-        'ru': 'Этот адаптер нужен действительный токен обновления. Вы можете генерировать одно после описания в читаеме.',
-        'pt': 'Este adaptador precisa de um token de atualização válido. Você pode gerar um seguindo a descrição no readme.',
-        'nl': 'Deze adapter heeft een geldige verfrissing nodig. Je kunt er een genereren die de beschrijving in de lezing volgt.',
-        'fr': 'Cet adaptateur a besoin d\'un jeton de rafraîchissement valide. Vous pouvez en produire une après la description dans le readme.',
-        'it': 'Questo adattatore ha bisogno di un token di aggiornamento valido. È possibile generare uno seguendo la descrizione nel testo.',
-        'es': 'Este adaptador necesita un token de refresco válido. Usted puede generar uno siguiendo la descripción en el readme.',
-        'pl': 'Ta adapter potrzebuje prawidłowego odświeżenia. Możesz generować jeden po opisie w tekście.',
-        'uk': 'Цей адаптер потребує дійсного освіжаючого токена. Ви можете створити один наступний опис у чителю.',
-        'zh-cn': '这种适应者需要一个有效的驳斥。 你可以在阅读主题中作一发言。.'
-    },
+        "en": "This adapter needs a valid token. To generate it, follow the description in the readme.",
+        "de": "Dieser Adapter benötigt einen gültigen Token. Um es zu erzeugen, folgen Sie der Beschreibung im Readme.",
+        "ru": "Этот адаптер нужен действительный токен. Чтобы сгенерировать его, следуйте описанию в читаю.",
+        "pt": "Este adaptador precisa de um token válido. Para gerenciá-lo, siga a descrição no readme.",
+        "nl": "Deze adapter heeft een geldig teken nodig. Om het te genereren, de beschrijving in de lezing te volgen.",
+        "fr": "Cet adaptateur a besoin d'un jeton valide. Pour le générer, suivez la description dans le readme.",
+        "it": "Questo adattatore ha bisogno di un token valido. Per generarlo, seguire la descrizione nel testo.",
+        "es": "Este adaptador necesita un token válido. Para generarlo, siga la descripción en el readme.",
+        "pl": "Ta adapter potrzebuje odpowiedniego symbolu. W celu generowania go, podąża za opisem w gotowości.",
+        "uk": "Цей адаптер потребує дійсного токену. Щоб створити його, слідуйте опису в чителю.",
+        "zh-cn": "这种适应者需要一个有效的基础。 为产生这一趋势,在读者说明之后。."
+      },
     "User": {
         "en": "User",
         "de": "Benutzer",
@@ -93,77 +93,70 @@ systemDictionary = {
         "pl": "RING-API (domyślnie)",
         "zh-cn": "RING-API（默认）"
     },
-    "Filename Snapshot": {
-        "en": "Filename Snapshot",
-        "de": "Dateiname Schnappschuss",
-        "ru": "Снимок имени файла",
-        "pt": "Instantâneo do nome do arquivo",
-        "nl": "Bestandsnaam Snapshot",
-        "fr": "Instantané du nom de fichier",
-        "it": "Istantanea nome file",
-        "es": "Instantánea de nombre de archivo",
-        "pl": "Migawka nazwy pliku",
-        "zh-cn": "文件名快照"
-    },
-    "Filename Livestream": {
-        "en": "Filename Livestream",
-        "de": "Dateiname Livestream",
-        "ru": "Имя файла Livestream",
-        "pt": "Nome do arquivo Livestream",
-        "nl": "Bestandsnaam Livestream",
-        "fr": "Nom de fichier Livestream",
-        "it": "Nome file Livestream",
-        "es": "Nombre de archivo Livestream",
-        "pl": "Nazwa pliku Livestream",
-        "zh-cn": "文件名直播"
-    },
-    "Livestream recordtime in sec.": {
-        "en": "Livestream recordtime in sec.",
-        "de": "Aufnahmezeit Livestream in Sek.",
-        "ru": "Прямая трансляция в сек.",
-        "pt": "Transmissão ao vivo em segundos.",
-        "nl": "Livestream recordtijd in sec.",
-        "fr": "Temps d'enregistrement en direct en sec.",
-        "it": "Tempo di registrazione live streaming in sec.",
-        "es": "Tiempo de grabación en vivo en seg.",
-        "pl": "Czas nagrywania na żywo w sek.",
-        "zh-cn": "实时录制时间（以秒为单位）。"
-    },
-    "Livestream auto event": {
-        "en": "Livestream auto event",
-        "de": "Automatische Livestream Aufnahme",
-        "ru": "Автоматическая запись прямой трансляции",
-        "pt": "Gravação automática de transmissão ao vivo",
-        "nl": "Automatische livestream opname",
-        "fr": "Enregistrement automatique de flux en direct",
-        "it": "Registrazione live streaming automatica",
-        "es": "Grabación automática de instantáneas en vivo",
-        "pl": "Automatyczne nagrywanie transmisji na żywo",
-        "zh-cn": "自動直播"
-    },
-    "Snapshot auto event": {
-        "en": "Snapshot auto event",
-        "de": "Automatische Snaphot Aufnahme",
-        "ru": "Автоматическая запись прямой снимков",
-        "pt": "Gravação automática de transmissão ao instantâneo",
-        "nl": "Automatische momentopname",
-        "fr": "Enregistrement automatique de instantanés en direct",
-        "it": "Registrazione istantanea automatica",
-        "es": "Grabación automática de transmisión en vivo",
-        "pl": "Automatyczne nagrywanie transmisji na migawek",
-        "zh-cn": "自動快照記錄"
+    "Filename": {
+        "en": "Filename\n",
+        "de": "Dateiname\n",
+        "ru": "Имя файла\n",
+        "pt": "Nome do arquivo\n",
+        "nl": "Veldnaam\n",
+        "fr": "Nom du fichier\n",
+        "it": "Nome del file\n",
+        "es": "Nombre de archivo\n",
+        "pl": "Filename\n",
+        "uk": "Назва файлу\n",
+        "zh-cn": "导 言\n"
+      },
+    "Automatic recording time in seconds": {
+        "en": "Automatic recording time in seconds",
+        "de": "Automatische Aufnahmezeit in Sekunden",
+        "ru": "Автоматическое время записи в секундах",
+        "pt": "Tempo automático de gravação em segundos",
+        "nl": "Automatische opnametijd in seconden",
+        "fr": "Temps d'enregistrement automatique en secondes",
+        "it": "Tempo di registrazione automatico in secondi",
+        "es": "Tiempo de grabación automático en segundos",
+        "pl": "Czas nagrywania automatycznego na sekundę",
+        "uk": "Автоматичний час запису в секундах",
+        "zh-cn": "第二期自动记录时间"
+      },
+    "Recording time in seconds": {
+        "en": "Recording time in seconds",
+        "de": "Aufnahmezeit in Sekunden",
+        "ru": "Время записи в секундах",
+        "pt": "Tempo de gravação em segundos",
+        "nl": "Recording time in seconde",
+        "fr": "Temps d'enregistrement en secondes",
+        "it": "Tempo di registrazione in secondi",
+        "es": "Tiempo de grabación en segundos",
+        "pl": "Czas nagrywania w sekundach",
+        "uk": "Час запису в секундах",
+        "zh-cn": "第二章的录音时间"
+      },
+    "Auto event": {
+        "en": "Automatic event\n",
+        "de": "Automatisches Ereignis\n",
+        "ru": "Автоматическое мероприятие\n",
+        "pt": "Evento automático\n",
+        "nl": "Automatische gebeurtenis\n",
+        "fr": "Activité automatique\n",
+        "it": "Evento automatico\n",
+        "es": "Evento automático\n",
+        "pl": "Automatyczne wydarzenie\n",
+        "uk": "Автоматична подія\n",
+        "zh-cn": "自动活动\n"
     },
     "Path": {
-        "en": "Path Snapshot/Livestream",
-        "de": "Pfad Schnappschuss / Livestream",
-        "ru": "Снимок пути / прямой эфир",
-        "pt": "Instantâneo do caminho / Transmissão ao vivo",
-        "nl": "Pad Snapshot / Livestream",
-        "fr": "Instantané de chemin / Livestream",
-        "it": "Path Snapshot / Livestream",
-        "es": "Instantánea de ruta / transmisión en vivo",
-        "pl": "Ścieżka Snapshot / Livestream",
-        "zh-cn": "路径快照/直播"
+        "en": "Path\n",
+        "de": "Pfad\n",
+        "ru": "Путь\n",
+        "pt": "Caminho\n",
+        "nl": "Path\n",
+        "fr": "Sentier\n",
+        "it": "Sentiero\n",
+        "es": "Camino\n",
+        "pl": "Path Path\n",
+        "uk": "Патент\n",
+        "zh-cn": "Path\n"
     },
     "Set two face auth (once)": {
         "en": "Set two face auth (once)",
@@ -189,30 +182,19 @@ systemDictionary = {
         "pl": "Refreshtoken (uwierzytelnianie dwóch twarzy)",
         "zh-cn": "刷新令牌（两面验证）"
     },
-    "Delete old Snapshots": {
-        "en": "Delete old Snapshots",
-        "de": "Löschen Sie alte Schnappschüsse",
-        "ru": "Удалить старые снимки",
-        "pt": "Excluir instantâneos antigos",
-        "nl": "Verwijder oude snapshots",
-        "fr": "Supprimer les anciens instantanés",
-        "it": "Elimina le vecchie istantanee",
-        "es": "Eliminar instantáneas antiguas",
-        "pl": "Usuń stare migawki",
-        "zh-cn": "删除旧快照"
-    },
-    "Delete old Livestreams": {
-        "en": "Delete old Livestreams",
-        "de": "Alte Livestreams löschen",
-        "ru": "Удалить старые прямые трансляции",
-        "pt": "Excluir livestreams antigos",
-        "nl": "Verwijder oude livestreams",
-        "fr": "Supprimer les anciens livestreams",
-        "it": "Elimina i vecchi Livestream",
-        "es": "Eliminar viejos Livestreams",
-        "pl": "Usuń stare transmisje na żywo",
-        "zh-cn": "删除旧的直播"
-    },
+    "Delete old one": {
+        "en": "Delete old files",
+        "de": "Alte Dateien löschen",
+        "ru": "Удалить старые файлы",
+        "pt": "Excluir arquivos antigos",
+        "nl": "Verwijder oude dossiers",
+        "fr": "Supprimer les vieux fichiers",
+        "it": "Eliminare vecchi file",
+        "es": "Eliminar archivos antiguos",
+        "pl": "Delete stare pliki",
+        "uk": "Видалити старі файли",
+        "zh-cn": "删除旧档案"
+      },
     "Allow to transfer errors if the adapter crash. Private data like usernames, passwords, tokens, ... will be NOT be transferd.": {
         "en": "Allow to transfer errors if the adapter crash. Private data like usernames, passwords, tokens, ... will be NOT be transferd.",
         "de": "Erlaube das weiterleiten von Fehlern wenn der Adapter abstürtzt. Private Daten wie z.B. Benutzername, Passwort, Token, ... werden NICHT übertragen.",
