@@ -49,6 +49,7 @@ export class RingAdapter extends Adapter {
       return;
     }
 
+    /*
     this.log.debug(`Configured Path: "${this.config.path}"`);
     const dataDir = (this.systemConfig) ? this.systemConfig.dataDir : "";
     this.log.silly(`DataDir: ${dataDir}`);
@@ -57,6 +58,23 @@ export class RingAdapter extends Adapter {
       this.log.debug(`New Config Path: "${this.config.path}"`);
     }
     await FileService.prepareFolder(this.config.path);
+    */
+
+    const config_path: string[] = [this.config.path_snapshot, this.config.path_livestream];
+    for(const index in config_path) {
+      this.log.debug(`Configured Path: "${config_path[index]}"`);
+      const dataDir = (this.systemConfig) ? this.systemConfig.dataDir : "";
+      this.log.silly(`DataDir: ${dataDir}`);
+      if (!config_path[index]) {
+        config_path[index] = path.join(utils.getAbsoluteDefaultDataDir(), "files", this.namespace)
+        if (index == "0")
+          this.config.path_snapshot = config_path[index]
+        else
+          this.config.path_livestream = config_path[index]
+        this.log.debug(`New Config Path: "${config_path[index]}"`);
+      }
+      await FileService.prepareFolder(config_path[index]);
+    }
 
     const objectDevices = this.getDevicesAsync();
     for (const objectDevice in objectDevices) {
@@ -200,9 +218,15 @@ export class RingAdapter extends Adapter {
       const foreignId = `${this.namespace}.${id}`;
       if (this.states[id] !== undefined) {
         this.states[id] = timestamp;
+
+        await this.writeFileAsync(this.namespace , foreignId, value).catch((reason) => {
+          this.logCatch("Couldn't write File-State", reason);
+        });
+        /*
         await this.setForeignBinaryStateAsync(foreignId, value).catch((reason) => {
           this.logCatch("Couldn't write File-State", reason);
         });
+        */
         return;
       }
       const {device, channel, stateName} = RingAdapter.getSplittedIds(id);
@@ -216,13 +240,20 @@ export class RingAdapter extends Adapter {
         type: "state",
         common: common
       };
+
       await this.setObjectNotExistsAsync(id, obj).catch((reason) => {
       // await this.createStateAsync(device, channel, stateName, common).catch((reason) => {
         this.logCatch("Couldn't Create File-State", reason);
       });
+
+      await this.writeFileAsync(this.namespace , foreignId, value).catch((reason) => {
+        this.logCatch("Couldn't write File-State", reason);
+      });
+      /*
       await this.setForeignBinaryStateAsync(foreignId, value).catch((reason) => {
         this.logCatch("Couldn't write File-State", reason);
       });
+      */
       this.states[id] = timestamp;
     } catch (e: any) {
       this.log.warn(`Error Updating File State ${id}: ${e?.message ?? e}`);
