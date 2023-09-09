@@ -68,14 +68,31 @@ class RingAdapter extends adapter_core_1.Adapter {
             this.terminate(`Invalid Refresh Token, please follow steps provided within Readme to generate a new one`);
             return;
         }
+        /*
         this.log.debug(`Configured Path: "${this.config.path}"`);
         const dataDir = (this.systemConfig) ? this.systemConfig.dataDir : "";
         this.log.silly(`DataDir: ${dataDir}`);
         if (!this.config.path) {
-            this.config.path = path_1.default.join(utils.getAbsoluteDefaultDataDir(), "files", this.namespace);
-            this.log.debug(`New Config Path: "${this.config.path}"`);
+          this.config.path = path.join(utils.getAbsoluteDefaultDataDir(), "files", this.namespace)
+          this.log.debug(`New Config Path: "${this.config.path}"`);
         }
-        await file_service_1.FileService.prepareFolder(this.config.path);
+        await FileService.prepareFolder(this.config.path);
+        */
+        const config_path = [this.config.path_snapshot, this.config.path_livestream];
+        for (const index in config_path) {
+            this.log.debug(`Configured Path: "${config_path[index]}"`);
+            const dataDir = (this.systemConfig) ? this.systemConfig.dataDir : "";
+            this.log.silly(`DataDir: ${dataDir}`);
+            if (!config_path[index]) {
+                config_path[index] = path_1.default.join(utils.getAbsoluteDefaultDataDir(), "files", this.namespace);
+                if (index == "0")
+                    this.config.path_snapshot = config_path[index];
+                else
+                    this.config.path_livestream = config_path[index];
+                this.log.debug(`New Config Path: "${config_path[index]}"`);
+            }
+            await file_service_1.FileService.prepareFolder(config_path[index]);
+        }
         const objectDevices = this.getDevicesAsync();
         for (const objectDevice in objectDevices) {
             this.deleteDevice(objectDevice);
@@ -206,9 +223,14 @@ class RingAdapter extends adapter_core_1.Adapter {
             const foreignId = `${this.namespace}.${id}`;
             if (this.states[id] !== undefined) {
                 this.states[id] = timestamp;
-                await this.setForeignBinaryStateAsync(foreignId, value).catch((reason) => {
+                await this.writeFileAsync(this.namespace, foreignId, value).catch((reason) => {
                     this.logCatch("Couldn't write File-State", reason);
                 });
+                /*
+                await this.setForeignBinaryStateAsync(foreignId, value).catch((reason) => {
+                  this.logCatch("Couldn't write File-State", reason);
+                });
+                */
                 return;
             }
             const { device, channel, stateName } = RingAdapter.getSplittedIds(id);
@@ -224,9 +246,14 @@ class RingAdapter extends adapter_core_1.Adapter {
                 // await this.createStateAsync(device, channel, stateName, common).catch((reason) => {
                 this.logCatch("Couldn't Create File-State", reason);
             });
-            await this.setForeignBinaryStateAsync(foreignId, value).catch((reason) => {
+            await this.writeFileAsync(this.namespace, foreignId, value).catch((reason) => {
                 this.logCatch("Couldn't write File-State", reason);
             });
+            /*
+            await this.setForeignBinaryStateAsync(foreignId, value).catch((reason) => {
+              this.logCatch("Couldn't write File-State", reason);
+            });
+            */
             this.states[id] = timestamp;
         }
         catch (e) {

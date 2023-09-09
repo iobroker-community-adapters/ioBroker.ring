@@ -53,9 +53,8 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
     }
     constructor(ringDevice, location, adapter, apiClient) {
         super(location, adapter, apiClient, OwnRingCamera.evaluateKind(ringDevice.deviceType, adapter, ringDevice), `${ringDevice.id}`, ringDevice.data.description);
-        this._requestingSnapshot = false;
-        this._requestingLiveStream = false;
         this._durationLiveStream = this._adapter.config.recordtime_livestream;
+        this._autodurationLiveStream = this._adapter.config.recordtime_auto_livestream;
         this._autoLiveStream = this._adapter.config.auto_livestream;
         this._autoSnapshot = this._adapter.config.auto_snapshot;
         this._lastLightCommand = 0;
@@ -180,14 +179,16 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
     }
     async startLivestream(duration) {
         this.silly(`${this.shortId}.startLivestream()`);
-        const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path, this._adapter.config.filename_livestream, ++this._liveStreamCount, this.shortId, this.fullId, this.kind);
+        const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path_livestream, this._adapter.config.filename_livestream, ++this._liveStreamCount, this.shortId, this.fullId, this.kind);
         if (!(await file_service_1.FileService.prepareFolder(dirname))) {
             this.debug(`Failed to prepare Livestream folder ("${fullPath}")`);
+            this.updateLivestreamRequest(false);
             return;
         }
         file_service_1.FileService.deleteFileIfExistSync(fullPath, this._adapter);
         if (this._ringDevice.isOffline) {
             this.info(` is offline --> won't take LiveStream`);
+            this.updateLivestreamRequest(false);
             return;
         }
         duration !== null && duration !== void 0 ? duration : (duration = this._durationLiveStream);
@@ -196,6 +197,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         await this._ringDevice.recordToFile(tempPath, duration);
         if (!fs.existsSync(tempPath)) {
             this.info(`Could't create livestream`);
+            this.updateLivestreamRequest(false);
             return;
         }
         const video = fs.readFileSync(tempPath);
@@ -211,7 +213,6 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             file_service_1.FileService.deleteFileIfExistSync(this._lastLiveStreamDir, this._adapter);
         }
         this._lastLiveStreamDir = fullPath;
-        this._requestingLiveStream = false;
         this._durationLiveStream = this._adapter.config.recordtime_livestream;
         // this.silly(`Locally storing Snapshot (Length: ${image.length})`);
         this._lastLiveStreamVideo = video;
@@ -220,16 +221,15 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this.debug(`Done creating livestream to ${fullPath}`);
     }
     async takeSnapshot(uuid, eventBased = false) {
-        const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path, this._adapter.config.filename_snapshot, ++this._snapshotCount, this.shortId, this.fullId, this.kind);
+        const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path_snapshot, this._adapter.config.filename_snapshot, ++this._snapshotCount, this.shortId, this.fullId, this.kind);
         if (!(await file_service_1.FileService.prepareFolder(dirname))) {
-            this._adapter.upsertState(`${this.snapshotChannelId}.${constants_1.STATE_ID_SNAPSHOT_REQUEST}`, constants_1.COMMON_SNAPSHOT_REQUEST, this._requestingSnapshot, true);
+            this.updateSnapshotRequest(false);
             return;
         }
         file_service_1.FileService.deleteFileIfExistSync(fullPath, this._adapter);
         if (this._ringDevice.isOffline) {
             this.info(`is offline --> won't take Snapshot`);
-            this._requestingSnapshot = false;
-            this._adapter.upsertState(`${this.snapshotChannelId}.${constants_1.STATE_ID_SNAPSHOT_REQUEST}`, constants_1.COMMON_SNAPSHOT_REQUEST, this._requestingSnapshot, true);
+            this.updateSnapshotRequest(false);
             return;
         }
         const image = await this._ringDevice.getSnapshot({ uuid: uuid }).catch((reason) => {
@@ -244,8 +244,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             if (!eventBased) {
                 this.info("Could not create snapshot");
             }
-            this._requestingSnapshot = false;
-            this._adapter.upsertState(`${this.snapshotChannelId}.${constants_1.STATE_ID_SNAPSHOT_REQUEST}`, constants_1.COMMON_SNAPSHOT_REQUEST, this._requestingSnapshot, true);
+            this.updateSnapshotRequest(false);
             return;
         }
         this.silly(`Writing Snapshot (Length: ${image.length}) to "${fullPath}"`);
@@ -255,7 +254,6 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             file_service_1.FileService.deleteFileIfExistSync(this._lastSnapShotDir, this._adapter);
         }
         this._lastSnapShotDir = fullPath;
-        this._requestingSnapshot = false;
         // this.silly(`Locally storing Snapshot (Length: ${image.length})`);
         this._lastSnapshotImage = image;
         this._lastSnapshotTimestamp = Date.now();
@@ -357,6 +355,11 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._adapter.upsertState(`${this.historyChannelId}.history_url`, constants_1.COMMON_HISTORY_URL, lastAction.historyUrl);
         this._adapter.upsertState(`${this.historyChannelId}.kind`, constants_1.COMMON_HISTORY_KIND, lastAction.event.kind);
     }
+    updateSnapshotRequest(event) {
+        this._adapter.upsertState(`${this.snapshotChannelId}.${constants_1.STATE_ID_SNAPSHOT_REQUEST}`, constants_1.COMMON_SNAPSHOT_REQUEST, false, // always false, only user can set this to true - and afterwards wait for false
+        event // true for snapshot created or as start/default state, false if error
+        );
+    }
     async updateSnapshotObject() {
         this.debug(`Update Snapshot Object`);
         if (this._lastSnapshotImage) {
@@ -368,8 +371,13 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             this._adapter.upsertState(`${this.snapshotChannelId}.snapshot_file`, constants_1.COMMON_SNAPSHOT_FILE, this._lastSnapShotDir);
             this._adapter.upsertState(`${this.snapshotChannelId}.moment`, constants_1.COMMON_SNAPSHOT_MOMENT, this._lastSnapshotTimestamp);
             this._adapter.upsertState(`${this.snapshotChannelId}.snapshot_url`, constants_1.COMMON_SNAPSHOT_URL, this._lastSnapShotUrl);
-            this._adapter.upsertState(`${this.snapshotChannelId}.${constants_1.STATE_ID_SNAPSHOT_REQUEST}`, constants_1.COMMON_SNAPSHOT_REQUEST, this._requestingSnapshot, true);
+            this.updateSnapshotRequest(true);
         }
+    }
+    updateLivestreamRequest(event) {
+        this._adapter.upsertState(`${this.liveStreamChannelId}.${constants_1.STATE_ID_LIVESTREAM_REQUEST}`, constants_1.COMMON_LIVESTREAM_REQUEST, false, // always false, only user can set this to true - and afterwards wait for false
+        event // true for snapshot created or as start/default state, false if error
+        );
     }
     async updateLiveStreamObject() {
         this.debug(`Update Livestream Object`);
@@ -383,8 +391,8 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             this._adapter.upsertState(`${this.liveStreamChannelId}.livestream_url`, constants_1.COMMON_LIVESTREAM_URL, this._lastLiveStreamUrl);
             this._adapter.upsertState(`${this.liveStreamChannelId}.moment`, constants_1.COMMON_LIVESTREAM_MOMENT, this._lastLiveStreamTimestamp);
         }
-        this._adapter.upsertState(`${this.liveStreamChannelId}.${constants_1.STATE_ID_LIVESTREAM_REQUEST}`, constants_1.COMMON_LIVESTREAM_REQUEST, this._requestingLiveStream, true);
         this._adapter.upsertState(`${this.liveStreamChannelId}.${constants_1.STATE_ID_LIVESTREAM_DURATION}`, constants_1.COMMON_LIVESTREAM_DURATION, this._durationLiveStream, true);
+        this.updateLivestreamRequest(true);
     }
     updateHealthObject(health) {
         var _a;
@@ -454,7 +462,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._state = state;
         try {
             this._autoSnapshot && await this.takeSnapshot(uuid, true);
-            this._autoLiveStream && await this.startLivestream(20);
+            this._autoLiveStream && await this.startLivestream(this._autodurationLiveStream);
         }
         finally {
             this._state = EventState.Idle;
