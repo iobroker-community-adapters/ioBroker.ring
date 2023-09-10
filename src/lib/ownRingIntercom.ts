@@ -100,12 +100,14 @@ export class OwnRingIntercom extends OwnRingDevice {
       `${this.fullId}.${STATE_ID_DEBUG_REQUEST}`,
       COMMON_DEBUG_REQUEST,
       false,
+      true,
       true
     );
     this._adapter.upsertState(
       `${this.fullId}.${STATE_ID_INTERCOM_UNLOCK}`,
       COMMON_INTERCOM_UNLOCK_REQUEST,
       false,
+      true,
       true
     );
   }
@@ -152,9 +154,17 @@ export class OwnRingIntercom extends OwnRingDevice {
 
   private onDing(): void {
     this.debug(`Recieved Ding Event`);
-    this._adapter.upsertState(`${this.eventsChannelId}.ding`, COMMON_EVENTS_INTERCOM_DING, true);
+    this._adapter.upsertState(
+      `${this.eventsChannelId}.ding`,
+      COMMON_EVENTS_INTERCOM_DING,
+      true
+    );
     setTimeout(() => {
-      this._adapter.upsertState(`${this.eventsChannelId}.ding`, COMMON_EVENTS_INTERCOM_DING, false);
+      this._adapter.upsertState(
+        `${this.eventsChannelId}.ding`,
+        COMMON_EVENTS_INTERCOM_DING,
+        false
+      );
     }, 100);
   }
 }

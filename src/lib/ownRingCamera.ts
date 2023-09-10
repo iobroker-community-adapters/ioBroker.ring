@@ -83,9 +83,6 @@ export class OwnRingCamera extends OwnRingDevice {
   private _ringDevice: RingCamera;
   private lastAction: LastAction | undefined;
   private _durationLiveStream = this._adapter.config.recordtime_livestream;
-  private _autodurationLiveStream = this._adapter.config.recordtime_auto_livestream;
-  private _autoLiveStream = this._adapter.config.auto_livestream;
-  private _autoSnapshot = this._adapter.config.auto_snapshot;
   private _lastLightCommand = 0;
   private _lastLiveStreamUrl = "";
   private _lastLiveStreamDir = "";
@@ -140,7 +137,7 @@ export class OwnRingCamera extends OwnRingDevice {
     this.updateHealth();
     // noinspection JSIgnoredPromiseFromCall
     this.updateHistory();
-    this._autoSnapshot ? setTimeout(this.takeSnapshot.bind(this), 50) : this.updateSnapshotObject();
+    this._adapter.config.auto_snapshot ? setTimeout(this.takeSnapshot.bind(this), 50) : this.updateSnapshotObject();
     this.updateLiveStreamObject();
     this.ringDevice = ringDevice; // subscribes to the events
   }
@@ -180,6 +177,7 @@ export class OwnRingCamera extends OwnRingDevice {
                 `${this.lightChannelId}.light_switch`,
                 COMMON_LIGHT_SWITCH,
                 targetVal,
+                true,
                 true
               );
               setTimeout(() => {
@@ -197,8 +195,12 @@ export class OwnRingCamera extends OwnRingDevice {
           this._adapter.log.debug(`Get Snapshot request for ${this.shortId} to value ${targetVal}`);
           if (targetVal) {
             this.takeSnapshot().catch((reason) => {
+              this.updateSnapshotRequest(false);
               this.catcher("Couldn't retrieve Snapshot.", reason);
             });
+          } else {
+            this.updateSnapshotRequest(false);
+            this.warn(`Get Snapshot request for ${this.shortId} failed!`);
           }
         } else {
           this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
@@ -210,6 +212,7 @@ export class OwnRingCamera extends OwnRingDevice {
           this._adapter.log.debug(`Get Livestream request for ${this.shortId} to value ${targetVal}`);
           if (targetVal) {
             this.startLivestream().catch((reason) => {
+              this.updateLivestreamRequest(false);
               this.catcher("Couldn't retrieve Livestream.", reason);
             });
           }
@@ -244,8 +247,12 @@ export class OwnRingCamera extends OwnRingDevice {
   public setDurationLivestream(val: number): void {
     this.silly(`${this.shortId}.durationLivestream()`);
     this._durationLiveStream = val;
-    this._adapter.upsertState(`${this.liveStreamChannelId}.${STATE_ID_LIVESTREAM_DURATION}`, COMMON_LIVESTREAM_DURATION, val);
-    this.silly(`Livestream duration set to: ${val}`);
+    this._adapter.upsertState(
+      `${this.liveStreamChannelId}.${STATE_ID_LIVESTREAM_DURATION}`,
+      COMMON_LIVESTREAM_DURATION,
+      this._durationLiveStream
+    );
+    this.debug(`Livestream duration set to: ${val}`);
   }
 
   public async startLivestream(duration?: number): Promise<void> {
@@ -260,7 +267,7 @@ export class OwnRingCamera extends OwnRingDevice {
         this.kind
       );
     if (!(await FileService.prepareFolder(dirname))) {
-      this.debug(`Failed to prepare Livestream folder ("${fullPath}")`);
+      this.warn(`Failed to prepare Livestream folder ("${fullPath}")`);
       this.updateLivestreamRequest(false)
       return;
     }
@@ -275,7 +282,7 @@ export class OwnRingCamera extends OwnRingDevice {
     this.silly(`Initialize Livestream (${duration}s) to temp-file ${tempPath}`);
     await this._ringDevice.recordToFile(tempPath, duration);
     if (!fs.existsSync(tempPath)) {
-      this.info(`Could't create livestream`);
+      this.warn(`Could't create livestream`);
       this.updateLivestreamRequest(false)
       return;
     }
@@ -292,7 +299,6 @@ export class OwnRingCamera extends OwnRingDevice {
       FileService.deleteFileIfExistSync(this._lastLiveStreamDir, this._adapter);
     }
     this._lastLiveStreamDir = fullPath;
-    this._durationLiveStream = this._adapter.config.recordtime_livestream;
     // this.silly(`Locally storing Snapshot (Length: ${image.length})`);
     this._lastLiveStreamVideo = video;
     this._lastLiveStreamTimestamp = Date.now();
@@ -311,6 +317,7 @@ export class OwnRingCamera extends OwnRingDevice {
         this.kind
       );
     if (!(await FileService.prepareFolder(dirname))) {
+      this.warn(`prepare folder problem --> won't take Snapshot`);
       this.updateSnapshotRequest(false)
       return;
     }
@@ -322,14 +329,14 @@ export class OwnRingCamera extends OwnRingDevice {
     }
     const image = await this._ringDevice.getSnapshot({uuid: uuid}).catch((reason) => {
       if (eventBased) {
-        this.info("Taking Snapshot on Event failed. Will try again after livestream finished.");
+        this.warn("Taking Snapshot on Event failed. Will try again after livestream finished.");
       } else {
         this.catcher("Couldn't get Snapshot from api.", reason);
       }
     });
     if (!image) {
       if (!eventBased) {
-        this.info("Could not create snapshot");
+        this.warn("Could not create snapshot from image");
       }
       this.updateSnapshotRequest(false)
       return;
@@ -397,6 +404,7 @@ export class OwnRingCamera extends OwnRingDevice {
         `${this.lightChannelId}.${STATE_ID_LIGHT_SWITCH}`,
         COMMON_LIGHT_SWITCH,
         false,
+        true,
         true
       );
     }
@@ -406,6 +414,7 @@ export class OwnRingCamera extends OwnRingDevice {
       `${this.fullId}.${STATE_ID_DEBUG_REQUEST}`,
       COMMON_DEBUG_REQUEST,
       false,
+      true,
       true
     );
   }
@@ -507,12 +516,13 @@ export class OwnRingCamera extends OwnRingDevice {
     );
   }
 
-  private updateSnapshotRequest(event: boolean): void {
+  private async updateSnapshotRequest(ack = true): Promise<void> {
     this._adapter.upsertState(
       `${this.snapshotChannelId}.${STATE_ID_SNAPSHOT_REQUEST}`,
       COMMON_SNAPSHOT_REQUEST,
-      false,  // always false, only user can set this to true - and afterwards wait for false
-      event   // true for snapshot created or as start/default state, false if error
+      false,
+      ack,
+      true
     );
   }
 
@@ -544,19 +554,28 @@ export class OwnRingCamera extends OwnRingDevice {
         COMMON_SNAPSHOT_URL,
         this._lastSnapShotUrl
       );
-      this.updateSnapshotRequest(true);
+      await this.updateSnapshotRequest();
     }
   }
 
-  private updateLivestreamRequest(event: boolean): void {
+  private async updateLivestreamRequest(ack = true): Promise<void> {
     this._adapter.upsertState(
       `${this.liveStreamChannelId}.${STATE_ID_LIVESTREAM_REQUEST}`,
       COMMON_LIVESTREAM_REQUEST,
-      false,  // always false, only user can set this to true - and afterwards wait for false
-      event   // true for snapshot created or as start/default state, false if error
+      false,
+      ack,
+      true
+    );
+    this._durationLiveStream = this._adapter.config.recordtime_livestream;
+    this._adapter.upsertState(
+      `${this.liveStreamChannelId}.${STATE_ID_LIVESTREAM_DURATION}`,
+      COMMON_LIVESTREAM_DURATION,
+      this._durationLiveStream,
+      ack,
+      true
     );
   }
-  
+
   private async updateLiveStreamObject(): Promise<void> {
     this.debug(`Update Livestream Object`);
     if (this._lastLiveStreamVideo) {
@@ -586,12 +605,7 @@ export class OwnRingCamera extends OwnRingDevice {
         this._lastLiveStreamTimestamp
       );
     }
-    this._adapter.upsertState(
-      `${this.liveStreamChannelId}.${STATE_ID_LIVESTREAM_DURATION}`,
-      COMMON_LIVESTREAM_DURATION,
-      this._durationLiveStream,
-      true);
-    this.updateLivestreamRequest(true);
+    await this.updateLivestreamRequest();
   }
 
   private updateHealthObject(health: CameraHealth): void {
@@ -645,19 +659,35 @@ export class OwnRingCamera extends OwnRingDevice {
   private onDing(value: PushNotificationDing): void {
     this.debug(`Recieved Ding Event (${util.inspect(value, true, 1)})`);
     this.conditionalRecording(EventState.ReactingOnDing, value.ding.image_uuid);
-    this._adapter.upsertState(`${this.eventsChannelId}.type`, COMMON_EVENTS_TYPE, value.subtype);
+    this._adapter.upsertState(
+      `${this.eventsChannelId}.type`,
+      COMMON_EVENTS_TYPE,
+      value.subtype
+    );
     this._adapter.upsertState(
       `${this.eventsChannelId}.detectionType`,
       COMMON_EVENTS_DETECTIONTYPE,
       value.ding.detection_type ?? value.subtype
     );
-    this._adapter.upsertState(`${this.eventsChannelId}.created_at`, COMMON_EVENTS_MOMENT, Date.now());
-    this._adapter.upsertState(`${this.eventsChannelId}.message`, COMMON_EVENTS_MESSAGE, value.aps.alert);
+    this._adapter.upsertState(
+      `${this.eventsChannelId}.created_at`,
+      COMMON_EVENTS_MOMENT,
+      Date.now()
+    );
+    this._adapter.upsertState(
+      `${this.eventsChannelId}.message`,
+      COMMON_EVENTS_MESSAGE,
+      value.aps.alert
+    );
   }
 
   private onMotion(value: boolean): void {
     this.debug(`Recieved Motion Event (${util.inspect(value, true, 1)})`);
-    this._adapter.upsertState(`${this.eventsChannelId}.motion`, COMMON_MOTION, value);
+    this._adapter.upsertState(
+      `${this.eventsChannelId}.motion`,
+      COMMON_MOTION,
+      value
+    );
     if (value) {
       this.conditionalRecording(EventState.ReactingOnMotion);
     }
@@ -671,9 +701,17 @@ export class OwnRingCamera extends OwnRingDevice {
     this.info("Doorbell pressed --> Will ignore additional presses for the next 25s.")
     this.debug(`Recieved Doorbell Event (${util.inspect(value, true, 1)})`);
     this._doorbellEventActive = true;
-    this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, COMMON_EVENTS_DOORBELL, true);
+    this._adapter.upsertState(
+      `${this.eventsChannelId}.doorbell`,
+      COMMON_EVENTS_DOORBELL,
+      true
+    );
     setTimeout(() => {
-      this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, COMMON_EVENTS_DOORBELL, false);
+      this._adapter.upsertState(
+        `${this.eventsChannelId}.doorbell`,
+        COMMON_EVENTS_DOORBELL,
+        false
+      );
     }, 5000);
     setTimeout(() => {
       this._doorbellEventActive = false;
@@ -684,11 +722,11 @@ export class OwnRingCamera extends OwnRingDevice {
   private async conditionalRecording(state: EventState, uuid?: string): Promise<void> {
     if (this._state !== EventState.Idle) {
       this.silly(`Would have recorded due to "${EventState[state]}", but we are already reacting.`);
-      if (this._autoSnapshot && uuid) {
+      if (this._adapter.config.auto_snapshot && uuid) {
         setTimeout(() => {
           this.debug(`delayed uuid recording`);
           this.takeSnapshot(uuid);
-        }, this._durationLiveStream * 1000 + 3000);
+        }, this._adapter.config.recordtime_auto_livestream * 1000 + 3000);
       }
       return
     }
@@ -696,8 +734,8 @@ export class OwnRingCamera extends OwnRingDevice {
     this.silly(`Start recording for Event "${EventState[state]}"...`);
     this._state = state;
     try {
-      this._autoSnapshot && await this.takeSnapshot(uuid, true);
-      this._autoLiveStream && await this.startLivestream(this._autodurationLiveStream);
+      this._adapter.config.auto_snapshot && await this.takeSnapshot(uuid, true);
+      this._adapter.config.auto_livestream && await this.startLivestream(this._adapter.config.recordtime_auto_livestream);
     } finally {
       this._state = EventState.Idle;
     }

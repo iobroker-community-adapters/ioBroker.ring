@@ -164,13 +164,13 @@ export class RingAdapter extends Adapter {
   // 	}
   // }
 
-  upsertState(id: string, common: Partial<ioBroker.StateCommon>, value: ioBroker.StateValue, subscribe = false): void {
+  upsertState(id: string, common: Partial<ioBroker.StateCommon>, value: ioBroker.StateValue, ack = true, subscribe = false): void {
     if (this.states[id] === value && !subscribe) {
       // Unchanged and from user not changeable Value
       return;
     }
     // noinspection JSIgnoredPromiseFromCall
-    this.upsertStateAsync(id, common, value, subscribe);
+    this.upsertStateAsync(id, common, value, ack, subscribe);
   }
 
   async tryGetStringState(id: string): Promise<string> {
@@ -179,18 +179,18 @@ export class RingAdapter extends Adapter {
     return ((await this.getStateAsync(id))?.val ?? "") + "" ;
   }
 
-  private async upsertStateAsync(id: string, common: Partial<ioBroker.StateCommon>, value: ioBroker.StateValue, subscribe = false): Promise<void> {
+  private async upsertStateAsync(id: string, common: Partial<ioBroker.StateCommon>, value: ioBroker.StateValue, ack = true, subscribe = false): Promise<void> {
     try {
       if (this.states[id] !== undefined) {
         this.states[id] = value;
-        await this.setStateAsync(id, value, true);
+        await this.setStateAsync(id, value, ack);
         return;
       }
 
       const {device, channel, stateName} = RingAdapter.getSplittedIds(id);
       await this.createStateAsync(device, channel, stateName, common);
       this.states[id] = value;
-      await this.setStateAsync(id, value, true);
+      await this.setStateAsync(id, value, ack);
       if (subscribe) {
         await this.subscribeStatesAsync(id);
       }
