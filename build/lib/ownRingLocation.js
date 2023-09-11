@@ -50,7 +50,7 @@ class OwnRingLocation {
             name: `Location ${this.id} ("${this.name}")`
         });
         // this._adapter.createChannel(this._fullId, CHANNEL_NAME_INFO, {name: `Info ${this.id}`});
-        this._adapter.upsertState(`${this._fullId}.${constants_1.STATE_ID_DEBUG_REQUEST}`, constants_1.COMMON_DEBUG_REQUEST, false, true);
+        this._adapter.upsertState(`${this._fullId}.${constants_1.STATE_ID_DEBUG_REQUEST}`, constants_1.COMMON_DEBUG_REQUEST, false, true, true);
     }
     silly(message) {
         this._adapter.log.silly(`Location ${this.id} ("${this.name}"): ${message}`);
@@ -120,7 +120,7 @@ class OwnRingLocation {
         if (!preventLog) {
             this.silly(`Recieved new LocationMode: ${newMode}`);
         }
-        this._adapter.upsertState(`${this._fullId}.locationMode`, constants_1.COMMON_LOCATIONMODE, newMode, true);
+        this._adapter.upsertState(`${this._fullId}.locationMode`, constants_1.COMMON_LOCATIONMODE, newMode, true, true);
     }
     async getLocationMode() {
         this._loc.getLocationMode()

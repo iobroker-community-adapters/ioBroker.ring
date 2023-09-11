@@ -206,6 +206,7 @@ export class RingAdapter extends Adapter {
     id: string,
     common: ioBroker.StateCommon,
     value: Buffer,
+    MIME_Type: string,
     timestamp: number
   ): Promise<void> {
     try {
@@ -218,15 +219,9 @@ export class RingAdapter extends Adapter {
       const foreignId = `${this.namespace}.${id}`;
       if (this.states[id] !== undefined) {
         this.states[id] = timestamp;
-
-        await this.writeFileAsync(this.namespace , foreignId, value).catch((reason) => {
-          this.logCatch("Couldn't write File-State", reason);
-        });
-        /*
         await this.setForeignBinaryStateAsync(foreignId, value).catch((reason) => {
           this.logCatch("Couldn't write File-State", reason);
         });
-        */
         return;
       }
       const {device, channel, stateName} = RingAdapter.getSplittedIds(id);
@@ -245,15 +240,9 @@ export class RingAdapter extends Adapter {
       // await this.createStateAsync(device, channel, stateName, common).catch((reason) => {
         this.logCatch("Couldn't Create File-State", reason);
       });
-
-      await this.writeFileAsync(this.namespace , foreignId, value).catch((reason) => {
-        this.logCatch("Couldn't write File-State", reason);
-      });
-      /*
       await this.setForeignBinaryStateAsync(foreignId, value).catch((reason) => {
         this.logCatch("Couldn't write File-State", reason);
       });
-      */
       this.states[id] = timestamp;
     } catch (e: any) {
       this.log.warn(`Error Updating File State ${id}: ${e?.message ?? e}`);

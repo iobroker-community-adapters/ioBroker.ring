@@ -77,6 +77,9 @@ class OwnRingDevice {
     info(message) {
         this._adapter.log.info(`Device ${this.shortId} ("${this.description}"): ${message}`);
     }
+    warn(message) {
+        this._adapter.log.warn(`Device ${this.shortId} ("${this.description}"): ${message}`);
+    }
     catcher(message, reason) {
         this._adapter.logCatch(message, reason);
     }

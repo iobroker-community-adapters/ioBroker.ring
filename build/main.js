@@ -173,13 +173,13 @@ class RingAdapter extends adapter_core_1.Adapter {
     // 		}
     // 	}
     // }
-    upsertState(id, common, value, subscribe = false) {
+    upsertState(id, common, value, ack = true, subscribe = false) {
         if (this.states[id] === value && !subscribe) {
             // Unchanged and from user not changeable Value
             return;
         }
         // noinspection JSIgnoredPromiseFromCall
-        this.upsertStateAsync(id, common, value, subscribe);
+        this.upsertStateAsync(id, common, value, ack, subscribe);
     }
     async tryGetStringState(id) {
         var _a, _b;
@@ -188,18 +188,18 @@ class RingAdapter extends adapter_core_1.Adapter {
             return cachedVal + "";
         return ((_b = (_a = (await this.getStateAsync(id))) === null || _a === void 0 ? void 0 : _a.val) !== null && _b !== void 0 ? _b : "") + "";
     }
-    async upsertStateAsync(id, common, value, subscribe = false) {
+    async upsertStateAsync(id, common, value, ack = true, subscribe = false) {
         var _a;
         try {
             if (this.states[id] !== undefined) {
                 this.states[id] = value;
-                await this.setStateAsync(id, value, true);
+                await this.setStateAsync(id, value, ack);
                 return;
             }
             const { device, channel, stateName } = RingAdapter.getSplittedIds(id);
             await this.createStateAsync(device, channel, stateName, common);
             this.states[id] = value;
-            await this.setStateAsync(id, value, true);
+            await this.setStateAsync(id, value, ack);
             if (subscribe) {
                 await this.subscribeStatesAsync(id);
             }

@@ -52,8 +52,16 @@ export class RingApiClient {
       this.adapter.log.info(
         `Recieved new Refresh Token. Will use the new one until the token in config gets changed`
       );
-      this.adapter.upsertState("next_refresh_token", COMMON_NEW_TOKEN, data.newRefreshToken);
-      this.adapter.upsertState("old_user_refresh_token", COMMON_OLD_TOKEN, this.adapter.config.refreshtoken);
+      this.adapter.upsertState(
+        "next_refresh_token",
+        COMMON_NEW_TOKEN,
+        data.newRefreshToken
+      );
+      this.adapter.upsertState(
+        "old_user_refresh_token",
+        COMMON_OLD_TOKEN,
+        this.adapter.config.refreshtoken
+      );
     });
     const profile = await this._api.getProfile()
       .catch((reason: any) => {
