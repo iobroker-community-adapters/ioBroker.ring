@@ -209,9 +209,12 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         });
         this.silly(`Recieved Livestream has Length: ${video.length}`);
         const { visURL, visPath } = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "Livestream.mp4");
-        this.debug("******* visURL: " + visURL + ", ****** visPath: " + visPath);
-        // FileService.writeFileSync(visPath, video, this._adapter);
-        // FileService.writeFileSync(fullPath, video, this._adapter);
+        if (!visURL || !visPath) {
+            this.warn("Vis not available");
+        }
+        else
+            file_service_1.FileService.writeFileSync(visPath, video, this._adapter);
+        file_service_1.FileService.writeFileSync(fullPath, video, this._adapter);
         if (this.lastLiveStreamDir !== "" && this._adapter.config.del_old_livestream) {
             file_service_1.FileService.deleteFileIfExistSync(this._lastLiveStreamDir, this._adapter);
         }
@@ -251,7 +254,11 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         }
         this.silly(`Writing Snapshot (Length: ${image.length}) to "${fullPath}"`);
         const { visURL, visPath } = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "Snapshot.jpg");
-        file_service_1.FileService.writeFileSync(visPath, image, this._adapter);
+        if (!visURL || !visPath) {
+            this.warn("Vis not available");
+        }
+        else
+            file_service_1.FileService.writeFileSync(visPath, image, this._adapter);
         file_service_1.FileService.writeFileSync(fullPath, image, this._adapter);
         if (this.lastSnapShotDir !== "" && this._adapter.config.del_old_snapshot) {
             file_service_1.FileService.deleteFileIfExistSync(this._lastSnapShotDir, this._adapter);
