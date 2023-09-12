@@ -59,16 +59,19 @@ export class FileService {
     fs.unlinkSync(fullPath);
   }
 
-  public static async getVisUrl(adapter: RingAdapter, fullId: string, stateName: string): Promise<string> {
+  public static async getVisUrl(adapter: RingAdapter, fullId: string, fileName: string): Promise<{visURL: string, visPath:string}> {
     const vis = await adapter.getForeignObjectAsync("system.adapter.web.0").catch((reason) => {
       adapter.logCatch(`Couldn't load "web.0" Adapter object.`, reason);
     });
     if (vis && vis.native) {
       const secure = vis.native.secure ? "https" : "http";
-      return `${secure}://${adapter.host}:${vis.native.port
-      }/state/${adapter.namespace}.${fullId}.${stateName}`;
+      const prefix = `${adapter.namespace}/${adapter.name}_${adapter.instance}_${fullId}_${fileName}`;
+      return {
+        visURL: `${secure}://${adapter.host}:${vis.native.port}/${prefix}`,
+        visPath: `${adapter.absoluteDefaultDir}files/${prefix}`
+      };
     }
-    return "";
+    return { visURL: "", visPath: "" }
   }
 
   public static async getTempDir(adapter: RingAdapter): Promise<string> {

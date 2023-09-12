@@ -21,7 +21,9 @@ export class RingAdapter extends Adapter {
   public get absoluteInstanceDir(): string {
     return utils.getAbsoluteInstanceDataDir(this as unknown as ioBroker.Adapter);
   }
-
+  public get absoluteDefaultDir(): string {
+    return utils.getAbsoluteDefaultDataDir();
+  }
   public constructor(options: Partial<utils.AdapterOptions> = {}) {
     options.systemConfig = true;
     super({
@@ -66,7 +68,7 @@ export class RingAdapter extends Adapter {
       const dataDir = (this.systemConfig) ? this.systemConfig.dataDir : "";
       this.log.silly(`DataDir: ${dataDir}`);
       if (!config_path[index]) {
-        config_path[index] = path.join(utils.getAbsoluteDefaultDataDir(), "files", this.namespace)
+        config_path[index] = path.join(this.absoluteDefaultDir, "files", this.namespace)
         if (index == "0")
           this.config.path_snapshot = config_path[index]
         else
