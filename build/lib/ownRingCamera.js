@@ -121,13 +121,15 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                     const targetVal = state.val;
                     this._adapter.log.debug(`Get Snapshot request for ${this.shortId} to value ${targetVal}`);
                     if (targetVal) {
-                        this.takeSnapshot().catch((reason) => {
-                            this.updateSnapshotRequest(false);
-                            this.catcher("Couldn't retrieve Snapshot.", reason);
-                        });
+                        if (targetVal == true) {
+                            this.takeSnapshot().catch((reason) => {
+                                this.updateSnapshotRequest(false);
+                                this.catcher("Couldn't retrieve Snapshot.", reason);
+                            });
+                        }
                     }
                     else {
-                        this.updateSnapshotRequest(false);
+                        this.updateSnapshotRequest(true);
                         this.warn(`Get Snapshot request for ${this.shortId} failed!`);
                     }
                 }
@@ -140,10 +142,16 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                     const targetVal = state.val;
                     this._adapter.log.debug(`Get Livestream request for ${this.shortId} to value ${targetVal}`);
                     if (targetVal) {
-                        this.startLivestream().catch((reason) => {
-                            this.updateLivestreamRequest(false);
-                            this.catcher("Couldn't retrieve Livestream.", reason);
-                        });
+                        if (targetVal == true) {
+                            this.startLivestream().catch((reason) => {
+                                this.updateLivestreamRequest(false);
+                                this.catcher("Couldn't retrieve Livestream.", reason);
+                            });
+                        }
+                    }
+                    else {
+                        this.updateLivestreamRequest(true);
+                        this.warn(`Get Snapshot request for ${this.shortId} failed!`);
                     }
                 }
                 else if (stateID === constants_1.STATE_ID_LIVESTREAM_DURATION) {
@@ -259,7 +267,6 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         }
         else
             file_service_1.FileService.writeFileSync(visPath, image, this._adapter);
-        file_service_1.FileService.writeFileSync(fullPath, image, this._adapter);
         if (this.lastSnapShotDir !== "" && this._adapter.config.del_old_snapshot) {
             file_service_1.FileService.deleteFileIfExistSync(this._lastSnapShotDir, this._adapter);
         }
@@ -267,7 +274,9 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._lastSnapShotDir = fullPath;
         this.silly(`Locally storing Snapshot (Length: ${image.length})`);
         this._lastSnapshotTimestamp = Date.now();
-        await this.updateSnapshotObject();
+        file_service_1.FileService.writeFileSync(fullPath, image, this._adapter, () => {
+            this.updateSnapshotObject();
+        });
         this.debug(`Done creating snapshot to ${fullPath}`);
     }
     updateHealth() {

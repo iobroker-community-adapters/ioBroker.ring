@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs";
 import { RingAdapter } from "../../main";
 import "@iobroker/types";
+import { devNull } from "os";
 
 export class FileService {
   public static readonly IOBROKER_FILES_REGEX = new RegExp(/.*iobroker-data\/files.*/);

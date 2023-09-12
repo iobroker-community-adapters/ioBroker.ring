@@ -296,14 +296,16 @@ export class OwnRingCamera extends OwnRingDevice {
         this._adapter.logCatch(`Couldn't delete temp file`, err);
       }
     });
-    this.silly(`Recieved Livestream has Length: ${video.length}`);
+    this.silly(`Writing Filestream (Length: ${video.length}) to "${fullPath}"`);
+    FileService.writeFileSync(fullPath, video, this._adapter);
     const { visURL, visPath } = await FileService.getVisUrl(this._adapter, this.fullId, "Livestream.mp4");
     if(!visURL || !visPath) {
       this.warn("Vis not available");
-    } else
+    } else {
+      this.silly(`Locally storing Filestream (Length: ${video.length})`);
       FileService.writeFileSync(visPath, video, this._adapter);
-    FileService.writeFileSync(fullPath, video, this._adapter);
-    if (this.lastLiveStreamDir !== "" && this._adapter.config.del_old_livestream) {
+    }
+    if (this._lastLiveStreamDir !== "" && this._adapter.config.del_old_livestream) {
       FileService.deleteFileIfExistSync(this._lastLiveStreamDir, this._adapter);
     }
     this._lastLiveStreamUrl = visURL;
@@ -349,19 +351,19 @@ export class OwnRingCamera extends OwnRingDevice {
       return;
     }
     this.silly(`Writing Snapshot (Length: ${image.length}) to "${fullPath}"`);
+    FileService.writeFileSync(fullPath, image, this._adapter);
     const { visURL, visPath } = await FileService.getVisUrl(this._adapter, this.fullId, "Snapshot.jpg");
     if(!visURL || !visPath) {
       this.warn("Vis not available");
-    } else
+    } else {
+      this.silly(`Locally storing Snapshot (Length: ${image.length})`);
       FileService.writeFileSync(visPath, image, this._adapter);
-    FileService.writeFileSync(fullPath, image, this._adapter);
-
-    if (this.lastSnapShotDir !== "" && this._adapter.config.del_old_snapshot) {
+    }
+    if (this._lastSnapShotDir !== "" && this._adapter.config.del_old_snapshot) {
       FileService.deleteFileIfExistSync(this._lastSnapShotDir, this._adapter);
     }
     this._lastSnapShotUrl = visURL;
     this._lastSnapShotDir = fullPath;
-    this.silly(`Locally storing Snapshot (Length: ${image.length})`);
     this._lastSnapshotTimestamp = Date.now();
     await this.updateSnapshotObject();
     this.debug(`Done creating snapshot to ${fullPath}`);
