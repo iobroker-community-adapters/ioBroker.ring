@@ -5,6 +5,7 @@ import {
   CameraEventResponse,
   CameraHealth,
   DingKind,
+  RingApi,
   RingCamera
 } from "ring-client-api";
 import { RingAdapter } from "../main";
@@ -190,12 +191,14 @@ export class OwnRingCamera extends OwnRingDevice {
           const targetVal = state.val as boolean;
           this._adapter.log.debug(`Get Snapshot request for ${this.shortId} to value ${targetVal}`);
           if (targetVal) {
-            this.takeSnapshot().catch((reason) => {
-              this.updateSnapshotRequest(false);
-              this.catcher("Couldn't retrieve Snapshot.", reason);
-            });
+            if (targetVal == true) {
+              this.takeSnapshot().catch((reason) => {
+                this.updateSnapshotRequest(false);
+                this.catcher("Couldn't retrieve Snapshot.", reason);
+              })
+            }
           } else {
-            this.updateSnapshotRequest(false);
+            this.updateSnapshotRequest(true);
             this.warn(`Get Snapshot request for ${this.shortId} failed!`);
           }
         } else {
@@ -207,10 +210,15 @@ export class OwnRingCamera extends OwnRingDevice {
           const targetVal = state.val as boolean;
           this._adapter.log.debug(`Get Livestream request for ${this.shortId} to value ${targetVal}`);
           if (targetVal) {
-            this.startLivestream().catch((reason) => {
-              this.updateLivestreamRequest(false);
-              this.catcher("Couldn't retrieve Livestream.", reason);
-            });
+            if (targetVal == true) {
+              this.startLivestream().catch((reason) => {
+                this.updateLivestreamRequest(false);
+                this.catcher("Couldn't retrieve Livestream.", reason);
+              })
+            }
+          } else {
+            this.updateLivestreamRequest(true);
+            this.warn(`Get Snapshot request for ${this.shortId} failed!`);
           }
         } else if (stateID === STATE_ID_LIVESTREAM_DURATION) {
           const targetVal: number = isNaN(state.val as number) ? 20 : state.val as number;
