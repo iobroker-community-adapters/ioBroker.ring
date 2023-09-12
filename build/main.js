@@ -43,6 +43,9 @@ class RingAdapter extends adapter_core_1.Adapter {
     get absoluteInstanceDir() {
         return utils.getAbsoluteInstanceDataDir(this);
     }
+    get absoluteDefaultDir() {
+        return utils.getAbsoluteDefaultDataDir();
+    }
     constructor(options = {}) {
         options.systemConfig = true;
         super({
@@ -84,7 +87,7 @@ class RingAdapter extends adapter_core_1.Adapter {
             const dataDir = (this.systemConfig) ? this.systemConfig.dataDir : "";
             this.log.silly(`DataDir: ${dataDir}`);
             if (!config_path[index]) {
-                config_path[index] = path_1.default.join(utils.getAbsoluteDefaultDataDir(), "files", this.namespace);
+                config_path[index] = path_1.default.join(this.absoluteDefaultDir, "files", this.namespace);
                 if (index == "0")
                     this.config.path_snapshot = config_path[index];
                 else
@@ -211,7 +214,7 @@ class RingAdapter extends adapter_core_1.Adapter {
             }
         }
     }
-    async upsertFile(id, common, value, timestamp) {
+    async upsertFile(id, common, value, MIME_Type, timestamp) {
         var _a;
         try {
             if (this.states[id] === timestamp) {
@@ -223,14 +226,9 @@ class RingAdapter extends adapter_core_1.Adapter {
             const foreignId = `${this.namespace}.${id}`;
             if (this.states[id] !== undefined) {
                 this.states[id] = timestamp;
-                await this.writeFileAsync(this.namespace, foreignId, value).catch((reason) => {
+                await this.setForeignBinaryStateAsync(foreignId, value).catch((reason) => {
                     this.logCatch("Couldn't write File-State", reason);
                 });
-                /*
-                await this.setForeignBinaryStateAsync(foreignId, value).catch((reason) => {
-                  this.logCatch("Couldn't write File-State", reason);
-                });
-                */
                 return;
             }
             const { device, channel, stateName } = RingAdapter.getSplittedIds(id);
@@ -246,14 +244,9 @@ class RingAdapter extends adapter_core_1.Adapter {
                 // await this.createStateAsync(device, channel, stateName, common).catch((reason) => {
                 this.logCatch("Couldn't Create File-State", reason);
             });
-            await this.writeFileAsync(this.namespace, foreignId, value).catch((reason) => {
+            await this.setForeignBinaryStateAsync(foreignId, value).catch((reason) => {
                 this.logCatch("Couldn't write File-State", reason);
             });
-            /*
-            await this.setForeignBinaryStateAsync(foreignId, value).catch((reason) => {
-              this.logCatch("Couldn't write File-State", reason);
-            });
-            */
             this.states[id] = timestamp;
         }
         catch (e) {

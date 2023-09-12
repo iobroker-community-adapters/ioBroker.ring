@@ -49,15 +49,19 @@ class FileService {
         }
         fs_1.default.unlinkSync(fullPath);
     }
-    static async getVisUrl(adapter, fullId, stateName) {
+    static async getVisUrl(adapter, fullId, fileName) {
         const vis = await adapter.getForeignObjectAsync("system.adapter.web.0").catch((reason) => {
             adapter.logCatch(`Couldn't load "web.0" Adapter object.`, reason);
         });
         if (vis && vis.native) {
             const secure = vis.native.secure ? "https" : "http";
-            return `${secure}://${adapter.host}:${vis.native.port}/state/${adapter.namespace}.${fullId}.${stateName}`;
+            const prefix = `${adapter.namespace}/${adapter.name}_${adapter.instance}_${fullId}_${fileName}`;
+            return {
+                visURL: `${secure}://${adapter.host}:${vis.native.port}/${prefix}`,
+                visPath: `${adapter.absoluteDefaultDir}files/${prefix}`
+            };
         }
-        return "";
+        return { visURL: "", visPath: "" };
     }
     static async getTempDir(adapter) {
         const tempPath = path_1.default.join(adapter.absoluteInstanceDir);

@@ -290,8 +290,11 @@ export class OwnRingCamera extends OwnRingDevice {
     });
     this.silly(`Recieved Livestream has Length: ${video.length}`);
     const { visURL, visPath } = await FileService.getVisUrl(this._adapter, this.fullId, "Livestream.mp4");
-    FileService.writeFileSync(visPath, video, this._adapter);
-    FileService.writeFileSync(fullPath, video, this._adapter);
+
+    this.debug("******* visURL: " + visURL + ", ****** visPath: " + visPath);
+
+    // FileService.writeFileSync(visPath, video, this._adapter);
+    // FileService.writeFileSync(fullPath, video, this._adapter);
     if (this.lastLiveStreamDir !== "" && this._adapter.config.del_old_livestream) {
       FileService.deleteFileIfExistSync(this._lastLiveStreamDir, this._adapter);
     }

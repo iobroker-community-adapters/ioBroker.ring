@@ -57,11 +57,9 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._lastLightCommand = 0;
         this._lastLiveStreamUrl = "";
         this._lastLiveStreamDir = "";
-        this._lastLiveStreamVideo = null;
         this._lastLiveStreamTimestamp = 0;
         this._lastSnapShotUrl = "";
         this._lastSnapShotDir = "";
-        this._lastSnapshotImage = null;
         this._lastSnapshotTimestamp = 0;
         this._snapshotCount = 0;
         this._liveStreamCount = 0;
@@ -210,14 +208,15 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             }
         });
         this.silly(`Recieved Livestream has Length: ${video.length}`);
-        this._lastLiveStreamUrl = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "Livestream.mp4");
-        file_service_1.FileService.writeFileSync(fullPath, video, this._adapter);
+        const { visURL, visPath } = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "Livestream.mp4");
+        this.debug("******* visURL: " + visURL + ", ****** visPath: " + visPath);
+        // FileService.writeFileSync(visPath, video, this._adapter);
+        // FileService.writeFileSync(fullPath, video, this._adapter);
         if (this.lastLiveStreamDir !== "" && this._adapter.config.del_old_livestream) {
             file_service_1.FileService.deleteFileIfExistSync(this._lastLiveStreamDir, this._adapter);
         }
+        this._lastLiveStreamUrl = visURL;
         this._lastLiveStreamDir = fullPath;
-        // this.silly(`Locally storing Snapshot (Length: ${image.length})`);
-        this._lastLiveStreamVideo = video;
         this._lastLiveStreamTimestamp = Date.now();
         await this.updateLiveStreamObject();
         this.debug(`Done creating livestream to ${fullPath}`);
@@ -251,14 +250,15 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             return;
         }
         this.silly(`Writing Snapshot (Length: ${image.length}) to "${fullPath}"`);
+        const { visURL, visPath } = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "Snapshot.jpg");
+        file_service_1.FileService.writeFileSync(visPath, image, this._adapter);
         file_service_1.FileService.writeFileSync(fullPath, image, this._adapter);
-        this._lastSnapShotUrl = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "Snapshot.jpg");
         if (this.lastSnapShotDir !== "" && this._adapter.config.del_old_snapshot) {
             file_service_1.FileService.deleteFileIfExistSync(this._lastSnapShotDir, this._adapter);
         }
+        this._lastSnapShotUrl = visURL;
         this._lastSnapShotDir = fullPath;
-        // this.silly(`Locally storing Snapshot (Length: ${image.length})`);
-        this._lastSnapshotImage = image;
+        this.silly(`Locally storing Snapshot (Length: ${image.length})`);
         this._lastSnapshotTimestamp = Date.now();
         await this.updateSnapshotObject();
         this.debug(`Done creating snapshot to ${fullPath}`);
@@ -363,11 +363,6 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
     }
     async updateSnapshotObject() {
         this.debug(`Update Snapshot Object`);
-        if (this._lastSnapshotImage) {
-            await this._adapter.upsertFile(`${this.snapshotChannelId}.jpg`, constants_1.COMMON_SNAPSHOT_SNAPSHOT, this._lastSnapshotImage, this._lastSnapshotTimestamp).catch((reason) => {
-                this.debug(`Couldn't update Snapshot obejct: "${reason}"`);
-            });
-        }
         if (this._lastSnapshotTimestamp !== 0) {
             this._adapter.upsertState(`${this.snapshotChannelId}.snapshot_file`, constants_1.COMMON_SNAPSHOT_FILE, this._lastSnapShotDir);
             this._adapter.upsertState(`${this.snapshotChannelId}.moment`, constants_1.COMMON_SNAPSHOT_MOMENT, this._lastSnapshotTimestamp);
@@ -382,11 +377,6 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
     }
     async updateLiveStreamObject() {
         this.debug(`Update Livestream Object`);
-        if (this._lastLiveStreamVideo) {
-            await this._adapter.upsertFile(`${this.liveStreamChannelId}.mp4`, constants_1.COMMON_LIVESTREAM_LIVESTREAM, this._lastLiveStreamVideo, this._lastLiveStreamTimestamp).catch((reason) => {
-                this.debug(`Couldn't update Livestream obejct: "${reason}"`);
-            });
-        }
         if (this._lastLiveStreamDir !== "") {
             this._adapter.upsertState(`${this.liveStreamChannelId}.livestream_file`, constants_1.COMMON_LIVESTREAM_FILE, this._lastLiveStreamDir);
             this._adapter.upsertState(`${this.liveStreamChannelId}.livestream_url`, constants_1.COMMON_LIVESTREAM_URL, this._lastLiveStreamUrl);
