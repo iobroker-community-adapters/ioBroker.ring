@@ -207,6 +207,13 @@ export const COMMON_LIVESTREAM_FILE: Partial<ioBroker.StateCommon> = {
   read: true,
   write: false
 }
+export const COMMON_LIVESTREAM_100MS_FILE: Partial<ioBroker.StateCommon> = {
+  type: "string",
+  role: "url",
+  name: "100 ms Second Livestream file",
+  read: true,
+  write: false
+}
 export const COMMON_MOTION: ioBroker.StateCommon = {
   type: "boolean",
   role: "sensor.motion",

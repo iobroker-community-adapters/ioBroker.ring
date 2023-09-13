@@ -81,16 +81,20 @@ export class FileService {
     return tempPath;
   }
 
-  public static writeFileSync(fullPath: string, data: Buffer, adapter: RingAdapter): void {
+  public static writeFileSync(fullPath: string, data: Buffer, adapter: RingAdapter, afterWrite?: () => void): void {
     if (this.IOBROKER_FILES_REGEX.test(fullPath)) {
       adapter.writeFile(adapter.namespace, this.reducePath(fullPath, adapter), data, (r) => {
         if (r) {
           adapter.logCatch(`Failed to write Adapter File '${fullPath}'`, r.message);
+        } else {
+          adapter.log.silly(`Adapter File ${fullPath} written!`);
+          if (afterWrite) afterWrite();
         }
       });
       return;
     }
     fs.writeFileSync(fullPath, data);
+    if (afterWrite) afterWrite();
   }
 
   private static reducePath(fullPath: string, adapter: RingAdapter): string {

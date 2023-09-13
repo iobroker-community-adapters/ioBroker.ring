@@ -5,7 +5,6 @@ import {
   CameraEventResponse,
   CameraHealth,
   DingKind,
-  RingApi,
   RingCamera
 } from "ring-client-api";
 import { RingAdapter } from "../main";
@@ -43,6 +42,7 @@ import {
   COMMON_LIGHT_SWITCH,
   COMMON_LIVESTREAM_DURATION,
   COMMON_LIVESTREAM_FILE,
+  COMMON_LIVESTREAM_100MS_FILE,
   COMMON_LIVESTREAM_MOMENT,
   COMMON_LIVESTREAM_REQUEST,
   COMMON_LIVESTREAM_URL,
@@ -134,12 +134,12 @@ export class OwnRingCamera extends OwnRingDevice {
     this.updateHealth();
     // noinspection JSIgnoredPromiseFromCall
     this.updateHistory();
-    this._adapter.config.auto_snapshot ? setTimeout(this.takeSnapshot.bind(this), 50) : this.updateSnapshotObject();
+    this.updateSnapshotObject();
     this.updateLiveStreamObject();
     this.ringDevice = ringDevice; // subscribes to the events
   }
 
-  public override processUserInput(channelID: string, stateID: string, state: ioBroker.State): void {
+  public override async processUserInput(channelID: string, stateID: string, state: ioBroker.State): Promise<void> {
     switch (channelID) {
       case "":
         if (stateID !== STATE_ID_DEBUG_REQUEST) {
@@ -192,7 +192,7 @@ export class OwnRingCamera extends OwnRingDevice {
           this._adapter.log.debug(`Get Snapshot request for ${this.shortId} to value ${targetVal}`);
           if (targetVal) {
             if (targetVal == true) {
-              this.takeSnapshot().catch((reason) => {
+              await this.takeSnapshot().catch((reason) => {
                 this.updateSnapshotRequest(false);
                 this.catcher("Couldn't retrieve Snapshot.", reason);
               })
@@ -211,7 +211,7 @@ export class OwnRingCamera extends OwnRingDevice {
           this._adapter.log.debug(`Get Livestream request for ${this.shortId} to value ${targetVal}`);
           if (targetVal) {
             if (targetVal == true) {
-              this.startLivestream().catch((reason) => {
+              await this.startLivestream().catch((reason) => {
                 this.updateLivestreamRequest(false);
                 this.catcher("Couldn't retrieve Livestream.", reason);
               })
@@ -261,6 +261,23 @@ export class OwnRingCamera extends OwnRingDevice {
 
   public async startLivestream(duration?: number): Promise<void> {
     this.silly(`${this.shortId}.startLivestream()`);
+
+    duration ??= this._durationLiveStream;
+
+    const { visURL, visPath } =
+      await FileService.getVisUrl(
+        this._adapter,
+        this.fullId,
+        "Livestream" + (duration == 0.1 ? "_100ms" : "") + ".mp4"
+      );
+    if(!visURL || !visPath) {
+      this.warn("Vis not available");
+      if (duration == 0.1) {
+        this.updateLivestreamRequest(false, visPath)
+        return;
+      }
+    }
+
     const {fullPath, dirname} =
       FileService.getPath(
         this._adapter.config.path_livestream,
@@ -270,18 +287,21 @@ export class OwnRingCamera extends OwnRingDevice {
         this.fullId,
         this.kind
       );
-    if (!(await FileService.prepareFolder(dirname))) {
-      this.warn(`Failed to prepare Livestream folder ("${fullPath}")`);
-      this.updateLivestreamRequest(false)
-      return;
+
+    if (duration > 0.1) {
+      if (!(await FileService.prepareFolder(dirname))) {
+        this.warn(`Failed to prepare Livestream folder ("${fullPath}")`);
+        this.updateLivestreamRequest(false)
+        return;
+      }
+      FileService.deleteFileIfExistSync(fullPath, this._adapter);
+      if (this._ringDevice.isOffline) {
+        this.info(` is offline --> won't take LiveStream`);
+        this.updateLivestreamRequest(false)
+        return;
+      }
     }
-    FileService.deleteFileIfExistSync(fullPath, this._adapter);
-    if (this._ringDevice.isOffline) {
-      this.info(` is offline --> won't take LiveStream`);
-      this.updateLivestreamRequest(false)
-      return;
-    }
-    duration ??= this._durationLiveStream;
+
     const tempPath = (await FileService.getTempDir(this._adapter)) + `/temp_${this.shortId}_livestream.mp4`;
     this.silly(`Initialize Livestream (${duration}s) to temp-file ${tempPath}`);
     await this._ringDevice.recordToFile(tempPath, duration);
@@ -290,32 +310,53 @@ export class OwnRingCamera extends OwnRingDevice {
       this.updateLivestreamRequest(false)
       return;
     }
+
     const video = fs.readFileSync(tempPath);
     fs.unlink(tempPath, (err) => {
       if (err) {
         this._adapter.logCatch(`Couldn't delete temp file`, err);
       }
     });
-    this.silly(`Writing Filestream (Length: ${video.length}) to "${fullPath}"`);
-    FileService.writeFileSync(fullPath, video, this._adapter);
-    const { visURL, visPath } = await FileService.getVisUrl(this._adapter, this.fullId, "Livestream.mp4");
-    if(!visURL || !visPath) {
-      this.warn("Vis not available");
-    } else {
+
+    if (visPath) {
       this.silly(`Locally storing Filestream (Length: ${video.length})`);
-      FileService.writeFileSync(visPath, video, this._adapter);
+      if (duration == 0.1) {
+        FileService.writeFileSync(visPath, video, this._adapter, () => {
+          this.updateLivestreamRequest(true, visPath);
+        });
+        return;
+      } else
+        FileService.writeFileSync(visPath, video, this._adapter);
     }
+
     if (this._lastLiveStreamDir !== "" && this._adapter.config.del_old_livestream) {
       FileService.deleteFileIfExistSync(this._lastLiveStreamDir, this._adapter);
     }
+
     this._lastLiveStreamUrl = visURL;
     this._lastLiveStreamDir = fullPath;
     this._lastLiveStreamTimestamp = Date.now();
-    await this.updateLiveStreamObject();
+
+    this.silly(`Writing Filestream (Length: ${video.length}) to "${fullPath}"`);
+    FileService.writeFileSync(fullPath, video, this._adapter, () => {
+      this.updateLiveStreamObject();
+    });
+
     this.debug(`Done creating livestream to ${fullPath}`);
   }
 
   public async takeSnapshot(uuid?: string, eventBased = false): Promise<void> {
+    this.silly(`${this.shortId}.takeSnapshot()`);
+
+    const { visURL, visPath } =
+      await FileService.getVisUrl(
+        this._adapter,
+        this.fullId,"Snapshot.jpg"
+      );
+    if(!visURL || !visPath) {
+      this.warn("Vis not available");
+    }
+
     const {fullPath, dirname} =
       FileService.getPath(
         this._adapter.config.path_snapshot,
@@ -325,6 +366,7 @@ export class OwnRingCamera extends OwnRingDevice {
         this.fullId,
         this.kind
       );
+
     if (!(await FileService.prepareFolder(dirname))) {
       this.warn(`prepare folder problem --> won't take Snapshot`);
       this.updateSnapshotRequest(false)
@@ -350,22 +392,22 @@ export class OwnRingCamera extends OwnRingDevice {
       this.updateSnapshotRequest(false)
       return;
     }
-    this.silly(`Writing Snapshot (Length: ${image.length}) to "${fullPath}"`);
-    FileService.writeFileSync(fullPath, image, this._adapter);
-    const { visURL, visPath } = await FileService.getVisUrl(this._adapter, this.fullId, "Snapshot.jpg");
-    if(!visURL || !visPath) {
-      this.warn("Vis not available");
-    } else {
-      this.silly(`Locally storing Snapshot (Length: ${image.length})`);
-      FileService.writeFileSync(visPath, image, this._adapter);
-    }
     if (this._lastSnapShotDir !== "" && this._adapter.config.del_old_snapshot) {
       FileService.deleteFileIfExistSync(this._lastSnapShotDir, this._adapter);
     }
     this._lastSnapShotUrl = visURL;
     this._lastSnapShotDir = fullPath;
     this._lastSnapshotTimestamp = Date.now();
-    await this.updateSnapshotObject();
+
+    if (visPath) {
+      this.silly(`Locally storing Snapshot (Length: ${image.length})`);
+      FileService.writeFileSync(visPath, image, this._adapter);
+    }
+    this.silly(`Writing Snapshot (Length: ${image.length}) to "${fullPath}"`);
+    FileService.writeFileSync(fullPath, image, this._adapter, () => {
+      this.updateSnapshotObject();
+    });
+
     this.debug(`Done creating snapshot to ${fullPath}`);
   }
 
@@ -560,7 +602,15 @@ export class OwnRingCamera extends OwnRingDevice {
     }
   }
 
-  private async updateLivestreamRequest(ack = true): Promise<void> {
+  private async updateLivestreamRequest(ack = true, visPath = ""): Promise<void> {
+    if (visPath)
+      this._adapter.upsertState(
+        `${this.liveStreamChannelId}.livestream_100ms_file`,
+        COMMON_LIVESTREAM_100MS_FILE,
+        visPath,
+        ack,
+        true
+      );
     this._adapter.upsertState(
       `${this.liveStreamChannelId}.${STATE_ID_LIVESTREAM_REQUEST}`,
       COMMON_LIVESTREAM_REQUEST,
@@ -726,6 +776,7 @@ export class OwnRingCamera extends OwnRingDevice {
     this.silly(`Start recording for Event "${EventState[state]}"...`);
     this._state = state;
     try {
+      this._adapter.config.auto_livestream && await this.startLivestream(0.1);
       this._adapter.config.auto_snapshot && await this.takeSnapshot(uuid, true);
       this._adapter.config.auto_livestream && await this.startLivestream(this._adapter.config.recordtime_auto_livestream);
     } finally {
