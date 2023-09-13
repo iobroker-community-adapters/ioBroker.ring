@@ -45,11 +45,13 @@ import {
   COMMON_LIVESTREAM_100MS_FILE,
   COMMON_LIVESTREAM_MOMENT,
   COMMON_LIVESTREAM_REQUEST,
+  COMMON_LIVESTREAM_AUTO,
   COMMON_LIVESTREAM_URL,
   COMMON_MOTION,
   COMMON_SNAPSHOT_FILE,
   COMMON_SNAPSHOT_MOMENT,
   COMMON_SNAPSHOT_REQUEST,
+  COMMON_SNAPSHOT_AUTO,
   COMMON_SNAPSHOT_URL,
   STATE_ID_DEBUG_REQUEST,
   STATE_ID_LIGHT_SWITCH,
@@ -468,6 +470,20 @@ export class OwnRingCamera extends OwnRingDevice {
       `${this.fullId}.${STATE_ID_DEBUG_REQUEST}`,
       COMMON_DEBUG_REQUEST,
       false,
+      true,
+      true
+    );
+    this._adapter.upsertState(
+      `${this.snapshotChannelId}.snapshot_auto`,
+      COMMON_SNAPSHOT_AUTO,
+      this._adapter.config.auto_snapshot,
+      true,
+      true
+    );
+    this._adapter.upsertState(
+      `${this.liveStreamChannelId}.livestream_auto`,
+      COMMON_SNAPSHOT_AUTO,
+      this._adapter.config.auto_livestream,
       true,
       true
     );

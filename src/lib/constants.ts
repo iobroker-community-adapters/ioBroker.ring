@@ -151,6 +151,13 @@ export const COMMON_SNAPSHOT_REQUEST: Partial<ioBroker.StateCommon> = {
   read: false,
   write: true
 }
+export const COMMON_SNAPSHOT_AUTO: Partial<ioBroker.StateCommon> = {
+  type: "boolean",
+  role: "value",
+  name: "Snapshot auto?",
+  read: false,
+  write: false
+};
 export const COMMON_SNAPSHOT_SNAPSHOT: ioBroker.StateCommon = {
   type: "file",
   role: "file",
@@ -186,6 +193,13 @@ export const COMMON_LIVESTREAM_REQUEST: Partial<ioBroker.StateCommon> = {
   read: false,
   write: true
 }
+export const COMMON_LIVESTREAM_AUTO: Partial<ioBroker.StateCommon> = {
+  type: "boolean",
+  role: "value",
+  name: "Snapshot auto?",
+  read: false,
+  write: false
+};
 export const COMMON_LIVESTREAM_DURATION: Partial<ioBroker.StateCommon> = {
   type: "number",
   role: "value",
