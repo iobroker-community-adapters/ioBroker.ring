@@ -220,7 +220,7 @@ export class OwnRingCamera extends OwnRingDevice {
             }
           } else {
             this.updateLivestreamRequest(true);
-            this.warn(`Get Snapshot request for ${this.shortId} failed!`);
+            this.warn(`Get Livestream request for ${this.shortId} failed!`);
           }
         } else if (stateID === STATE_ID_LIVESTREAM_DURATION) {
           const targetVal: number = isNaN(state.val as number) ? 20 : state.val as number;
