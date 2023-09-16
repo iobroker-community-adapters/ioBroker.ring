@@ -78,7 +78,6 @@ class RingApiClient {
         if (!await this.retrieveLocations()) {
             if (initial) {
                 this.adapter.terminate(`Failed to retrieve any locations for your ring Account.`);
-                return;
             }
             if (this._retryTimeout !== null) {
                 clearTimeout(this._retryTimeout);

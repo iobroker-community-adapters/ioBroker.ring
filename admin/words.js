@@ -47,7 +47,7 @@ systemDictionary = {
         "pl": "Ta adapter potrzebuje odpowiedniego symbolu. W celu generowania go, podąża za opisem w gotowości.",
         "uk": "Цей адаптер потребує дійсного токену. Щоб створити його, слідуйте опису в чителю.",
         "zh-cn": "这种适应者需要一个有效的基础。 为产生这一趋势,在读者说明之后。."
-      },
+    },
     "User": {
         "en": "User",
         "de": "Benutzer",
@@ -105,7 +105,7 @@ systemDictionary = {
         "pl": "Filename\n",
         "uk": "Назва файлу\n",
         "zh-cn": "导 言\n"
-      },
+    },
     "Automatic recording time in seconds": {
         "en": "Automatic recording time in seconds",
         "de": "Automatische Aufnahmezeit in Sekunden",
@@ -118,32 +118,32 @@ systemDictionary = {
         "pl": "Czas nagrywania automatycznego na sekundę",
         "uk": "Автоматичний час запису в секундах",
         "zh-cn": "第二期自动记录时间"
-      },
+    },
     "Recording time in seconds": {
-        "en": "Recording time in seconds",
-        "de": "Aufnahmezeit in Sekunden",
-        "ru": "Время записи в секундах",
-        "pt": "Tempo de gravação em segundos",
-        "nl": "Recording time in seconde",
-        "fr": "Temps d'enregistrement en secondes",
-        "it": "Tempo di registrazione in secondi",
-        "es": "Tiempo de grabación en segundos",
-        "pl": "Czas nagrywania w sekundach",
-        "uk": "Час запису в секундах",
-        "zh-cn": "第二章的录音时间"
-      },
+        "en": "Recording time on manual trigger in seconds",
+        "de": "Aufnahmezeit auf manuellem Trigger in Sekunden",
+        "ru": "Время записи на ручный триггер за считанные секунды",
+        "pt": "Tempo de gravação no gatilho manual em segundos",
+        "nl": "De tijd van de handleiding in seconden",
+        "fr": "Temps d'enregistrement sur le déclencheur manuel en quelques secondes",
+        "it": "Tempo di registrazione sul trigger manuale in pochi secondi",
+        "es": "Tiempo de grabación en el gatillo manual en segundos",
+        "pl": "Czas nagrywania ręcznego spustu w sekundach",
+        "uk": "Час запису на ручний тригер за секундами",
+        "zh-cn": "二. 第二期机的录音时间"
+    },
     "Auto event": {
-        "en": "Automatic event\n",
-        "de": "Automatisches Ereignis\n",
-        "ru": "Автоматическое мероприятие\n",
-        "pt": "Evento automático\n",
-        "nl": "Automatische gebeurtenis\n",
-        "fr": "Activité automatique\n",
-        "it": "Evento automatico\n",
-        "es": "Evento automático\n",
-        "pl": "Automatyczne wydarzenie\n",
-        "uk": "Автоматична подія\n",
-        "zh-cn": "自动活动\n"
+        "en": "React on Event automatically",
+        "de": "Auf Ereignisse automatisch reagieren",
+        "ru": "Реагировать на событие автоматически",
+        "pt": "Reagir no Evento automaticamente",
+        "nl": "Reageer automatisch",
+        "fr": "Réagir sur Event automatiquement",
+        "it": "Reagisci automaticamente su Event",
+        "es": "Reaccionar en el evento automáticamente",
+        "pl": "Reaktywacja zdarzeń automatycznie",
+        "uk": "React на заході автоматично",
+        "zh-cn": "对活动的反应"
     },
     "Path": {
         "en": "Path\n",
@@ -194,7 +194,7 @@ systemDictionary = {
         "pl": "Delete stare pliki",
         "uk": "Видалити старі файли",
         "zh-cn": "删除旧档案"
-      },
+    },
     "Allow to transfer errors if the adapter crash. Private data like usernames, passwords, tokens, ... will be NOT be transferd.": {
         "en": "Allow to transfer errors if the adapter crash. Private data like usernames, passwords, tokens, ... will be NOT be transferd.",
         "de": "Erlaube das weiterleiten von Fehlern wenn der Adapter abstürtzt. Private Daten wie z.B. Benutzername, Passwort, Token, ... werden NICHT übertragen.",

@@ -197,7 +197,7 @@ exports.COMMON_LIVESTREAM_REQUEST = {
 exports.COMMON_LIVESTREAM_AUTO = {
     type: "boolean",
     role: "value",
-    name: "Snapshot auto?",
+    name: "Automatically start Livestream on event?",
     read: false,
     write: false
 };

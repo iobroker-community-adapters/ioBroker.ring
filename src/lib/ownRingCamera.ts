@@ -41,6 +41,7 @@ import {
   COMMON_LIGHT_STATE,
   COMMON_LIGHT_SWITCH,
   COMMON_LIVESTREAM_100MS_FILE,
+  COMMON_LIVESTREAM_AUTO,
   COMMON_LIVESTREAM_DURATION,
   COMMON_LIVESTREAM_FILE,
   COMMON_LIVESTREAM_MOMENT,
@@ -192,12 +193,10 @@ export class OwnRingCamera extends OwnRingDevice {
           const targetVal = state.val as boolean;
           this._adapter.log.debug(`Get Snapshot request for ${this.shortId} to value ${targetVal}`);
           if (targetVal) {
-            if (targetVal == true) {
-              await this.takeSnapshot().catch((reason) => {
-                this.updateSnapshotRequest(false);
-                this.catcher("Couldn't retrieve Snapshot.", reason);
-              })
-            }
+            await this.takeSnapshot().catch((reason) => {
+              this.updateSnapshotRequest(true);
+              this.catcher("Couldn't retrieve Snapshot.", reason);
+            })
           } else {
             this.updateSnapshotRequest(true);
             this.warn(`Get Snapshot request for ${this.shortId} failed!`);
@@ -211,12 +210,10 @@ export class OwnRingCamera extends OwnRingDevice {
           const targetVal = state.val as boolean;
           this._adapter.log.debug(`Get Livestream request for ${this.shortId} to value ${targetVal}`);
           if (targetVal) {
-            if (targetVal == true) {
-              await this.startLivestream().catch((reason) => {
-                this.updateLivestreamRequest(false);
-                this.catcher("Couldn't retrieve Livestream.", reason);
-              })
-            }
+            await this.startLivestream().catch((reason) => {
+              this.updateLivestreamRequest(true);
+              this.catcher("Couldn't retrieve Livestream.", reason);
+            })
           } else {
             this.updateLivestreamRequest(true);
             this.warn(`Get Livestream request for ${this.shortId} failed!`);
@@ -477,7 +474,7 @@ export class OwnRingCamera extends OwnRingDevice {
     );
     this._adapter.upsertState(
       `${this.liveStreamChannelId}.livestream_auto`,
-      COMMON_SNAPSHOT_AUTO,
+      COMMON_LIVESTREAM_AUTO,
       this._adapter.config.auto_livestream,
       true,
       true
@@ -609,12 +606,12 @@ export class OwnRingCamera extends OwnRingDevice {
         COMMON_SNAPSHOT_URL,
         this._lastSnapShotUrl
       );
-      await this.updateSnapshotRequest();
     }
+    await this.updateSnapshotRequest();
   }
 
   private async updateLivestreamRequest(ack = true, visPath = ""): Promise<void> {
-    if (visPath)
+    if (visPath) {
       this._adapter.upsertState(
         `${this.liveStreamChannelId}.livestream_100ms_file`,
         COMMON_LIVESTREAM_100MS_FILE,
@@ -622,6 +619,7 @@ export class OwnRingCamera extends OwnRingDevice {
         ack,
         true
       );
+    }
     this._adapter.upsertState(
       `${this.liveStreamChannelId}.${STATE_ID_LIVESTREAM_REQUEST}`,
       COMMON_LIVESTREAM_REQUEST,
@@ -741,9 +739,7 @@ export class OwnRingCamera extends OwnRingDevice {
       COMMON_MOTION,
       value
     );
-    if (value) {
-      this.conditionalRecording(EventState.ReactingOnMotion);
-    }
+    value && this.conditionalRecording(EventState.ReactingOnMotion);
   }
 
   private onDorbell(value: PushNotificationDing): void {

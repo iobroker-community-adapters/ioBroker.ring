@@ -12,6 +12,7 @@
 	height: 100%;
 	width: 100%;
 	position: relative;
+	padding: 10px;
 }
 .m .select-wrapper + label {
 	/* The positioning for dropdown labels is messed up */

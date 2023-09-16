@@ -196,7 +196,7 @@ export const COMMON_LIVESTREAM_REQUEST: Partial<ioBroker.StateCommon> = {
 export const COMMON_LIVESTREAM_AUTO: Partial<ioBroker.StateCommon> = {
   type: "boolean",
   role: "value",
-  name: "Snapshot auto?",
+  name: "Automatically start Livestream on event?",
   read: false,
   write: false
 };

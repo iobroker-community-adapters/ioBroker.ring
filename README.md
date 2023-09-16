@@ -21,7 +21,7 @@ After installing the Adapter you have to enter your Email and Password of your [
 a Token. Ring now requires the use of Two-Factor Auth (2fa) for all accounts. For getting the token please do following
 on your shell.
 
-```
+```shell
 npx -p ring-client-api ring-auth-cli
 ```
 
