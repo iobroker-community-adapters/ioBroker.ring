@@ -51,6 +51,292 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._ringDevice = device;
         this.subscribeToEvents();
     }
+    constructor(ringDevice, location, adapter, apiClient) {
+        super(location, adapter, apiClient, OwnRingCamera.evaluateKind(ringDevice.deviceType, adapter, ringDevice), `${ringDevice.id}`, ringDevice.data.description);
+        this._durationLiveStream = this._adapter.config.recordtime_livestream;
+        this._lastLightCommand = 0;
+        this._lastLiveStreamUrl = "";
+        this._lastLiveStreamDir = "";
+        this._lastLiveStreamTimestamp = 0;
+        this._lastSnapShotUrl = "";
+        this._lastSnapShotDir = "";
+        this._lastSnapshotTimestamp = 0;
+        this._snapshotCount = 0;
+        this._liveStreamCount = 0;
+        this._state = EventState.Idle;
+        this._doorbellEventActive = false;
+        this._ringDevice = ringDevice;
+        this.debug(`Create device`);
+        this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
+        this.historyChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HISTORY}`;
+        this.lightChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIGHT}`;
+        this.snapshotChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_SNAPSHOT}`;
+        this.liveStreamChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIVESTREAM}`;
+        this.eventsChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_EVENTS}`;
+        this.recreateDeviceObjectTree();
+        this.updateDeviceInfoObject(ringDevice.data);
+        this.updateHealth();
+        // noinspection JSIgnoredPromiseFromCall
+        this.updateHistory();
+        this.updateSnapshotObject();
+        this.updateLiveStreamObject();
+        this.ringDevice = ringDevice; // subscribes to the events
+    }
+    async processUserInput(channelID, stateID, state) {
+        switch (channelID) {
+            case "":
+                if (stateID !== constants_1.STATE_ID_DEBUG_REQUEST) {
+                    return;
+                }
+                const targetVal = state.val;
+                if (targetVal) {
+                    this._adapter.log.info(`Device Debug Data for ${this.shortId}: ${util.inspect(this._ringDevice, false, 1)}`);
+                    this._adapter.upsertState(`${this.fullId}.${constants_1.STATE_ID_DEBUG_REQUEST}`, constants_1.COMMON_DEBUG_REQUEST, false);
+                }
+                return;
+            case "Light":
+                if (!this._ringDevice.hasLight) {
+                    return;
+                }
+                if (stateID === constants_1.STATE_ID_LIGHT_SWITCH) {
+                    const targetVal = state.val;
+                    this._adapter.log.debug(`Set light for ${this.shortId} to value ${targetVal}`);
+                    this._lastLightCommand = Date.now();
+                    this._ringDevice.setLight(targetVal).then((success) => {
+                        if (success) {
+                            this._adapter.upsertState(`${this.lightChannelId}.light_state`, constants_1.COMMON_LIGHT_STATE, targetVal);
+                            this._adapter.upsertState(`${this.lightChannelId}.light_switch`, constants_1.COMMON_LIGHT_SWITCH, targetVal, true, true);
+                            setTimeout(() => {
+                                this.updateHealth.bind(this);
+                            }, 65000);
+                        }
+                    });
+                }
+                else {
+                    this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
+                }
+                break;
+            case "Snapshot":
+                if (stateID === constants_1.STATE_ID_SNAPSHOT_REQUEST) {
+                    const targetVal = state.val;
+                    this._adapter.log.debug(`Get Snapshot request for ${this.shortId} to value ${targetVal}`);
+                    if (targetVal) {
+                        await this.takeSnapshot().catch((reason) => {
+                            this.updateSnapshotRequest(true);
+                            this.catcher("Couldn't retrieve Snapshot.", reason);
+                        });
+                    }
+                    else {
+                        this.updateSnapshotRequest(true);
+                        this.warn(`Get Snapshot request for ${this.shortId} failed!`);
+                    }
+                }
+                else {
+                    this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
+                }
+                break;
+            case "Livestream":
+                if (stateID === constants_1.STATE_ID_LIVESTREAM_REQUEST) {
+                    const targetVal = state.val;
+                    this._adapter.log.debug(`Get Livestream request for ${this.shortId} to value ${targetVal}`);
+                    if (targetVal) {
+                        await this.startLivestream().catch((reason) => {
+                            this.updateLivestreamRequest(true);
+                            this.catcher("Couldn't retrieve Livestream.", reason);
+                        });
+                    }
+                    else {
+                        this.updateLivestreamRequest(true);
+                        this.warn(`Get Livestream request for ${this.shortId} failed!`);
+                    }
+                }
+                else if (stateID === constants_1.STATE_ID_LIVESTREAM_DURATION) {
+                    const targetVal = isNaN(state.val) ? 20 : state.val;
+                    this._adapter.log.debug(`Get Livestream duration for ${this.shortId} to value ${targetVal}`);
+                    this.setDurationLivestream(targetVal);
+                }
+                else {
+                    this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
+                }
+                break;
+            default:
+                this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
+        }
+    }
+    updateByDevice(ringDevice) {
+        this.ringDevice = ringDevice;
+        this._state = EventState.Idle;
+        this.update(ringDevice.data);
+    }
+    update(data) {
+        this.debug(`Recieved Update`);
+        this.updateDeviceInfoObject(data);
+        this.updateHealth();
+        // noinspection JSIgnoredPromiseFromCall
+        this.updateHistory();
+        this.updateSnapshotObject();
+    }
+    setDurationLivestream(val) {
+        this.silly(`${this.shortId}.durationLivestream()`);
+        this._durationLiveStream = val;
+        this._adapter.upsertState(`${this.liveStreamChannelId}.${constants_1.STATE_ID_LIVESTREAM_DURATION}`, constants_1.COMMON_LIVESTREAM_DURATION, this._durationLiveStream);
+        this.debug(`Livestream duration set to: ${val}`);
+    }
+    async startLivestream(duration) {
+        this.silly(`${this.shortId}.startLivestream()`);
+        duration !== null && duration !== void 0 ? duration : (duration = this._durationLiveStream);
+        const { visURL, visPath } = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "Livestream" + (duration == 0.1 ? "_100ms" : "") + ".mp4");
+        if (!visURL || !visPath) {
+            this.warn("Vis not available");
+            if (duration == 0.1) {
+                this.updateLivestreamRequest(false, visPath);
+                return;
+            }
+        }
+        const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path_livestream, this._adapter.config.filename_livestream, ++this._liveStreamCount, this.shortId, this.fullId, this.kind);
+        if (duration > 0.1) {
+            if (!(await file_service_1.FileService.prepareFolder(dirname))) {
+                this.warn(`Failed to prepare Livestream folder ("${fullPath}")`);
+                this.updateLivestreamRequest(false);
+                return;
+            }
+            file_service_1.FileService.deleteFileIfExistSync(fullPath, this._adapter);
+            if (this._ringDevice.isOffline) {
+                this.info(` is offline --> won't take LiveStream`);
+                this.updateLivestreamRequest(false);
+                return;
+            }
+        }
+        const tempPath = (await file_service_1.FileService.getTempDir(this._adapter)) + `/temp_${this.shortId}_livestream.mp4`;
+        this.silly(`Initialize Livestream (${duration}s) to temp-file ${tempPath}`);
+        await this._ringDevice.recordToFile(tempPath, duration);
+        if (!fs.existsSync(tempPath)) {
+            this.warn(`Could't create livestream`);
+            this.updateLivestreamRequest(false);
+            return;
+        }
+        const video = fs.readFileSync(tempPath);
+        fs.unlink(tempPath, (err) => {
+            if (err) {
+                this._adapter.logCatch(`Couldn't delete temp file`, err);
+            }
+        });
+        if (visPath) {
+            this.silly(`Locally storing Filestream (Length: ${video.length})`);
+            await file_service_1.FileService.writeFile(visPath, video, this._adapter);
+            if (duration == 0.1) {
+                this.updateLivestreamRequest(true, visPath);
+                return;
+            }
+        }
+        if (this._lastLiveStreamDir !== "" && this._adapter.config.del_old_livestream) {
+            file_service_1.FileService.deleteFileIfExistSync(this._lastLiveStreamDir, this._adapter);
+        }
+        this._lastLiveStreamUrl = visURL;
+        this._lastLiveStreamDir = fullPath;
+        this._lastLiveStreamTimestamp = Date.now();
+        this.silly(`Writing Filestream (Length: ${video.length}) to "${fullPath}"`);
+        await file_service_1.FileService.writeFile(fullPath, video, this._adapter);
+        this.updateLiveStreamObject();
+        this.debug(`Done creating livestream to ${fullPath}`);
+    }
+    async takeSnapshot(uuid, eventBased = false) {
+        this.silly(`${this.shortId}.takeSnapshot()`);
+        const { visURL, visPath } = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "Snapshot.jpg");
+        if (!visURL || !visPath) {
+            this.warn("Vis not available");
+        }
+        const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path_snapshot, this._adapter.config.filename_snapshot, ++this._snapshotCount, this.shortId, this.fullId, this.kind);
+        if (!(await file_service_1.FileService.prepareFolder(dirname))) {
+            this.warn(`prepare folder problem --> won't take Snapshot`);
+            this.updateSnapshotRequest(false);
+            return;
+        }
+        file_service_1.FileService.deleteFileIfExistSync(fullPath, this._adapter);
+        if (this._ringDevice.isOffline) {
+            this.info(`is offline --> won't take Snapshot`);
+            this.updateSnapshotRequest(false);
+            return;
+        }
+        const image = await this._ringDevice.getSnapshot({ uuid: uuid }).catch((reason) => {
+            if (eventBased) {
+                this.warn("Taking Snapshot on Event failed. Will try again after livestream finished.");
+            }
+            else {
+                this.catcher("Couldn't get Snapshot from api.", reason);
+            }
+        });
+        if (!image) {
+            if (!eventBased) {
+                this.warn("Could not create snapshot from image");
+            }
+            this.updateSnapshotRequest(false);
+            return;
+        }
+        if (this._lastSnapShotDir !== "" && this._adapter.config.del_old_snapshot) {
+            file_service_1.FileService.deleteFileIfExistSync(this._lastSnapShotDir, this._adapter);
+        }
+        this._lastSnapShotUrl = visURL;
+        this._lastSnapShotDir = fullPath;
+        this._lastSnapshotTimestamp = Date.now();
+        if (visPath) {
+            this.silly(`Locally storing Snapshot (Length: ${image.length})`);
+            file_service_1.FileService.writeFile(visPath, image, this._adapter);
+        }
+        this.silly(`Writing Snapshot (Length: ${image.length}) to "${fullPath}"`);
+        await file_service_1.FileService.writeFile(fullPath, image, this._adapter);
+        this.updateSnapshotObject();
+        this.debug(`Done creating snapshot to ${fullPath}`);
+    }
+    updateHealth() {
+        this.silly(`Update Health`);
+        this._ringDevice.getHealth().then(this.updateHealthObject.bind(this));
+    }
+    async updateHistory() {
+        this.silly(`Update History`);
+        this._ringDevice.getEvents({ limit: 50 })
+            .then(async (r) => {
+            this.silly(`Recieved Event History`);
+            const lastAction = r.events.find((event) => {
+                const kind = event.kind;
+                switch (kind) {
+                    case "motion":
+                    case "ding":
+                    case "alarm":
+                    case "on_demand":
+                        return true;
+                }
+                return false;
+            });
+            if (lastAction === undefined) {
+                return;
+            }
+            const url = await this._ringDevice.getRecordingUrl(lastAction.ding_id_str);
+            this.lastAction = new lastAction_1.LastAction(lastAction, url);
+            this.updateHistoryObject(this.lastAction);
+        });
+    }
+    async recreateDeviceObjectTree() {
+        this.silly(`Recreate DeviceObjectTree`);
+        this._adapter.createDevice(this.fullId, {
+            name: `Device ${this.shortId} ("${this._ringDevice.data.description}")`
+        });
+        this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_INFO, { name: `Info ${this.shortId}` });
+        this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_SNAPSHOT);
+        this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_LIVESTREAM, { name: `Livestream ${this.shortId}` });
+        this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_HISTORY);
+        this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_EVENTS);
+        if (this._ringDevice.hasLight) {
+            this.debug(`Device with Light Capabilities detected`);
+            this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_LIGHT, { name: `Light ${this.shortId}` });
+            this._adapter.upsertState(`${this.lightChannelId}.${constants_1.STATE_ID_LIGHT_SWITCH}`, constants_1.COMMON_LIGHT_SWITCH, false, true, true);
+        }
+        this._lastSnapShotDir = await this._adapter.tryGetStringState(`${this.snapshotChannelId}.snapshot_file`);
+        this._lastLiveStreamDir = await this._adapter.tryGetStringState(`${this.liveStreamChannelId}.livestream_file`);
+        this._adapter.upsertState(`${this.fullId}.${constants_1.STATE_ID_DEBUG_REQUEST}`, constants_1.COMMON_DEBUG_REQUEST, false, true, true);
+        this._adapter.upsertState(`${this.snapshotChannelId}.snapshot_auto`, constants_1.COMMON_SNAPSHOT_AUTO, this._adapter.config.auto_snapshot, true, true);
+        this._adapter.upsertState(`${this.liveStreamChannelId}.livestream_auto`, constants_1.COMMON_LIVESTREAM_AUTO, this._adapter.config.auto_livestream, true, true);
+    }
     async subscribeToEvents() {
         this.silly(`Start device subscriptions`);
         await this._ringDevice.subscribeToDingEvents().catch((r) => {
@@ -85,243 +371,6 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             },
         });
     }
-    constructor(ringDevice, location, adapter, apiClient) {
-        super(location, adapter, apiClient, OwnRingCamera.evaluateKind(ringDevice.deviceType, adapter, ringDevice), `${ringDevice.id}`, ringDevice.data.description);
-        this._requestingSnapshot = false;
-        this._requestingLiveStream = false;
-        this._lastLightCommand = 0;
-        this._lastLiveStreamUrl = "";
-        this._lastLiveStreamDir = "";
-        this._lastLiveStreamVideo = null;
-        this._lastLiveStreamTimestamp = 0;
-        this._lastSnapShotUrl = "";
-        this._lastSnapShotDir = "";
-        this._lastSnapshotImage = null;
-        this._lastSnapshotTimestamp = 0;
-        this._snapshotCount = 0;
-        this._liveStreamCount = 0;
-        this._state = EventState.Idle;
-        this._doorbellEventActive = false;
-        this._ringDevice = ringDevice;
-        this.debug(`Create device`);
-        this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
-        this.historyChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HISTORY}`;
-        this.lightChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIGHT}`;
-        this.snapshotChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_SNAPSHOT}`;
-        this.liveStreamChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIVESTREAM}`;
-        this.eventsChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_EVENTS}`;
-        this.recreateDeviceObjectTree();
-        this.updateDeviceInfoObject(ringDevice.data);
-        this.updateHealth();
-        // noinspection JSIgnoredPromiseFromCall
-        this.updateHistory();
-        this.updateLiveStreamObject();
-        setTimeout(this.takeSnapshot.bind(this), 5000);
-        this.ringDevice = ringDevice; // subscribes to the events
-    }
-    processUserInput(channelID, stateID, state) {
-        switch (channelID) {
-            case "":
-                if (stateID !== constants_1.STATE_ID_DEBUG_REQUEST) {
-                    return;
-                }
-                const targetVal = state.val;
-                if (targetVal) {
-                    this._adapter.log.info(`Device Debug Data for ${this.shortId}: ${util.inspect(this._ringDevice, false, 1)}`);
-                    this._adapter.upsertState(`${this.fullId}.${constants_1.STATE_ID_DEBUG_REQUEST}`, constants_1.COMMON_DEBUG_REQUEST, false);
-                }
-                return;
-            case "Light":
-                if (!this._ringDevice.hasLight) {
-                    return;
-                }
-                if (stateID === constants_1.STATE_ID_LIGHT_SWITCH) {
-                    const targetVal = state.val;
-                    this._adapter.log.debug(`Set light for ${this.shortId} to value ${targetVal}`);
-                    this._lastLightCommand = Date.now();
-                    this._ringDevice.setLight(targetVal).then((success) => {
-                        if (success) {
-                            this._adapter.upsertState(`${this.lightChannelId}.light_state`, constants_1.COMMON_LIGHT_STATE, targetVal);
-                            this._adapter.upsertState(`${this.lightChannelId}.light_switch`, constants_1.COMMON_LIGHT_SWITCH, targetVal, true);
-                            setTimeout(() => {
-                                this.updateHealth.bind(this);
-                            }, 65000);
-                        }
-                    });
-                }
-                else {
-                    this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
-                }
-                break;
-            case "Snapshot":
-                if (stateID === constants_1.STATE_ID_SNAPSHOT_REQUEST) {
-                    const targetVal = state.val;
-                    this._adapter.log.debug(`Get Snapshot request for ${this.shortId} to value ${targetVal}`);
-                    if (targetVal) {
-                        this.takeSnapshot().catch((reason) => {
-                            this.catcher("Couldn't retrieve Snapshot.", reason);
-                        });
-                    }
-                }
-                else {
-                    this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
-                }
-                break;
-            case "Livestream":
-                if (stateID === constants_1.STATE_ID_LIVESTREAM_REQUEST) {
-                    const targetVal = state.val;
-                    this._adapter.log.debug(`Get Livestream request for ${this.shortId} to value ${targetVal}`);
-                    if (targetVal) {
-                        this.startLivestream().catch((reason) => {
-                            this.catcher("Couldn't retrieve Livestream.", reason);
-                        });
-                    }
-                }
-                else {
-                    this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
-                }
-                break;
-            default:
-                this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
-        }
-    }
-    async recreateDeviceObjectTree() {
-        this.silly(`Recreate DeviceObjectTree`);
-        this._adapter.createDevice(this.fullId, {
-            name: `Device ${this.shortId} ("${this._ringDevice.data.description}")`
-        });
-        this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_INFO, { name: `Info ${this.shortId}` });
-        this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_SNAPSHOT);
-        this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_LIVESTREAM, { name: `Livestream ${this.shortId}` });
-        this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_HISTORY);
-        this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_EVENTS);
-        if (this._ringDevice.hasLight) {
-            this.debug(`Device with Light Capabilities detected`);
-            this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_LIGHT, { name: `Light ${this.shortId}` });
-            this._adapter.upsertState(`${this.lightChannelId}.${constants_1.STATE_ID_LIGHT_SWITCH}`, constants_1.COMMON_LIGHT_SWITCH, false, true);
-        }
-        this._lastSnapShotDir = await this._adapter.tryGetStringState(`${this.snapshotChannelId}.snapshot_file`);
-        this._lastLiveStreamDir = await this._adapter.tryGetStringState(`${this.liveStreamChannelId}.livestream_file`);
-        this._adapter.upsertState(`${this.fullId}.${constants_1.STATE_ID_DEBUG_REQUEST}`, constants_1.COMMON_DEBUG_REQUEST, false, true);
-    }
-    updateByDevice(ringDevice) {
-        this.ringDevice = ringDevice;
-        this._state = EventState.Idle;
-        this.update(ringDevice.data);
-    }
-    update(data) {
-        this.debug(`Recieved Update`);
-        this.updateDeviceInfoObject(data);
-        this.updateHealth();
-        // noinspection JSIgnoredPromiseFromCall
-        this.updateHistory();
-        this.updateSnapshotObject();
-    }
-    async startLivestream(duration) {
-        this.silly(`${this.shortId}.startLivestream()`);
-        const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path, this._adapter.config.filename_livestream, ++this._liveStreamCount, this.shortId, this.fullId, this.kind);
-        if (!(await file_service_1.FileService.prepareFolder(dirname))) {
-            this.debug(`Failed to prepare Livestream folder ("${fullPath}")`);
-            return;
-        }
-        file_service_1.FileService.deleteFileIfExistSync(fullPath, this._adapter);
-        if (this._ringDevice.isOffline) {
-            this.info(` is offline --> won't take LiveStream`);
-            return;
-        }
-        duration !== null && duration !== void 0 ? duration : (duration = this._adapter.config.recordtime_livestream);
-        const tempPath = (await file_service_1.FileService.getTempDir(this._adapter)) + `/temp_${this.shortId}_livestream.mp4`;
-        this.silly(`Initialize Livestream (${duration}s) to temp-file ${tempPath}`);
-        await this._ringDevice.recordToFile(tempPath, duration);
-        if (!fs.existsSync(tempPath)) {
-            this.info(`Could't create livestream`);
-            return;
-        }
-        const video = fs.readFileSync(tempPath);
-        fs.unlink(tempPath, (err) => {
-            if (err) {
-                this._adapter.logCatch(`Couldn't delete temp file`, err);
-            }
-        });
-        this.silly(`Recieved Livestream has Length: ${video.length}`);
-        this._lastLiveStreamUrl = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "Livestream.mp4");
-        file_service_1.FileService.writeFileSync(fullPath, video, this._adapter);
-        if (this.lastLiveStreamDir !== "" && this._adapter.config.del_old_livestream) {
-            file_service_1.FileService.deleteFileIfExistSync(this._lastLiveStreamDir, this._adapter);
-        }
-        this._lastLiveStreamDir = fullPath;
-        this._requestingLiveStream = false;
-        // this.silly(`Locally storing Snapshot (Length: ${image.length})`);
-        this._lastLiveStreamVideo = video;
-        this._lastLiveStreamTimestamp = Date.now();
-        await this.updateLiveStreamObject();
-        this.debug(`Done creating livestream to ${fullPath}`);
-    }
-    async takeSnapshot(uuid, eventBased = false) {
-        const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path, this._adapter.config.filename_snapshot, ++this._snapshotCount, this.shortId, this.fullId, this.kind);
-        if (!(await file_service_1.FileService.prepareFolder(dirname)))
-            return;
-        file_service_1.FileService.deleteFileIfExistSync(fullPath, this._adapter);
-        if (this._ringDevice.isOffline) {
-            this.info(`is offline --> won't take Snapshot`);
-            return;
-        }
-        const image = await this._ringDevice.getSnapshot({ uuid: uuid }).catch((reason) => {
-            if (eventBased) {
-                this.info("Taking Snapshot on Event failed. Will try again after livestream finished.");
-            }
-            else {
-                this.catcher("Couldn't get Snapshot from api.", reason);
-            }
-        });
-        if (!image) {
-            if (!eventBased) {
-                this.info("Could not create snapshot");
-            }
-            return;
-        }
-        this.silly(`Writing Snapshot (Length: ${image.length}) to "${fullPath}"`);
-        file_service_1.FileService.writeFileSync(fullPath, image, this._adapter);
-        this._lastSnapShotUrl = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "Snapshot.jpg");
-        if (this.lastSnapShotDir !== "" && this._adapter.config.del_old_snapshot) {
-            file_service_1.FileService.deleteFileIfExistSync(this._lastSnapShotDir, this._adapter);
-        }
-        this._lastSnapShotDir = fullPath;
-        this._requestingSnapshot = false;
-        // this.silly(`Locally storing Snapshot (Length: ${image.length})`);
-        this._lastSnapshotImage = image;
-        this._lastSnapshotTimestamp = Date.now();
-        await this.updateSnapshotObject();
-        this.debug(`Done creating snapshot to ${fullPath}`);
-    }
-    updateHealth() {
-        this.silly(`Update Health`);
-        this._ringDevice.getHealth().then(this.updateHealthObject.bind(this));
-    }
-    async updateHistory() {
-        this.silly(`Update History`);
-        this._ringDevice.getEvents({ limit: 50 })
-            .then(async (r) => {
-            this.silly(`Recieved Event History`);
-            const lastAction = r.events.find((event) => {
-                const kind = event.kind;
-                switch (kind) {
-                    case "motion":
-                    case "ding":
-                    case "alarm":
-                    case "on_demand":
-                        return true;
-                }
-                return false;
-            });
-            if (lastAction === undefined) {
-                return;
-            }
-            const url = await this._ringDevice.getRecordingUrl(lastAction.ding_id_str);
-            this.lastAction = new lastAction_1.LastAction(lastAction, url);
-            this.updateHistoryObject(this.lastAction);
-        });
-    }
     updateDeviceInfoObject(data) {
         this._adapter.upsertState(`${this.infoChannelId}.id`, constants_1.COMMON_INFO_ID, data.device_id);
         this._adapter.upsertState(`${this.infoChannelId}.kind`, constants_1.COMMON_INFO_KIND, data.kind);
@@ -336,33 +385,34 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._adapter.upsertState(`${this.historyChannelId}.history_url`, constants_1.COMMON_HISTORY_URL, lastAction.historyUrl);
         this._adapter.upsertState(`${this.historyChannelId}.kind`, constants_1.COMMON_HISTORY_KIND, lastAction.event.kind);
     }
+    async updateSnapshotRequest(ack = true) {
+        this._adapter.upsertState(`${this.snapshotChannelId}.${constants_1.STATE_ID_SNAPSHOT_REQUEST}`, constants_1.COMMON_SNAPSHOT_REQUEST, false, ack, true);
+    }
     async updateSnapshotObject() {
         this.debug(`Update Snapshot Object`);
-        if (this._lastSnapshotImage) {
-            await this._adapter.upsertFile(`${this.snapshotChannelId}.jpg`, constants_1.COMMON_SNAPSHOT_SNAPSHOT, this._lastSnapshotImage, this._lastSnapshotTimestamp).catch((reason) => {
-                this.debug(`Couldn't update Snapshot obejct: "${reason}"`);
-            });
-        }
         if (this._lastSnapshotTimestamp !== 0) {
             this._adapter.upsertState(`${this.snapshotChannelId}.snapshot_file`, constants_1.COMMON_SNAPSHOT_FILE, this._lastSnapShotDir);
             this._adapter.upsertState(`${this.snapshotChannelId}.moment`, constants_1.COMMON_SNAPSHOT_MOMENT, this._lastSnapshotTimestamp);
             this._adapter.upsertState(`${this.snapshotChannelId}.snapshot_url`, constants_1.COMMON_SNAPSHOT_URL, this._lastSnapShotUrl);
-            this._adapter.upsertState(`${this.snapshotChannelId}.${constants_1.STATE_ID_SNAPSHOT_REQUEST}`, constants_1.COMMON_SNAPSHOT_REQUEST, this._requestingSnapshot, true);
         }
+        await this.updateSnapshotRequest();
+    }
+    async updateLivestreamRequest(ack = true, visPath = "") {
+        if (visPath) {
+            this._adapter.upsertState(`${this.liveStreamChannelId}.livestream_100ms_file`, constants_1.COMMON_LIVESTREAM_100MS_FILE, visPath, ack, true);
+        }
+        this._adapter.upsertState(`${this.liveStreamChannelId}.${constants_1.STATE_ID_LIVESTREAM_REQUEST}`, constants_1.COMMON_LIVESTREAM_REQUEST, false, ack, true);
+        this._durationLiveStream = this._adapter.config.recordtime_livestream;
+        this._adapter.upsertState(`${this.liveStreamChannelId}.${constants_1.STATE_ID_LIVESTREAM_DURATION}`, constants_1.COMMON_LIVESTREAM_DURATION, this._durationLiveStream, ack, true);
     }
     async updateLiveStreamObject() {
         this.debug(`Update Livestream Object`);
-        if (this._lastLiveStreamVideo) {
-            await this._adapter.upsertFile(`${this.liveStreamChannelId}.mp4`, constants_1.COMMON_LIVESTREAM_LIVESTREAM, this._lastLiveStreamVideo, this._lastLiveStreamTimestamp).catch((reason) => {
-                this.debug(`Couldn't update Livestream obejct: "${reason}"`);
-            });
-        }
         if (this._lastLiveStreamDir !== "") {
             this._adapter.upsertState(`${this.liveStreamChannelId}.livestream_file`, constants_1.COMMON_LIVESTREAM_FILE, this._lastLiveStreamDir);
             this._adapter.upsertState(`${this.liveStreamChannelId}.livestream_url`, constants_1.COMMON_LIVESTREAM_URL, this._lastLiveStreamUrl);
             this._adapter.upsertState(`${this.liveStreamChannelId}.moment`, constants_1.COMMON_LIVESTREAM_MOMENT, this._lastLiveStreamTimestamp);
         }
-        this._adapter.upsertState(`${this.liveStreamChannelId}.${constants_1.STATE_ID_LIVESTREAM_REQUEST}`, constants_1.COMMON_LIVESTREAM_REQUEST, this._requestingLiveStream, true);
+        await this.updateLivestreamRequest();
     }
     updateHealthObject(health) {
         var _a;
@@ -396,9 +446,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
     onMotion(value) {
         this.debug(`Recieved Motion Event (${util.inspect(value, true, 1)})`);
         this._adapter.upsertState(`${this.eventsChannelId}.motion`, constants_1.COMMON_MOTION, value);
-        if (value) {
-            this.conditionalRecording(EventState.ReactingOnMotion);
-        }
+        value && this.conditionalRecording(EventState.ReactingOnMotion);
     }
     onDorbell(value) {
         if (this._doorbellEventActive) {
@@ -418,25 +466,27 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this.conditionalRecording(EventState.ReactingOnDoorbell, value.ding.image_uuid);
     }
     async conditionalRecording(state, uuid) {
-        if (this._state === EventState.Idle) {
-            this.silly(`Start recording for Event "${EventState[state]}"...`);
-            this._state = state;
-            try {
-                this.takeSnapshot(uuid, true);
-                await this.startLivestream(20);
-            }
-            finally {
-                this._state = EventState.Idle;
+        if (this._state !== EventState.Idle) {
+            this.silly(`Would have recorded due to "${EventState[state]}", but we are already reacting.`);
+            if (this._adapter.config.auto_snapshot && uuid) {
+                setTimeout(() => {
+                    this.debug(`delayed uuid recording`);
+                    this.takeSnapshot(uuid);
+                }, this._adapter.config.recordtime_auto_livestream * 1000 + 3000);
             }
             return;
         }
-        this.silly(`Would have recorded due to "${EventState[state]}", but we are already reacting.`);
-        if (uuid) {
-            setTimeout(() => {
-                this.debug(`delayed uuid recording`);
-                this.takeSnapshot(uuid);
-            }, 23000);
+        this.silly(`Start recording for Event "${EventState[state]}"...`);
+        this._state = state;
+        try {
+            this._adapter.config.auto_livestream && await this.startLivestream(0.1);
+            this._adapter.config.auto_snapshot && await this.takeSnapshot(uuid, true);
+            this._adapter.config.auto_livestream && await this.startLivestream(this._adapter.config.recordtime_auto_livestream);
         }
+        finally {
+            this._state = EventState.Idle;
+        }
+        return;
     }
 }
 exports.OwnRingCamera = OwnRingCamera;

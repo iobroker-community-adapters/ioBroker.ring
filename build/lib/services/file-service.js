@@ -49,31 +49,42 @@ class FileService {
         }
         fs_1.default.unlinkSync(fullPath);
     }
-    static async getVisUrl(adapter, fullId, stateName) {
+    static async getVisUrl(adapter, fullId, fileName) {
         const vis = await adapter.getForeignObjectAsync("system.adapter.web.0").catch((reason) => {
             adapter.logCatch(`Couldn't load "web.0" Adapter object.`, reason);
         });
         if (vis && vis.native) {
             const secure = vis.native.secure ? "https" : "http";
-            return `${secure}://${adapter.host}:${vis.native.port}/state/${adapter.namespace}.${fullId}.${stateName}`;
+            const prefix = `${adapter.namespace}/${adapter.name}_${adapter.instance}_${fullId}_${fileName}`;
+            return {
+                visURL: `${secure}://${adapter.host}:${vis.native.port}/${prefix}`,
+                visPath: `${adapter.absoluteDefaultDir}files/${prefix}`
+            };
         }
-        return "";
+        return { visURL: "", visPath: "" };
     }
     static async getTempDir(adapter) {
         const tempPath = path_1.default.join(adapter.absoluteInstanceDir);
         await this.prepareFolder(tempPath);
         return tempPath;
     }
-    static writeFileSync(fullPath, data, adapter) {
-        if (this.IOBROKER_FILES_REGEX.test(fullPath)) {
+    static async writeFile(fullPath, data, adapter) {
+        if (!this.IOBROKER_FILES_REGEX.test(fullPath)) {
+            fs_1.default.writeFileSync(fullPath, data);
+            return;
+        }
+        return new Promise((resolve, reject) => {
             adapter.writeFile(adapter.namespace, this.reducePath(fullPath, adapter), data, (r) => {
                 if (r) {
                     adapter.logCatch(`Failed to write Adapter File '${fullPath}'`, r.message);
+                    reject(r);
+                }
+                else {
+                    adapter.log.silly(`Adapter File ${fullPath} written!`);
+                    resolve();
                 }
             });
-            return;
-        }
-        fs_1.default.writeFileSync(fullPath, data);
+        });
     }
     static reducePath(fullPath, adapter) {
         return fullPath.split(adapter.namespace)[1];

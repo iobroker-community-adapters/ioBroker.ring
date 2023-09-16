@@ -30,22 +30,22 @@ export class OwnRingIntercom extends OwnRingDevice {
       `${ringDevice.id}`,
       ringDevice.data.description
     );
-    this._ringDevice = ringDevice;
-    this.debug(`Create device`);
+    this._ringIntercom = ringDevice;
+    this.subscribeToEvents();
     this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
     this.eventsChannelId = `${this.fullId}.${CHANNEL_NAME_EVENTS}`;
 
     this.recreateDeviceObjectTree()
   }
 
-  private _ringDevice: RingIntercom;
+  private _ringIntercom: RingIntercom;
 
-  get ringDevice(): RingIntercom {
-    return this._ringDevice;
+  get ringIntercom(): RingIntercom {
+    return this._ringIntercom;
   }
 
-  private set ringDevice(device) {
-    this._ringDevice = device;
+  private set ringIntercom(device) {
+    this._ringIntercom = device;
     this.subscribeToEvents();
   }
 
@@ -56,7 +56,7 @@ export class OwnRingIntercom extends OwnRingDevice {
         switch (stateID) {
           case STATE_ID_DEBUG_REQUEST:
             if (targetBoolVal) {
-              this._adapter.log.info(`Device Debug Data for ${this.shortId}: ${util.inspect(this._ringDevice, false, 1)}`);
+              this._adapter.log.info(`Device Debug Data for ${this.shortId}: ${util.inspect(this._ringIntercom, false, 1)}`);
               this._adapter.upsertState(
                 `${this.fullId}.${STATE_ID_DEBUG_REQUEST}`,
                 COMMON_DEBUG_REQUEST,
@@ -67,7 +67,7 @@ export class OwnRingIntercom extends OwnRingDevice {
           case STATE_ID_INTERCOM_UNLOCK:
             if (targetBoolVal) {
               this._adapter.log.info(`Unlock door request for ${this.shortId}.`);
-              this._ringDevice.unlock().catch((reason) => {
+              this._ringIntercom.unlock().catch((reason) => {
                 this.catcher("Couldn't unlock door.", reason);
               });
               this._adapter.upsertState(
@@ -85,14 +85,14 @@ export class OwnRingIntercom extends OwnRingDevice {
   }
 
   public updateByDevice(intercom: RingIntercom): void {
-    this.ringDevice = intercom;
+    this.ringIntercom = intercom;
     this.update(intercom.data);
   }
 
   protected async recreateDeviceObjectTree(): Promise<void> {
     this.silly(`Recreate DeviceObjectTree`);
     this._adapter.createDevice(this.fullId, {
-      name: `Device ${this.shortId} ("${this._ringDevice.data.description}")`
+      name: `Device ${this.shortId} ("${this._ringIntercom.data.description}")`
     });
     this._adapter.createChannel(this.fullId, CHANNEL_NAME_INFO, {name: `Info ${this.shortId}`});
     this._adapter.createChannel(this.fullId, CHANNEL_NAME_EVENTS);
@@ -100,12 +100,14 @@ export class OwnRingIntercom extends OwnRingDevice {
       `${this.fullId}.${STATE_ID_DEBUG_REQUEST}`,
       COMMON_DEBUG_REQUEST,
       false,
+      true,
       true
     );
     this._adapter.upsertState(
       `${this.fullId}.${STATE_ID_INTERCOM_UNLOCK}`,
       COMMON_INTERCOM_UNLOCK_REQUEST,
       false,
+      true,
       true
     );
   }
@@ -117,10 +119,10 @@ export class OwnRingIntercom extends OwnRingDevice {
 
   private async subscribeToEvents(): Promise<void> {
     this.silly(`Start device subscriptions`);
-    await this._ringDevice.subscribeToDingEvents().catch((r) => {
-      this.catcher(`Failed subscribing to Ding Events for ${this._ringDevice.name}`, r);
+    await this._ringIntercom.subscribeToDingEvents().catch((r) => {
+      this.catcher(`Failed subscribing to Ding Events for ${this._ringIntercom.name}`, r);
     });
-    this._ringDevice.onDing.subscribe(
+    this._ringIntercom.onDing.subscribe(
       {
         next: () => {
           this.onDing()
@@ -152,9 +154,17 @@ export class OwnRingIntercom extends OwnRingDevice {
 
   private onDing(): void {
     this.debug(`Recieved Ding Event`);
-    this._adapter.upsertState(`${this.eventsChannelId}.ding`, COMMON_EVENTS_INTERCOM_DING, true);
+    this._adapter.upsertState(
+      `${this.eventsChannelId}.ding`,
+      COMMON_EVENTS_INTERCOM_DING,
+      true
+    );
     setTimeout(() => {
-      this._adapter.upsertState(`${this.eventsChannelId}.ding`, COMMON_EVENTS_INTERCOM_DING, false);
-    }, 5000);
+      this._adapter.upsertState(
+        `${this.eventsChannelId}.ding`,
+        COMMON_EVENTS_INTERCOM_DING,
+        false
+      );
+    }, 100);
   }
 }

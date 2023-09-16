@@ -43,6 +43,9 @@ class RingAdapter extends adapter_core_1.Adapter {
     get absoluteInstanceDir() {
         return utils.getAbsoluteInstanceDataDir(this);
     }
+    get absoluteDefaultDir() {
+        return utils.getAbsoluteDefaultDataDir();
+    }
     constructor(options = {}) {
         options.systemConfig = true;
         super({
@@ -68,14 +71,31 @@ class RingAdapter extends adapter_core_1.Adapter {
             this.terminate(`Invalid Refresh Token, please follow steps provided within Readme to generate a new one`);
             return;
         }
+        /*
         this.log.debug(`Configured Path: "${this.config.path}"`);
         const dataDir = (this.systemConfig) ? this.systemConfig.dataDir : "";
         this.log.silly(`DataDir: ${dataDir}`);
         if (!this.config.path) {
-            this.config.path = path_1.default.join(utils.getAbsoluteDefaultDataDir(), "files", this.namespace);
-            this.log.debug(`New Config Path: "${this.config.path}"`);
+          this.config.path = path.join(utils.getAbsoluteDefaultDataDir(), "files", this.namespace)
+          this.log.debug(`New Config Path: "${this.config.path}"`);
         }
-        await file_service_1.FileService.prepareFolder(this.config.path);
+        await FileService.prepareFolder(this.config.path);
+        */
+        const config_path = [this.config.path_snapshot, this.config.path_livestream];
+        for (const index in config_path) {
+            this.log.debug(`Configured Path: "${config_path[index]}"`);
+            const dataDir = (this.systemConfig) ? this.systemConfig.dataDir : "";
+            this.log.silly(`DataDir: ${dataDir}`);
+            if (!config_path[index]) {
+                config_path[index] = path_1.default.join(this.absoluteDefaultDir, "files", this.namespace);
+                if (index == "0")
+                    this.config.path_snapshot = config_path[index];
+                else
+                    this.config.path_livestream = config_path[index];
+                this.log.debug(`New Config Path: "${config_path[index]}"`);
+            }
+            await file_service_1.FileService.prepareFolder(config_path[index]);
+        }
         const objectDevices = this.getDevicesAsync();
         for (const objectDevice in objectDevices) {
             this.deleteDevice(objectDevice);
@@ -156,13 +176,13 @@ class RingAdapter extends adapter_core_1.Adapter {
     // 		}
     // 	}
     // }
-    upsertState(id, common, value, subscribe = false) {
+    upsertState(id, common, value, ack = true, subscribe = false) {
         if (this.states[id] === value && !subscribe) {
             // Unchanged and from user not changeable Value
             return;
         }
         // noinspection JSIgnoredPromiseFromCall
-        this.upsertStateAsync(id, common, value, subscribe);
+        this.upsertStateAsync(id, common, value, ack, subscribe);
     }
     async tryGetStringState(id) {
         var _a, _b;
@@ -171,18 +191,18 @@ class RingAdapter extends adapter_core_1.Adapter {
             return cachedVal + "";
         return ((_b = (_a = (await this.getStateAsync(id))) === null || _a === void 0 ? void 0 : _a.val) !== null && _b !== void 0 ? _b : "") + "";
     }
-    async upsertStateAsync(id, common, value, subscribe = false) {
+    async upsertStateAsync(id, common, value, ack = true, subscribe = false) {
         var _a;
         try {
             if (this.states[id] !== undefined) {
                 this.states[id] = value;
-                await this.setStateAsync(id, value, true);
+                await this.setStateAsync(id, value, ack);
                 return;
             }
             const { device, channel, stateName } = RingAdapter.getSplittedIds(id);
             await this.createStateAsync(device, channel, stateName, common);
             this.states[id] = value;
-            await this.setStateAsync(id, value, true);
+            await this.setStateAsync(id, value, ack);
             if (subscribe) {
                 await this.subscribeStatesAsync(id);
             }
@@ -194,7 +214,7 @@ class RingAdapter extends adapter_core_1.Adapter {
             }
         }
     }
-    async upsertFile(id, common, value, timestamp) {
+    async upsertFile(id, common, value, MIME_Type, timestamp) {
         var _a;
         try {
             if (this.states[id] === timestamp) {

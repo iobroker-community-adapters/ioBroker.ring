@@ -69,6 +69,7 @@ export class OwnRingLocation {
       `${this._fullId}.${STATE_ID_DEBUG_REQUEST}`,
       COMMON_DEBUG_REQUEST,
       false,
+      true,
       true
     );
   }
@@ -155,6 +156,7 @@ export class OwnRingLocation {
       `${this._fullId}.locationMode`,
       COMMON_LOCATIONMODE,
       newMode,
+      true,
       true
     );
   }

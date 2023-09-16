@@ -2,9 +2,11 @@ import path from "path";
 import fs from "fs";
 import { RingAdapter } from "../../main";
 import "@iobroker/types";
+import { PathInfo } from "./path-info";
 
 export class FileService {
   public static readonly IOBROKER_FILES_REGEX = new RegExp(/.*iobroker-data\/files.*/);
+
   public static getPath(
     basePath: string,
     extendedPath: string,
@@ -12,11 +14,7 @@ export class FileService {
     shortId: string,
     fullId: string,
     kind: string
-  ): {
-      fullPath: string,
-      dirname: string,
-      filename: string
-    } {
+  ): PathInfo {
     const fullPath = path.join(basePath, fullId, extendedPath)
       .replace("%d", String(Date.now()))
       .replace("%n", String(count))
@@ -59,16 +57,22 @@ export class FileService {
     fs.unlinkSync(fullPath);
   }
 
-  public static async getVisUrl(adapter: RingAdapter, fullId: string, stateName: string): Promise<string> {
+  public static async getVisUrl(adapter: RingAdapter, fullId: string, fileName: string): Promise<{
+    visURL: string,
+    visPath: string
+  }> {
     const vis = await adapter.getForeignObjectAsync("system.adapter.web.0").catch((reason) => {
       adapter.logCatch(`Couldn't load "web.0" Adapter object.`, reason);
     });
     if (vis && vis.native) {
       const secure = vis.native.secure ? "https" : "http";
-      return `${secure}://${adapter.host}:${vis.native.port
-      }/state/${adapter.namespace}.${fullId}.${stateName}`;
+      const prefix = `${adapter.namespace}/${adapter.name}_${adapter.instance}_${fullId}_${fileName}`;
+      return {
+        visURL: `${secure}://${adapter.host}:${vis.native.port}/${prefix}`,
+        visPath: `${adapter.absoluteDefaultDir}files/${prefix}`
+      };
     }
-    return "";
+    return {visURL: "", visPath: ""}
   }
 
   public static async getTempDir(adapter: RingAdapter): Promise<string> {
@@ -77,16 +81,22 @@ export class FileService {
     return tempPath;
   }
 
-  public static writeFileSync(fullPath: string, data: Buffer, adapter: RingAdapter): void {
-    if (this.IOBROKER_FILES_REGEX.test(fullPath)) {
+  public static async writeFile(fullPath: string, data: Buffer, adapter: RingAdapter): Promise<void> {
+    if (!this.IOBROKER_FILES_REGEX.test(fullPath)) {
+      fs.writeFileSync(fullPath, data);
+      return;
+    }
+    return new Promise<void>((resolve, reject) => {
       adapter.writeFile(adapter.namespace, this.reducePath(fullPath, adapter), data, (r) => {
         if (r) {
           adapter.logCatch(`Failed to write Adapter File '${fullPath}'`, r.message);
+          reject(r);
+        } else {
+          adapter.log.silly(`Adapter File ${fullPath} written!`);
+          resolve();
         }
       });
-      return;
-    }
-    fs.writeFileSync(fullPath, data);
+    });
   }
 
   private static reducePath(fullPath: string, adapter: RingAdapter): string {

@@ -1,190 +1,192 @@
 {
-  "common": {
-    "adminTab": {
-      "singleton": true,
-      "name": {
-        "en": "Ring Adapter",
-        "de": "Ring Adapter"
-      },
-      "link": "",
-      "fa-icon": "info"
+    "common": {
+        "adminTab": {
+            "singleton": true,
+            "name": {
+                "en": "Ring Adapter",
+                "de": "Ring Adapter"
+            },
+            "link": "",
+            "fa-icon": "info"
+        },
+        "authors": [
+            "Thorsten Stueben <thorsten@stueben.de>"
+        ],
+        "compact": true,
+        "connectionType": "cloud",
+        "dataSource": "push",
+        "dependencies": [
+            {
+                "js-controller": ">=4.0.0"
+            }
+        ],
+        "desc": {
+            "en": "Ring Adapter",
+            "de": "Ring Adapter",
+            "ru": "Кольцо адаптер",
+            "pt": "Adaptador de anel",
+            "nl": "Ring Adapter",
+            "fr": "Adaptateur de réglage",
+            "it": "Adattatore di anelli",
+            "es": "Adaptador de anillos",
+            "pl": "Pierścień",
+            "uk": "Кільковий адаптер",
+            "zh-cn": "导 言"
+        },
+        "enabled": true,
+        "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.ring/master/admin/ring.png",
+        "icon": "ring.png",
+        "keywords": [
+            "Ring",
+            "Camera",
+            "Doorbell"
+        ],
+        "license": "MIT",
+        "loglevel": "info",
+        "main": "build/main.js",
+        "materialize": true,
+        "materializeTab": true,
+        "mode": "daemon",
+        "name": "ring",
+        "news": {
+            "4.0.0": {
+                "en": "!!Breaking Change!! From now on Node 18 or 20 is required, Node 16 is not supported anymore\nUpdate Ring-Api to V12 which needs Node 18 or 20\nUpdate Packages",
+                "de": "! Ändern! Ab sofort ist Node 18 oder 20 erforderlich, Node 16 wird nicht mehr unterstützt\nAktualisieren Ring-Api auf V12, die Node 18 oder 20 benötigt\nPakete aktualisieren",
+                "ru": "! Перерыв перемен! Теперь Node 18 или 20 требуется, Node 16 больше не поддерживается\nОбновить Ring-Api на V12, который нуждается в Node 18 или 20\nОбновление пакетов",
+                "pt": "! A quebrar a mudança! De agora em Node 18 ou 20 é necessário, Node 16 não é suportado mais\nAtualizar Ring-Api para V12 que precisa Node 18 ou 20\nPacotes de atualização",
+                "nl": "! Verandering. Vanaf nu is Node 18 of 20 nodig, Node 16 is niet meer gesteund\nUpdate Ring-Api naar V12 die Node 18 of 20 nodig heeft\nUpdate Packages",
+                "fr": "! Briser le changement ! A partir de maintenant le Node 18 ou 20 est requis, le Node 16 n'est plus supporté\nMettre à jour Ring-Api à V12 qui a besoin de No 18 ou 20\nMise à jour des paquets",
+                "it": "! Breaking Change! D'ora in poi il Nodo 18 o 20 è richiesto, Node 16 non è più supportato\nAggiornare Ring-Api a V12 che ha bisogno di Nodo 18 o 20\nPacchetti di aggiornamento",
+                "es": "! Cambio de ruptura! De ahora en adelante se requiere Nodo 18 o 20, Nodo 16 ya no es compatible\nActualizar Ring-Api a V12 que necesita Nodo 18 o 20\nPaquetes de actualización",
+                "pl": "! Breaking Change (ang.). Od tego czasu wymagana jest zmiana numeru 18 lub 20, nie jest ona już wspierana\nPierścień-Api potrzebuje 18 lub 20 lat\nPackage Update",
+                "uk": "! Змінити зміни! Відтепер на Node 18 або 20 не потрібно, Node 16 не підтримується більше\nUpdate Ring-Api до V12, який потребує Node 18 або 20\nОновлення пакетів",
+                "zh-cn": "! 打破变革! 从现在第18号或第20号要求来看,第16号建议没有得到任何支持。\n第18或20号需要更新到V12\n最新包装"
+            },
+            "3.4.1": {
+                "en": "Compliance to adapter-checker\nUpdate Packages\nDebounce Doorbell Presses\nAdd Support for cocoa_doorbell_v2\nAdd Support for stickup_cam_longfin\nFix compatibility and recompile",
+                "de": "Einhaltung des Adapter-Checkers\nPakete aktualisieren\nTürklingelpressen aussprechen\nUnterstützung für Kakao_doorbell_v2 hinzufügen\nSupport für stickup_cam_longfin hinzufügen\nKompatibilität und Recompile beheben",
+                "ru": "Соответствие адаптеру-чеку\nОбновление пакетов\nDebounce Doorbell Пресса\nДобавить поддержку cocoa_doorbell_v2\nДобавить Поддержка Stickup_cam_longfin\nИсправление совместимости и рекомпиле",
+                "pt": "Conformidade ao verificador do adaptador\nPacotes de atualização\nMáquina de montagem automática\nAdicionar suporte para cocoa_doorbell_v2\nAdicionar suporte para stickup_cam_longfin\nCorrigir compatibilidade e recumpile",
+                "nl": "Complimenten van adapter-checker\nUpdate Packages\nDebounce Doorbell Press\nAdd Support voor Cocoadoorbell2\nAdd Support voor plakband\nVergelijkbaarheid en ademhaling",
+                "fr": "Conformité à l'adaptateur-vérificateur\nMise à jour des paquets\nDebounce Doorbell Presses\nAjouter le support pour cocoa_doorbell_v2\nAjouter le support pour stickup_cam_longfin\nCompatibilité fixe et recompile",
+                "it": "Compliance to adapter-checker\nPacchetti di aggiornamento\nPresse per campanelli\nAggiungi supporto per cacao_doorbell_v2\nAggiungi supporto per stickup_cam_longfin\nFissare la compatibilità e ricompilare",
+                "es": "Cumplimiento para el control de adaptador\nPaquetes de actualización\nDebounce Doorbell Presses\nAñadir Soporte para cocoa_doorbell_v2\nAñadir Soporte para stickup_cam_longfin\nFijar compatibilidad y recompilar",
+                "pl": "Zalecenia adapter-checker-checker\nPackage Update\nDebounce Doorbell Press (ang.)\nAddd Support for cocoa_doorbell_v2 (ang.)\nAdd Support for stickup_cam_longfin (ang.)\nPorównanie Fix i rekompilacja",
+                "uk": "Відповідність адаптера-шейкера\nОновлення пакетів\nDebounce Двербелл Преси\nПідтримка какао_doorbell_v2\nДодати підтримку для stickup_cam_longfin\nВиправлення сумісності та рекомпіляції",
+                "zh-cn": "A. 遵守调整检查员\n最新包装\nDencebou Doorbell Presses\nA. 增加对可可可可访问的支助\nA. 增加对缺陷的支持\nIx 兼容性和变质"
+            },
+            "3.4.0": {
+                "en": "Update Packages (which allows node 20 now)",
+                "de": "Update-Pakete (was den Knoten 20 jetzt erlaubt)",
+                "ru": "Обновление пакетов (что позволяет node 20 сейчас)",
+                "pt": "Atualizar Pacotes (que permite o nó 20 agora)",
+                "nl": "Vertaling:",
+                "fr": "Mise à jour des paquets (qui permet node 20 maintenant)",
+                "it": "Pacchetti di aggiornamento (che permette nodo 20 ora)",
+                "es": "Paquetes de actualización (que permite el nodo 20 ahora)",
+                "pl": "Update Packages (ang.)",
+                "uk": "Оновлення пакетів (що дозволяє встановити 20 тепер)",
+                "zh-cn": "最新包装(现在不允许20个)"
+            },
+            "3.3.1": {
+                "en": "Update Packages",
+                "de": "Pakete aktualisieren",
+                "ru": "Обновление пакетов",
+                "pt": "Pacotes de atualização",
+                "nl": "Update Packages",
+                "fr": "Mise à jour des paquets",
+                "it": "Pacchetti di aggiornamento",
+                "es": "Paquetes de actualización",
+                "pl": "Package Update",
+                "uk": "Оновлення пакетів",
+                "zh-cn": "最新包装"
+            },
+            "3.3.0": {
+                "en": "Update Packages\nDevice with Type stickup_cam_longfin not yet supported #483",
+                "de": "Pakete aktualisieren\nGerät mit Typ stickup_cam_longfin noch nicht unterstützt #483",
+                "ru": "Обновление пакетов\nУстройство с типом Stickup_cam_longfin еще не поддерживается #483",
+                "pt": "Pacotes de atualização\nDispositivo com Tipo stickup_cam_longfin ainda não suportado #483",
+                "nl": "Update Packages\nQuality over Quantity (QoQ) Releases Vertaling:",
+                "fr": "Mise à jour des paquets\nAppareil avec Type stickup_cam_longfin pas encore supporté #483",
+                "it": "Pacchetti di aggiornamento\nDispositivo con Tipo stickup_cam_longfin non ancora supportato #483",
+                "es": "Paquetes de actualización\nDispositivo con tipo stickup_cam_longfin aún no soportado #483",
+                "pl": "Package Update\nUwaga z Type stickup_longfinem nie była jeszcze wspierana",
+                "uk": "Оновлення пакетів\nПристрої з Type stickup_cam_longfin ще не підтримується #483",
+                "zh-cn": "最新包装\n第483号行动"
+            },
+            "3.2.7": {
+                "en": "prepare js-controller v5",
+                "de": "js-controller v5",
+                "ru": "подготовить js-контроллер v5",
+                "pt": "preparar js-controller v5",
+                "nl": "bereid js-controller v5",
+                "fr": "préparer js-controller v5",
+                "it": "preparare js-controller v5",
+                "es": "preparar js-controller v5",
+                "pl": "js-kontroler v5",
+                "uk": "підготовка js-controller v5",
+                "zh-cn": "j 准备控制勒诉5"
+            },
+            "3.2.6": {
+                "en": "Improve behaviour on initial Location load fail\nUpdate Packages",
+                "de": "Verbessern Sie das Verhalten bei anfänglichem Standortlastausfall\nPakete aktualisieren",
+                "ru": "Улучшить поведение на начальном уровне невыполнение нагрузки\nОбновление пакетов",
+                "pt": "Melhorar o comportamento na falha inicial da carga de Localização\nPacotes de atualização",
+                "nl": "Improviseer gedrag op de eerste locatielading falen\nUpdate Packages",
+                "fr": "Améliorez le comportement sur la charge initiale\nMise à jour des paquets",
+                "it": "Migliorare il comportamento sul guasto del carico iniziale\nPacchetti di aggiornamento",
+                "es": "Mejorar el comportamiento en la carga inicial\nPaquetes de actualización",
+                "pl": "Powodzenie na wstępny ładunek w Location nie powiodło się\nPackage Update",
+                "uk": "Поліпшення поведінки на початковому завантаження локації\nОновлення пакетів",
+                "zh-cn": "改善初始装货行为失败\n最新包装"
+            }
+        },
+        "platform": "Javascript/Node.js",
+        "readme": "https://github.com/iobroker-community-adapters/ioBroker.ring/blob/master/README.md",
+        "supportCustoms": false,
+        "titleLang": {
+            "en": "ring",
+            "de": "ring",
+            "ru": "ring",
+            "pt": "ring",
+            "nl": "ring",
+            "fr": "ring",
+            "it": "ring",
+            "es": "ring",
+            "pl": "ring",
+            "uk": "ring",
+            "zh-cn": "环 圈"
+        },
+        "type": "hardware",
+        "version": "4.0.0"
     },
-    "authors": [
-      "Thorsten Stueben <thorsten@stueben.de>"
+    "instanceObjects": [
+        {
+            "_id": "",
+            "type": "meta",
+            "common": {
+                "name": "Snapshots and videos from Ring",
+                "type": "meta"
+            },
+            "native": {}
+        }
     ],
-    "compact": true,
-    "connectionType": "cloud",
-    "dataSource": "push",
-    "dependencies": [
-      {
-        "js-controller": ">=4.0.0"
-      }
-    ],
-    "desc": {
-      "en": "Ring Adapter",
-      "de": "Ring Adapter",
-      "ru": "Кольцо адаптер",
-      "pt": "Adaptador de anel",
-      "nl": "Ring Adapter",
-      "fr": "Adaptateur de réglage",
-      "it": "Adattatore di anelli",
-      "es": "Adaptador de anillos",
-      "pl": "Pierścień",
-      "uk": "Кільковий адаптер",
-      "zh-cn": "导 言"
+    "native": {
+        "del_old_livestream": true,
+        "del_old_snapshot": true,
+        "email": "email@test.foo",
+        "filename_livestream": "livestream%i_%d.mp4",
+        "filename_snapshot": "snapshot%i_%d.jpg",
+        "password": "password",
+        "pollsec": 15,
+        "recordtime_livestream": 10,
+        "recordtime_auto_livestream": 20,
+        "path_livestream": "",
+        "path_snapshot": "",
+        "refreshtoken": "",
+        "sentry_enable": true,
+        "timeout": 5,
+        "twofaceauth": false
     },
-    "enabled": true,
-    "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.ring/master/admin/ring.png",
-    "icon": "ring.png",
-    "keywords": [
-      "Ring",
-      "Camera",
-      "Doorbell"
-    ],
-    "license": "MIT",
-    "loglevel": "info",
-    "main": "build/main.js",
-    "materialize": true,
-    "materializeTab": true,
-    "mode": "daemon",
-    "name": "ring",
-    "news": {
-      "4.0.0": {
-        "en": "!!Breaking Change!! From now on Node 18 or 20 is required, Node 16 is not supported anymore\nUpdate Ring-Api to V12 which needs Node 18 or 20\nUpdate Packages",
-        "de": "! Ändern! Ab sofort ist Node 18 oder 20 erforderlich, Node 16 wird nicht mehr unterstützt\nAktualisieren Ring-Api auf V12, die Node 18 oder 20 benötigt\nPakete aktualisieren",
-        "ru": "! Перерыв перемен! Теперь Node 18 или 20 требуется, Node 16 больше не поддерживается\nОбновить Ring-Api на V12, который нуждается в Node 18 или 20\nОбновление пакетов",
-        "pt": "! A quebrar a mudança! De agora em Node 18 ou 20 é necessário, Node 16 não é suportado mais\nAtualizar Ring-Api para V12 que precisa Node 18 ou 20\nPacotes de atualização",
-        "nl": "! Verandering. Vanaf nu is Node 18 of 20 nodig, Node 16 is niet meer gesteund\nUpdate Ring-Api naar V12 die Node 18 of 20 nodig heeft\nUpdate Packages",
-        "fr": "! Briser le changement ! A partir de maintenant le Node 18 ou 20 est requis, le Node 16 n'est plus supporté\nMettre à jour Ring-Api à V12 qui a besoin de No 18 ou 20\nMise à jour des paquets",
-        "it": "! Breaking Change! D'ora in poi il Nodo 18 o 20 è richiesto, Node 16 non è più supportato\nAggiornare Ring-Api a V12 che ha bisogno di Nodo 18 o 20\nPacchetti di aggiornamento",
-        "es": "! Cambio de ruptura! De ahora en adelante se requiere Nodo 18 o 20, Nodo 16 ya no es compatible\nActualizar Ring-Api a V12 que necesita Nodo 18 o 20\nPaquetes de actualización",
-        "pl": "! Breaking Change (ang.). Od tego czasu wymagana jest zmiana numeru 18 lub 20, nie jest ona już wspierana\nPierścień-Api potrzebuje 18 lub 20 lat\nPackage Update",
-        "uk": "! Змінити зміни! Відтепер на Node 18 або 20 не потрібно, Node 16 не підтримується більше\nUpdate Ring-Api до V12, який потребує Node 18 або 20\nОновлення пакетів",
-        "zh-cn": "! 打破变革! 从现在第18号或第20号要求来看,第16号建议没有得到任何支持。\n第18或20号需要更新到V12\n最新包装"
-      },
-      "3.4.1": {
-        "en": "Compliance to adapter-checker\nUpdate Packages\nDebounce Doorbell Presses\nAdd Support for cocoa_doorbell_v2\nAdd Support for stickup_cam_longfin\nFix compatibility and recompile",
-        "de": "Einhaltung des Adapter-Checkers\nPakete aktualisieren\nTürklingelpressen aussprechen\nUnterstützung für Kakao_doorbell_v2 hinzufügen\nSupport für stickup_cam_longfin hinzufügen\nKompatibilität und Recompile beheben",
-        "ru": "Соответствие адаптеру-чеку\nОбновление пакетов\nDebounce Doorbell Пресса\nДобавить поддержку cocoa_doorbell_v2\nДобавить Поддержка Stickup_cam_longfin\nИсправление совместимости и рекомпиле",
-        "pt": "Conformidade ao verificador do adaptador\nPacotes de atualização\nMáquina de montagem automática\nAdicionar suporte para cocoa_doorbell_v2\nAdicionar suporte para stickup_cam_longfin\nCorrigir compatibilidade e recumpile",
-        "nl": "Complimenten van adapter-checker\nUpdate Packages\nDebounce Doorbell Press\nAdd Support voor Cocoadoorbell2\nAdd Support voor plakband\nVergelijkbaarheid en ademhaling",
-        "fr": "Conformité à l'adaptateur-vérificateur\nMise à jour des paquets\nDebounce Doorbell Presses\nAjouter le support pour cocoa_doorbell_v2\nAjouter le support pour stickup_cam_longfin\nCompatibilité fixe et recompile",
-        "it": "Compliance to adapter-checker\nPacchetti di aggiornamento\nPresse per campanelli\nAggiungi supporto per cacao_doorbell_v2\nAggiungi supporto per stickup_cam_longfin\nFissare la compatibilità e ricompilare",
-        "es": "Cumplimiento para el control de adaptador\nPaquetes de actualización\nDebounce Doorbell Presses\nAñadir Soporte para cocoa_doorbell_v2\nAñadir Soporte para stickup_cam_longfin\nFijar compatibilidad y recompilar",
-        "pl": "Zalecenia adapter-checker-checker\nPackage Update\nDebounce Doorbell Press (ang.)\nAddd Support for cocoa_doorbell_v2 (ang.)\nAdd Support for stickup_cam_longfin (ang.)\nPorównanie Fix i rekompilacja",
-        "uk": "Відповідність адаптера-шейкера\nОновлення пакетів\nDebounce Двербелл Преси\nПідтримка какао_doorbell_v2\nДодати підтримку для stickup_cam_longfin\nВиправлення сумісності та рекомпіляції",
-        "zh-cn": "A. 遵守调整检查员\n最新包装\nDencebou Doorbell Presses\nA. 增加对可可可可访问的支助\nA. 增加对缺陷的支持\nIx 兼容性和变质"
-      },
-      "3.4.0": {
-        "en": "Update Packages (which allows node 20 now)",
-        "de": "Update-Pakete (was den Knoten 20 jetzt erlaubt)",
-        "ru": "Обновление пакетов (что позволяет node 20 сейчас)",
-        "pt": "Atualizar Pacotes (que permite o nó 20 agora)",
-        "nl": "Vertaling:",
-        "fr": "Mise à jour des paquets (qui permet node 20 maintenant)",
-        "it": "Pacchetti di aggiornamento (che permette nodo 20 ora)",
-        "es": "Paquetes de actualización (que permite el nodo 20 ahora)",
-        "pl": "Update Packages (ang.)",
-        "uk": "Оновлення пакетів (що дозволяє встановити 20 тепер)",
-        "zh-cn": "最新包装(现在不允许20个)"
-      },
-      "3.3.1": {
-        "en": "Update Packages",
-        "de": "Pakete aktualisieren",
-        "ru": "Обновление пакетов",
-        "pt": "Pacotes de atualização",
-        "nl": "Update Packages",
-        "fr": "Mise à jour des paquets",
-        "it": "Pacchetti di aggiornamento",
-        "es": "Paquetes de actualización",
-        "pl": "Package Update",
-        "uk": "Оновлення пакетів",
-        "zh-cn": "最新包装"
-      },
-      "3.3.0": {
-        "en": "Update Packages\nDevice with Type stickup_cam_longfin not yet supported #483",
-        "de": "Pakete aktualisieren\nGerät mit Typ stickup_cam_longfin noch nicht unterstützt #483",
-        "ru": "Обновление пакетов\nУстройство с типом Stickup_cam_longfin еще не поддерживается #483",
-        "pt": "Pacotes de atualização\nDispositivo com Tipo stickup_cam_longfin ainda não suportado #483",
-        "nl": "Update Packages\nQuality over Quantity (QoQ) Releases Vertaling:",
-        "fr": "Mise à jour des paquets\nAppareil avec Type stickup_cam_longfin pas encore supporté #483",
-        "it": "Pacchetti di aggiornamento\nDispositivo con Tipo stickup_cam_longfin non ancora supportato #483",
-        "es": "Paquetes de actualización\nDispositivo con tipo stickup_cam_longfin aún no soportado #483",
-        "pl": "Package Update\nUwaga z Type stickup_longfinem nie była jeszcze wspierana",
-        "uk": "Оновлення пакетів\nПристрої з Type stickup_cam_longfin ще не підтримується #483",
-        "zh-cn": "最新包装\n第483号行动"
-      },
-      "3.2.7": {
-        "en": "prepare js-controller v5",
-        "de": "js-controller v5",
-        "ru": "подготовить js-контроллер v5",
-        "pt": "preparar js-controller v5",
-        "nl": "bereid js-controller v5",
-        "fr": "préparer js-controller v5",
-        "it": "preparare js-controller v5",
-        "es": "preparar js-controller v5",
-        "pl": "js-kontroler v5",
-        "uk": "підготовка js-controller v5",
-        "zh-cn": "j 准备控制勒诉5"
-      },
-      "3.2.6": {
-        "en": "Improve behaviour on initial Location load fail\nUpdate Packages",
-        "de": "Verbessern Sie das Verhalten bei anfänglichem Standortlastausfall\nPakete aktualisieren",
-        "ru": "Улучшить поведение на начальном уровне невыполнение нагрузки\nОбновление пакетов",
-        "pt": "Melhorar o comportamento na falha inicial da carga de Localização\nPacotes de atualização",
-        "nl": "Improviseer gedrag op de eerste locatielading falen\nUpdate Packages",
-        "fr": "Améliorez le comportement sur la charge initiale\nMise à jour des paquets",
-        "it": "Migliorare il comportamento sul guasto del carico iniziale\nPacchetti di aggiornamento",
-        "es": "Mejorar el comportamiento en la carga inicial\nPaquetes de actualización",
-        "pl": "Powodzenie na wstępny ładunek w Location nie powiodło się\nPackage Update",
-        "uk": "Поліпшення поведінки на початковому завантаження локації\nОновлення пакетів",
-        "zh-cn": "改善初始装货行为失败\n最新包装"
-      }
-    },
-    "platform": "Javascript/Node.js",
-    "readme": "https://github.com/iobroker-community-adapters/ioBroker.ring/blob/master/README.md",
-    "supportCustoms": false,
-    "titleLang": {
-      "en": "ring",
-      "de": "ring",
-      "ru": "ring",
-      "pt": "ring",
-      "nl": "ring",
-      "fr": "ring",
-      "it": "ring",
-      "es": "ring",
-      "pl": "ring",
-      "uk": "ring",
-      "zh-cn": "环 圈"
-    },
-    "type": "hardware",
-    "version": "4.0.0"
-  },
-  "instanceObjects": [
-    {
-      "_id": "",
-      "type": "meta",
-      "common": {
-        "name": "Snapshots and videos from Ring",
-        "type": "meta"
-      },
-      "native": {}
-    }
-  ],
-  "native": {
-    "del_old_livestream": true,
-    "del_old_snapshot": true,
-    "email": "email@test.foo",
-    "filename_livestream": "livestream%i_%d.mp4",
-    "filename_snapshot": "snapshot%i_%d.jpg",
-    "password": "password",
-    "path": "",
-    "pollsec": 15,
-    "recordtime_livestream": 10,
-    "refreshtoken": "",
-    "sentry_enable": true,
-    "timeout": 5,
-    "twofaceauth": false
-  },
-  "objects": []
+    "objects": []
 }

@@ -106,6 +106,10 @@ export abstract class OwnRingDevice {
     this._adapter.log.info(`Device ${this.shortId} ("${this.description}"): ${message}`);
   }
 
+  protected warn(message: string): void {
+    this._adapter.log.warn(`Device ${this.shortId} ("${this.description}"): ${message}`);
+  }
+
   protected catcher(message: string, reason: any): void {
     this._adapter.logCatch(message, reason);
   }

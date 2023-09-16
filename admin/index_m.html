@@ -18,72 +18,72 @@
     <script type="text/javascript" src="words.js"></script>
 
     <script type="text/javascript">
-      var secret = null;
+        var secret = null;
 
-      function encrypt(key, value) {
-        var result = '';
-        for (var i = 0; i < value.length; ++i) {
-          result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
-        }
-        return result;
-      }
-
-      function decrypt(key, value) {
-
-        var result = '';
-        for (var i = 0; i < value.length; ++i) {
-          result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
-        }
-        return result;
-      }
-
-      // This will be called by the admin adapter when the settings page loads
-      function load(settings, onChange) {
-        // example: select elements with id=key and class=value and insert value
-        if (!settings) return;
-        secret = (systemConfig.native ? systemConfig.native.secret : '') || 'Zgfr56gFe87jJOM';
-
-        $('.value').each(function () {
-          var $key = $(this);
-          var id = $key.attr('id');
-          if ($key.attr('type') === 'checkbox') {
-            // do not call onChange direct, because onChange could expect some arguments
-            $key.prop('checked', settings[id])
-              .on('change', () => onChange())
-            ;
-          } else {
-            var value = settings[id];
-            if (value && $key.attr('data-crypt') == "1") {
-              value = decrypt(secret, value);
+        function encrypt(key, value) {
+            var result = '';
+            for (var i = 0; i < value.length; ++i) {
+                result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
             }
-            // do not call onChange direct, because onChange could expect some arguments
-            $key.val(value)
-              .on('change', () => onChange())
-              .on('keyup', () => onChange())
-            ;
-          }
-        });
-        onChange(false);
-        // reinitialize all the Materialize labels on the page if you are dynamically adding inputs:
-        if (M) M.updateTextFields();
-      }
+            return result;
+        }
 
-      // This will be called by the admin adapter when the user presses the save button
-      function save(callback) {
-        // example: select elements with class=value and build settings object
-        var obj = {};
-        $('.value').each(function () {
-          var $this = $(this);
-          if ($this.attr('type') === 'checkbox') {
-            obj[$this.attr('id')] = $this.prop('checked');
-          } else if ($this.attr('type') === 'number') {
-            obj[$this.attr('id')] = parseFloat($this.val());
-          } else {
-            obj[$this.attr('id')] = $this.data('crypt') && $this.val() ? encrypt(secret, $this.val()) : $this.val();
-          }
-        });
-        callback(obj);
-      }
+        function decrypt(key, value) {
+
+            var result = '';
+            for (var i = 0; i < value.length; ++i) {
+                result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+            }
+            return result;
+        }
+
+        // This will be called by the admin adapter when the settings page loads
+        function load(settings, onChange) {
+            // example: select elements with id=key and class=value and insert value
+            if (!settings) return;
+            secret = (systemConfig.native ? systemConfig.native.secret : '') || 'Zgfr56gFe87jJOM';
+
+            $('.value').each(function () {
+                var $key = $(this);
+                var id = $key.attr('id');
+                if ($key.attr('type') === 'checkbox') {
+                    // do not call onChange direct, because onChange could expect some arguments
+                    $key.prop('checked', settings[id])
+                        .on('change', () => onChange())
+                    ;
+                } else {
+                    var value = settings[id];
+                    if (value && $key.attr('data-crypt') == "1") {
+                        value = decrypt(secret, value);
+                    }
+                    // do not call onChange direct, because onChange could expect some arguments
+                    $key.val(value)
+                        .on('change', () => onChange())
+                        .on('keyup', () => onChange())
+                    ;
+                }
+            });
+            onChange(false);
+            // reinitialize all the Materialize labels on the page if you are dynamically adding inputs:
+            if (M) M.updateTextFields();
+        }
+
+        // This will be called by the admin adapter when the user presses the save button
+        function save(callback) {
+            // example: select elements with class=value and build settings object
+            var obj = {};
+            $('.value').each(function () {
+                var $this = $(this);
+                if ($this.attr('type') === 'checkbox') {
+                    obj[$this.attr('id')] = $this.prop('checked');
+                } else if ($this.attr('type') === 'number') {
+                    obj[$this.attr('id')] = parseFloat($this.val());
+                } else {
+                    obj[$this.attr('id')] = $this.data('crypt') && $this.val() ? encrypt(secret, $this.val()) : $this.val();
+                }
+            });
+            callback(obj);
+        }
     </script>
 
 </head>
@@ -101,18 +101,28 @@
     <div class="row">
         <div class="col s12">
             <ul class="tabs">
-                <li class="tab col s2"><a href="#tab-login" class="translate active">Login</a></li>
-                <li class="tab col s2"><a href="#tab-snapshot" class="translate active">Snapshot</a></li>
+                <li class="tab col s2"><a href="#tab-login"><img src="preferences-system-login.png"
+                                                                 style="width: 5%; min-width: 50px;" title="Login"
+                                                                 alt="login" class="logo"></a></li>
+                <li class="tab col s2"><a href="#tab-snapshot"><img src="camera-photo-5.png"
+                                                                    style="width: 5%; min-width: 50px;" title="Snapshot"
+                                                                    alt="snapshot" class="logo"></a></li>
+                <li class="tab col s2"><a href="#tab-livestream"><img src="camera-video.png"
+                                                                      style="width: 5%; min-width: 50px;"
+                                                                      title="Livestream" alt="livestream" class="logo"></a>
+                </li>
             </ul>
         </div>
     </div>
     <div id="tab-login" class="col s12 page">
         <div class="row">
             <div class="col s12">
-                <p class="translate">ringdescription</p>
+                <a href="https://github.com/iobroker-community-adapters/ioBroker.ring#install--configuration"
+                   target="_blank">
+                    <p class="translate">ringdescription</p>
+                </a>
             </div>
         </div>
-
         <div class="row">
             <!-- div class="input-field col s12">
               <input class="value" id="twofaceauth" type="checkbox" />
@@ -123,45 +133,65 @@
                 <label class="translate" for="refreshtoken">Refreshtoken (Two Face Auth)</label>
             </div>
         </div>
-
     </div>
 
     <div id="tab-snapshot" class="col s12 page">
         <div class="row">
-            <div class="input-field col s6">
-                <img src="ring.png" class="logo">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col s12 m4 l1">
-                <input class="value number" id="recordtime_livestream" min="0" max="60" type="number"/>
-                <label class="translate" for="recordtime_livestream">Livestream recordtime in sec.</label>
+            <div class="input-field col s12 m6 l4">
+                <input class="value" id="auto_snapshot" type="checkbox"/>
+                <label for="auto_snapshot" class="translate">Auto event</label>
             </div>
         </div>
         <div class="row">
             <div class="input-field col s12 m6 l4">
-                <input id="path" type="text" size="30" class="value"/>
-                <label class="translate" for="path">Path</label>
+                <input id="path_snapshot" type="text" size="30" class="value"/>
+                <label class="translate" for="path_snapshot">Path</label>
             </div>
         </div>
         <div class="row">
             <div class="input-field col s12 m6 l4">
                 <input id="filename_snapshot" type="text" size="30" class="value"/>
-                <label class="translate" for="filename_snapshot">Filename Snapshot</label>
+                <label class="translate" for="filename_snapshot">Filename</label>
                 <input class="value" id="del_old_snapshot" type="checkbox"/>
-                <label for="del_old_snapshot" class="translate">Delete old Snapshots</label>
-            </div>
-            <div class="row">
-                <div class="input-field col s12 m6 l4">
-                    <input id="filename_livestream" type="text" size="30" class="value"/>
-                    <label class="translate" for="filename_livestream">Filename Livestream</label>
-                    <input class="value" id="del_old_livestream" type="checkbox"/>
-                    <label for="del_old_livestream" class="translate">Delete old Livestreams</label>
-                </div>
+                <label for="del_old_snapshot" class="translate">Delete old one</label>
             </div>
         </div>
     </div>
 
+    <div id="tab-livestream" class="col s12 page">
+        <div class="row">
+            <div class="input-field col s12 m6 l4">
+                <input class="value" id="auto_livestream" type="checkbox"/>
+                <label for="auto_livestream" class="translate">Auto event</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12 m6 l4">
+                <input class="value number" id="recordtime_auto_livestream" min="0" max="60" type="number"/>
+                <label class="translate" for="recordtime_auto_livestream">Automatic recording time in seconds</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12 m6 l4">
+                <input class="value number" id="recordtime_livestream" min="0" max="60" type="number"/>
+                <label class="translate" for="recordtime_livestream">Recording time in seconds</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12 m6 l4">
+                <input id="path_livestream" type="text" size="30" class="value"/>
+                <label class="translate" for="path_livestream">Path</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12 m6 l4">
+                <input id="filename_livestream" type="text" size="30" class="value"/>
+                <label class="translate" for="filename_livestream">Filename</label>
+                <input class="value" id="del_old_livestream" type="checkbox"/>
+                <label for="del_old_livestream" class="translate">Delete old one</label>
+            </div>
+        </div>
+    </div>
 </div>
 
 </body>

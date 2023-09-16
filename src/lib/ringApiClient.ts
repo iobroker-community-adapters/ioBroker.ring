@@ -38,7 +38,7 @@ export class RingApiClient {
       return this._api;
     }
     if (!this.adapter.config.refreshtoken) {
-      throw(`Refresh Token needed.`)
+      throw (`Refresh Token needed.`)
     }
     this._api = new RingApi({
       controlCenterDisplayName: "iobroker.ring",
@@ -52,8 +52,16 @@ export class RingApiClient {
       this.adapter.log.info(
         `Recieved new Refresh Token. Will use the new one until the token in config gets changed`
       );
-      this.adapter.upsertState("next_refresh_token", COMMON_NEW_TOKEN, data.newRefreshToken);
-      this.adapter.upsertState("old_user_refresh_token", COMMON_OLD_TOKEN, this.adapter.config.refreshtoken);
+      this.adapter.upsertState(
+        "next_refresh_token",
+        COMMON_NEW_TOKEN,
+        data.newRefreshToken
+      );
+      this.adapter.upsertState(
+        "old_user_refresh_token",
+        COMMON_OLD_TOKEN,
+        this.adapter.config.refreshtoken
+      );
     });
     const profile = await this._api.getProfile()
       .catch((reason: any) => {
@@ -89,7 +97,6 @@ export class RingApiClient {
     if (!await this.retrieveLocations()) {
       if (initial) {
         this.adapter.terminate(`Failed to retrieve any locations for your ring Account.`);
-        return;
       }
       if (this._retryTimeout !== null) {
         clearTimeout(this._retryTimeout);
@@ -105,7 +112,6 @@ export class RingApiClient {
     }
     if (Object.keys(this._locations).length === 0 && initial) {
       this.adapter.terminate(`We couldn't find any locations in your Ring Account`);
-      return;
     }
     for (const key in this._locations) {
       const l = this._locations[key];

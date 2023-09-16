@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.STATE_ID_LIVESTREAM_REQUEST = exports.STATE_ID_SNAPSHOT_REQUEST = exports.STATE_ID_LIGHT_SWITCH = exports.CHANNEL_NAME_EVENTS = exports.CHANNEL_NAME_LIVESTREAM = exports.CHANNEL_NAME_SNAPSHOT = exports.CHANNEL_NAME_LIGHT = exports.CHANNEL_NAME_HISTORY = exports.CHANNEL_NAME_INFO = exports.COMMON_LOCATIONMODE = exports.COMMON_OLD_TOKEN = exports.COMMON_NEW_TOKEN = exports.COMMON_INTERCOM_UNLOCK_REQUEST = exports.COMMON_DEBUG_REQUEST = exports.COMMON_EVENTS_MOMENT = exports.COMMON_EVENTS_MESSAGE = exports.COMMON_EVENTS_DETECTIONTYPE = exports.COMMON_EVENTS_TYPE = exports.COMMON_EVENTS_INTERCOM_DING = exports.COMMON_EVENTS_DOORBELL = exports.COMMON_MOTION = exports.COMMON_LIVESTREAM_FILE = exports.COMMON_LIVESTREAM_URL = exports.COMMON_LIVESTREAM_REQUEST = exports.COMMON_LIVESTREAM_MOMENT = exports.COMMON_LIVESTREAM_LIVESTREAM = exports.COMMON_SNAPSHOT_MOMENT = exports.COMMON_SNAPSHOT_SNAPSHOT = exports.COMMON_SNAPSHOT_REQUEST = exports.COMMON_SNAPSHOT_FILE = exports.COMMON_SNAPSHOT_URL = exports.COMMON_HISTORY_KIND = exports.COMMON_HISTORY_CREATED_AT = exports.COMMON_HISTORY_URL = exports.COMMON_LIGHT_STATE = exports.COMMON_LIGHT_SWITCH = exports.COMMON_INFO_HAS_SIREN = exports.COMMON_INFO_HAS_BATTERY = exports.COMMON_INFO_HAS_LIGHT = exports.COMMON_INFO_FIRMWARE = exports.COMMON_INFO_LATEST_SIGNAL_CATEGORY = exports.COMMON_INFO_LATEST_SIGNAL_STRENGTH = exports.COMMON_INFO_WIFI_NAME = exports.COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY = exports.COMMON_INFO_BATTERY_PERCENTAGE = exports.COMMON_INFO_KIND = exports.COMMON_INFO_EXTERNAL_CONNECTION = exports.COMMON_INFO_DESCRIPTION = exports.COMMON_INFO_ID = exports.LOCATION_MODE_OPTIONS = void 0;
-exports.STATE_ID_LOCATIONMODE = exports.STATE_ID_INTERCOM_UNLOCK = exports.STATE_ID_DEBUG_REQUEST = void 0;
+exports.CHANNEL_NAME_LIVESTREAM = exports.CHANNEL_NAME_SNAPSHOT = exports.CHANNEL_NAME_LIGHT = exports.CHANNEL_NAME_HISTORY = exports.CHANNEL_NAME_INFO = exports.COMMON_LOCATIONMODE = exports.COMMON_OLD_TOKEN = exports.COMMON_NEW_TOKEN = exports.COMMON_INTERCOM_UNLOCK_REQUEST = exports.COMMON_DEBUG_REQUEST = exports.COMMON_EVENTS_MOMENT = exports.COMMON_EVENTS_MESSAGE = exports.COMMON_EVENTS_DETECTIONTYPE = exports.COMMON_EVENTS_TYPE = exports.COMMON_EVENTS_INTERCOM_DING = exports.COMMON_EVENTS_DOORBELL = exports.COMMON_MOTION = exports.COMMON_LIVESTREAM_100MS_FILE = exports.COMMON_LIVESTREAM_FILE = exports.COMMON_LIVESTREAM_URL = exports.COMMON_LIVESTREAM_DURATION = exports.COMMON_LIVESTREAM_AUTO = exports.COMMON_LIVESTREAM_REQUEST = exports.COMMON_LIVESTREAM_MOMENT = exports.COMMON_LIVESTREAM_LIVESTREAM = exports.COMMON_SNAPSHOT_MOMENT = exports.COMMON_SNAPSHOT_SNAPSHOT = exports.COMMON_SNAPSHOT_AUTO = exports.COMMON_SNAPSHOT_REQUEST = exports.COMMON_SNAPSHOT_FILE = exports.COMMON_SNAPSHOT_URL = exports.COMMON_HISTORY_KIND = exports.COMMON_HISTORY_CREATED_AT = exports.COMMON_HISTORY_URL = exports.COMMON_LIGHT_STATE = exports.COMMON_LIGHT_SWITCH = exports.COMMON_INFO_HAS_SIREN = exports.COMMON_INFO_HAS_BATTERY = exports.COMMON_INFO_HAS_LIGHT = exports.COMMON_INFO_FIRMWARE = exports.COMMON_INFO_LATEST_SIGNAL_CATEGORY = exports.COMMON_INFO_LATEST_SIGNAL_STRENGTH = exports.COMMON_INFO_WIFI_NAME = exports.COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY = exports.COMMON_INFO_BATTERY_PERCENTAGE = exports.COMMON_INFO_KIND = exports.COMMON_INFO_EXTERNAL_CONNECTION = exports.COMMON_INFO_DESCRIPTION = exports.COMMON_INFO_ID = exports.LOCATION_MODE_OPTIONS = void 0;
+exports.STATE_ID_LOCATIONMODE = exports.STATE_ID_INTERCOM_UNLOCK = exports.STATE_ID_DEBUG_REQUEST = exports.STATE_ID_LIVESTREAM_DURATION = exports.STATE_ID_LIVESTREAM_REQUEST = exports.STATE_ID_SNAPSHOT_REQUEST = exports.STATE_ID_LIGHT_SWITCH = exports.CHANNEL_NAME_EVENTS = void 0;
 exports.LOCATION_MODE_OPTIONS = ["home", "away", "disarmed", "disabled", "unset"];
 exports.COMMON_INFO_ID = {
     type: "string",
@@ -152,6 +152,13 @@ exports.COMMON_SNAPSHOT_REQUEST = {
     read: false,
     write: true
 };
+exports.COMMON_SNAPSHOT_AUTO = {
+    type: "boolean",
+    role: "value",
+    name: "Snapshot auto?",
+    read: false,
+    write: false
+};
 exports.COMMON_SNAPSHOT_SNAPSHOT = {
     type: "file",
     role: "file",
@@ -187,6 +194,20 @@ exports.COMMON_LIVESTREAM_REQUEST = {
     read: false,
     write: true
 };
+exports.COMMON_LIVESTREAM_AUTO = {
+    type: "boolean",
+    role: "value",
+    name: "Automatically start Livestream on event?",
+    read: false,
+    write: false
+};
+exports.COMMON_LIVESTREAM_DURATION = {
+    type: "number",
+    role: "value",
+    name: "Set duration of Livestream",
+    read: false,
+    write: true
+};
 exports.COMMON_LIVESTREAM_URL = {
     type: "string",
     role: "text.url",
@@ -198,6 +219,13 @@ exports.COMMON_LIVESTREAM_FILE = {
     type: "string",
     role: "url",
     name: "Livestream file",
+    read: true,
+    write: false
+};
+exports.COMMON_LIVESTREAM_100MS_FILE = {
+    type: "string",
+    role: "url",
+    name: "100 ms Second Livestream file",
     read: true,
     write: false
 };
@@ -295,6 +323,7 @@ exports.CHANNEL_NAME_EVENTS = "Events";
 exports.STATE_ID_LIGHT_SWITCH = "light_switch";
 exports.STATE_ID_SNAPSHOT_REQUEST = "snapshot_request";
 exports.STATE_ID_LIVESTREAM_REQUEST = "livestream_request";
+exports.STATE_ID_LIVESTREAM_DURATION = "livestream_duration";
 exports.STATE_ID_DEBUG_REQUEST = "debug_request";
 exports.STATE_ID_INTERCOM_UNLOCK = "intercom_unlock_request";
 exports.STATE_ID_LOCATIONMODE = "locationMode";
