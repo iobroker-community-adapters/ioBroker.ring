@@ -91,13 +91,11 @@ doorbell recorded video.
 
 ### **WORK IN PROGRESS**
 
-* (crocri) Ding event is now working again (ring Interkom)
+* (crocri) Ding event is now working again for Ring-Intercom
 * (crocri) auto livestream creation takes now value from config, before fix
 * (crocri) snapshot now async, because snapshot and livestream in parallel does not work
-* (crocri) livestream duration now settable via tree entry will be auto reset via livestream request. After request is
-  done, duration time is reset to config value
-* (crocri) two new config entries auto_livestream and auto_snapshot - can be disabled now if someone wants to react
-  manually
+* (crocri) livestream duration now settable via tree entry will be auto reset via livestream request.
+* (crocri) two new config entries auto_livestream and auto_snapshot to disable auto creation of livestream and snapshot.
 * (crocri) some minor corrections to code
 * (crocri) Removed binary States
 * (crocri) Improvements for vis compatibility
