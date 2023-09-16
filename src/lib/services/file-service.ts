@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs";
 import { RingAdapter } from "../../main";
 import "@iobroker/types";
+import { PathInfo } from "./path-info";
 
 export class FileService {
   public static readonly IOBROKER_FILES_REGEX = new RegExp(/.*iobroker-data\/files.*/);
@@ -13,11 +14,7 @@ export class FileService {
     shortId: string,
     fullId: string,
     kind: string
-  ): {
-    fullPath: string,
-    dirname: string,
-    filename: string
-  } {
+  ): PathInfo {
     const fullPath = path.join(basePath, fullId, extendedPath)
       .replace("%d", String(Date.now()))
       .replace("%n", String(count))

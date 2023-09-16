@@ -38,7 +38,7 @@ export class RingApiClient {
       return this._api;
     }
     if (!this.adapter.config.refreshtoken) {
-      throw(`Refresh Token needed.`)
+      throw (`Refresh Token needed.`)
     }
     this._api = new RingApi({
       controlCenterDisplayName: "iobroker.ring",
@@ -113,7 +113,6 @@ export class RingApiClient {
     }
     if (Object.keys(this._locations).length === 0 && initial) {
       this.adapter.terminate(`We couldn't find any locations in your Ring Account`);
-      return;
     }
     for (const key in this._locations) {
       const l = this._locations[key];
