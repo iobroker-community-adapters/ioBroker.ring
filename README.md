@@ -88,6 +88,17 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (crocri) Ding event is now working again (ring Interkom)
+* (crocri) auto livestream creation takes now value from config, before fix
+* (crocri) snapshot now async, because snapshot and livestream in parallel does not work
+* (crocri) livestream duration now settable via tree entry will be auto reset via livestream request. After request is done, duration time is reset to config value
+* (crocri) two new config entries: auto_livestream and auto_snapshot - can be disabled now if someone wants to react manually
+* (crocri) some minor corrections to code
+* (crocri) Removed binary States
+* (crocri) Improvements for vis compatibility
+* (theimo1221) Refactoring and cleanup
+
 ### 4.0.0 (2023-08-22)
 
 * (theimo1221) !!Breaking Change!! From now on Node 18 or 20 is required, Node 16 is not supported anymore
