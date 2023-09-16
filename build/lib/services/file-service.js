@@ -68,23 +68,23 @@ class FileService {
         await this.prepareFolder(tempPath);
         return tempPath;
     }
-    static writeFileSync(fullPath, data, adapter, afterWrite) {
-        if (this.IOBROKER_FILES_REGEX.test(fullPath)) {
+    static async writeFile(fullPath, data, adapter) {
+        if (!this.IOBROKER_FILES_REGEX.test(fullPath)) {
+            fs_1.default.writeFileSync(fullPath, data);
+            return;
+        }
+        return new Promise((resolve, reject) => {
             adapter.writeFile(adapter.namespace, this.reducePath(fullPath, adapter), data, (r) => {
                 if (r) {
                     adapter.logCatch(`Failed to write Adapter File '${fullPath}'`, r.message);
+                    reject(r);
                 }
                 else {
                     adapter.log.silly(`Adapter File ${fullPath} written!`);
-                    if (afterWrite)
-                        afterWrite();
+                    resolve();
                 }
             });
-            return;
-        }
-        fs_1.default.writeFileSync(fullPath, data);
-        if (afterWrite)
-            afterWrite();
+        });
     }
     static reducePath(fullPath, adapter) {
         return fullPath.split(adapter.namespace)[1];

@@ -227,14 +227,11 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         });
         if (visPath) {
             this.silly(`Locally storing Filestream (Length: ${video.length})`);
+            await file_service_1.FileService.writeFile(visPath, video, this._adapter);
             if (duration == 0.1) {
-                file_service_1.FileService.writeFileSync(visPath, video, this._adapter, () => {
-                    this.updateLivestreamRequest(true, visPath);
-                });
+                this.updateLivestreamRequest(true, visPath);
                 return;
             }
-            else
-                file_service_1.FileService.writeFileSync(visPath, video, this._adapter);
         }
         if (this._lastLiveStreamDir !== "" && this._adapter.config.del_old_livestream) {
             file_service_1.FileService.deleteFileIfExistSync(this._lastLiveStreamDir, this._adapter);
@@ -243,9 +240,8 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._lastLiveStreamDir = fullPath;
         this._lastLiveStreamTimestamp = Date.now();
         this.silly(`Writing Filestream (Length: ${video.length}) to "${fullPath}"`);
-        file_service_1.FileService.writeFileSync(fullPath, video, this._adapter, () => {
-            this.updateLiveStreamObject();
-        });
+        await file_service_1.FileService.writeFile(fullPath, video, this._adapter);
+        this.updateLiveStreamObject();
         this.debug(`Done creating livestream to ${fullPath}`);
     }
     async takeSnapshot(uuid, eventBased = false) {
@@ -289,12 +285,11 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._lastSnapshotTimestamp = Date.now();
         if (visPath) {
             this.silly(`Locally storing Snapshot (Length: ${image.length})`);
-            file_service_1.FileService.writeFileSync(visPath, image, this._adapter);
+            file_service_1.FileService.writeFile(visPath, image, this._adapter);
         }
         this.silly(`Writing Snapshot (Length: ${image.length}) to "${fullPath}"`);
-        file_service_1.FileService.writeFileSync(fullPath, image, this._adapter, () => {
-            this.updateSnapshotObject();
-        });
+        await file_service_1.FileService.writeFile(fullPath, image, this._adapter);
+        this.updateSnapshotObject();
         this.debug(`Done creating snapshot to ${fullPath}`);
     }
     updateHealth() {
