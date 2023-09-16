@@ -88,8 +88,7 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 5.0.0-alpha.0 (2023-09-16)
 
 * (crocri) Ding event is now working again for Ring-Intercom
 * (crocri) auto livestream creation takes now value from config, before fix
