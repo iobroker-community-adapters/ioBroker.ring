@@ -95,7 +95,6 @@ class RingApiClient {
         }
         if (Object.keys(this._locations).length === 0 && initial) {
             this.adapter.terminate(`We couldn't find any locations in your Ring Account`);
-            return;
         }
         for (const key in this._locations) {
             const l = this._locations[key];
