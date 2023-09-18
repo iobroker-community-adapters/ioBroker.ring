@@ -107,6 +107,9 @@
                 <li class="tab col s2"><a href="#tab-snapshot"><img src="camera-photo-5.png"
                                                                     style="width: 5%; min-width: 50px;" title="Snapshot"
                                                                     alt="snapshot" class="logo"></a></li>
+                <li class="tab col s2"><a href="#tab-HDsnapshot"><img src="camera-photo-6.png"
+                                                                    style="width: 5%; min-width: 50px;" title="HD Snapshot"
+                                                                    alt="HD snapshot" class="logo"></a></li>
                 <li class="tab col s2"><a href="#tab-livestream"><img src="camera-video.png"
                                                                       style="width: 5%; min-width: 50px;"
                                                                       title="Livestream" alt="livestream" class="logo"></a>
@@ -154,6 +157,29 @@
                 <label class="translate" for="filename_snapshot">Filename</label>
                 <input class="value" id="del_old_snapshot" type="checkbox"/>
                 <label for="del_old_snapshot" class="translate">Delete old one</label>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-HDsnapshot" class="col s12 page">
+        <div class="row">
+            <div class="input-field col s12 m6 l4">
+                <input class="value" id="auto_HDsnapshot" type="checkbox"/>
+                <label for="auto_HDsnapshot" class="translate">Auto event</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12 m6 l4">
+                <input id="path_HDsnapshot" type="text" size="30" class="value"/>
+                <label class="translate" for="path_HDsnapshot">Path</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12 m6 l4">
+                <input id="filename_HDsnapshot" type="text" size="30" class="value"/>
+                <label class="translate" for="filename_HDsnapshot">Filename</label>
+                <input class="value" id="del_old_HDsnapshot" type="checkbox"/>
+                <label for="del_old_HDsnapshot" class="translate">Delete old one</label>
             </div>
         </div>
     </div>

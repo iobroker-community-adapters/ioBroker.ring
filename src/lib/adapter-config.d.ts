@@ -4,17 +4,21 @@
 declare global {
   namespace ioBroker {
     interface AdapterConfig {
-      auto_livestream: boolean;
-      auto_snapshot: boolean;
       del_old_livestream: boolean;
-      del_old_snapshot: boolean;
+      auto_livestream: boolean;
       filename_livestream: string;
-      filename_snapshot: string;
       path_livestream: string;
-      path_snapshot: string;
-      pollsec: number;
       recordtime_livestream: number;
       recordtime_auto_livestream: number;
+      del_old_snapshot: boolean;
+      auto_snapshot: boolean;
+      filename_snapshot: string;
+      path_snapshot: string;
+      del_old_HDsnapshot: boolean;
+      auto_HDsnapshot: boolean;
+      filename_HDsnapshot: string;
+      path_HDsnapshot: string;
+      pollsec: number;
       refreshtoken: string;
       twofaceauth: boolean;
 

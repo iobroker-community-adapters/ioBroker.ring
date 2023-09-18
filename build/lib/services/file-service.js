@@ -8,6 +8,9 @@ const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const main_1 = require("../../main");
 require("@iobroker/types");
+const fluent_ffmpeg_1 = __importDefault(require("@bropat/fluent-ffmpeg"));
+const ffmpeg_static_1 = __importDefault(require("ffmpeg-static"));
+const stream_1 = require("stream");
 class FileService {
     static getPath(basePath, extendedPath, count, shortId, fullId, kind) {
         const fullPath = path_1.default.join(basePath, fullId, extendedPath)
@@ -68,23 +71,69 @@ class FileService {
         await this.prepareFolder(tempPath);
         return tempPath;
     }
-    static async writeFile(fullPath, data, adapter) {
+    static async writeFile(fullPath, data, adapter, cb) {
         if (!this.IOBROKER_FILES_REGEX.test(fullPath)) {
-            fs_1.default.writeFileSync(fullPath, data);
+            fs_1.default.writeFile(fullPath, data, () => {
+                if (cb)
+                    cb();
+            });
             return;
         }
-        return new Promise((resolve, reject) => {
-            adapter.writeFile(adapter.namespace, this.reducePath(fullPath, adapter), data, (r) => {
-                if (r) {
-                    adapter.logCatch(`Failed to write Adapter File '${fullPath}'`, r.message);
-                    reject(r);
+        adapter.writeFile(adapter.namespace, this.reducePath(fullPath, adapter), data, (r) => {
+            if (r) {
+                adapter.logCatch(`Failed to write Adapter File '${fullPath}'`, r.message);
+            }
+            else {
+                adapter.log.silly(`Adapter File ${fullPath} written!`);
+                if (cb)
+                    cb();
+            }
+        });
+    }
+    static async stream2buffer(stream) {
+        const _buf = Array();
+        stream.on("data", chunk => _buf.push(chunk));
+        stream.on("end", () => { return Buffer.concat(_buf); });
+        return Buffer.concat(Array());
+    }
+    static async writeHDSnapshot(fullPath, data, adapter, cb) {
+        await new Promise((resolve, reject) => {
+            try {
+                if (ffmpeg_static_1.default) {
+                    fluent_ffmpeg_1.default.setFfmpegPath(ffmpeg_static_1.default);
+                    (0, fluent_ffmpeg_1.default)()
+                        .input(stream_1.Readable.from(data))
+                        .withProcessOptions({
+                        detached: true
+                    })
+                        .frames(1)
+                        .outputFormat("mjpeg")
+                        // .output(stream)
+                        .output(fullPath)
+                        .on("error", function (err, stdout, stderr) {
+                        adapter.log.error(`writeHDSnapshot(): An error occurred: ${err.message}`);
+                        adapter.log.error(`writeHDSnapshot(): ffmpeg output:\n${stdout}`);
+                        adapter.log.error(`writeHDSnapshot(): ffmpeg stderr:\n${stderr}`);
+                        reject(err);
+                    })
+                        .on("end", () => {
+                        adapter.log.debug("`writeHDSnapshot(): HD Snapshot generated!");
+                        if (cb)
+                            cb();
+                        resolve();
+                    })
+                        .run();
                 }
                 else {
-                    adapter.log.silly(`Adapter File ${fullPath} written!`);
-                    resolve();
+                    reject(new Error("ffmpeg binary not found"));
                 }
-            });
+            }
+            catch (error) {
+                adapter.log.error(`ffmpegPreviewImage(): Error: ${error}`);
+                reject(error);
+            }
         });
+        // await this.writeFile(fullPath, data, adapter, cb)
     }
     static reducePath(fullPath, adapter) {
         return fullPath.split(adapter.namespace)[1];
