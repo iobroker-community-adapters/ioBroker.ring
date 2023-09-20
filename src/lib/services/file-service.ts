@@ -1,12 +1,11 @@
 import path from "path"
-import fs, { WriteStream } from "fs"
+import fs, { createWriteStream } from "fs"
 import { RingAdapter } from "../../main"
 import "@iobroker/types"
 import { PathInfo } from "./path-info"
 import ffmpeg from "@bropat/fluent-ffmpeg"
 import pathToFfmpeg from "ffmpeg-static"
-import { Readable, Writable, pipeline } from "stream"
-import { buffer } from "stream/consumers";
+import { Readable } from "stream"
 
 export class FileService {
   public static readonly IOBROKER_FILES_REGEX = new RegExp(/.*iobroker-data\/files.*/);
@@ -102,39 +101,36 @@ export class FileService {
     });
   }
 
-  private static async stream2buffer(stream: WriteStream): Promise<Buffer> {
-    const _buf = Array < any > ();
-    stream.on("data", chunk => _buf.push(chunk));
-    stream.on("end", () => { return Buffer.concat(_buf)});
-    return Buffer.concat(Array < any > ())
-  }
-
-  public static async writeHDSnapshot(fullPath: string, data: Buffer, adapter: RingAdapter, cb?: ()=>void): Promise<void> {
-    await new Promise<void>((resolve, reject) => {
+  public static async createHDSnapshot(inFile: string, adapter: RingAdapter): Promise<Buffer> {
+    let out: Buffer
+    return await new Promise<Buffer>((resolve, reject) => {
       try {
         if (pathToFfmpeg) {
           ffmpeg.setFfmpegPath(pathToFfmpeg)
           ffmpeg()
-            .input(Readable.from(data))
+            .input(inFile)
             .withProcessOptions({
               detached: true
             })
             .frames(1)
             .outputFormat("mjpeg")
-            // .output(stream)
-            .output(fullPath)
-            .on("error", function(err: { message: any }, stdout: any, stderr: any) {
+            .addOutputOption("-q:v 3")
+            .writeToStream()
+            .on("data", function (data) {
+              if (!out) out = Buffer.from(data)
+              else      out = Buffer.concat([out, Buffer.from(data)])
+              adapter.log.debug(`writeHDSnapshot(): get Data: ${JSON.stringify(out)}`)
+            })
+            .on("error", (err: { message: any }, stdout: any, stderr: any) => {
               adapter.log.error(`writeHDSnapshot(): An error occurred: ${err.message}`)
               adapter.log.error(`writeHDSnapshot(): ffmpeg output:\n${stdout}`)
               adapter.log.error(`writeHDSnapshot(): ffmpeg stderr:\n${stderr}`)
               reject(err);
             })
             .on("end", () => {
-              adapter.log.debug("`writeHDSnapshot(): HD Snapshot generated!")
-              if (cb) cb()
-              resolve();
+              adapter.log.debug("writeHDSnapshot(): HD Snapshot generated!")
+              resolve(out)
             })
-            .run()
         } else {
           reject(new Error("ffmpeg binary not found"))
         }
@@ -143,7 +139,6 @@ export class FileService {
         reject(error)
       }
     })
-    // await this.writeFile(fullPath, data, adapter, cb)
   }
 
   private static reducePath(fullPath: string, adapter: RingAdapter): string {
