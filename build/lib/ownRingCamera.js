@@ -314,7 +314,9 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         const duration = 0.1;
         const { visURL, visPath } = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "HDSnapshot.jpg");
         if (!visURL || !visPath) {
-            this.warn("Vis not available");
+            this.warn("Vis not available! Please install e.g. flot or other Vis related adapter");
+            this.updateHDSnapshotRequest(false);
+            return;
         }
         const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path_snapshot, "HD" + this._adapter.config.filename_snapshot, ++this._snapshotCount, this.shortId, this.fullId, this.kind);
         if (!(await file_service_1.FileService.prepareFolder(dirname))) {
@@ -328,33 +330,41 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             this.updateHDSnapshotRequest(false);
             return;
         }
-        const tempPath = (await file_service_1.FileService.getTempDir(this._adapter)) + `/temp_${this.shortId}_HDSnapshot.jpg`;
-        this.silly(`Initialize Livestream (${duration}s) to temp-file ${tempPath}`);
+        const tempPath = (await file_service_1.FileService.getTempDir(this._adapter)) + "_HDSnapshot.mp4";
+        this.silly(`Initialize live stream to temp-file ${tempPath}`);
         await this._ringDevice.recordToFile(tempPath, duration);
         if (!fs.existsSync(tempPath)) {
-            this.warn(`Could't create livestream for HDSnapshot`);
+            this.warn(`Could't create live stream for HDSnapshot`);
             this.updateHDSnapshotRequest(false);
             return;
         }
-        const video = fs.readFileSync(tempPath);
+        const jpg = await file_service_1.FileService.createHDSnapshot(tempPath, this._adapter);
         fs.unlink(tempPath, (err) => {
             if (err) {
-                this._adapter.logCatch(`Couldn't delete temp file`, err);
+                this._adapter.logCatch(`Couldn't delete temp file ${tempPath}`, err);
             }
         });
-        if (this._lastHDSnapShotDir !== "" && this._adapter.config.del_old_HDsnapshot) {
-            file_service_1.FileService.deleteFileIfExistSync(this._lastHDSnapShotDir, this._adapter);
+        if (jpg.length == 0) {
+            this.warn(`Could't create HD Snapshot`);
+            this.updateHDSnapshotRequest(false);
+            return;
         }
-        this._lastHDSnapShotUrl = visURL;
-        this._lastHDSnapShotDir = fullPath;
-        this._lastHDSnapshotTimestamp = Date.now();
-        if (visPath) {
-            this.silly(`Locally storing HD Snapshot (Length: ${video.length})`);
-            await file_service_1.FileService.writeHDSnapshot(visPath, video, this._adapter);
+        else {
+            this.silly(`Live stream for HD Snapshot created`);
         }
-        this.silly(`Writing HD Snapshot (Length: ${video.length}) to "${fullPath}"`);
-        await file_service_1.FileService.writeFile(fullPath, video, this._adapter, () => {
-            this.updateHDSnapshotObject();
+        // using callbacks, so program can go on with other stuff
+        this.silly(`Locally storing HD Snapshot (Length: ${jpg.length})`);
+        file_service_1.FileService.writeFile(visPath, jpg, this._adapter, () => {
+            this._lastHDSnapShotUrl = visURL;
+            this.silly(`Writing HD Snapshot to ${fullPath} (Length: ${jpg.length})`);
+            file_service_1.FileService.writeFile(fullPath, jpg, this._adapter, () => {
+                if (this._lastHDSnapShotDir !== "" && this._adapter.config.del_old_HDsnapshot) {
+                    file_service_1.FileService.deleteFileIfExistSync(this._lastHDSnapShotDir, this._adapter);
+                }
+                this._lastHDSnapShotDir = fullPath;
+                this._lastHDSnapshotTimestamp = Date.now();
+                this.updateHDSnapshotObject();
+            });
         });
         this.debug(`Done creating HDSnapshot to ${visPath}`);
     }
