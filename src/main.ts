@@ -204,56 +204,6 @@ export class RingAdapter extends Adapter {
     }
   }
 
-  public async upsertFile(
-    id: string,
-    common: ioBroker.StateCommon,
-    value: Buffer,
-    MIME_Type: string,
-    timestamp: number
-  ): Promise<void> {
-    try {
-      if (this.states[id] === timestamp) {
-        this.log.silly(`upsertFile ${id} prevented as timestamp is the same`);
-        // Unchanged Value
-        return;
-      }
-      this.log.silly(`upsertFile ${id}, length: ${value.length}`);
-      const foreignId = `${this.namespace}.${id}`;
-      if (this.states[id] !== undefined) {
-        this.states[id] = timestamp;
-        await this.setForeignBinaryStateAsync(foreignId, value).catch((reason) => {
-          this.logCatch("Couldn't write File-State", reason);
-        });
-        return;
-      }
-      const {device, channel, stateName} = RingAdapter.getSplittedIds(id);
-      this.log.silly(`upsertFile.First File create State first for ${id
-      }.\n Device: ${device}; Channel: ${channel}; StateName: ${stateName}`);
-      // this.log.silly(`Create Binary State Common: ${JSON.stringify(common)}`);
-
-      const obj: ioBroker.StateObject = {
-        _id: foreignId,
-        native: {},
-        type: "state",
-        common: common
-      };
-
-      await this.setObjectNotExistsAsync(id, obj).catch((reason) => {
-      // await this.createStateAsync(device, channel, stateName, common).catch((reason) => {
-        this.logCatch("Couldn't Create File-State", reason);
-      });
-      await this.setForeignBinaryStateAsync(foreignId, value).catch((reason) => {
-        this.logCatch("Couldn't write File-State", reason);
-      });
-      this.states[id] = timestamp;
-    } catch (e: any) {
-      this.log.warn(`Error Updating File State ${id}: ${e?.message ?? e}`);
-      if (e?.stack !== undefined) {
-        this.log.debug(`Error Stack: ${e.stack}`);
-      }
-    }
-  }
-
   public static getSplittedIds(id: string): { device: string, channel: string, stateName: string } {
     const splits = id.split(".");
     let device = "";

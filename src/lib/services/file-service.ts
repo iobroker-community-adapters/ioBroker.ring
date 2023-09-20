@@ -118,7 +118,7 @@ export class FileService {
             .on("data", function (data) {
               if (!out) out = Buffer.from(data)
               else      out = Buffer.concat([out, Buffer.from(data)])
-              adapter.log.debug(`writeHDSnapshot(): get Data: ${JSON.stringify(out)}`)
+              adapter.log.silly(`writeHDSnapshot(): get Data (first 20): ${JSON.stringify(data.subarray(0, 20))}`)
             })
             .on("error", (err: { message: any }, stdout: any, stderr: any) => {
               adapter.log.error(`writeHDSnapshot(): An error occurred: ${err.message}`)
