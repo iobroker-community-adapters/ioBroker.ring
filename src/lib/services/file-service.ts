@@ -1,11 +1,10 @@
 import path from "path"
-import fs, { createWriteStream } from "fs"
+import fs from "fs"
 import { RingAdapter } from "../../main"
 import "@iobroker/types"
 import { PathInfo } from "./path-info"
 import ffmpeg from "@bropat/fluent-ffmpeg"
 import pathToFfmpeg from "ffmpeg-static"
-import { Readable } from "stream"
 
 export class FileService {
   public static readonly IOBROKER_FILES_REGEX = new RegExp(/.*iobroker-data\/files.*/);
