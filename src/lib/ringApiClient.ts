@@ -5,6 +5,7 @@ import { COMMON_NEW_TOKEN, COMMON_OLD_TOKEN } from "./constants";
 import { OwnRingLocation } from "./ownRingLocation";
 import { OwnRingDevice } from "./ownRingDevice";
 import { OwnRingIntercom } from "./ownRingIntercom";
+import pathToFfmpeg from "ffmpeg-static"
 
 export class RingApiClient {
   public refreshing = false;
@@ -46,6 +47,7 @@ export class RingApiClient {
       systemId: `${this.adapter.host}.ring_v${this.adapter.version}_${Math.random() * Math.pow(10, 6)}`,
       cameraStatusPollingSeconds: 120,
       locationModePollingSeconds: 120,
+      ffmpegPath: pathToFfmpeg ? pathToFfmpeg : undefined // overwrite "ffmpeg for homebridge" with many missing libraries, use actual ffmpeg-static!
       // debug: true
     });
     this._api.onRefreshTokenUpdated.subscribe((data) => {

@@ -8,8 +8,6 @@ const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const main_1 = require("../../main");
 require("@iobroker/types");
-const fluent_ffmpeg_1 = __importDefault(require("@bropat/fluent-ffmpeg"));
-const ffmpeg_static_1 = __importDefault(require("ffmpeg-static"));
 class FileService {
     static getPath(basePath, extendedPath, count, shortId, fullId, kind) {
         const fullPath = path_1.default.join(basePath, fullId, extendedPath)
@@ -86,49 +84,6 @@ class FileService {
                 adapter.log.silly(`Adapter File ${fullPath} written!`);
                 if (cb)
                     cb();
-            }
-        });
-    }
-    static async createHDSnapshot(inFile, adapter) {
-        let out;
-        return await new Promise((resolve, reject) => {
-            try {
-                if (ffmpeg_static_1.default) {
-                    fluent_ffmpeg_1.default.setFfmpegPath(ffmpeg_static_1.default);
-                    (0, fluent_ffmpeg_1.default)()
-                        .input(inFile)
-                        .withProcessOptions({
-                        detached: true
-                    })
-                        .frames(1)
-                        .outputFormat("mjpeg")
-                        .addOutputOption("-q:v 3")
-                        .writeToStream()
-                        .on("data", function (data) {
-                        if (!out)
-                            out = Buffer.from(data);
-                        else
-                            out = Buffer.concat([out, Buffer.from(data)]);
-                        adapter.log.silly(`writeHDSnapshot(): get Data (first 20): ${JSON.stringify(data.subarray(0, 20))}`);
-                    })
-                        .on("error", (err, stdout, stderr) => {
-                        adapter.log.error(`writeHDSnapshot(): An error occurred: ${err.message}`);
-                        adapter.log.error(`writeHDSnapshot(): ffmpeg output:\n${stdout}`);
-                        adapter.log.error(`writeHDSnapshot(): ffmpeg stderr:\n${stderr}`);
-                        reject(err);
-                    })
-                        .on("end", () => {
-                        adapter.log.debug("writeHDSnapshot(): HD Snapshot generated!");
-                        resolve(out);
-                    });
-                }
-                else {
-                    reject(new Error("ffmpeg binary not found"));
-                }
-            }
-            catch (error) {
-                adapter.log.error(`ffmpegPreviewImage(): Error: ${error}`);
-                reject(error);
             }
         });
     }

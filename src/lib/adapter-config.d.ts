@@ -8,6 +8,7 @@ declare global {
       auto_livestream: boolean;
       filename_livestream: string;
       path_livestream: string;
+      overlay_Livestream: boolean;
       recordtime_livestream: number;
       recordtime_auto_livestream: number;
       del_old_snapshot: boolean;
@@ -18,6 +19,7 @@ declare global {
       auto_HDsnapshot: boolean;
       filename_HDsnapshot: string;
       path_HDsnapshot: string;
+      overlay_HDsnapshot: boolean;
       pollsec: number;
       refreshtoken: string;
       twofaceauth: boolean;

@@ -158,6 +158,19 @@ systemDictionary = {
         "uk": "Патент\n",
         "zh-cn": "Path\n"
     },
+    "Overlay": {
+        "en": "Overlaying text",
+        "de": "Überlagerungstext",
+        "ru": "Overlaying текст",
+        "pt": "Sobreposição de texto",
+        "nl": "Vertaling:",
+        "fr": "Remplacer le texte",
+        "it": "Testo di sovrapposizione",
+        "es": "Texto superpuesto",
+        "pl": "Tekst Overlaying",
+        "uk": "Налаштування тексту",
+        "zh-cn": "全文"
+      },
     "Set two face auth (once)": {
         "en": "Set two face auth (once)",
         "de": "Setze Tow Face Authentification (einmal)",

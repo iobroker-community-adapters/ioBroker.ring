@@ -1,4 +1,7 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RingApiClient = void 0;
 const ring_client_api_1 = require("ring-client-api");
@@ -7,6 +10,7 @@ const constants_1 = require("./constants");
 const ownRingLocation_1 = require("./ownRingLocation");
 const ownRingDevice_1 = require("./ownRingDevice");
 const ownRingIntercom_1 = require("./ownRingIntercom");
+const ffmpeg_static_1 = __importDefault(require("ffmpeg-static"));
 class RingApiClient {
     get locations() {
         return this._locations;
@@ -36,6 +40,7 @@ class RingApiClient {
             systemId: `${this.adapter.host}.ring_v${this.adapter.version}_${Math.random() * Math.pow(10, 6)}`,
             cameraStatusPollingSeconds: 120,
             locationModePollingSeconds: 120,
+            ffmpegPath: ffmpeg_static_1.default ? ffmpeg_static_1.default : undefined // overwrite "ffmpeg for homebridge" with many missing libraries, use actual ffmpeg-static!
             // debug: true
         });
         this._api.onRefreshTokenUpdated.subscribe((data) => {
