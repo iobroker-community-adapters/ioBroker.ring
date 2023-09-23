@@ -124,7 +124,7 @@ export class OwnRingCamera extends OwnRingDevice {
     return this._ringDevice;
   }
 
-  private get overlayFilter(): string[] {
+  private overlayFilter(overlay: boolean): string[] {
     const filter = `drawtext=text=${this._ringDevice.data.description}:
                     fontsize=20:
                     fontcolor=white:
@@ -140,7 +140,7 @@ export class OwnRingCamera extends OwnRingDevice {
                     shadowcolor=black:
                     shadowx=2:
                     shadowy=2`
-    return this._adapter.config.overlay_Livestream ? ["-vf", filter] : []
+    return overlay ? ["-vf", filter] : []
   }
 
   private set ringDevice(device) {
@@ -315,9 +315,7 @@ export class OwnRingCamera extends OwnRingDevice {
 
   public async startLivestream(duration?: number): Promise<void> {
     this.silly(`${this.shortId}.startLivestream()`);
-
     duration ??= this._durationLiveStream;
-
     const {visURL, visPath} =
       await FileService.getVisUrl(
         this._adapter,
@@ -351,7 +349,7 @@ export class OwnRingCamera extends OwnRingDevice {
     }
     const tempPath = (await FileService.getTempDir(this._adapter)) + `/temp_${this.shortId}_livestream.mp4`
     const liveCall = await this._ringDevice.streamVideo({
-      video: this.overlayFilter,
+      video: this.overlayFilter(this._adapter.config.overlay_Livestream),
       output: ["-t", duration.toString(), tempPath],
     })
     await firstValueFrom(liveCall.onCallEnded)
@@ -490,7 +488,7 @@ export class OwnRingCamera extends OwnRingDevice {
     }
     const tempPath = (await FileService.getTempDir(this._adapter)) + `/temp_${this.shortId}_livestream.jpg`;
     const liveCall = await this._ringDevice.streamVideo({
-      video: this.overlayFilter,
+      video: this.overlayFilter(this._adapter.config.overlay_HDsnapshot),
       output: ["-t", duration.toString(), "-f", "mjpeg", "-q:v", 3, "-frames:v", 1, tempPath]
     })
     await firstValueFrom(liveCall.onCallEnded)
