@@ -132,7 +132,7 @@ export class OwnRingCamera extends OwnRingDevice {
                     y=20:shadowcolor=black:
                     shadowx=2:
                     shadowy=2,
-                    drawtext=text='%{localtime\\:%c}':
+                    drawtext=text='%{localtime\\:%Y-%m-%d %T}':
                     fontsize=20:
                     fontcolor=white:
                     x=20:
