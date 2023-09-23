@@ -261,6 +261,15 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             return;
         }
         const video = fs.readFileSync(tempPath);
+        // clean up
+        fs.unlink(tempPath, (err) => {
+            if (err) {
+                this._adapter.logCatch(`Couldn't delete temp file`, err);
+            }
+        });
+        if (this._lastLiveStreamDir !== "" && this._adapter.config.del_old_livestream) {
+            file_service_1.FileService.deleteFileIfExistSync(this._lastLiveStreamDir, this._adapter);
+        }
         if (visPath) {
             this.silly(`Locally storing Filestream (Length: ${video.length})`);
             file_service_1.FileService.writeFile(visPath, video, this._adapter, () => {
@@ -272,15 +281,6 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             this._lastLiveStreamDir = fullPath;
             this._lastLiveStreamTimestamp = Date.now();
             this.updateLiveStreamObject();
-            // clean up
-            if (this._lastLiveStreamDir !== "" && this._adapter.config.del_old_livestream) {
-                file_service_1.FileService.deleteFileIfExistSync(this._lastLiveStreamDir, this._adapter);
-            }
-            fs.unlink(tempPath, (err) => {
-                if (err) {
-                    this._adapter.logCatch(`Couldn't delete temp file`, err);
-                }
-            });
         });
         this.debug(`Done creating livestream to ${fullPath}`);
     }
@@ -369,6 +369,15 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             this.silly(`HD Snapshot from livestream created`);
         }
         const jpg = fs.readFileSync(tempPath);
+        // clean up
+        fs.unlink(tempPath, (err) => {
+            if (err) {
+                this._adapter.logCatch(`Couldn't delete temp file ${tempPath}`, err);
+            }
+        });
+        if (this._lastHDSnapShotDir !== "" && this._adapter.config.del_old_HDsnapshot) {
+            file_service_1.FileService.deleteFileIfExistSync(this._lastHDSnapShotDir, this._adapter);
+        }
         if (visPath) {
             this.silly(`Locally storing HD Snapshot (Length: ${jpg.length})`);
             await file_service_1.FileService.writeFile(visPath, jpg, this._adapter, () => {
@@ -380,15 +389,6 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             this._lastHDSnapShotDir = fullPath;
             this._lastHDSnapshotTimestamp = Date.now();
             this.updateHDSnapshotObject();
-            // clean up
-            if (this._lastHDSnapShotDir !== "" && this._adapter.config.del_old_HDsnapshot) {
-                file_service_1.FileService.deleteFileIfExistSync(this._lastHDSnapShotDir, this._adapter);
-            }
-            fs.unlink(tempPath, (err) => {
-                if (err) {
-                    this._adapter.logCatch(`Couldn't delete temp file ${tempPath}`, err);
-                }
-            });
         });
         this.debug(`Done creating HDSnapshot to ${visPath}`);
     }
