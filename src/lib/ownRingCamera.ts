@@ -73,6 +73,9 @@ import * as util from "util";
 import { OwnRingLocation } from "./ownRingLocation";
 import { PushNotificationDing } from "ring-client-api/lib/ring-types";
 import { OwnRingDevice } from "./ownRingDevice";
+import Sharp from "sharp";
+import { ExtendedResponse } from "ring-client-api/lib/rest-client";
+import strftime from "strftime"
 
 enum EventState {
   Idle,
@@ -82,65 +85,150 @@ enum EventState {
 }
 
 export class OwnRingCamera extends OwnRingDevice {
-  private readonly infoChannelId: string;
-  private readonly historyChannelId: string;
-  private readonly lightChannelId: string;
-  private readonly eventsChannelId: string;
-  private readonly snapshotChannelId: string;
-  private readonly HDsnapshotChannelId: string;
-  private readonly liveStreamChannelId: string;
-  private _ringDevice: RingCamera;
-  private lastAction: LastAction | undefined;
-  private _durationLiveStream = this._adapter.config.recordtime_livestream;
-  private _lastLightCommand = 0;
-  private _lastLiveStreamUrl = "";
-  private _lastLiveStreamDir = "";
-  private _lastLiveStreamTimestamp = 0;
-  private _lastSnapShotUrl = "";
-  private _lastSnapShotDir = "";
-  private _lastSnapshotTimestamp = 0;
-  private _snapshotCount = 0;
-  private _lastHDSnapShotUrl = "";
-  private _lastHDSnapShotDir = "";
-  private _lastHDSnapshotTimestamp = 0;
-  private _HDsnapshotCount = 0;
-  private _liveStreamCount = 0;
-  private _state = EventState.Idle;
-  private _doorbellEventActive: boolean = false;
+  private readonly infoChannelId: string
+  private readonly historyChannelId: string
+  private readonly lightChannelId: string
+  private readonly eventsChannelId: string
+  private readonly snapshotChannelId: string
+  private readonly HDsnapshotChannelId: string
+  private readonly liveStreamChannelId: string
+  private _ringDevice: RingCamera
+  private lastAction: LastAction | undefined
+  private _durationLiveStream = this._adapter.config.recordtime_livestream
+  private _lastLightCommand = 0
+  private _lastLiveStreamUrl = ""
+  private _lastLiveStreamDir = ""
+  private _lastLiveStreamTimestamp = 0
+  private _lastSnapShotUrl = ""
+  private _lastSnapShotDir = ""
+  private _lastSnapshotTimestamp = 0
+  private _snapshotCount = 0
+  private _lastHDSnapShotUrl = ""
+  private _lastHDSnapShotDir = ""
+  private _lastHDSnapshotTimestamp = 0
+  private _HDsnapshotCount = 0
+  private _liveStreamCount = 0
+  private _state = EventState.Idle
+  private _doorbellEventActive: boolean = false
 
   get lastLiveStreamDir(): string {
-    return this._lastLiveStreamDir;
+    return this._lastLiveStreamDir
   }
 
   get lastSnapShotDir(): string {
-    return this._lastSnapShotDir;
+    return this._lastSnapShotDir
   }
 
   get lastHDSnapShotDir(): string {
-    return this._lastHDSnapShotDir;
+    return this._lastHDSnapShotDir
   }
 
   get ringDevice(): RingCamera {
-    return this._ringDevice;
+    return this._ringDevice
+  }
+
+  private getDay(): string {
+    const en = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    const de = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"]
+    const ru = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
+    const pt = ["segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado", "domingo"]
+    const nl = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"]
+    const fr = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
+    const it = ["lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"]
+    const es = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
+    const pl = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"]
+    const zh = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
+
+    const dow = (new Date().getDay()+ 6) % 7
+
+    switch (this._adapter.language) {
+      case "en": return en[dow]; break
+      case "de": return de[dow]; break
+      case "ru": return ru[dow]; break
+      case "pt": return pt[dow]; break
+      case "nl": return nl[dow]; break
+      case "fr": return fr[dow]; break
+      case "it": return it[dow]; break
+      case "es": return es[dow]; break
+      case "pl": return pl[dow]; break
+      case "zh-cn": return zh[dow]; break
+    }
+    return en[dow]
+  }
+
+  private getDateFormat():string {
+    let sPattern = "/"
+    if (!this._adapter.dateFormat.includes(sPattern)) {
+      sPattern = "-"
+      if (!this._adapter.dateFormat.includes(sPattern)) {
+        sPattern = "."
+        if (!this._adapter.dateFormat.includes(sPattern))
+          return "%y/%m/%d"
+      }
+    }
+    let rDate: string = ""
+    for(const val of this._adapter.dateFormat.split(sPattern)) {
+      switch(val) {
+        case "YYYY": rDate = rDate + "%y";  break
+        case "YY":   rDate = rDate + "%y";  break
+        case "Y":    rDate = rDate + "%Y";  break
+        case "MMMM": rDate = rDate + "%B";  break
+        case "MMM":  rDate = rDate + "%b";  break
+        case "MM":   rDate = rDate + "%m";  break
+        case "M":    rDate = rDate + "%-m"; break
+        case "DD":   rDate = rDate + "%d";  break
+        case "D":    rDate = rDate + "%-d"; break
+      }
+      rDate = rDate + sPattern
+    }
+    rDate = rDate.slice(0, rDate.length - 1)
+    return rDate
   }
 
   private overlayFilter(overlay: boolean): string[] {
-    const filter = `drawtext=text=${this._ringDevice.data.description}:
-                    fontsize=20:
-                    fontcolor=white:
-                    x=(main_w-text_w-20):
-                    y=20:shadowcolor=black:
-                    shadowx=2:
-                    shadowy=2,
-                    drawtext=text='%{localtime\\:%Y-%m-%d %T}':
-                    fontsize=20:
-                    fontcolor=white:
-                    x=20:
-                    y=(main_h-text_h-20):
-                    shadowcolor=black:
-                    shadowx=2:
-                    shadowy=2`
+    const filter = `drawtext='
+                      fontsize=30:
+                      fontcolor=white:
+                      x=(main_w-text_w-20):
+                      y=20:shadowcolor=black:
+                      shadowx=2:
+                      shadowy=2:
+                      text=${this._ringDevice.data.description}',
+                    drawtext='
+                      fontsize=30:
+                      fontcolor=white:
+                      x=20:
+                      y=(main_h-text_h-20):
+                      shadowcolor=black:
+                      shadowx=2:
+                      shadowy=2:
+                      text=%{localtime\\:${this.getDay()}, ${this.getDateFormat()} %T}'`
     return overlay ? ["-vf", filter] : []
+  }
+
+  private async addText(jpg: Buffer):Promise<Buffer> {
+    const width = 640;
+    const height = 360;
+    const font_size = 15;
+    const border_dist = 10;
+
+    const text1= this._ringDevice.data.description;
+    const text2= strftime(`${this.getDay()}, ${this.getDateFormat()} %T`);
+
+    const svgText = `
+      <svg width="${width}" height="${height}">
+        <style>
+          .title { fill: white; font-size: ${font_size}px; filter: drop-shadow(2px 2px 1px rgb(0 0 0 / 0.9))}
+        </style>
+        <text x="${width-border_dist}" y="${border_dist+font_size}" text-anchor="end" class="title">${text1}</text>
+        <text x="10" y="${height-border_dist}" text-anchor="start" class="title">${text2}</text>
+      </svg>`
+
+    const svgBuffer = Buffer.from(svgText);
+
+    return Sharp(jpg)
+      .composite([{input: svgBuffer, left: 0, top: 0}])
+      .toBuffer()
   }
 
   private set ringDevice(device) {
@@ -402,7 +490,7 @@ export class OwnRingCamera extends OwnRingDevice {
       FileService.getPath(
         this._adapter.config.path_snapshot,
         this._adapter.config.filename_snapshot,
-        ++this._snapshotCount,
+        ++this._HDsnapshotCount,
         this.shortId,
         this.fullId,
         this.kind
@@ -414,38 +502,73 @@ export class OwnRingCamera extends OwnRingDevice {
       return;
     }
     FileService.deleteFileIfExistSync(fullPath, this._adapter);
+
     if (this._ringDevice.isOffline) {
       this.info(`is offline --> won't take Snapshot`);
       this.updateSnapshotRequest(false);
       return;
     }
+    /*
     const image = await this._ringDevice.getNextSnapshot({uuid: uuid}).catch((reason) => {
       if (eventBased) {
         this.warn("Taking Snapshot on Event failed. Will try again after livestream finished.");
       } else {
         this.catcher("Couldn't get Snapshot from api.", reason);
       }
-    });
-    if (!image) {
+    })
+    */
+    const image = await this._ringDevice.getNextSnapshot({force: true, uuid: uuid})
+      .then((result):Buffer & ExtendedResponse => {
+        return result
+      })
+      .catch((err):Buffer & ExtendedResponse => {
+        if (eventBased) {
+          this.warn("Taking Snapshot on Event failed. Will try again after livestream finished.");
+        } else {
+          this.catcher("Couldn't get Snapshot from api.", err);
+        }
+        return err
+      })
+
+    if (!image.buffer) {
       if (!eventBased) {
         this.warn("Could not create snapshot from image");
       }
       this.updateSnapshotRequest(false)
       return;
+    } else {
+      this.silly(`Response timestamp: ${image.responseTimestamp}, 
+                  Byte Length: ${image.byteLength},
+                  Byte Offset: ${image.byteOffset},
+                  Length: ${image.length},
+                  Time in ms: ${image.timeMillis}`)
     }
+
+    let image_txt: Buffer = image
+    if (this._adapter.config.overlay_snapshot) {
+      image_txt = await this.addText(image)
+        .then((value) => {
+          return value
+        })
+        .catch((reason) => {
+          this.catcher("Couldn't add text to Snapshot.", reason);
+          return reason
+        })
+    }
+
     if (this._lastSnapShotDir !== "" && this._adapter.config.del_old_snapshot) {
       FileService.deleteFileIfExistSync(this._lastSnapShotDir, this._adapter);
     }
     this._lastSnapShotUrl = visURL;
     this._lastSnapShotDir = fullPath;
-    this._lastSnapshotTimestamp = Date.now();
+    this._lastSnapshotTimestamp = image.timeMillis;
 
     if (visPath) {
       this.silly(`Locally storing Snapshot (Length: ${image.length})`);
-      await FileService.writeFile(visPath, image, this._adapter);
+      await FileService.writeFile(visPath, image_txt, this._adapter);
     }
     this.silly(`Writing Snapshot (Length: ${image.length}) to "${fullPath}"`);
-    await FileService.writeFile(fullPath, image, this._adapter, ()=>{
+    await FileService.writeFile(fullPath, image_txt, this._adapter, ()=>{
       this.updateSnapshotObject();
     });
     this.debug(`Done creating snapshot to ${fullPath}`);
@@ -501,7 +624,14 @@ export class OwnRingCamera extends OwnRingDevice {
     } else {
       this.silly(`HD Snapshot from livestream created`)
     }
-    const jpg = fs.readFileSync(tempPath)
+    let jpg = fs.readFileSync(tempPath)
+    if (this._adapter.config.sharpen_HDsnapshot && Number(this._adapter.config.sharpen_HDsnapshot) > 0) {
+      const sharpen  = Number(this._adapter.config.sharpen_HDsnapshot) == 1 ? undefined : { sigma: Number(this._adapter.config.sharpen_HDsnapshot)-1 }
+      jpg = await Sharp(jpg).sharpen(sharpen).toBuffer().then((value) => { return(value)}).catch((reason) => {
+        this.catcher("Couldn't sharpen HD Snapshot.", reason);
+        return (reason)
+      })
+    }
 
     // clean up
     fs.unlink(tempPath, (err) => {

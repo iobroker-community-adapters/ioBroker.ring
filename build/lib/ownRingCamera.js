@@ -22,6 +22,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OwnRingCamera = void 0;
 const rxjs_1 = require("rxjs");
@@ -31,6 +34,8 @@ const fs = __importStar(require("fs"));
 const file_service_1 = require("./services/file-service");
 const util = __importStar(require("util"));
 const ownRingDevice_1 = require("./ownRingDevice");
+const sharp_1 = __importDefault(require("sharp"));
+const strftime_1 = __importDefault(require("strftime"));
 var EventState;
 (function (EventState) {
     EventState[EventState["Idle"] = 0] = "Idle";
@@ -51,23 +56,137 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
     get ringDevice() {
         return this._ringDevice;
     }
+    getDay() {
+        const en = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+        const de = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
+        const ru = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"];
+        const pt = ["segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado", "domingo"];
+        const nl = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
+        const fr = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
+        const it = ["lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"];
+        const es = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+        const pl = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"];
+        const zh = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
+        const dow = (new Date().getDay() + 6) % 7;
+        switch (this._adapter.language) {
+            case "en":
+                return en[dow];
+                break;
+            case "de":
+                return de[dow];
+                break;
+            case "ru":
+                return ru[dow];
+                break;
+            case "pt":
+                return pt[dow];
+                break;
+            case "nl":
+                return nl[dow];
+                break;
+            case "fr":
+                return fr[dow];
+                break;
+            case "it":
+                return it[dow];
+                break;
+            case "es":
+                return es[dow];
+                break;
+            case "pl":
+                return pl[dow];
+                break;
+            case "zh-cn":
+                return zh[dow];
+                break;
+        }
+        return en[dow];
+    }
+    getDateFormat() {
+        let sPattern = "/";
+        if (!this._adapter.dateFormat.includes(sPattern)) {
+            sPattern = "-";
+            if (!this._adapter.dateFormat.includes(sPattern)) {
+                sPattern = ".";
+                if (!this._adapter.dateFormat.includes(sPattern))
+                    return "%y/%m/%d";
+            }
+        }
+        let rDate = "";
+        for (const val of this._adapter.dateFormat.split(sPattern)) {
+            switch (val) {
+                case "YYYY":
+                    rDate = rDate + "%y";
+                    break;
+                case "YY":
+                    rDate = rDate + "%y";
+                    break;
+                case "Y":
+                    rDate = rDate + "%Y";
+                    break;
+                case "MMMM":
+                    rDate = rDate + "%B";
+                    break;
+                case "MMM":
+                    rDate = rDate + "%b";
+                    break;
+                case "MM":
+                    rDate = rDate + "%m";
+                    break;
+                case "M":
+                    rDate = rDate + "%-m";
+                    break;
+                case "DD":
+                    rDate = rDate + "%d";
+                    break;
+                case "D":
+                    rDate = rDate + "%-d";
+                    break;
+            }
+            rDate = rDate + sPattern;
+        }
+        rDate = rDate.slice(0, rDate.length - 1);
+        return rDate;
+    }
     overlayFilter(overlay) {
-        const filter = `drawtext=text=${this._ringDevice.data.description}:
-                    fontsize=20:
-                    fontcolor=white:
-                    x=(main_w-text_w-20):
-                    y=20:shadowcolor=black:
-                    shadowx=2:
-                    shadowy=2,
-                    drawtext=text='%{localtime\\:%c}':
-                    fontsize=20:
-                    fontcolor=white:
-                    x=20:
-                    y=(main_h-text_h-20):
-                    shadowcolor=black:
-                    shadowx=2:
-                    shadowy=2`;
+        const filter = `drawtext='
+                      fontsize=30:
+                      fontcolor=white:
+                      x=(main_w-text_w-20):
+                      y=20:shadowcolor=black:
+                      shadowx=2:
+                      shadowy=2:
+                      text=${this._ringDevice.data.description}',
+                    drawtext='
+                      fontsize=30:
+                      fontcolor=white:
+                      x=20:
+                      y=(main_h-text_h-20):
+                      shadowcolor=black:
+                      shadowx=2:
+                      shadowy=2:
+                      text=%{localtime\\:${this.getDay()}, ${this.getDateFormat()} %T}'`;
         return overlay ? ["-vf", filter] : [];
+    }
+    async addText(jpg) {
+        const width = 640;
+        const height = 360;
+        const font_size = 15;
+        const border_dist = 10;
+        const text1 = this._ringDevice.data.description;
+        const text2 = (0, strftime_1.default)(`${this.getDay()}, ${this.getDateFormat()} %T`);
+        const svgText = `
+      <svg width="${width}" height="${height}">
+        <style>
+          .title { fill: white; font-size: ${font_size}px; filter: drop-shadow(2px 2px 1px rgb(0 0 0 / 0.9))}
+        </style>
+        <text x="${width - border_dist}" y="${border_dist + font_size}" text-anchor="end" class="title">${text1}</text>
+        <text x="10" y="${height - border_dist}" text-anchor="start" class="title">${text2}</text>
+      </svg>`;
+        const svgBuffer = Buffer.from(svgText);
+        return (0, sharp_1.default)(jpg)
+            .composite([{ input: svgBuffer, left: 0, top: 0 }])
+            .toBuffer();
     }
     set ringDevice(device) {
         this._ringDevice = device;
@@ -290,7 +409,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         if (!visURL || !visPath) {
             this.warn("Vis not available");
         }
-        const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path_snapshot, this._adapter.config.filename_snapshot, ++this._snapshotCount, this.shortId, this.fullId, this.kind);
+        const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path_snapshot, this._adapter.config.filename_snapshot, ++this._HDsnapshotCount, this.shortId, this.fullId, this.kind);
         if (!(await file_service_1.FileService.prepareFolder(dirname))) {
             this.warn(`prepare folder problem --> won't take Snapshot`);
             this.updateSnapshotRequest(false);
@@ -302,33 +421,65 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             this.updateSnapshotRequest(false);
             return;
         }
-        const image = await this._ringDevice.getNextSnapshot({ uuid: uuid }).catch((reason) => {
+        /*
+        const image = await this._ringDevice.getNextSnapshot({uuid: uuid}).catch((reason) => {
+          if (eventBased) {
+            this.warn("Taking Snapshot on Event failed. Will try again after livestream finished.");
+          } else {
+            this.catcher("Couldn't get Snapshot from api.", reason);
+          }
+        })
+        */
+        const image = await this._ringDevice.getNextSnapshot({ force: true, uuid: uuid })
+            .then((result) => {
+            return result;
+        })
+            .catch((err) => {
             if (eventBased) {
                 this.warn("Taking Snapshot on Event failed. Will try again after livestream finished.");
             }
             else {
-                this.catcher("Couldn't get Snapshot from api.", reason);
+                this.catcher("Couldn't get Snapshot from api.", err);
             }
+            return err;
         });
-        if (!image) {
+        if (!image.buffer) {
             if (!eventBased) {
                 this.warn("Could not create snapshot from image");
             }
             this.updateSnapshotRequest(false);
             return;
         }
+        else {
+            this.silly(`Response timestamp: ${image.responseTimestamp}, 
+                  Byte Length: ${image.byteLength},
+                  Byte Offset: ${image.byteOffset},
+                  Length: ${image.length},
+                  Time in ms: ${image.timeMillis}`);
+        }
+        let image_txt = image;
+        if (this._adapter.config.overlay_snapshot) {
+            image_txt = await this.addText(image)
+                .then((value) => {
+                return value;
+            })
+                .catch((reason) => {
+                this.catcher("Couldn't add text to Snapshot.", reason);
+                return reason;
+            });
+        }
         if (this._lastSnapShotDir !== "" && this._adapter.config.del_old_snapshot) {
             file_service_1.FileService.deleteFileIfExistSync(this._lastSnapShotDir, this._adapter);
         }
         this._lastSnapShotUrl = visURL;
         this._lastSnapShotDir = fullPath;
-        this._lastSnapshotTimestamp = Date.now();
+        this._lastSnapshotTimestamp = image.timeMillis;
         if (visPath) {
             this.silly(`Locally storing Snapshot (Length: ${image.length})`);
-            await file_service_1.FileService.writeFile(visPath, image, this._adapter);
+            await file_service_1.FileService.writeFile(visPath, image_txt, this._adapter);
         }
         this.silly(`Writing Snapshot (Length: ${image.length}) to "${fullPath}"`);
-        await file_service_1.FileService.writeFile(fullPath, image, this._adapter, () => {
+        await file_service_1.FileService.writeFile(fullPath, image_txt, this._adapter, () => {
             this.updateSnapshotObject();
         });
         this.debug(`Done creating snapshot to ${fullPath}`);
@@ -368,7 +519,14 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         else {
             this.silly(`HD Snapshot from livestream created`);
         }
-        const jpg = fs.readFileSync(tempPath);
+        let jpg = fs.readFileSync(tempPath);
+        if (this._adapter.config.sharpen_HDsnapshot && Number(this._adapter.config.sharpen_HDsnapshot) > 0) {
+            const sharpen = Number(this._adapter.config.sharpen_HDsnapshot) == 1 ? undefined : { sigma: Number(this._adapter.config.sharpen_HDsnapshot) - 1 };
+            jpg = await (0, sharp_1.default)(jpg).sharpen(sharpen).toBuffer().then((value) => { return (value); }).catch((reason) => {
+                this.catcher("Couldn't sharpen HD Snapshot.", reason);
+                return (reason);
+            });
+        }
         // clean up
         fs.unlink(tempPath, (err) => {
             if (err) {

@@ -51,6 +51,7 @@ class RingAdapter extends adapter_core_1.Adapter {
         super({
             ...options,
             name: "ring",
+            useFormatDate: true
         });
         this.states = {};
         this.on("ready", this.onReady.bind(this));

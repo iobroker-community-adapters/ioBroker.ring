@@ -29,6 +29,7 @@ export class RingAdapter extends Adapter {
     super({
       ...options,
       name: "ring",
+      useFormatDate: true
     });
     this.on("ready", this.onReady.bind(this));
     this.on("stateChange", this.onStateChange.bind(this));

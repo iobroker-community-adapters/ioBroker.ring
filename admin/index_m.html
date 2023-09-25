@@ -155,8 +155,15 @@
             <div class="input-field col s12 m6 l4">
                 <input id="filename_snapshot" type="text" size="30" class="value"/>
                 <label class="translate" for="filename_snapshot">Filename</label>
-                <input class="value" id="del_old_snapshot" type="checkbox"/>
-                <label for="del_old_snapshot" class="translate">Delete old one</label>
+                <tr role="row" class="input-field col s12 m6 l4">
+                    <td class="tab col s6">
+                        <input class="value" id="del_old_snapshot" type="checkbox"/>
+                        <label for="del_old_snapshot" class="translate">Delete old one</label>
+                    <td class="tab col s6">
+                        <input class="value" id="overlay_snapshot" type="checkbox"/>
+                        <label for="overlay_snapshot" class="translate">Overlay</label>
+                    </td>
+                </tr>
             </div>
         </div>
     </div>
@@ -188,6 +195,16 @@
                         <label for="overlay_HDsnapshot" class="translate">Overlay</label>
                     </td>
                 </tr>
+            </div>
+            <div class="input-field col s12 m6 l4">
+                <select id="sharpen_HDsnapshot" class="value">
+                    <option value=0 class="translate">wo</option>
+                    <option value=1 class="translate">less</option>
+                    <option value=2 class="translate">more</option>
+                    <option value=3 class="translate">much</option>
+                    <option value=4 class="translate">most</option>
+                </select>
+                <label for="sharpen_HDsnapshot" class="translate">Sharpening</label>
             </div>
         </div>
     </div>
