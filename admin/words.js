@@ -172,17 +172,17 @@ systemDictionary = {
         "zh-cn": "全文"
     },
     "Sharpening": {
-        "en": "sharpening",
-        "de": "schärfen",
-        "ru": "заточка",
-        "pt": "afiar",
-        "nl": "slijpen",
-        "fr": "aiguillage",
-        "it": "affilare",
-        "es": "afilado",
-        "pl": "ostrzyć",
-        "uk": "загартування",
-        "zh-cn": "警觉"
+        "en": "Picture sharpening",
+        "de": "Bildschärfe",
+        "ru": "Заточка изображения",
+        "pt": "Afiação de imagem",
+        "nl": "Foto slijpen",
+        "fr": "Aiguillage photo",
+        "it": "Affilare l'immagine",
+        "es": "Afilado de la imagen",
+        "pl": "Zdjęcie ostrym",
+        "uk": "Заточування зображень",
+        "zh-cn": "急诊"
     },
     "wo": {
         "en": "without",
@@ -250,17 +250,17 @@ systemDictionary = {
         "zh-cn": "最主要的是"
     },
     "StartTime": {
-        "en": "Start time",
-        "de": "Startzeit",
-        "ru": "Начало",
-        "pt": "Tempo de início",
-        "nl": "Begin de tijd",
-        "fr": "Temps de démarrage",
-        "it": "Inizio",
-        "es": "Hora de inicio",
-        "pl": "Od razu",
+        "en": "Start time in seconds",
+        "de": "Startzeit in Sekunden",
+        "ru": "Время начала в секундах",
+        "pt": "Tempo de início em segundos",
+        "nl": "Begin in seconden",
+        "fr": "Temps de démarrage en secondes",
+        "it": "Avviare il tempo in pochi secondi",
+        "es": "Hora de inicio en segundos",
+        "pl": "Czas startu w sekundach",
         "uk": "Час початку",
-        "zh-cn": "启动时间"
+        "zh-cn": "从第二期开始时间"
     },
     "Set two face auth (once)": {
         "en": "Set two face auth (once)",
