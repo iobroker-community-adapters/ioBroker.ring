@@ -249,6 +249,19 @@ systemDictionary = {
         "uk": "найпопулярніші",
         "zh-cn": "最主要的是"
     },
+    "StartTime": {
+        "en": "Start time",
+        "de": "Startzeit",
+        "ru": "Начало",
+        "pt": "Tempo de início",
+        "nl": "Begin de tijd",
+        "fr": "Temps de démarrage",
+        "it": "Inizio",
+        "es": "Hora de inicio",
+        "pl": "Od razu",
+        "uk": "Час початку",
+        "zh-cn": "启动时间"
+    },
     "Set two face auth (once)": {
         "en": "Set two face auth (once)",
         "de": "Setze Tow Face Authentification (einmal)",

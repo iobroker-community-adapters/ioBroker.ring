@@ -25,6 +25,7 @@ declare global {
       path_HDsnapshot: string
       overlay_HDsnapshot: boolean
       sharpen_HDsnapshot: 0
+      start_HDsnapshot: "0"
 
       pollsec: number
       refreshtoken: string

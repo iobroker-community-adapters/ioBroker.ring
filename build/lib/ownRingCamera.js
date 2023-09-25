@@ -148,7 +148,9 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         rDate = rDate.slice(0, rDate.length - 1);
         return rDate;
     }
-    overlayFilter(overlay, startTime = 0) {
+    overlayFilter(overlay, startTime = "0") {
+        if (startTime === undefined)
+            startTime = "0";
         const start = `00:00:0${startTime}`;
         const filter = `drawtext='
                       fontsize=30:
@@ -167,9 +169,9 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                       shadowx=2:
                       shadowy=2:
                       text=%{localtime\\:${this.getDay()}, ${this.getDateFormat()} %T}'`;
-        return overlay && startTime > 0 ? ["-ss", start, "-vf", filter] :
+        return overlay && startTime != "0" ? ["-ss", start, "-vf", filter] :
             (overlay ? ["-vf", filter] :
-                (startTime > 0 ? ["-ss", start] : []));
+                (startTime != "0" ? ["-ss", start] : []));
     }
     async addText(jpg) {
         const width = 640;
@@ -510,7 +512,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         }
         const tempPath = (await file_service_1.FileService.getTempDir(this._adapter)) + `/temp_${this.shortId}_livestream.jpg`;
         const liveCall = await this._ringDevice.streamVideo({
-            video: this.overlayFilter(this._adapter.config.overlay_HDsnapshot, 1),
+            video: this.overlayFilter(this._adapter.config.overlay_HDsnapshot, this._adapter.config.start_HDsnapshot),
             // output: ["-t", duration.toString(), "-f", "mjpeg", "-q:v", 3, "-frames:v", 1, tempPath]
             output: ["-f", "mjpeg", "-q:v", 3, "-frames:v", 1, tempPath]
         });
