@@ -9,6 +9,8 @@ import { Adapter } from "@iobroker/adapter-core";
 import { RingApiClient } from "./lib/ringApiClient";
 import path from "path";
 import { FileService } from "./lib/services/file-service";
+import schedule from "node-schedule";
+import suncalc from "suncalc"
 
 // Load your modules here, e.g.:
 // import * as fs from "fs";
@@ -17,6 +19,8 @@ export class RingAdapter extends Adapter {
   private apiClient: RingApiClient | undefined;
   public static isWindows: boolean = process.platform.startsWith("win");
   private states: { [id: string]: ioBroker.StateValue } = {};
+  private sunrise: number = 0
+  private sunset: number = 0
 
   public get absoluteInstanceDir(): string {
     return utils.getAbsoluteInstanceDataDir(this as unknown as ioBroker.Adapter);
@@ -24,18 +28,44 @@ export class RingAdapter extends Adapter {
   public get absoluteDefaultDir(): string {
     return utils.getAbsoluteDefaultDataDir();
   }
+  public get Sunrise():number {
+    return this.sunrise
+  }
+  public get Sunset():number {
+    return this.sunset
+  }
+
   public constructor(options: Partial<utils.AdapterOptions> = {}) {
     options.systemConfig = true;
     super({
       ...options,
       name: "ring",
-      useFormatDate: true
+      useFormatDate: true,
     });
     this.on("ready", this.onReady.bind(this));
     this.on("stateChange", this.onStateChange.bind(this));
     // this.on("objectChange", this.onObjectChange.bind(this));
     // this.on("message", this.onMessage.bind(this));
     this.on("unload", this.onUnload.bind(this));
+  }
+
+  private async CalcSunData():Promise<void> {
+    try {
+      this.log.debug("Run CalcSunData");
+      if (this.latitude && this.longitude) {
+        const today = new Date()
+        const sunData = suncalc.getTimes(today, this.latitude, this.longitude)
+        this.sunset = sunData.sunset.getTime()
+        this.sunrise = sunData.sunrise.getTime()
+        this.log.debug("Sunset: " + new Date(this.sunset).toLocaleString() + ", Sunrise: " + new Date(this.sunrise).toLocaleString())
+      } else {
+        this.log.error("Latitude or Longtidue not defined in System")
+      }
+    } catch (error) {
+      const eMsg = "Error in CalcSunData: " + error;
+      this.log.error(eMsg);
+      console.error(eMsg);
+    }
   }
 
   /**
@@ -45,7 +75,6 @@ export class RingAdapter extends Adapter {
     // Initialize your adapter here
     // The adapters config (in the instance object everything under the attribute "native") is accessible via
     // this.config:
-
     this.apiClient = new RingApiClient(this);
     if (!this.apiClient.validateRefreshToken()) {
       this.terminate(`Invalid Refresh Token, please follow steps provided within Readme to generate a new one`);
@@ -86,6 +115,17 @@ export class RingAdapter extends Adapter {
 
     this.log.info(`Initializing Api Client`);
     await this.apiClient.init();
+
+    this.log.info(`Get sunset and sunrise`)
+    await this.CalcSunData()
+
+    //Daily schedule somewhen from 00:00:20 to 00:00:40
+    const scheduleSeconds = Math.round(Math.random() * 20 + 20)
+    this.log.info(`Daily sun parameter calculation scheduled for 00:00:${scheduleSeconds}`);
+    schedule.scheduleJob("SunData", `${scheduleSeconds} 0 0 * * *`, async () => {
+      this.log.info(`Cronjob 'Sun parameter calculation' starts`)
+      await this.CalcSunData()
+    });
   }
 
   /**

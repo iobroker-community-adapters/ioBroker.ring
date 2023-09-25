@@ -101,16 +101,16 @@
     <div class="row">
         <div class="col s12">
             <ul class="tabs">
-                <li class="tab col s2"><a href="#tab-login"><img src="preferences-system-login.png"
+                <li class="tab col s3"><a href="#tab-login"><img src="preferences-system-login.png"
                                                                  style="width: 5%; min-width: 50px;" title="Login"
                                                                  alt="login" class="logo"></a></li>
-                <li class="tab col s2"><a href="#tab-snapshot"><img src="camera-photo-5.png"
+                <li class="tab col s3"><a href="#tab-snapshot"><img src="camera-photo-5.png"
                                                                     style="width: 5%; min-width: 50px;" title="Snapshot"
                                                                     alt="snapshot" class="logo"></a></li>
-                <li class="tab col s2"><a href="#tab-HDsnapshot"><img src="camera-photo-6.png"
+                <li class="tab col s3"><a href="#tab-HDsnapshot"><img src="camera-photo-6.png"
                                                                     style="width: 5%; min-width: 50px;" title="HD Snapshot"
                                                                     alt="HD snapshot" class="logo"></a></li>
-                <li class="tab col s2"><a href="#tab-livestream"><img src="camera-video.png"
+                <li class="tab col s3"><a href="#tab-livestream"><img src="camera-video.png"
                                                                       style="width: 5%; min-width: 50px;"
                                                                       title="Livestream" alt="livestream" class="logo"></a>
                 </li>
@@ -131,7 +131,7 @@
               <input class="value" id="twofaceauth" type="checkbox" />
               <label for="twofaceauth" class="translate">Set two face auth (once)</label>
             </div -->
-            <div class="input-field col s12 m6 l16">
+            <div class="input-field col s12 m8 l6">
                 <input id="refreshtoken" type="text" size="30" class="value"/>
                 <label class="translate" for="refreshtoken">Refreshtoken (Two Face Auth)</label>
             </div>
@@ -155,48 +155,50 @@
             <div class="input-field col s12 m6 l4">
                 <input id="filename_snapshot" type="text" size="30" class="value"/>
                 <label class="translate" for="filename_snapshot">Filename</label>
-                <tr role="row" class="input-field col s12 m6 l4">
-                    <td class="tab col s6">
-                        <input class="value" id="del_old_snapshot" type="checkbox"/>
-                        <label for="del_old_snapshot" class="translate">Delete old one</label>
-                    <td class="tab col s6">
-                        <input class="value" id="overlay_snapshot" type="checkbox"/>
-                        <label for="overlay_snapshot" class="translate">Overlay</label>
-                    </td>
-                </tr>
+                <div class="col s12 m6 l6">
+                    <input class="value" id="del_old_snapshot" type="checkbox"/>
+                    <label for="del_old_snapshot" class="translate">Delete old one</label>
+                </div>
+                <div class="col s12 m6 l6">
+                    <input class="value" id="overlay_snapshot" type="checkbox"/>
+                    <label for="overlay_snapshot" class="translate">Overlay</label>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="tab-HDsnapshot" class="col s12 page">
         <div class="row">
-            <div class="input-field col s12 m6 l4">
+            <div class="iob-text col s12">
+                <p class="translate">info</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12 m8 l4">
                 <input class="value" id="auto_HDsnapshot" type="checkbox"/>
                 <label for="auto_HDsnapshot" class="translate">Auto event</label>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12 m6 l4">
+            <div class="input-field col s12 m8 l4">
                 <input id="path_HDsnapshot" type="text" size="30" class="value"/>
                 <label class="translate" for="path_HDsnapshot">Path</label>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12 m6 l4">
+            <div class="input-field col s12 m8 l4">
                 <input id="filename_HDsnapshot" type="text" size="30" class="value"/>
                 <label class="translate" for="filename_HDsnapshot">Filename</label>
-                <tr role="row" class="input-field col s12 m6 l4">
-                    <td class="tab col s6">
-                        <input class="value" id="del_old_HDsnapshot" type="checkbox"/>
-                        <label for="del_old_HDsnapshot" class="translate">Delete old one</label>
-                    </td>
-                    <td class="tab col s6">
-                        <input class="value" id="overlay_HDsnapshot" type="checkbox"/>
-                        <label for="overlay_HDsnapshot" class="translate">Overlay</label>
-                    </td>
-                </tr>
+                <div class="col s12 m6 l6">
+                    <input class="value" id="del_old_HDsnapshot" type="checkbox"/>
+                    <label for="del_old_HDsnapshot" class="translate">Delete old one</label>
+                </div>
+                <div class="col s12 m6 l6">
+                    <input class="value" id="overlay_HDsnapshot" type="checkbox"/>
+                    <label for="overlay_HDsnapshot" class="translate">Overlay</label>
+                </div>
             </div>
-            <div class="input-field col s12 m6 l4">
+            <div class="input-field col s12 m8 l4">
                 <select id="sharpen_HDsnapshot" class="value">
                     <option value=0 class="translate">wo</option>
                     <option value=1 class="translate">less</option>
@@ -204,61 +206,60 @@
                     <option value=3 class="translate">much</option>
                     <option value=4 class="translate">most</option>
                 </select>
-                <label for="sharpen_HDsnapshot" class="translate">Sharpening</label>
+                <label class="translate" for="sharpen_HDsnapshot">Sharpening</label>
+                <input class="value" id="night_sharpen_HDsnapshot" type="checkbox"/>
+                <label class="translate" for="night_sharpen_HDsnapshot">only at Night</label>
             </div>
-            <div class="input-field col s12 m6 l4">
-                <select id="start_HDsnapshot" class="value">
-                    <option value=0 class="translate">0</option>
-                    <option value=1 class="translate">1</option>
-                    <option value=2 class="translate">2</option>
-                    <option value=3 class="translate">3</option>
-                    <option value=4 class="translate">4</option>
-                    <option value=5 class="translate">5</option>
+            <div class="input-field col s12 m8 l4">
+                <select id="contrast_HDsnapshot" class="value">
+                    <option value=0 class="translate">wo</option>
+                    <option value=1 class="translate">more</option>
+                    <option value=2 class="translate">most</option>
                 </select>
-                <label for="start_HDsnapshot" class="translate">StartTime</label>
+                <label for="contrast_HDsnapshot" class="translate">Contrast</label>
+                <input class="value" id="night_contrast_HDsnapshot" type="checkbox"/>
+                <label class="translate" for="night_contrast_HDsnapshot">only at Night</label>
             </div>
         </div>
     </div>
 
     <div id="tab-livestream" class="col s12 page">
         <div class="row">
-            <div class="input-field col s12 m6 l4">
+            <div class="input-field col s12 m8 l4">
                 <input class="value" id="auto_livestream" type="checkbox"/>
                 <label for="auto_livestream" class="translate">Auto event</label>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12 m6 l4">
+            <div class="input-field col s12 m8 l4">
                 <input class="value number" id="recordtime_auto_livestream" min="0" max="60" type="number"/>
                 <label class="translate" for="recordtime_auto_livestream">Automatic recording time in seconds</label>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12 m6 l4">
+            <div class="input-field col s12 m8 l4">
                 <input class="value number" id="recordtime_livestream" min="0" max="60" type="number"/>
                 <label class="translate" for="recordtime_livestream">Recording time in seconds</label>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12 m6 l4">
+            <div class="input-field col s12 m8 l4">
                 <input id="path_livestream" type="text" size="30" class="value"/>
                 <label class="translate" for="path_livestream">Path</label>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12 m6 l4">
+            <div class="input-field col s12 m8 l4">
                 <input id="filename_livestream" type="text" size="30" class="value"/>
                 <label class="translate" for="filename_livestream">Filename</label>
-                <tr role="row" class="input-field col s12 m6 l4">
-                    <td class="tab col s6">
-                        <input class="value" id="del_old_livestream" type="checkbox"/>
-                        <label for="del_old_livestream" class="translate">Delete old one</label>
-                    </td>
-                    <td class="tab col s6">
-                        <input class="value" id="overlay_Livestream" type="checkbox"/>
-                        <label for="overlay_Livestream" class="translate">Overlay</label>
-                    </td>
-                </tr>
+                <div class="col s12 m6 l6">
+                    <input class="value" id="del_old_livestream" type="checkbox"/>
+                    <label for="del_old_livestream" class="translate">Delete old one</label>
+                </div>
+                <div class="col s12 m6 l6">
+                    <input class="value" id="overlay_Livestream" type="checkbox"/>
+                    <label for="overlay_Livestream" class="translate">Overlay</label>
+                </div>
             </div>
         </div>
     </div>

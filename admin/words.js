@@ -48,6 +48,19 @@ systemDictionary = {
         "uk": "Цей адаптер потребує дійсного токену. Щоб створити його, слідуйте опису в чителю.",
         "zh-cn": "这种适应者需要一个有效的基础。 为产生这一趋势,在读者说明之后。."
     },
+    "info": {
+        "en": "<br>Important information!<br>The settings \"Overlaying text\", \"Picture sharpening\" and \"Picture contrast\" are time consuming (up to a few Seconds).<br>If a fast display time is important, please turn them all off.<br><br>Tip: Picture sharpening and Picture contrast working best at night.",
+        "de": "<br>Wichtige Informationen!<br>Die Einstellungen \"Überlagerungstext\", \"Bildschärfe\" und \"Bildkontrast\" sind zeitaufwendig (bis zu einigen Sekunden).<br>Wenn eine schnelle Anzeigezeit wichtig ist, bitte abschalten.<br><br>Tipp: Bildschärfe und Bildkontrast arbeiten am Besten in der Nacht.",
+        "ru": "<br>Важная информация!<br>Настройки \"Overlaying текст\", \"Заточка изображения\" и \"Рисунок контраст\" теряют время (до нескольких секунд).<br>Если быстрое время отображения важно, пожалуйста, выключите их все.<br><br>Совет: заточка изображения и контраст изображения работают лучше всего ночью.",
+        "pt": "<br>InformaÃ§Ã£o Importante!<br>As definições \"Sobreposição de texto\", \"Afiar imagem\" e \"Contraste de imagem\" são demorados (até alguns segundos).<br>Se um tempo de exibição rápido é importante, por favor, desligue todos.<br><br>Dica: Afiação de imagem e contraste de imagem que funcionam melhor à noite.",
+        "nl": "<br>Belangrijke informatie!<br>De setting \"Vertaling:, \"Picture scherp\" en \"In tegenstelling tot\" het is tijd voor een paar seconden.<br>Als een snelle tijd belangrijk is, zet ze dan allemaal uit.<br><br>Foto's slijpend en Picture contrast werkt 's nachts het beste.",
+        "fr": "<br>Informations importantes !<br>Les paramètres \"Remplacer le texte\", \"Aiguillage de la photo\" et \"Contraste visuel\" consomme du temps (jusqu'à quelques secondes).<br>Si un temps d'affichage rapide est important, veuillez les éteindre.<br><br>Astuce: Aiguillage d'image et contraste d'image fonctionne le mieux la nuit.",
+        "it": "<br>Informazioni importanti!<br>Le impostazioni \"Testo di sovrapposizione\", \"Immagine affilare\" e \"Contrasto immagine\" consumano tempo (fino a pochi secondi).<br>Se un tempo di visualizzazione veloce è importante, si prega di spegnerli tutti.<br><br>Suggerimento: Immagine affilare e Immagine contrasto funziona meglio di notte.",
+        "es": "<br>¡Información importante!<br>La configuración \"Texto superpuesto\", \"Afilado de la imagen\" y \"Contraste de imagen\" son el consumo de tiempo (hasta unos segundos).<br>Si un tiempo de visualización rápido es importante, por favor apague todos.<br><br>Consejo: Afilado de imágenes y contraste de imagen trabajando mejor por la noche.",
+        "pl": "<br>Important information!<br>Ustawienia  \"Tekst Overlaying\", \"Zdjęcie ostrym\" i \"Kontrast\" czas spędzania czasu (do kilku sekund).<br>Jeśli czas szybkiego wyświetlania jest bardzo ważny, to wszystko się odwraca.<br>Tip: ostry film i film kontrastują w nocy.<br><br>Tip: ostry film i film kontrastują w nocy.",
+        "uk": "<br>Головна!<br>Налаштування \"Налаштування тексту\", \"Заточування зображень\" і \"Фото контраст\" час споживання (до декількох секунд).<br>Якщо час швидкого відображення важливо, будь ласка, ввімкніть їх всі.<br><br>Порада: малюнок заточування і контрастність зображень найкраще працює вночі.",
+        "zh-cn": "<br>重要信息!<br>环境 \"全文\", \"B. 加剧和加剧\" A. \"形状\" 现在耗费时间(几秒)。.<br>如果快速展示时间很重要,请将其赶出。.<br><br>参与:在夜间最好地进行紧张和紧张关系。."
+    },
     "User": {
         "en": "User",
         "de": "Benutzer",
@@ -94,17 +107,17 @@ systemDictionary = {
         "zh-cn": "RING-API（默认）"
     },
     "Filename": {
-        "en": "Filename\n",
-        "de": "Dateiname\n",
-        "ru": "Имя файла\n",
-        "pt": "Nome do arquivo\n",
-        "nl": "Veldnaam\n",
-        "fr": "Nom du fichier\n",
-        "it": "Nome del file\n",
-        "es": "Nombre de archivo\n",
-        "pl": "Filename\n",
-        "uk": "Назва файлу\n",
-        "zh-cn": "导 言\n"
+        "en": "Filename",
+        "de": "Dateiname",
+        "ru": "Имя файла",
+        "pt": "Nome do arquivo",
+        "nl": "Veldnaam",
+        "fr": "Nom du fichier",
+        "it": "Nome del file",
+        "es": "Nombre de archivo",
+        "pl": "Filename",
+        "uk": "Назва файлу",
+        "zh-cn": "导 言"
     },
     "Automatic recording time in seconds": {
         "en": "Automatic recording time in seconds",
@@ -146,17 +159,17 @@ systemDictionary = {
         "zh-cn": "对活动的反应"
     },
     "Path": {
-        "en": "Path\n",
-        "de": "Pfad\n",
-        "ru": "Путь\n",
-        "pt": "Caminho\n",
-        "nl": "Path\n",
-        "fr": "Sentier\n",
-        "it": "Sentiero\n",
-        "es": "Camino\n",
-        "pl": "Path Path\n",
-        "uk": "Патент\n",
-        "zh-cn": "Path\n"
+        "en": "Path",
+        "de": "Pfad",
+        "ru": "Путь",
+        "pt": "Caminho",
+        "nl": "Path",
+        "fr": "Sentier",
+        "it": "Sentiero",
+        "es": "Camino",
+        "pl": "Path Path",
+        "uk": "Патент",
+        "zh-cn": "Path"
     },
     "Overlay": {
         "en": "Overlaying text",
@@ -249,18 +262,31 @@ systemDictionary = {
         "uk": "найпопулярніші",
         "zh-cn": "最主要的是"
     },
-    "StartTime": {
-        "en": "Start time in seconds",
-        "de": "Startzeit in Sekunden",
-        "ru": "Время начала в секундах",
-        "pt": "Tempo de início em segundos",
-        "nl": "Begin in seconden",
-        "fr": "Temps de démarrage en secondes",
-        "it": "Avviare il tempo in pochi secondi",
-        "es": "Hora de inicio en segundos",
-        "pl": "Czas startu w sekundach",
-        "uk": "Час початку",
-        "zh-cn": "从第二期开始时间"
+    "Contrast": {
+        "en": "Picture contrast",
+        "de": "Bildkontrast",
+        "ru": "Рисунок контраст",
+        "pt": "Contraste de imagem",
+        "nl": "In tegenstelling tot",
+        "fr": "Contraste visuel",
+        "it": "Contrasto immagine",
+        "es": "Contraste de imagen",
+        "pl": "Kontrast",
+        "uk": "Фото контраст",
+        "zh-cn": "A. 形状"
+    },
+    "only at Night": {
+        "en": "Active only at night.",
+        "de": "Nur nachts aktiv.",
+        "ru": "Активно только ночью.",
+        "pt": "Ativa apenas à noite.",
+        "nl": "Alleen 's nachts actief.",
+        "fr": "Active seulement la nuit.",
+        "it": "Attivo solo di notte.",
+        "es": "Activo sólo por la noche.",
+        "pl": "Działa tylko w nocy.",
+        "uk": "Активний тільки вночі.",
+        "zh-cn": "只在夜间采取行动。."
     },
     "Set two face auth (once)": {
         "en": "Set two face auth (once)",

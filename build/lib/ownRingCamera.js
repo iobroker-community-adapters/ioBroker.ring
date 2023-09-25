@@ -148,10 +148,8 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         rDate = rDate.slice(0, rDate.length - 1);
         return rDate;
     }
-    overlayFilter(overlay, startTime = "0") {
-        if (startTime === undefined)
-            startTime = "0";
-        const start = `00:00:0${startTime}`;
+    videoFilter(overlay, startTime = 0) {
+        const start = `00:00:0${startTime.toString()}`;
         const filter = `drawtext='
                       fontsize=30:
                       fontcolor=white:
@@ -169,9 +167,9 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                       shadowx=2:
                       shadowy=2:
                       text=%{localtime\\:${this.getDay()}, ${this.getDateFormat()} %T}'`;
-        return overlay && startTime != "0" ? ["-ss", start, "-vf", filter] :
+        return (overlay && startTime > 0 ? ["-ss", start, "-vf", filter] :
             (overlay ? ["-vf", filter] :
-                (startTime != "0" ? ["-ss", start] : []));
+                (startTime > 0 ? ["-ss", start] : [])));
     }
     async addText(jpg) {
         const width = 640;
@@ -375,7 +373,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         }
         const tempPath = (await file_service_1.FileService.getTempDir(this._adapter)) + `/temp_${this.shortId}_livestream.mp4`;
         const liveCall = await this._ringDevice.streamVideo({
-            video: this.overlayFilter(this._adapter.config.overlay_Livestream),
+            video: this.videoFilter(this._adapter.config.overlay_Livestream),
             output: ["-t", duration.toString(), tempPath],
         });
         await (0, rxjs_1.firstValueFrom)(liveCall.onCallEnded);
@@ -510,9 +508,19 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             this.updateHDSnapshotRequest(false);
             return;
         }
+        let night_contrast = false;
+        let night_sharpen = false;
+        if (this._adapter.Sunrise > 0 && this._adapter.Sunset > 0) {
+            const today = Date.now();
+            this.silly("Now: " + today + ", sunrise: " + this._adapter.Sunrise + ", sunset: " + this._adapter.Sunset);
+            const isNight = today < this._adapter.Sunrise || today > this._adapter.Sunset;
+            this.debug("is Night:" + isNight);
+            night_contrast = this._adapter.config.night_contrast_HDsnapshot && isNight || !this._adapter.config.night_contrast_HDsnapshot;
+            night_sharpen = this._adapter.config.night_sharpen_HDsnapshot && isNight || !this._adapter.config.night_sharpen_HDsnapshot;
+        }
         const tempPath = (await file_service_1.FileService.getTempDir(this._adapter)) + `/temp_${this.shortId}_livestream.jpg`;
         const liveCall = await this._ringDevice.streamVideo({
-            video: this.overlayFilter(this._adapter.config.overlay_HDsnapshot, this._adapter.config.start_HDsnapshot),
+            video: this.videoFilter(this._adapter.config.overlay_HDsnapshot, (night_contrast ? this._adapter.config.contrast_HDsnapshot : 0)),
             // output: ["-t", duration.toString(), "-f", "mjpeg", "-q:v", 3, "-frames:v", 1, tempPath]
             output: ["-f", "mjpeg", "-q:v", 3, "-frames:v", 1, tempPath]
         });
@@ -526,8 +534,8 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             this.silly(`HD Snapshot from livestream created`);
         }
         let jpg = fs.readFileSync(tempPath);
-        if (this._adapter.config.sharpen_HDsnapshot && Number(this._adapter.config.sharpen_HDsnapshot) > 0) {
-            const sharpen = Number(this._adapter.config.sharpen_HDsnapshot) == 1 ? undefined : { sigma: Number(this._adapter.config.sharpen_HDsnapshot) - 1 };
+        if (night_sharpen && this._adapter.config.sharpen_HDsnapshot && this._adapter.config.sharpen_HDsnapshot > 0) {
+            const sharpen = this._adapter.config.sharpen_HDsnapshot == 1 ? undefined : { sigma: this._adapter.config.sharpen_HDsnapshot - 1 };
             jpg = await (0, sharp_1.default)(jpg).sharpen(sharpen).toBuffer().then((value) => { return (value); }).catch((reason) => {
                 this.catcher("Couldn't sharpen HD Snapshot.", reason);
                 return (reason);
