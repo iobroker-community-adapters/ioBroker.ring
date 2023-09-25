@@ -148,7 +148,8 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         rDate = rDate.slice(0, rDate.length - 1);
         return rDate;
     }
-    overlayFilter(overlay) {
+    overlayFilter(overlay, startTime = 0) {
+        const start = `00:00:0${startTime}`;
         const filter = `drawtext='
                       fontsize=30:
                       fontcolor=white:
@@ -166,7 +167,9 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                       shadowx=2:
                       shadowy=2:
                       text=%{localtime\\:${this.getDay()}, ${this.getDateFormat()} %T}'`;
-        return overlay ? ["-vf", filter] : [];
+        return overlay && startTime > 0 ? ["-ss", start, "-vf", filter] :
+            (overlay ? ["-vf", filter] :
+                (startTime > 0 ? ["-ss", start] : []));
     }
     async addText(jpg) {
         const width = 640;
@@ -486,7 +489,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
     }
     async takeHDSnapshot() {
         this.silly(`${this.shortId}.takeHDSnapshot()`);
-        const duration = 0.1;
+        // const duration = 2.0;
         const { visURL, visPath } = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "HDSnapshot.jpg");
         if (!visURL || !visPath) {
             this.warn("Vis not available! Please install e.g. flot or other Vis related adapter");
@@ -507,8 +510,9 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         }
         const tempPath = (await file_service_1.FileService.getTempDir(this._adapter)) + `/temp_${this.shortId}_livestream.jpg`;
         const liveCall = await this._ringDevice.streamVideo({
-            video: this.overlayFilter(this._adapter.config.overlay_HDsnapshot),
-            output: ["-t", duration.toString(), "-f", "mjpeg", "-q:v", 3, "-frames:v", 1, tempPath]
+            video: this.overlayFilter(this._adapter.config.overlay_HDsnapshot, 1),
+            // output: ["-t", duration.toString(), "-f", "mjpeg", "-q:v", 3, "-frames:v", 1, tempPath]
+            output: ["-f", "mjpeg", "-q:v", 3, "-frames:v", 1, tempPath]
         });
         await (0, rxjs_1.firstValueFrom)(liveCall.onCallEnded);
         if (!fs.existsSync(tempPath)) {
