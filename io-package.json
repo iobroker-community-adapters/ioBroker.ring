@@ -1,12 +1,24 @@
 {
   "common": {
     "adminTab": {
+      "ignoreConfigUpdate": false,
       "singleton": true,
       "name": {
         "en": "Ring Adapter",
         "de": "Ring Adapter"
       },
-      "link": "",
+      "titleLang": {
+        "en": "Ring Adapter",
+        "de": "Ring Adapter",
+        "ru": "Ring Adapter",
+        "pt": "Ring Adapter",
+        "pl": "Ring Adapter",
+        "fr": "Ring Adapter",
+        "nl": "Ring Adapter",
+        "it": "Ring Adapter",
+        "zh-cn": "Ring Adapter"
+      },
+      "link": "/adapter/alias-manager/index_m.html?instance=0&noFooter",
       "fa-icon": "info"
     },
     "authors": [

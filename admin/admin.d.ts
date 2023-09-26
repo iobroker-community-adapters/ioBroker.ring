@@ -48,7 +48,11 @@ interface ioBrokerSocket {
 		pattern: string,
 		callback?: (err?: string) => void | Promise<void>,
 	): void;
-
+	emit(
+		command: "getObject",
+		id: string,
+		callback?: (err: string | undefined, result?: ioBroker.State) => void | Promise<void>,
+    ): void;
 	emit(
 		event: "getObjectView",
 		view: "system",
@@ -61,6 +65,7 @@ interface ioBrokerSocket {
 	): void;
 	emit(
 		event: "getStates",
+		pattern: string,
 		callback: (
 			err: string | undefined,
 			result?: Record<string, any>,
