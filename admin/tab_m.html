@@ -6,17 +6,8 @@
         <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
         <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
         <script type="text/javascript" src="../../js/translate.js"></script>
-        <script type="text/javascript" src="adapter-settings.js"></script>
         <script type="text/javascript" src="../../lib/js/materialize.js"></script>
         <script type="text/javascript" src="words.js"></script>
-        <style>
-                .m .col .select-wrapper + label {
-                        top: -26px;
-                }
-                .m span{
-                        font-size: 0.9em;
-                }
-        </style>
         <!-- Load own styles and scripts-->
         <link rel="stylesheet" type="text/css" href="style.css" />
         <link rel="stylesheet" type="text/css" href="tab_m.css" />
@@ -40,31 +31,7 @@
                 </div>
             </div>
             <!-- Ring Informations -->
-            <div class="row" style="padding: 2px;">
-                <h6 class="translate title" style="background-color:#174475; font-size: 0.9rem; border-radius: 4px;">Actual outputs</h6>
-            </div>
-            <div class="row">
-                <div class="col s12 m12 l4">
-                    <h5 class="center blue-text text-darken-2">Snapshot</h5>
-                    <a href="#snapshot">
-                        <img src="http://192.168.50.59:8082/ring.0/ring_0_cocoa_308343825_Snapshot.jpg" alt="Snapshot" width="100%">
-                    </a>
-                </div>
-                <div class="col s12 m12 l4">
-                    <h5 class="center blue-text text-darken-2">HD Snapshot</h5>
-                    <a href="#HDsnapshot">
-                        <img src="http://192.168.50.59:8082/ring.0/ring_0_cocoa_308343825_HDSnapshot.jpg" alt="HD Snapshot" width="100%">
-                    </a>
-                </div>
-                <div class="col s12 m12 l4">
-                    <h5 class="center blue-text text-darken-2">Livestream</h5>
-                    <a href="#lifestream">
-                        <video controls="true" width="100%" alt="Livestream">   
-                            <source src="http://192.168.50.59:8082/ring.0/ring_0_cocoa_308343825_Livestream.mp4" type="video/mp4"/>  
-                         </video>
-                    </a>
-                </div>
-            </div>
+            <div id="camera 0" class="row" style="padding: 10px;"></div>
         </div>
     </body>
 </html>

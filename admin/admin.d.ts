@@ -55,6 +55,12 @@ interface ioBrokerSocket {
     callback?: (err: string | undefined, result?: ioBroker.State) => void | Promise<void>,
   ): void;
   emit(
+    command: "getForeignObjects",
+    pattern: string,
+    type: string,
+    callback?: (err: string | undefined, objects?: ioBroker.State) => void | Promise<void>,
+  ): void;
+  emit(
     event: "getObjectView",
     view: "system",
     type: "device",

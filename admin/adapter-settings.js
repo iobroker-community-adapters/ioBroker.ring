@@ -12,9 +12,6 @@ var query  = (window.location.search || '').replace(/^\?/, '').replace(/#.*$/, '
 var args   = {};
 var theme  = null;
 
-console.log("************ query = " + query)
-console.log("************ href  = " + window.location.href)
-
 // parse parameters
 query.trim().split('&').filter(function (t) {return t.trim();}).forEach(function (b, i) {
     const parts = b.split('=');

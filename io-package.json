@@ -15,7 +15,7 @@
         "uk": "Кільковий адаптер",
         "zh-cn": "导 言"
       },
-      "link": "%web_protocol%://%ip%:%web_port%/index.html?noFooter=true&react=false&instance=%instance%",
+      "link": "/adapter/alias-manager/tab_m.html?noFooter=true&instance=0",
       "fa-icon": "info"
     },
     "authors": [
