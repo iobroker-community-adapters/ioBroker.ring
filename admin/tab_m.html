@@ -1,19 +1,23 @@
 <html style="padding: 0%"> <!-- padding only for temp border added-->
     <head>
-        <meta name="viewport" content="width = device-width, initial-scale = 1">
-        <!-- Load ioBroker scripts and styles-->
-        <link rel="stylesheet" type="text/css" href="../../css/adapter.css"/>
         <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
+        <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
 
         <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
-        <script type="text/javascript" src="../../lib/js/socket.io.js"></script>
-        <script type="text/javascript" src="../../lib/js/materialize.js"></script>
-        
+        <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
         <script type="text/javascript" src="../../js/translate.js"></script>
         <script type="text/javascript" src="adapter-settings.js"></script>
-        
-        <!-- Load own styles and scripts-->
+        <script type="text/javascript" src="../../lib/js/materialize.js"></script>
         <script type="text/javascript" src="words.js"></script>
+        <style>
+                .m .col .select-wrapper + label {
+                        top: -26px;
+                }
+                .m span{
+                        font-size: 0.9em;
+                }
+        </style>
+        <!-- Load own styles and scripts-->
         <link rel="stylesheet" type="text/css" href="style.css" />
         <link rel="stylesheet" type="text/css" href="tab_m.css" />
         <script type="text/javascript" src="tab_m.js"></script>

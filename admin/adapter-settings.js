@@ -12,16 +12,12 @@ var query  = (window.location.search || '').replace(/^\?/, '').replace(/#.*$/, '
 var args   = {};
 var theme  = null;
 
-console.log("********** socket: " + socket)
-console.log("********** query: " + query)
-
+console.log("************ query = " + query)
+console.log("************ href  = " + window.location.href)
 
 // parse parameters
 query.trim().split('&').filter(function (t) {return t.trim();}).forEach(function (b, i) {
     const parts = b.split('=');
-
-    console.log("********** parts: " + parts)
-
     if (!i && parts.length === 1 && !isNaN(parseInt(b, 10))) {
         args.instance = parseInt(b,  10);
     }
@@ -40,8 +36,8 @@ query.trim().split('&').filter(function (t) {return t.trim();}).forEach(function
 });
 
 var isTab    = !!window.location.pathname.match(/tab(_m)?\.html/);
-var instance = args.instance;
-var noFooter = args.noFooter;
+var instance = 0 // args.instance;
+var noFooter = true // args.noFooter;
 var common   = null; // common information of adapter
 var host     = null; // host object on which the adapter runs
 var changed  = false;

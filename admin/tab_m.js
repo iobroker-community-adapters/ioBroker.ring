@@ -2,20 +2,18 @@
 // Please visit https://github.com/simatec/ioBroker.backitup for licence-agreement and further information
 
 //Settings
-var $dialogCommand = null;
-var $dialogDownload = null;
-var $output = null;
-var $dialogCommandProgress;
-var lastMessage = '';
-var storageTyp = '';
-var restoreIfWait = 5000;
+var $dialogCommand = null
+var $dialogDownload = null
+var $output = null
+var $dialogCommandProgress
+var lastMessage = ''
+var storageTyp = ''
+var restoreIfWait = 5000
 
-Test();
 console.log("****************** TEST ********************");
-
+Test();
 
 function initDialog() {
-    
     $dialogCommand = $('#dialog-command');
     $output = $dialogCommand.find('#stdout');
     /*
@@ -185,45 +183,7 @@ function load(settings, onChange) {
                     } else if (settings.ccuEnabled) {
                         $('.btn-ccu').removeClass('disabled');
                     }
-                } else
-                    if (id === 'backitup.' + instance + '.oneClick.iobroker') {
-                        if (state && state.val) {
-                            $('.btn-iobroker').addClass('disabled');
-                        } else if (settings.minimalEnabled) {
-                            $('.btn-iobroker').removeClass('disabled');
-                        }
-                    } else
-                        if (id === 'system.adapter.backitup.' + instance + '.alive') {
-                            if (state && state.val && settings.ccuEnabled) {
-                                $('.btn-ccu').removeClass('disabled');
-                            } else {
-                                $('.btn-ccu').addClass('disabled');
-                            }
-
-                            if (state && state.val && settings.minimalEnabled) {
-                                $('.btn-iobroker').removeClass('disabled');
-                            } else {
-                                $('.btn-iobroker').addClass('disabled');
-                            }
-                        } else
-                            if (id === 'backitup.' + instance + '.output.line') {
-                                if (state && state.val && state.val !== lastMessage) {
-                                    lastMessage = state.val;
-                                    var text = $output.val();
-                                    $output.val(text + '\n' + state.val);
-                                    if (state.val.match(/^\[EXIT]/)) {
-                                        var code = state.val.match(/^\[EXIT] ([-\d]+)/);
-                                        $dialogCommandProgress.hide();
-                                        $dialogCommand.find('.progress-dont-close').addClass('disabled');
-                                        if ($dialogCommand.find('.progress-dont-close input').prop('checked') &&
-                                            (!code || code[1] === '0')) {
-                                            setTimeout(function () {
-                                                $dialogCommand.modal('close');
-                                            }, 1500);
-                                        }
-                                    }
-                                }
-                            }
+                } 
             });
 
             /*
@@ -233,12 +193,12 @@ function load(settings, onChange) {
             */
             // socket.emit('subscribeStates', 'backitup.' + instance + '.*');
             // socket.emit('subscribeStates', 'system.adapter.backitup.' + instance + '.alive');
-            /*
+            
             socket.on('reconnect', function () {
-                socket.emit('subscribeStates', 'backitup.' + instance + '.*');
-                socket.emit('subscribeStates', 'system.adapter.backitup.' + instance + '.alive');
+                socket.emit('subscribeStates', 'ring.' + instance + '.*');
+                socket.emit('subscribeStates', 'system.adapter.ring.' + instance + '.alive');
             });
-            */
+            
 
             $('.do-list').removeClass('disabled').on('click', function () {
                 /* 
@@ -496,35 +456,6 @@ function load(settings, onChange) {
     M.updateTextFields();  // function Materialize.updateTextFields(); to reinitialize all the Materialize labels on the page if you are dynamically adding inputs.
 
     initDialog();
-}
-
-function backupHimSelf() {
-    /*
-    socket.emit('getObject', `system.adapter.${adapter}.${instance}`, function (err, obj) {
-        if (!err && obj) {
-            // remove unimportant information
-            if (obj.common.news) {
-                delete obj.common.news;
-            }
-            if (obj.common.titleLang) {
-                delete obj.common.titleLang;
-            }
-            if (obj.common.desc) {
-                delete obj.common.desc;
-            }
-
-            var el = document.createElement('a');
-
-            el.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(obj, null, 2)));
-            el.setAttribute('download', `${obj._id}.json`);
-
-            el.style.display = 'none';
-            document.body.appendChild(el);
-            el.click();
-            document.body.removeChild(el);
-        }
-    });
-    */
 }
 
 function restoreHimSelf() {

@@ -1,24 +1,21 @@
 {
   "common": {
     "adminTab": {
-      "ignoreConfigUpdate": false,
       "singleton": true,
       "name": {
         "en": "Ring Adapter",
-        "de": "Ring Adapter"
-      },
-      "titleLang": {
-        "en": "Ring Adapter",
         "de": "Ring Adapter",
-        "ru": "Ring Adapter",
-        "pt": "Ring Adapter",
-        "pl": "Ring Adapter",
-        "fr": "Ring Adapter",
+        "ru": "Кольцо адаптер",
+        "pt": "Adaptador de anel",
         "nl": "Ring Adapter",
-        "it": "Ring Adapter",
-        "zh-cn": "Ring Adapter"
+        "fr": "Adaptateur de réglage",
+        "it": "Adattatore di anelli",
+        "es": "Adaptador de anillos",
+        "pl": "Pierścień",
+        "uk": "Кільковий адаптер",
+        "zh-cn": "导 言"
       },
-      "link": "/adapter/alias-manager/index_m.html?instance=0&noFooter",
+      "link": "%web_protocol%://%ip%:%web_port%/index.html?noFooter=true&react=false&instance=%instance%",
       "fa-icon": "info"
     },
     "authors": [
