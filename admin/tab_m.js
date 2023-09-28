@@ -1,6 +1,6 @@
 "use strict";
 //Settings
-// var socket = io.connect('/', {path: '/socket.io'});
+var socket = io.connect('/', {path: '/socket.io'});
 // console.log("****************** TEST ********************");
 // console.log("************ href  = " + window.location.href)
 AddCams();
