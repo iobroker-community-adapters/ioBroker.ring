@@ -1,9 +1,8 @@
 "use strict";
-//Settings
-var socket = io.connect('/', {path: '/socket.io'});
-// console.log("****************** TEST ********************");
-// console.log("************ href  = " + window.location.href)
-AddCams();
+// var socket = io.connect('/', {path: '/socket.io'})   // not needed, via adapter-settings
+
+AddCams()
+
 function asyncEmit(command, data1 = "", data2 = "") {
     return new Promise(function (resolve, reject) {
         if (data2 !== "")
@@ -22,6 +21,7 @@ function asyncEmit(command, data1 = "", data2 = "") {
             });
     });
 }
+
 async function AddCams() {
     const devs = await asyncEmit("getForeignObjects", "ring.0.cocoa*", "device")
         .then((result) => { return result; })

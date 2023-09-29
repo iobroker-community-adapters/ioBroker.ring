@@ -35,7 +35,7 @@ systemDictionary = {
         "es": "en el adaptador de guardar se reinicia con nueva configuración de inmediato",
         "pl": "on save adapter restarts with new config immediately"
     },
-    "ringdescription": {
+    "ring-description": {
         "en": "This adapter needs a valid token. To generate it, follow the description in the readme.",
         "de": "Dieser Adapter benötigt einen gültigen Token. Um es zu erzeugen, folgen Sie der Beschreibung im Readme.",
         "ru": "Этот адаптер нужен действительный токен. Чтобы сгенерировать его, следуйте описанию в читаю.",
@@ -105,6 +105,32 @@ systemDictionary = {
         "es": "RING-API (por defecto)",
         "pl": "RING-API (domyślnie)",
         "zh-cn": "RING-API（默认）"
+    },
+    "ring-access": {
+        "en": "Access your Ring cameras and doorbell",
+        "de": "Zugriff auf Ihre Ring-Kameras und Türklingel",
+        "ru": "Доступ к вашим Кольцам и дверным звонкам",
+        "pt": "Acesse suas câmeras Ring e campainha",
+        "nl": "Beschuldig je Ring camera's en deurbel",
+        "fr": "Accédez à vos caméras Ring et à votre porte",
+        "it": "Accedere alle telecamere e al campanello",
+        "es": "Accede a tus cámaras de anillo y timbre",
+        "pl": "Dostęp do kamery Pierścień i drzwi dzwonów",
+        "uk": "Доступ до камери та дверної панелі",
+        "zh-cn": "进入你的摄像机和大门bell"
+    },
+    "ring-adapter": {
+        "en": "Ring Adapter",
+        "de": "Ring Adapter",
+        "ru": "Кольцо адаптер",
+        "pt": "Adaptador de anel",
+        "nl": "Ring Adapter",
+        "fr": "Adaptateur de réglage",
+        "it": "Adattatore di anelli",
+        "es": "Adaptador de anillos",
+        "pl": "Pierścień",
+        "uk": "Кільковий адаптер",
+        "zh-cn": "导 言"
     },
     "Filename": {
         "en": "Filename",

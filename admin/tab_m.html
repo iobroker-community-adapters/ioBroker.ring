@@ -2,22 +2,28 @@
     <head>
         <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
         <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
-
         <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
         <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
         <script type="text/javascript" src="../../js/translate.js"></script>
         <script type="text/javascript" src="../../lib/js/materialize.js"></script>
+        <script type="text/javascript" src="../../js/adapter-settings.js"></script>
         <script type="text/javascript" src="words.js"></script>
         <!-- Load own styles and scripts-->
         <script type="text/javascript" src="tab_m.js"></script>
+
+        <script type="text/javascript">
+            // Dummies for adapter-settings with noFooter
+            function load(settings, onChange) {}
+            function save(callback) {}
+        </script>
     </head>
     <body>
         <div class="m adapter-container">
             <!-- Header -->
             <div class="row col s12 m8 l4" style="padding: 5px; background-color:#174475; color:#eceef0; border-radius: 4px">
                 <img class="brand-logo left" src="ring.png" >
-                <h5 class="translate">Ring Adapter</h5>
-                <h8 class="translate">Access your Ring cameras and Doorbells</h8>
+                <h5 class="translate">ring-adapter</h5>
+                <h8 class="translate">ring-access</h8>
                 <a class="right btn-floating btn-small waves-effect waves-light" title="Readme" href="https://github.com/iobroker-community-adapters/ioBroker.ring/blob/master/README.md" target="_blank" rel="noreferrer">
                     <i class="material-icons">help</i>
                 </a>
