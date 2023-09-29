@@ -132,6 +132,45 @@ systemDictionary = {
         "uk": "Кільковий адаптер",
         "zh-cn": "导 言"
     },
+    "Livestream": {
+        "en": "Live stream",
+        "de": "Live-Stream",
+        "ru": "Прямой эфир",
+        "pt": "Córrego ao vivo",
+        "nl": "Livestream",
+        "fr": "Live stream",
+        "it": "Live streaming",
+        "es": "Transmisión en vivo",
+        "pl": "Live stream",
+        "uk": "Живий потік",
+        "zh-cn": "流动"
+    },
+    "Snapshot": {
+        "en": "Snapshot",
+        "de": "Schnappschuss",
+        "ru": "Снимки",
+        "pt": "Instantâneo",
+        "nl": "Snapshot",
+        "fr": "Snapshot",
+        "it": "Istantanea",
+        "es": "Captura",
+        "pl": "Snapshot",
+        "uk": "Знімок екрана",
+        "zh-cn": "绑架"
+    },
+    "HDSnapshot": {
+        "en": "HD Snapshot",
+        "de": "HD Schnappschuss",
+        "ru": "HD Снимки",
+        "pt": "Instantâneo de HD",
+        "nl": "HD Snapshot",
+        "fr": "HD Snapshot",
+        "it": "Istantanee HD",
+        "es": "HD Snapshot",
+        "pl": "HD Snapshot",
+        "uk": "HD знімок",
+        "zh-cn": "人权观察社"
+    },
     "Filename": {
         "en": "Filename",
         "de": "Dateiname",

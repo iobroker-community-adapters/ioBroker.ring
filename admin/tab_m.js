@@ -29,15 +29,13 @@ async function AddCams() {
     // console.log("Devices: " + JSON.stringify(devs))
     let cam = 0;
     // eslint-disable-next-line prefer-const
-    let x = "";
-    // for(let x=0; x<3; x++)  // for testing
     for (const dev_prop in devs) {
         const camera = devs[dev_prop].common.name.split('("').pop().slice(0, -2);
         let elem = document.getElementById("camera " + cam);
         cam++;
         elem.outerHTML +=
             '<div id="camera ' + cam + '" class="row" style="padding: 2px;">' +
-                '<string class="col s12 title center" style="padding: 5px; background-color:#174475; font-size: 1.9rem; border-radius: 4px">' + camera + x + "</string>" +
+                '<string class="col s12 title center" style="padding: 5px; background-color:#174475; font-size: 1.9rem; border-radius: 4px">' + camera + "</string>" +
                 "</div>";
         elem = document.getElementById("camera " + cam);
         const media = await asyncEmit("getStates", devs[dev_prop]._id + ".*.url")
@@ -48,15 +46,16 @@ async function AddCams() {
             const type = media[media_prop].val.split("_").pop().split(".")[1];
             elem.innerHTML +=
                 '<div class="col s12 m12 l4">' +
-                    '<h5 class="center blue-text text-darken-2">' + title + x + "</h5>" +
+                    '<h5 class="translate center blue-text text-darken-2">' + title + '</h5>' +
                     '<a href="#' + title + '">' +
                     (type === "jpg" ?
-                        '<img src="' + media[media_prop].val + '" alt="' + title + x + '" width="100%">' :
+                        '<img src="' + media[media_prop].val + '" alt="' + title + '" width="100%">' :
                         '<video controls="true" width="100%" alt="' + title + '">' +
                             '<source src="' + media[media_prop].val + '" type="video/mp4"/>' +
-                            "</video>") +
-                    "</a\>" +
-                    "</div\>";
+                        '</video>') +
+                    '</a\>' +
+                    '</div\>';
         }
     }
+    translateAll()
 }

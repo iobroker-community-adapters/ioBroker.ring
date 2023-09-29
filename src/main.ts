@@ -55,8 +55,8 @@ export class RingAdapter extends Adapter {
       if (this.latitude && this.longitude) {
         const today = new Date()
         const sunData = suncalc.getTimes(today, this.latitude, this.longitude)
-        this.sunset = sunData.sunset.getTime()
-        this.sunrise = sunData.sunrise.getTime()
+        this.sunset = sunData.night.getTime()     // night is really dark, sunset is to early
+        this.sunrise = sunData.nightEnd.getTime() // same here vice versa
         this.log.debug("Sunset: " + new Date(this.sunset).toLocaleString() + ", Sunrise: " + new Date(this.sunrise).toLocaleString())
       } else {
         this.log.error("Latitude or Longtidue not defined in System")

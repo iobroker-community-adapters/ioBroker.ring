@@ -39,11 +39,11 @@
 	"include": [
 		"src/**/*.ts",
 		"admin/**/*.ts",
-		"admin/**/*.tsx",
+		"admin/**/*.tsx"
 	],
 	"exclude": [
 		"build/**",
 		"node_modules/**",
-		"admin/**/*.js"
+		"admin/**/*.js",
 	]
 }

@@ -6,5 +6,6 @@
 		// It should be at either on of these paths:
 		"../lib/adapter-config.d.ts", // JS
 		"../src/lib/adapter-config.d.ts", // TS
+		"./tab_m.js" // JS
 	]
 }
