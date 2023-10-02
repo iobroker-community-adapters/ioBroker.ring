@@ -1,16 +1,19 @@
 <html style="padding: 0%"> <!-- padding only for temp border added-->
     <head>
-        <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
-        <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
+        <!-- Load ioBroker scripts and styles-->
         <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
         <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
-        <script type="text/javascript" src="../../js/translate.js"></script>
+     
+        <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">        
         <script type="text/javascript" src="../../lib/js/materialize.js"></script>
+        
+        <link rel="stylesheet" type="text/css" href="../../css/adapter.css"/>
         <script type="text/javascript" src="../../js/adapter-settings.js"></script>
-        <script type="text/javascript" src="words.js"></script>
+        <script type="text/javascript" src="../../js/translate.js"></script>
         <!-- Load own styles and scripts-->
+        <link rel="stylesheet" type="text/css" href="style.css"/>
+        <script type="text/javascript" src="words.js"></script>
         <script type="text/javascript" src="tab_m.js"></script>
-
         <script type="text/javascript">
             // Dummies for adapter-settings with noFooter
             function load(settings, onChange) {}
@@ -20,16 +23,16 @@
     <body>
         <div class="m adapter-container">
             <!-- Header -->
-            <div class="row col s12 m8 l4" style="padding: 5px; background-color:#174475; color:#eceef0; border-radius: 4px">
+            <div class="row" style="padding: 5px; background-color:#174475; color:#eceef0; border-radius: 40px">
                 <img class="brand-logo left" src="ring.png" >
                 <h5 class="translate">ring-adapter</h5>
                 <h8 class="translate">ring-access</h8>
-                <a class="right btn-floating btn-small waves-effect waves-light" title="Readme" href="https://github.com/iobroker-community-adapters/ioBroker.ring/blob/master/README.md" target="_blank" rel="noreferrer">
+                <a class="btn-floating right btn-small waves-effect waves-light" title="Readme" href="https://github.com/iobroker-community-adapters/ioBroker.ring/blob/master/README.md" target="_blank" rel="noreferrer">
                     <i class="material-icons">help</i>
                 </a>
             </div>
             <!-- Ring Informations -->
             <div id="camera 0" class="row" style="padding: 10px;"></div>
-        </div>
+         </div>
     </body>
 </html>

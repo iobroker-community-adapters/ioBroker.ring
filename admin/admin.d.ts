@@ -89,6 +89,13 @@ interface ioBrokerSocket {
     state: unknown,
     callback: (err: string | undefined, result?: any) => void,
   ): void;
+  emit(
+    event: "readDir",
+    _adapter: string,
+    dirName: string,
+    options?: object,
+    callback: (err: string | undefined, files: object[]) => void,
+  ): void;
 
   on(event: "objectChange", handler: ioBroker.ObjectChangeHandler): void;
   on(event: "stateChange", handler: ioBroker.StateChangeHandler): void;
