@@ -322,12 +322,9 @@ export class OwnRingCamera extends OwnRingDevice {
           this._adapter.log.debug(`Get Snapshot request for ${this.shortId} to value ${targetVal}`);
           if (targetVal) {
             await this.takeSnapshot().catch((reason) => {
-              this.updateSnapshotRequest(true);
+              this.updateSnapshotRequest();
               this.catcher("Couldn't retrieve Snapshot.", reason);
             })
-          } else {
-            this.updateSnapshotRequest(true);
-            this.warn(`Get Snapshot request for ${this.shortId} failed!`);
           }
         } else {
           this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
@@ -339,12 +336,9 @@ export class OwnRingCamera extends OwnRingDevice {
           this._adapter.log.debug(`Get HDSnapshot request for ${this.shortId} to value ${targetVal}`);
           if (targetVal) {
             await this.takeHDSnapshot().catch((reason) => {
-              this.updateHDSnapshotRequest(true);
+              this.updateHDSnapshotRequest();
               this.catcher("Couldn't retrieve HDSnapshot.", reason);
             })
-          } else {
-            this.updateHDSnapshotRequest(true);
-            this.warn(`Get HDSnapshot request for ${this.shortId} failed!`);
           }
         } else {
           this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
@@ -356,12 +350,9 @@ export class OwnRingCamera extends OwnRingDevice {
           this._adapter.log.debug(`Get Livestream request for ${this.shortId} to value ${targetVal}`);
           if (targetVal) {
             await this.startLivestream().catch((reason) => {
-              this.updateLivestreamRequest(true);
+              this.updateLivestreamRequest();
               this.catcher("Couldn't retrieve Livestream.", reason);
             })
-          } else {
-            this.updateLivestreamRequest(true);
-            this.warn(`Get Livestream request for ${this.shortId} failed!`);
           }
         } else if (stateID === STATE_ID_LIVESTREAM_DURATION) {
           const targetVal: number = isNaN(state.val as number) ? 20 : state.val as number;
