@@ -171,6 +171,19 @@ systemDictionary = {
         "uk": "HD знімок",
         "zh-cn": "人权观察社"
     },
+    "ChooseDate": {
+        "en": "Please choose a date",
+        "de": "Bitte wählen Sie ein Datum",
+        "ru": "Выберите дату",
+        "pt": "Por favor, escolha uma data",
+        "nl": "Kies alsjeblieft een date",
+        "fr": "Veuillez choisir une date",
+        "it": "Si prega di scegliere una data",
+        "es": "Por favor elija una fecha",
+        "pl": "Wybieram datę",
+        "uk": "Будь ласка, оберіть дату",
+        "zh-cn": "请选择日期"
+    },
     "Filename": {
         "en": "Filename",
         "de": "Dateiname",

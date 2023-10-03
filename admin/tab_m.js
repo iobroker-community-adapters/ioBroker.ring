@@ -83,22 +83,28 @@ async function AddCams() {
                 }
 
                 const inp = document.createElement("div")
-                inp.className = 'input-field col s12 m12 l6'
+                inp.className = 'input-field col s12 m12 l12'
 
                 const sel = document.createElement("select")
                 sel.id = "#inp" + title
                 sel.className = 'value'
                 
+                sel.options.add(new Option(translateWord("ChooseDate"), ""))
                 for (const e of ml)
                     sel.options.add(new Option(new Date(Number(e.split("_").pop(0).split(".")[0])).toLocaleString(), e))
 
                 sel.addEventListener("change", (event)=>{
                     // console.log("********* Event with id " + "#inp" + title + " fired: " + event.target.value + ", device = " + dev)
-                    const media = document.getElementById("#media_" + dev + '_' + title)
-                    media.setAttribute("src", 'http://' + location.hostname + ':8082/ring.' + instance + '/' + dev + '/' + event.target.value)
-                    if (type === "mp4") {
-                        media.load()
-                        media.play()
+                    const med = document.getElementById("#media_" + dev + '_' + title)
+                    let source = ""
+                    if (event.target.value === "") // back to default
+                        source = media[media_prop].val
+                    else
+                        source = 'http://' + location.hostname + ':8082/ring.' + instance + '/' + dev + '/' + event.target.value
+                    med.setAttribute("src", source)
+                    if (type === "mp4" && event.target.value !== "") {
+                        med.load()
+                        med.play()
                     }
                 })
                 inp.appendChild(sel)

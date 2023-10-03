@@ -272,13 +272,9 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                     this._adapter.log.debug(`Get Snapshot request for ${this.shortId} to value ${targetVal}`);
                     if (targetVal) {
                         await this.takeSnapshot().catch((reason) => {
-                            this.updateSnapshotRequest(true);
+                            this.updateSnapshotRequest();
                             this.catcher("Couldn't retrieve Snapshot.", reason);
                         });
-                    }
-                    else {
-                        this.updateSnapshotRequest(true);
-                        this.warn(`Get Snapshot request for ${this.shortId} failed!`);
                     }
                 }
                 else {
@@ -291,13 +287,9 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                     this._adapter.log.debug(`Get HDSnapshot request for ${this.shortId} to value ${targetVal}`);
                     if (targetVal) {
                         await this.takeHDSnapshot().catch((reason) => {
-                            this.updateHDSnapshotRequest(true);
+                            this.updateHDSnapshotRequest();
                             this.catcher("Couldn't retrieve HDSnapshot.", reason);
                         });
-                    }
-                    else {
-                        this.updateHDSnapshotRequest(true);
-                        this.warn(`Get HDSnapshot request for ${this.shortId} failed!`);
                     }
                 }
                 else {
@@ -310,13 +302,9 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                     this._adapter.log.debug(`Get Livestream request for ${this.shortId} to value ${targetVal}`);
                     if (targetVal) {
                         await this.startLivestream().catch((reason) => {
-                            this.updateLivestreamRequest(true);
+                            this.updateLivestreamRequest();
                             this.catcher("Couldn't retrieve Livestream.", reason);
                         });
-                    }
-                    else {
-                        this.updateLivestreamRequest(true);
-                        this.warn(`Get Livestream request for ${this.shortId} failed!`);
                     }
                 }
                 else if (stateID === constants_1.STATE_ID_LIVESTREAM_DURATION) {
