@@ -118,7 +118,7 @@ async function AddCams() {
                         source = media[media_prop].val
                     else
                         // source = 'http://' + location.hostname + ':8082/ring.' + instance + '/' + dev + '/' + event.target.value
-                        source = 'http://openwrt-iobroker:8082/ring.0/cocoa_308343825/' + event.target.value
+                        source = 'http://192.168.50.15:8082/ring.0/cocoa_308343825/' + event.target.value
                     if (type === "jpg") {
                         medm.src = source
                     } else {
