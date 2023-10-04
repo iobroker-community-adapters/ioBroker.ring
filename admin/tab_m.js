@@ -69,20 +69,23 @@ async function AddCams() {
             if (type === "jpg") {
                 medm = document.createElement("img")
                 medm.src = media[media_prop].val
-                medm.addEventListener("click", ()=>{ medm.requestFullscreen() })
-            } else {
+                medm.style = "max-width: 100%"
+                medm.alt = title
+                medm.addEventListener("click", ()=>{ medm.requestFullscreen() }) // works not on ios :-()
+            } else { // mp4
                 medm = document.createElement("video")
                 medm.playsInline = true
                 medm.preload = "auto"
                 medm.autoplay = false
                 medm.controls = true
+                medm.style = "max-width: 100%"
+                medm.alt = title
                 medmsrc = document.createElement("source")
                 medmsrc.src =  media[media_prop].val
                 medmsrc.type = 'video/mp4'
                 medm.appendChild(medmsrc)
+                medm.load()
             }
-            medm.style = "max-width: 100%"
-            medm.alt = title
             med.appendChild(medm)
             let ml
             if (type === "jpg") {
@@ -124,13 +127,6 @@ async function AddCams() {
                         medmsrc.src = source
                         medm.load()
                     } 
-                    // medm.setAttribute("src", source)
-                    /*
-                    if (type === "mp4" && event.target.value !== "") {
-                        medm.load()
-                        medm.play()
-                    }
-                    */
                 })
                 inp.appendChild(sel)
                 med.appendChild(inp)
