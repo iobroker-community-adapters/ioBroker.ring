@@ -27,20 +27,23 @@ async function AddCams() {
     const devs = await asyncEmit("getForeignObjects", "ring." + instance + ".cocoa*", "device")
         .then((result) => { return result; })
         .catch((error) => { console.log(error); return; });
-    // console.log("Devices: " + JSON.stringify(devs))
     let cam = 0;
-    // eslint-disable-next-line prefer-const
+    // for (const c = 0; c < 3; c++) // Test more than one camera
     for (const dev_prop in devs) {
         const dev = dev_prop.split(".").pop() // device name
         const camera = devs[dev_prop].common.name.split('("').pop().slice(0, -2);
-        let elem = document.getElementById("camera " + cam);
-        cam++;
-        elem.outerHTML +=
-            '<div id="camera ' + cam + '" class="row" style="padding: 2px;">' +
-                '<string class="col s12 title center" style="padding: 5px; background-color:#174475; font-size: 1.9rem; border-radius: 4px">' + camera + "</string>" +
-            "</div>";
-        elem = document.getElementById("camera " + cam);
-        
+        const elem = document.getElementById("camera " + cam);
+        cam++
+        const elemdiv = document.createElement("div")
+        elemdiv.id = "camera " + cam
+        elemdiv.className = "row"
+        elemdiv.style = "padding: 2px"
+        const elemdivstr = document.createElement("string")
+        elemdivstr.className = "col s12 title center"
+        elemdivstr.style = "padding: 5px; background-color:#174475; font-size: 1.9rem; border-radius: 4px"
+        elemdivstr.innerText = camera // + c
+        elemdiv.appendChild(elemdivstr)
+        elem.append(elemdiv)
         const files = await asyncEmit("readDir", "ring." + instance, dev)
             .then((result) => { return result; })
             .catch((error) => { console.log(error); return; });
@@ -51,19 +54,34 @@ async function AddCams() {
         const media = await asyncEmit("getStates", devs[dev_prop]._id + ".*.url")
             .then((result) => { return result; })
             .catch((error) => { console.log(error); return; });
+
         for (const media_prop in media) {
             const title = media[media_prop].val.split("_").pop().split(".")[0];
             const type = media[media_prop].val.split("_").pop().split(".")[1];
             const med = document.createElement("div")
             med.className = "col s12 m12 l4"
-            med.innerHTML =   '<h5 class="translate center blue-text text-darken-2">' + title + '</h5>' +
-                                '<a href="#' + title + '">' +
-                                    (type === "jpg" ?
-                                    '<img id="#media_' + dev + '_' + title + '" src="' + media[media_prop].val + '" onclick="this.requestFullscreen()" alt="' + title + '" width="100%">' :
-                                    '<video id="#media_' + dev + '_' + title + '" controls="true" width="100%" alt="' + title + '">' +
-                                        '<source src="' + media[media_prop].val + '" type="video/mp4"/>' +
-                                    '</video>') +
-                                '</a>'
+            const medh5 = document.createElement("h5")
+            medh5.className = "translate center blue-text text-darken-2"
+            medh5.innerText = title // + c
+            med.appendChild(medh5)
+            let medm
+            if (type === "jpg") {
+                medm = document.createElement("img")
+                medm.src = media[media_prop].val
+            } else {
+                medm = document.createElement("video")
+                medm.playsInline = true
+                medm.preload = "auto"
+                medm.autoplay = false
+                medm.controls = true
+                const medmsrc = document.createElement("source")
+                medmsrc.src =  media[media_prop].val
+                medmsrc.type = 'video/mp4'
+                medm.appendChild(medmsrc)
+            }
+            medm.style = "max-width: 100%"
+            medm.alt = title
+            med.appendChild(medm)
             let ml
             if (type === "jpg") {
                 if (title === "Snapshot")
@@ -78,10 +96,9 @@ async function AddCams() {
                     const test = new Date(Number(ml[0].split("_").pop(0).split(".")[0])).toLocaleString()
                 } catch (e) {
                     console.log("Filename has no timestamp")
-                    elem.appendChild(med)
+                    elemdiv.appendChild(med)
                     continue
                 }
-
                 const inp = document.createElement("div")
                 inp.className = 'input-field col s12 m12 l12'
 
@@ -93,15 +110,13 @@ async function AddCams() {
                 for (const e of ml)
                     sel.options.add(new Option(new Date(Number(e.split("_").pop(0).split(".")[0])).toLocaleString(), e))
 
-                sel.addEventListener("change", (event)=>{
-                    // console.log("********* Event with id " + "#inp" + title + " fired: " + event.target.value + ", device = " + dev)
-                    const med = document.getElementById("#media_" + dev + '_' + title)
+                    sel.addEventListener("change", (event)=>{
                     let source = ""
                     if (event.target.value === "") // back to default
                         source = media[media_prop].val
                     else
                         source = 'http://' + location.hostname + ':8082/ring.' + instance + '/' + dev + '/' + event.target.value
-                    med.setAttribute("src", source)
+                    medm.setAttribute("src", source)
                     if (type === "mp4" && event.target.value !== "") {
                         med.load()
                         med.play()
@@ -110,7 +125,8 @@ async function AddCams() {
                 inp.appendChild(sel)
                 med.appendChild(inp)
             }
-            elem.appendChild(med)
+            elemdiv.appendChild(med)
+            
         }
     }
     // re-init materialize Events
