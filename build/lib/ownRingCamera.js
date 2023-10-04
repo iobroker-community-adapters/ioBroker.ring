@@ -199,7 +199,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             { name: "Livestream", val: this._adapter.config.save_livestream, fct: () => { this.startLivestream(); }, start: 4 }
         ];
         for (const m of media) {
-            if (m.val) {
+            if (m.val > 0) {
                 let schedMinute = "*";
                 let schedHour = "*";
                 if (m.val === 3600) {

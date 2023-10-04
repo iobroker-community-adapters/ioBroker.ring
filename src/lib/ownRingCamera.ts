@@ -243,7 +243,7 @@ export class OwnRingCamera extends OwnRingDevice {
     ]
 
     for (const m of media) {
-      if (m.val) {
+      if (m.val > 0) {
         let schedMinute = "*"
         let schedHour = "*"
         if (m.val === 3600) {
