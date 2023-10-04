@@ -118,12 +118,16 @@ async function AddCams() {
                         source = media[media_prop].val
                     else
                         source = 'http://' + location.hostname + ':8082/ring.' + instance + '/' + dev + '/' + event.target.value
+                    /*
                     console.log("**** Source = " + source)
-                    if (type === "jpg")
+
+                    if (type === "jpg") {
                         medm.src = source
-                    else
+                    } else {
                         medmsrc.src = source
-                    // medm.setAttribute("src", source)
+                    } */
+                    medm.setAttribute("src", null)
+                    medm.setAttribute("src", source)
                     if (type === "mp4" && event.target.value !== "") {
                         medm.load()
                         medm.play()
