@@ -122,12 +122,15 @@ async function AddCams() {
                         medm.src = source
                     } else {
                         medmsrc.src = source
+                        medm.load()
                     } 
                     // medm.setAttribute("src", source)
+                    /*
                     if (type === "mp4" && event.target.value !== "") {
                         medm.load()
                         medm.play()
                     }
+                    */
                 })
                 inp.appendChild(sel)
                 med.appendChild(inp)
