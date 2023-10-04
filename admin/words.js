@@ -236,6 +236,32 @@ systemDictionary = {
         "uk": "React на заході автоматично",
         "zh-cn": "对活动的反应"
     },
+    "Auto save": {
+        "en": "Automatically save every x minutes",
+        "de": "Alle x Minuten automatisch speichern",
+        "ru": "Автоматически экономить каждые x минуты",
+        "pt": "Salvar automaticamente a cada minuto x",
+        "nl": "Automatisch elke X minuten redden",
+        "fr": "Économisez automatiquement toutes les x minutes",
+        "it": "Salva automaticamente ogni x minuti",
+        "es": "Guarde automáticamente cada x minutos",
+        "pl": "Automatycznie oszczędza każde x minuty",
+        "uk": "Автоматично зберігайте всі х хвилини",
+        "zh-cn": "自动节约每分钟"
+    },
+    "wo Sub": {
+        "en": "Usage without a subscription!",
+        "de": "Nutzung ohne Abonnement!",
+        "ru": "Использование без подписки!",
+        "pt": "Uso sem uma assinatura!",
+        "nl": "Gebruik zonder abonnement!",
+        "fr": "Utilisation sans abonnement !",
+        "it": "Utilizzo senza abbonamento!",
+        "es": "Uso sin suscripción!",
+        "pl": "Użycie bez poboru!",
+        "uk": "Використання без підписки!",
+        "zh-cn": "无订阅!"
+    },
     "Path": {
         "en": "Path",
         "de": "Pfad",

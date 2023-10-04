@@ -36,6 +36,7 @@ const util = __importStar(require("util"));
 const ownRingDevice_1 = require("./ownRingDevice");
 const sharp_1 = __importDefault(require("sharp"));
 const strftime_1 = __importDefault(require("strftime"));
+const node_schedule_1 = __importDefault(require("node-schedule"));
 var EventState;
 (function (EventState) {
     EventState[EventState["Idle"] = 0] = "Idle";
@@ -191,6 +192,38 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             .composite([{ input: svgBuffer, left: 0, top: 0 }])
             .toBuffer();
     }
+    autoSched() {
+        const media = [
+            { name: "Snaspshot", val: this._adapter.config.save_snapshot, fct: () => { this.takeSnapshot(); }, start: 0 },
+            { name: "HD Snapshot", val: this._adapter.config.save_HDsnapshot, fct: () => { this.takeHDSnapshot(); }, start: 2 },
+            { name: "Livestream", val: this._adapter.config.save_livestream, fct: () => { this.startLivestream(); }, start: 4 }
+        ];
+        for (const m of media) {
+            if (m.val) {
+                let schedMinute = "*";
+                let schedHour = "*";
+                if (m.val === 3600) {
+                    schedMinute = "1";
+                    schedHour = "12";
+                }
+                else if (m.val === 60)
+                    schedMinute = "3";
+                else if (m.val < 60)
+                    schedMinute = `${m.start}-59/${m.val.toString()}`;
+                node_schedule_1.default.scheduleJob(`Auto save ${m.name}_${this._adapter.name}_${this._adapter.instance}`, `${m.start * 10} ${schedMinute} ${schedHour} * * *`, () => {
+                    this.info(`Cronjob Auto save ${m.name} starts`);
+                    m.fct();
+                    /*
+                    switch (m.name) {
+                      case "Snapshot": this.takeSnapshot(); break
+                      case "HD Snapshot": this.takeHDSnapshot(); break
+                      case "Livestream": this.startLivestream(); break
+                    }
+                    */
+                });
+            }
+        }
+    }
     set ringDevice(device) {
         this._ringDevice = device;
         this.subscribeToEvents();
@@ -231,6 +264,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this.updateHDSnapshotObject();
         this.updateLiveStreamObject();
         this.ringDevice = ringDevice; // subscribes to the events
+        this.autoSched();
     }
     async processUserInput(channelID, stateID, state) {
         switch (channelID) {
@@ -434,7 +468,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             }
             return err;
         });
-        if (!image.buffer) {
+        if (!image.byteLength) {
             if (!eventBased) {
                 this.warn("Could not create snapshot from image");
             }

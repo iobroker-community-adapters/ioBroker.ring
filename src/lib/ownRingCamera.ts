@@ -76,6 +76,7 @@ import { OwnRingDevice } from "./ownRingDevice";
 import Sharp from "sharp";
 import { ExtendedResponse } from "ring-client-api/lib/rest-client";
 import strftime from "strftime"
+import schedule from "node-schedule"
 
 enum EventState {
   Idle,
@@ -234,6 +235,33 @@ export class OwnRingCamera extends OwnRingDevice {
       .toBuffer()
   }
 
+  private autoSched():void {
+    const media = [
+      { name: "Snaspshot",   val: this._adapter.config.save_snapshot,   fct: ()=>{ this.takeSnapshot() },    start:  0 },
+      { name: "HD Snapshot", val: this._adapter.config.save_HDsnapshot, fct: ()=>{ this.takeHDSnapshot() },  start:  2 },
+      { name: "Livestream",  val: this._adapter.config.save_livestream, fct: ()=>{ this.startLivestream() }, start:  4 }
+    ]
+
+    for (const m of media) {
+      if (m.val) {
+        let schedMinute = "*"
+        let schedHour = "*"
+        if (m.val === 3600) {
+          schedMinute = "1"
+          schedHour = "12"
+        } else if (m.val === 60)
+          schedMinute = "3"
+        else if (m.val < 60)
+          schedMinute = `${m.start}-59/${m.val.toString()}`
+
+        schedule.scheduleJob(`Auto save ${m.name}_${this._adapter.name}_${this._adapter.instance}`, `${m.start * 10} ${schedMinute} ${schedHour} * * *`, () => {
+          this.info(`Cronjob Auto save ${m.name} starts`)
+          m.fct()
+        });
+      }
+    }
+  }
+
   private set ringDevice(device) {
     this._ringDevice = device;
     this.subscribeToEvents();
@@ -267,6 +295,7 @@ export class OwnRingCamera extends OwnRingDevice {
     this.updateHDSnapshotObject()
     this.updateLiveStreamObject()
     this.ringDevice = ringDevice // subscribes to the events
+    this.autoSched()
   }
 
   public override async processUserInput(channelID: string, stateID: string, state: ioBroker.State): Promise<void> {
@@ -524,7 +553,7 @@ export class OwnRingCamera extends OwnRingDevice {
         return err
       })
 
-    if (!image.buffer) {
+    if (!image.byteLength) {
       if (!eventBased) {
         this.warn("Could not create snapshot from image");
       }
