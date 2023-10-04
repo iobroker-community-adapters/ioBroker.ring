@@ -1,5 +1,8 @@
 {
   "common": {
+    "adminUI": {
+      "config": "materialize"
+    },
     "adminTab": {
       "singleton": true,
       "name": {
