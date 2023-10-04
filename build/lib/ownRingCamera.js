@@ -613,8 +613,8 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             name: `Device ${this.shortId} ("${this._ringDevice.data.description}")`
         });
         this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_INFO, { name: `Info ${this.shortId}` });
-        this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_SNAPSHOT);
-        this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_HDSNAPSHOT);
+        this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_SNAPSHOT, { name: `Snapshot ${this.shortId}` });
+        this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_HDSNAPSHOT, { name: `HD Snapshot ${this.shortId}` });
         this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_LIVESTREAM, { name: `Livestream ${this.shortId}` });
         this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_HISTORY);
         this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_EVENTS);

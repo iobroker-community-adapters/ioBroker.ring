@@ -703,7 +703,7 @@ export class OwnRingCamera extends OwnRingDevice {
     this.silly(`Update History`);
     this._ringDevice.getEvents({limit: 50})
       .then(async (r: CameraEventResponse) => {
-        this.silly(`Recieved Event History`);
+        this.silly(`Recieved Event History`)
         const lastAction = r.events.find((event: CameraEvent) => {
           const kind: DingKind = event.kind;
           switch (kind) {
@@ -711,44 +711,44 @@ export class OwnRingCamera extends OwnRingDevice {
             case "ding":
             case "alarm":
             case "on_demand":
-              return true;
+              return true
           }
-          return false;
+          return false
         });
         if (lastAction === undefined) {
           return;
         }
-        const url = await this._ringDevice.getRecordingUrl(lastAction.ding_id_str);
+        const url = await this._ringDevice.getRecordingUrl(lastAction.ding_id_str)
         this.lastAction = new LastAction(lastAction, url)
-        this.updateHistoryObject(this.lastAction);
+        this.updateHistoryObject(this.lastAction)
       });
   }
 
   protected async recreateDeviceObjectTree(): Promise<void> {
-    this.silly(`Recreate DeviceObjectTree`);
+    this.silly(`Recreate DeviceObjectTree`)
     this._adapter.createDevice(this.fullId, {
       name: `Device ${this.shortId} ("${this._ringDevice.data.description}")`
-    });
-    this._adapter.createChannel(this.fullId, CHANNEL_NAME_INFO, {name: `Info ${this.shortId}`});
-    this._adapter.createChannel(this.fullId, CHANNEL_NAME_SNAPSHOT);
-    this._adapter.createChannel(this.fullId, CHANNEL_NAME_HDSNAPSHOT);
-    this._adapter.createChannel(this.fullId, CHANNEL_NAME_LIVESTREAM, {name: `Livestream ${this.shortId}`});
-    this._adapter.createChannel(this.fullId, CHANNEL_NAME_HISTORY);
-    this._adapter.createChannel(this.fullId, CHANNEL_NAME_EVENTS);
+    })
+    this._adapter.createChannel(this.fullId, CHANNEL_NAME_INFO, {name: `Info ${this.shortId}`})
+    this._adapter.createChannel(this.fullId, CHANNEL_NAME_SNAPSHOT, {name: `Snapshot ${this.shortId}`})
+    this._adapter.createChannel(this.fullId, CHANNEL_NAME_HDSNAPSHOT, {name: `HD Snapshot ${this.shortId}`})
+    this._adapter.createChannel(this.fullId, CHANNEL_NAME_LIVESTREAM, {name: `Livestream ${this.shortId}`})
+    this._adapter.createChannel(this.fullId, CHANNEL_NAME_HISTORY)
+    this._adapter.createChannel(this.fullId, CHANNEL_NAME_EVENTS)
     if (this._ringDevice.hasLight) {
-      this.debug(`Device with Light Capabilities detected`);
-      this._adapter.createChannel(this.fullId, CHANNEL_NAME_LIGHT, {name: `Light ${this.shortId}`});
+      this.debug(`Device with Light Capabilities detected`)
+      this._adapter.createChannel(this.fullId, CHANNEL_NAME_LIGHT, {name: `Light ${this.shortId}`})
       this._adapter.upsertState(
         `${this.lightChannelId}.${STATE_ID_LIGHT_SWITCH}`,
         COMMON_LIGHT_SWITCH,
         false,
         true,
         true
-      );
+      )
     }
-    this._lastSnapShotDir = await this._adapter.tryGetStringState(`${this.snapshotChannelId}.file`);
-    this._lastHDSnapShotDir = await this._adapter.tryGetStringState(`${this.HDsnapshotChannelId}.file`);
-    this._lastLiveStreamDir = await this._adapter.tryGetStringState(`${this.liveStreamChannelId}.file`);
+    this._lastSnapShotDir = await this._adapter.tryGetStringState(`${this.snapshotChannelId}.file`)
+    this._lastHDSnapShotDir = await this._adapter.tryGetStringState(`${this.HDsnapshotChannelId}.file`)
+    this._lastLiveStreamDir = await this._adapter.tryGetStringState(`${this.liveStreamChannelId}.file`)
     this._adapter.upsertState(
       `${this.fullId}.${STATE_ID_DEBUG_REQUEST}`,
       COMMON_DEBUG_REQUEST,
