@@ -213,13 +213,6 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                 node_schedule_1.default.scheduleJob(`Auto save ${m.name}_${this._adapter.name}_${this._adapter.instance}`, `${m.start * 10} ${schedMinute} ${schedHour} * * *`, () => {
                     this.info(`Cronjob Auto save ${m.name} starts`);
                     m.fct();
-                    /*
-                    switch (m.name) {
-                      case "Snapshot": this.takeSnapshot(); break
-                      case "HD Snapshot": this.takeHDSnapshot(); break
-                      case "Livestream": this.startLivestream(); break
-                    }
-                    */
                 });
             }
         }
