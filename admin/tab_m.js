@@ -68,6 +68,7 @@ async function AddCams() {
             if (type === "jpg") {
                 medm = document.createElement("img")
                 medm.src = media[media_prop].val
+                medm.addEventListener("click", ()=>{ medm.requestFullscreen() })
             } else {
                 medm = document.createElement("video")
                 medm.playsInline = true
