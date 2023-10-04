@@ -65,6 +65,7 @@ async function AddCams() {
             medh5.innerText = title // + c
             med.appendChild(medh5)
             let medm
+            let medmsrc
             if (type === "jpg") {
                 medm = document.createElement("img")
                 medm.src = media[media_prop].val
@@ -75,7 +76,7 @@ async function AddCams() {
                 medm.preload = "auto"
                 medm.autoplay = false
                 medm.controls = true
-                const medmsrc = document.createElement("source")
+                medmsrc = document.createElement("source")
                 medmsrc.src =  media[media_prop].val
                 medmsrc.type = 'video/mp4'
                 medm.appendChild(medmsrc)
@@ -117,10 +118,15 @@ async function AddCams() {
                         source = media[media_prop].val
                     else
                         source = 'http://' + location.hostname + ':8082/ring.' + instance + '/' + dev + '/' + event.target.value
-                    medm.setAttribute("src", source)
+                    console.log("**** Source = " + source)
+                    if (type === "jpg")
+                        medm.src = source
+                    else
+                        medmsrc.src = source
+                    // medm.setAttribute("src", source)
                     if (type === "mp4" && event.target.value !== "") {
-                        med.load()
-                        med.play()
+                        medm.load()
+                        medm.play()
                     }
                 })
                 inp.appendChild(sel)
