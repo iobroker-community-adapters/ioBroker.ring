@@ -117,17 +117,14 @@ async function AddCams() {
                     if (event.target.value === "") // back to default
                         source = media[media_prop].val
                     else
-                        source = 'http://' + location.hostname + ':8082/ring.' + instance + '/' + dev + '/' + event.target.value
-                    /*
-                    console.log("**** Source = " + source)
-
+                        // source = 'http://' + location.hostname + ':8082/ring.' + instance + '/' + dev + '/' + event.target.value
+                        source = 'http://openwrt-iobroker:8082/ring.0/cocoa_308343825/' + event.target.value
                     if (type === "jpg") {
                         medm.src = source
                     } else {
                         medmsrc.src = source
-                    } */
-                    medm.setAttribute("src", null)
-                    medm.setAttribute("src", source)
+                    } 
+                    // medm.setAttribute("src", source)
                     if (type === "mp4" && event.target.value !== "") {
                         medm.load()
                         medm.play()
