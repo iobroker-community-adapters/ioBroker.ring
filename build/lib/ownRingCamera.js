@@ -67,7 +67,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         const it = ["lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"];
         const es = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
         const pl = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"];
-        const uk = ["понеділок", "вівторок", "середа", "четвер", "п'ятниця", "субота", "неділя"];
+        // const uk = ["понеділок", "вівторок", "середа", "четвер", "п'ятниця", "субота", "неділя"];
         const zh = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
         const dow = (new Date().getDay() + 6) % 7;
         switch (this._adapter.language) {
@@ -80,6 +80,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             case "it": return it[dow];
             case "es": return es[dow];
             case "pl": return pl[dow];
+            // case "uk": return pl[dow];
             case "zh-cn": return zh[dow];
         }
         return en[dow];
