@@ -82,6 +82,11 @@ If you are using the [ring.com](https://ring.com) cloud, you find under history 
 	### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
+* (bluefox) migrated the configuration to JSON
+* (crocri) many changes for livestream and high-definition screenshots
+* (theimo1221) Refactoring and cleanup
+
+### 5.0.0-Beta (2023-10-10)
 * (crocri) Ding event is now working again for Ring-Intercom
 * (crocri) auto livestream creation takes now value from config, before fix
 * (crocri) snapshot now async, because snapshot and livestream in parallel do not work
@@ -92,7 +97,6 @@ If you are using the [ring.com](https://ring.com) cloud, you find under history 
 * (crocri) Improvements for vis compatibility done
 * (theimo1221) Refactoring and cleanup
 * (theimo1221) Updated Packages
-* (bluefox) migrated the configuration to JSON 
 
 ### 4.0.0 (2023-08-22)
 * (theimo1221) !!Breaking Change!! From now on Node 18 or 20 is required, Node 16 is not supported anymore
