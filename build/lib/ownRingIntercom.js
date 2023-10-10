@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OwnRingIntercom = void 0;
+const util_1 = __importDefault(require("util"));
 const ownRingDevice_1 = require("./ownRingDevice");
 const constants_1 = require("./constants");
-const util_1 = __importDefault(require("util"));
 class OwnRingIntercom extends ownRingDevice_1.OwnRingDevice {
     constructor(ringDevice, location, adapter, apiClient) {
         super(location, adapter, apiClient, ownRingDevice_1.OwnRingDevice.evaluateKind(ringDevice.deviceType, adapter, ringDevice), `${ringDevice.id}`, ringDevice.data.description);
@@ -64,7 +64,7 @@ class OwnRingIntercom extends ownRingDevice_1.OwnRingDevice {
         this._adapter.upsertState(`${this.fullId}.${constants_1.STATE_ID_INTERCOM_UNLOCK}`, constants_1.COMMON_INTERCOM_UNLOCK_REQUEST, false, true, true);
     }
     update(data) {
-        this.debug(`Recieved Update`);
+        this.debug(`Received Update`);
         this.updateDeviceInfoObject(data);
     }
     async subscribeToEvents() {
@@ -77,7 +77,7 @@ class OwnRingIntercom extends ownRingDevice_1.OwnRingDevice {
                 this.onDing();
             },
             error: (err) => {
-                this.catcher(`Ding Observer recieved error`, err);
+                this.catcher(`Ding Observer received error`, err);
             },
         });
     }
@@ -87,7 +87,7 @@ class OwnRingIntercom extends ownRingDevice_1.OwnRingDevice {
         this._adapter.upsertState(`${this.infoChannelId}.description`, constants_1.COMMON_INFO_DESCRIPTION, data.description);
     }
     onDing() {
-        this.debug(`Recieved Ding Event`);
+        this.debug(`Received Ding Event`);
         this._adapter.upsertState(`${this.eventsChannelId}.ding`, constants_1.COMMON_EVENTS_INTERCOM_DING, true);
         setTimeout(() => {
             this._adapter.upsertState(`${this.eventsChannelId}.ding`, constants_1.COMMON_EVENTS_INTERCOM_DING, false);

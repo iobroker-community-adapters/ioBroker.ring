@@ -6,21 +6,19 @@
 // you need to create an adapter
 import * as utils from "@iobroker/adapter-core";
 import { Adapter } from "@iobroker/adapter-core";
-import { RingApiClient } from "./lib/ringApiClient";
 import path from "path";
-import { FileService } from "./lib/services/file-service";
 import schedule from "node-schedule";
-import suncalc from "suncalc"
+import suncalc from "suncalc";
 
-// Load your modules here, e.g.:
-// import * as fs from "fs";
+import { RingApiClient } from "./lib/ringApiClient";
+import { FileService } from "./lib/services/file-service";
 
 export class RingAdapter extends Adapter {
   private apiClient: RingApiClient | undefined;
   public static isWindows: boolean = process.platform.startsWith("win");
   private states: { [id: string]: ioBroker.StateValue } = {};
-  private sunrise: number = 0
-  private sunset: number = 0
+  private sunrise: number = 0;
+  private sunset: number = 0;
 
   public get absoluteInstanceDir(): string {
     return utils.getAbsoluteInstanceDataDir(this as unknown as ioBroker.Adapter);
@@ -28,11 +26,11 @@ export class RingAdapter extends Adapter {
   public get absoluteDefaultDir(): string {
     return utils.getAbsoluteDefaultDataDir();
   }
-  public get Sunrise():number {
-    return this.sunrise
+  public get Sunrise(): number {
+    return this.sunrise;
   }
-  public get Sunset():number {
-    return this.sunset
+  public get Sunset(): number {
+    return this.sunset;
   }
 
   public constructor(options: Partial<utils.AdapterOptions> = {}) {
@@ -53,16 +51,16 @@ export class RingAdapter extends Adapter {
     try {
       this.log.debug("Run CalcSunData");
       if (this.latitude && this.longitude) {
-        const today = new Date()
-        const sunData = suncalc.getTimes(today, this.latitude, this.longitude)
-        this.sunset = sunData.night.getTime()     // night is really dark, sunset is to early
+        const today = new Date();
+        const sunData = suncalc.getTimes(today, this.latitude, this.longitude);
+        this.sunset = sunData.night.getTime()     // night is really dark, sunset is too early
         this.sunrise = sunData.nightEnd.getTime() // same here vice versa
-        this.log.debug("Sunset: " + new Date(this.sunset).toLocaleString() + ", Sunrise: " + new Date(this.sunrise).toLocaleString())
+        this.log.debug(`Sunset: ${new Date(this.sunset).toLocaleString()}, Sunrise: ${new Date(this.sunrise).toLocaleString()}`);
       } else {
-        this.log.error("Latitude or Longtidue not defined in System")
+        this.log.error("Latitude or Longtime not defined in System");
       }
     } catch (error) {
-      const eMsg = "Error in CalcSunData: " + error;
+      const eMsg = `Error in CalcSunData: ${error}`;
       this.log.error(eMsg);
       console.error(eMsg);
     }
@@ -93,16 +91,17 @@ export class RingAdapter extends Adapter {
     */
 
     const config_path: string[] = [this.config.path_snapshot, this.config.path_livestream];
-    for(const index in config_path) {
+    for (const index in config_path) {
       this.log.debug(`Configured Path: "${config_path[index]}"`);
-      const dataDir = (this.systemConfig) ? this.systemConfig.dataDir : "";
+      const dataDir = this.systemConfig ? this.systemConfig.dataDir : "";
       this.log.silly(`DataDir: ${dataDir}`);
       if (!config_path[index]) {
-        config_path[index] = path.join(this.absoluteDefaultDir, "files", this.namespace)
-        if (index == "0")
-          this.config.path_snapshot = config_path[index]
-        else
-          this.config.path_livestream = config_path[index]
+        config_path[index] = path.join(this.absoluteDefaultDir, "files", this.namespace);
+        if (index == "0") {
+          this.config.path_snapshot = config_path[index];
+        } else {
+          this.config.path_livestream = config_path[index];
+        }
         this.log.debug(`New Config Path: "${config_path[index]}"`);
       }
       await FileService.prepareFolder(config_path[index]);
@@ -116,15 +115,15 @@ export class RingAdapter extends Adapter {
     this.log.info(`Initializing Api Client`);
     await this.apiClient.init();
 
-    this.log.info(`Get sunset and sunrise`)
-    await this.CalcSunData()
+    this.log.info(`Get sunset and sunrise`);
+    await this.CalcSunData();
 
-    //Daily schedule somewhen from 00:00:20 to 00:00:40
-    const scheduleSeconds = Math.round(Math.random() * 20 + 20)
+    // Daily schedule sometime from 00:00:20 to 00:00:40
+    const scheduleSeconds = Math.round(Math.random() * 20 + 20);
     this.log.info(`Daily sun parameter calculation scheduled for 00:00:${scheduleSeconds}`);
     schedule.scheduleJob("SunData", `${scheduleSeconds} 0 0 * * *`, async () => {
-      this.log.info(`Cronjob 'Sun parameter calculation' starts`)
-      await this.CalcSunData()
+      this.log.info(`Cronjob 'Sun parameter calculation' starts`);
+      await this.CalcSunData();
     });
   }
 
@@ -192,7 +191,7 @@ export class RingAdapter extends Adapter {
 
   // If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
   // /**
-  //  * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
+  //  * Some message was sent to this instance over the message box. Used by email, pushover, text2speech, ...
   //  * Using this method requires "common.messagebox" property to be set to true in io-package.json
   //  */
   // private onMessage(obj: ioBroker.Message): void {
@@ -218,8 +217,10 @@ export class RingAdapter extends Adapter {
 
   async tryGetStringState(id: string): Promise<string> {
     const cachedVal = this.states[id];
-    if(cachedVal !== undefined && cachedVal !== null) return cachedVal + "";
-    return ((await this.getStateAsync(id))?.val ?? "") + "" ;
+    if (cachedVal !== undefined && cachedVal !== null) {
+      return cachedVal + "";
+    }
+    return ((await this.getStateAsync(id))?.val ?? "") + "";
   }
 
   private async upsertStateAsync(id: string, common: Partial<ioBroker.StateCommon>, value: ioBroker.StateValue, ack = true, subscribe = false): Promise<void> {
@@ -230,7 +231,7 @@ export class RingAdapter extends Adapter {
         return;
       }
 
-      const {device, channel, stateName} = RingAdapter.getSplittedIds(id);
+      const { device, channel, stateName } = RingAdapter.getSplitIds(id);
       await this.createStateAsync(device, channel, stateName, common);
       this.states[id] = value;
       await this.setStateAsync(id, value, ack);
@@ -245,7 +246,7 @@ export class RingAdapter extends Adapter {
     }
   }
 
-  public static getSplittedIds(id: string): { device: string, channel: string, stateName: string } {
+  public static getSplitIds(id: string): { device: string, channel: string, stateName: string } {
     const splits = id.split(".");
     let device = "";
     let channel = "";
@@ -258,7 +259,7 @@ export class RingAdapter extends Adapter {
       channel = splits[1];
       stateName = splits[2];
     }
-    return {device, channel, stateName};
+    return { device, channel, stateName };
   }
 
   public logCatch(message: string, reason: any): void {

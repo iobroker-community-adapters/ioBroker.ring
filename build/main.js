@@ -34,13 +34,11 @@ exports.RingAdapter = void 0;
 // you need to create an adapter
 const utils = __importStar(require("@iobroker/adapter-core"));
 const adapter_core_1 = require("@iobroker/adapter-core");
-const ringApiClient_1 = require("./lib/ringApiClient");
 const path_1 = __importDefault(require("path"));
-const file_service_1 = require("./lib/services/file-service");
 const node_schedule_1 = __importDefault(require("node-schedule"));
 const suncalc_1 = __importDefault(require("suncalc"));
-// Load your modules here, e.g.:
-// import * as fs from "fs";
+const ringApiClient_1 = require("./lib/ringApiClient");
+const file_service_1 = require("./lib/services/file-service");
 class RingAdapter extends adapter_core_1.Adapter {
     get absoluteInstanceDir() {
         return utils.getAbsoluteInstanceDataDir(this);
@@ -76,16 +74,16 @@ class RingAdapter extends adapter_core_1.Adapter {
             if (this.latitude && this.longitude) {
                 const today = new Date();
                 const sunData = suncalc_1.default.getTimes(today, this.latitude, this.longitude);
-                this.sunset = sunData.night.getTime(); // night is really dark, sunset is to early
+                this.sunset = sunData.night.getTime(); // night is really dark, sunset is too early
                 this.sunrise = sunData.nightEnd.getTime(); // same here vice versa
-                this.log.debug("Sunset: " + new Date(this.sunset).toLocaleString() + ", Sunrise: " + new Date(this.sunrise).toLocaleString());
+                this.log.debug(`Sunset: ${new Date(this.sunset).toLocaleString()}, Sunrise: ${new Date(this.sunrise).toLocaleString()}`);
             }
             else {
-                this.log.error("Latitude or Longtidue not defined in System");
+                this.log.error("Latitude or Longtime not defined in System");
             }
         }
         catch (error) {
-            const eMsg = "Error in CalcSunData: " + error;
+            const eMsg = `Error in CalcSunData: ${error}`;
             this.log.error(eMsg);
             console.error(eMsg);
         }
@@ -115,14 +113,16 @@ class RingAdapter extends adapter_core_1.Adapter {
         const config_path = [this.config.path_snapshot, this.config.path_livestream];
         for (const index in config_path) {
             this.log.debug(`Configured Path: "${config_path[index]}"`);
-            const dataDir = (this.systemConfig) ? this.systemConfig.dataDir : "";
+            const dataDir = this.systemConfig ? this.systemConfig.dataDir : "";
             this.log.silly(`DataDir: ${dataDir}`);
             if (!config_path[index]) {
                 config_path[index] = path_1.default.join(this.absoluteDefaultDir, "files", this.namespace);
-                if (index == "0")
+                if (index == "0") {
                     this.config.path_snapshot = config_path[index];
-                else
+                }
+                else {
                     this.config.path_livestream = config_path[index];
+                }
                 this.log.debug(`New Config Path: "${config_path[index]}"`);
             }
             await file_service_1.FileService.prepareFolder(config_path[index]);
@@ -135,7 +135,7 @@ class RingAdapter extends adapter_core_1.Adapter {
         await this.apiClient.init();
         this.log.info(`Get sunset and sunrise`);
         await this.CalcSunData();
-        //Daily schedule somewhen from 00:00:20 to 00:00:40
+        // Daily schedule sometime from 00:00:20 to 00:00:40
         const scheduleSeconds = Math.round(Math.random() * 20 + 20);
         this.log.info(`Daily sun parameter calculation scheduled for 00:00:${scheduleSeconds}`);
         node_schedule_1.default.scheduleJob("SunData", `${scheduleSeconds} 0 0 * * *`, async () => {
@@ -203,7 +203,7 @@ class RingAdapter extends adapter_core_1.Adapter {
     }
     // If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
     // /**
-    //  * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
+    //  * Some message was sent to this instance over the message box. Used by email, pushover, text2speech, ...
     //  * Using this method requires "common.messagebox" property to be set to true in io-package.json
     //  */
     // private onMessage(obj: ioBroker.Message): void {
@@ -227,8 +227,9 @@ class RingAdapter extends adapter_core_1.Adapter {
     async tryGetStringState(id) {
         var _a, _b;
         const cachedVal = this.states[id];
-        if (cachedVal !== undefined && cachedVal !== null)
+        if (cachedVal !== undefined && cachedVal !== null) {
             return cachedVal + "";
+        }
         return ((_b = (_a = (await this.getStateAsync(id))) === null || _a === void 0 ? void 0 : _a.val) !== null && _b !== void 0 ? _b : "") + "";
     }
     async upsertStateAsync(id, common, value, ack = true, subscribe = false) {
@@ -239,7 +240,7 @@ class RingAdapter extends adapter_core_1.Adapter {
                 await this.setStateAsync(id, value, ack);
                 return;
             }
-            const { device, channel, stateName } = RingAdapter.getSplittedIds(id);
+            const { device, channel, stateName } = RingAdapter.getSplitIds(id);
             await this.createStateAsync(device, channel, stateName, common);
             this.states[id] = value;
             await this.setStateAsync(id, value, ack);
@@ -254,7 +255,7 @@ class RingAdapter extends adapter_core_1.Adapter {
             }
         }
     }
-    static getSplittedIds(id) {
+    static getSplitIds(id) {
         const splits = id.split(".");
         let device = "";
         let channel = "";

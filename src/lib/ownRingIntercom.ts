@@ -1,5 +1,7 @@
-import { OwnRingDevice } from "./ownRingDevice";
 import { IntercomHandsetAudioData, RingIntercom } from "ring-client-api";
+import util from "util";
+
+import { OwnRingDevice } from "./ownRingDevice";
 import { OwnRingLocation } from "./ownRingLocation";
 import { RingAdapter } from "../main";
 import { RingApiClient } from "./ringApiClient";
@@ -15,7 +17,6 @@ import {
   STATE_ID_DEBUG_REQUEST,
   STATE_ID_INTERCOM_UNLOCK,
 } from "./constants";
-import util from "util";
 
 export class OwnRingIntercom extends OwnRingDevice {
   private readonly infoChannelId: string;
@@ -35,7 +36,7 @@ export class OwnRingIntercom extends OwnRingDevice {
     this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
     this.eventsChannelId = `${this.fullId}.${CHANNEL_NAME_EVENTS}`;
 
-    this.recreateDeviceObjectTree()
+    this.recreateDeviceObjectTree();
   }
 
   private _ringIntercom: RingIntercom;
@@ -60,7 +61,7 @@ export class OwnRingIntercom extends OwnRingDevice {
               this._adapter.upsertState(
                 `${this.fullId}.${STATE_ID_DEBUG_REQUEST}`,
                 COMMON_DEBUG_REQUEST,
-                false
+                false,
               );
             }
             break;
@@ -73,7 +74,7 @@ export class OwnRingIntercom extends OwnRingDevice {
               this._adapter.upsertState(
                 `${this.fullId}.${STATE_ID_INTERCOM_UNLOCK}`,
                 COMMON_DEBUG_REQUEST,
-                false
+                false,
               );
             }
             break;
@@ -101,19 +102,19 @@ export class OwnRingIntercom extends OwnRingDevice {
       COMMON_DEBUG_REQUEST,
       false,
       true,
-      true
+      true,
     );
     this._adapter.upsertState(
       `${this.fullId}.${STATE_ID_INTERCOM_UNLOCK}`,
       COMMON_INTERCOM_UNLOCK_REQUEST,
       false,
       true,
-      true
+      true,
     );
   }
 
   private update(data: IntercomHandsetAudioData): void {
-    this.debug(`Recieved Update`);
+    this.debug(`Received Update`);
     this.updateDeviceInfoObject(data);
   }
 
@@ -125,10 +126,10 @@ export class OwnRingIntercom extends OwnRingDevice {
     this._ringIntercom.onDing.subscribe(
       {
         next: () => {
-          this.onDing()
+          this.onDing();
         },
         error: (err: Error) => {
-          this.catcher(`Ding Observer recieved error`, err)
+          this.catcher(`Ding Observer received error`, err);
         },
       }
     )
@@ -153,7 +154,7 @@ export class OwnRingIntercom extends OwnRingDevice {
   }
 
   private onDing(): void {
-    this.debug(`Recieved Ding Event`);
+    this.debug(`Received Ding Event`);
     this._adapter.upsertState(
       `${this.eventsChannelId}.ding`,
       COMMON_EVENTS_INTERCOM_DING,

@@ -21,7 +21,7 @@
         var secret = null;
 
         function encrypt(key, value) {
-            var result = '';
+            var result = "";
             for (var i = 0; i < value.length; ++i) {
                 result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
             }
@@ -30,7 +30,7 @@
 
         function decrypt(key, value) {
 
-            var result = '';
+            var result = "";
             for (var i = 0; i < value.length; ++i) {
                 result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
             }
@@ -41,45 +41,45 @@
         function load(settings, onChange) {
             // example: select elements with id=key and class=value and insert value
             if (!settings) return;
-            secret = (systemConfig.native ? systemConfig.native.secret : '') || 'Zgfr56gFe87jJOM';
+            secret = (systemConfig.native ? systemConfig.native.secret : "") || "Zgfr56gFe87jJOM";
 
-            $('.value').each(function () {
+            $(".value").each(function () {
                 var $key = $(this);
-                var id = $key.attr('id');
-                if ($key.attr('type') === 'checkbox') {
+                var id = $key.attr("id");
+                if ($key.attr("type") === "checkbox") {
                     // do not call onChange direct, because onChange could expect some arguments
-                    $key.prop('checked', settings[id])
-                        .on('change', () => onChange())
+                    $key.prop("checked", settings[id])
+                        .on("change", () => onChange())
                     ;
                 } else {
                     var value = settings[id];
-                    if (value && $key.attr('data-crypt') == "1") {
+                    if (value && $key.attr("data-crypt") == "1") {
                         value = decrypt(secret, value);
                     }
                     // do not call onChange direct, because onChange could expect some arguments
                     $key.val(value)
-                        .on('change', () => onChange())
-                        .on('keyup', () => onChange())
+                        .on("change", () => onChange())
+                        .on("keyup", () => onChange())
                     ;
                 }
             });
             onChange(false);
             // reinitialize all the Materialize labels on the page if you are dynamically adding inputs:
-            if (M) M.updateTextFields();
+            M && M.updateTextFields();
         }
 
         // This will be called by the admin adapter when the user presses the save button
         function save(callback) {
             // example: select elements with class=value and build settings object
             var obj = {};
-            $('.value').each(function () {
+            $(".value").each(function () {
                 var $this = $(this);
-                if ($this.attr('type') === 'checkbox') {
-                    obj[$this.attr('id')] = $this.prop('checked');
-                } else if ($this.attr('type') === 'number') {
-                    obj[$this.attr('id')] = parseFloat($this.val());
+                if ($this.attr("type") === "checkbox") {
+                    obj[$this.attr("id")] = $this.prop("checked");
+                } else if ($this.attr("type") === "number") {
+                    obj[$this.attr("id")] = parseFloat($this.val());
                 } else {
-                    obj[$this.attr('id')] = $this.data('crypt') && $this.val() ? encrypt(secret, $this.val()) : $this.val();
+                    obj[$this.attr("id")] = $this.data("crypt") && $this.val() ? encrypt(secret, $this.val()) : $this.val();
                 }
             });
             callback(obj);
@@ -107,8 +107,9 @@
                                                                     style="width: 5%; min-width: 50px;" title="Snapshot"
                                                                     alt="snapshot" class="logo"></a></li>
                 <li class="tab col s3"><a href="#tab-HDsnapshot"><img src="camera-photo-6.png"
-                                                                    style="width: 5%; min-width: 50px;" title="HD Snapshot"
-                                                                    alt="HD snapshot" class="logo"></a></li>
+                                                                      style="width: 5%; min-width: 50px;"
+                                                                      title="HD Snapshot"
+                                                                      alt="HD snapshot" class="logo"></a></li>
                 <li class="tab col s3"><a href="#tab-livestream"><img src="camera-video.png"
                                                                       style="width: 5%; min-width: 50px;"
                                                                       title="Livestream" alt="livestream" class="logo"></a>

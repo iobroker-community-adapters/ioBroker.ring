@@ -20,18 +20,14 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [ 18.x ]
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18.x
 
       - name: Install Dependencies
         run: npm ci
@@ -53,7 +49,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [ 16.x, 18.x, 20.x ]
+        node-version: [ 18.x, 20.x ]
         os: [ ubuntu-latest, windows-latest, macos-latest ]
 
     steps:
@@ -93,18 +89,15 @@ jobs:
       startsWith(github.ref, 'refs/tags/v')
 
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [ 18.x ]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18.x
 
       - name: Extract the version and commit body from the tag
         id: extract_release
@@ -138,12 +131,12 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: Release v${{ steps.extract_release.outputs.VERSION }}
           draft: false
-          # Prerelease versions create prereleases on Github
+          # Prerelease versions create pre-releases on GitHub
           prerelease: ${{ contains(steps.extract_release.outputs.VERSION, '-') }}
           body: ${{ steps.extract_release.outputs.BODY }}
 #
 #            # When using Sentry for error reporting, Sentry could be informed about new releases
-#            # To enable create a API-Token in Sentry (User settings, API keys)
+#            # To enable create an API-Token in Sentry (User settings, API keys)
 #            # Enter this token as a GitHub secret (with name SENTRY_AUTH_TOKEN) in the repository options
 #            # Then uncomment and customize the following block:
 #            #- name: Notify Sentry.io about the release

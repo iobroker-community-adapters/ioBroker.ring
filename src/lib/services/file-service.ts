@@ -1,8 +1,9 @@
-import path from "path"
-import fs from "fs"
-import { RingAdapter } from "../../main"
-import "@iobroker/types"
-import { PathInfo } from "./path-info"
+import path from "path";
+import fs from "fs";
+import "@iobroker/types";
+
+import { RingAdapter } from "../../main";
+import { PathInfo } from "./path-info";
 
 export class FileService {
   public static readonly IOBROKER_FILES_REGEX = new RegExp(/.*iobroker-data\/files.*/);
@@ -20,10 +21,11 @@ export class FileService {
       .replace("%n", String(count))
       .replace("%i", shortId)
       .replace("%k", kind);
+
     return {
       fullPath: fullPath,
       dirname: path.dirname(fullPath),
-      filename: path.basename(fullPath)
+      filename: path.basename(fullPath),
     };
   }
 
@@ -33,7 +35,7 @@ export class FileService {
     }
     return new Promise<boolean>((resolve) => {
       if (!fs.existsSync(dirname)) {
-        fs.mkdirSync(dirname, {recursive: true});
+        fs.mkdirSync(dirname, { recursive: true });
         if (!RingAdapter.isWindows) {
           fs.chmodSync(dirname, 508);
         }
@@ -59,20 +61,21 @@ export class FileService {
 
   public static async getVisUrl(adapter: RingAdapter, fullId: string, fileName: string): Promise<{
     visURL: string,
-    visPath: string
+    visPath: string,
   }> {
-    const vis = await adapter.getForeignObjectAsync("system.adapter.web.0").catch((reason) => {
-      adapter.logCatch(`Couldn't load "web.0" Adapter object.`, reason);
-    });
+    const vis = await adapter.getForeignObjectAsync("system.adapter.web.0")
+      .catch(reason => {
+        adapter.logCatch(`Couldn't load "web.0" Adapter object.`, reason);
+      });
     if (vis && vis.native) {
       const secure = vis.native.secure ? "https" : "http";
       const prefix = `${adapter.namespace}/${adapter.name}_${adapter.instance}_${fullId}_${fileName}`;
       return {
         visURL: `${secure}://${adapter.host}:${vis.native.port}/${prefix}`,
-        visPath: `${adapter.absoluteDefaultDir}files/${prefix}`
+        visPath: `${adapter.absoluteDefaultDir}files/${prefix}`,
       };
     }
-    return {visURL: "", visPath: ""}
+    return { visURL: "", visPath: "" };
   }
 
   public static async getTempDir(adapter: RingAdapter): Promise<string> {
@@ -83,17 +86,15 @@ export class FileService {
 
   public static async writeFile(fullPath: string, data: Buffer, adapter: RingAdapter, cb?: ()=>void): Promise<void> {
     if (!this.IOBROKER_FILES_REGEX.test(fullPath)) {
-      fs.writeFile(fullPath, data, ()=>{
-        if (cb) cb();
-      })
+      fs.writeFile(fullPath, data, ()=> cb && cb());
       return;
     }
     adapter.writeFile(adapter.namespace, this.reducePath(fullPath, adapter), data, (r) => {
       if (r) {
-        adapter.logCatch(`Failed to write Adapter File '${fullPath}'`, r.message)
+        adapter.logCatch(`Failed to write Adapter File '${fullPath}'`, r.message);
       } else {
-        adapter.log.silly(`Adapter File ${fullPath} written!`)
-        if (cb) cb()
+        adapter.log.silly(`Adapter File ${fullPath} written!`);
+        cb && cb();
       }
     });
   }

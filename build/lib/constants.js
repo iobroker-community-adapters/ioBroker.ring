@@ -15,21 +15,21 @@ exports.COMMON_INFO_DESCRIPTION = {
     role: "text",
     name: "Device Name",
     read: true,
-    write: false
+    write: false,
 };
 exports.COMMON_INFO_EXTERNAL_CONNECTION = {
     type: "boolean",
     role: "state",
     name: "External Power",
     read: true,
-    write: false
+    write: false,
 };
 exports.COMMON_INFO_KIND = {
     type: "string",
     role: "text",
     name: "Product",
     read: true,
-    write: false
+    write: false,
 };
 exports.COMMON_INFO_BATTERY_PERCENTAGE = {
     type: "number",
@@ -37,21 +37,21 @@ exports.COMMON_INFO_BATTERY_PERCENTAGE = {
     name: "Battery",
     read: true,
     write: false,
-    unit: "%"
+    unit: "%",
 };
 exports.COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY = {
     type: "string",
     role: "state",
     name: "Battery Category",
     read: true,
-    write: false
+    write: false,
 };
 exports.COMMON_INFO_WIFI_NAME = {
     type: "string",
     role: "text",
     name: "Wifi",
     read: true,
-    write: false
+    write: false,
 };
 exports.COMMON_INFO_LATEST_SIGNAL_STRENGTH = {
     type: "number",

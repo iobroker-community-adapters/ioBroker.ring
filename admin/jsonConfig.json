@@ -1,0 +1,367 @@
+{
+  "type": "tabs",
+  "i18n": true,
+  "items": {
+    "_login": {
+      "label": "Login",
+      "icon": "preferences-system-login.png",
+      "type": "panel",
+      "items": {
+        "_staticLink": {
+          "type": "staticLink",
+          "href": "https://github.com/iobroker-community-adapters/ioBroker.ring#install--configuration",
+          "text": "ring-description",
+          "sm": 12
+        },
+        "refreshtoken": {
+          "newLine": true,
+          "type": "text",
+          "label": "Refreshtoken (Two Face Auth)",
+          "sm": 12,
+          "md": 12,
+          "lg": 4
+        }
+      }
+    },
+    "_snapshot": {
+      "label": "Snapshot",
+      "icon": "camera-photo-5.png",
+      "type": "panel",
+      "items": {
+        "auto_snapshot": {
+          "type": "checkbox",
+          "label": "Auto event",
+          "sm": 12
+        },
+        "_staticText": {
+          "newLine": true,
+          "type": "staticText",
+          "text": "Usage without a subscription!",
+          "sm": 12
+        },
+        "save_snapshot": {
+          "newLine": true,
+          "type": "select",
+          "label": "Auto save",
+          "options": [
+            {
+              "value": 0,
+              "label": "-"
+            },
+            {
+              "value": 5,
+              "label": "5 seconds"
+            },
+            {
+              "value": 15,
+              "label": "15 seconds"
+            },
+            {
+              "value": 30,
+              "label": "30 seconds"
+            },
+            {
+              "value": 60,
+              "label": "1 minute"
+            },
+            {
+              "value": 3600,
+              "label": "1 hour"
+            }
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 2
+        },
+        "path_snapshot": {
+          "newLine": true,
+          "type": "text",
+          "label": "Path",
+          "sm": 12,
+          "md": 12,
+          "lg": 4
+        },
+        "filename_snapshot": {
+          "newLine": true,
+          "type": "text",
+          "label": "Filename",
+          "sm": 12,
+          "md": 12,
+          "lg": 4
+        },
+        "del_old_snapshot": {
+          "newLine": true,
+          "type": "checkbox",
+          "label": "Delete old one",
+          "sm": 12,
+          "md": 6,
+          "lg": 2
+        },
+        "overlay_snapshot": {
+          "type": "checkbox",
+          "label": "Overlay",
+          "sm": 12,
+          "md": 6,
+          "lg": 2
+        }
+      }
+    },
+    "_hd_snapshot": {
+      "label": "HD Snapshot",
+      "icon": "camera-photo-6.png",
+      "type": "panel",
+      "items": {
+        "_info": {
+          "type": "staticText",
+          "text": "hd_info",
+          "sm": 12
+        },
+        "auto_HDsnapshot": {
+          "type": "checkbox",
+          "label": "Auto event",
+          "sm": 12
+        },
+        "_staticText": {
+          "newLine": true,
+          "type": "staticText",
+          "text": "Usage without a subscription!",
+          "sm": 12
+        },
+        "save_HDsnapshot": {
+          "newLine": true,
+          "type": "select",
+          "label": "Auto save",
+          "options": [
+            {
+              "value": 0,
+              "label": "-"
+            },
+            {
+              "value": 5,
+              "label": "5 seconds"
+            },
+            {
+              "value": 15,
+              "label": "15 seconds"
+            },
+            {
+              "value": 30,
+              "label": "30 seconds"
+            },
+            {
+              "value": 60,
+              "label": "1 minute"
+            },
+            {
+              "value": 3600,
+              "label": "1 hour"
+            }
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 2
+        },
+        "path_HDsnapshot": {
+          "newLine": true,
+          "type": "text",
+          "label": "Path",
+          "sm": 12,
+          "md": 12,
+          "lg": 4
+        },
+        "filename_HDsnapshot": {
+          "newLine": true,
+          "type": "text",
+          "label": "Filename",
+          "sm": 12,
+          "md": 12,
+          "lg": 4
+        },
+        "del_old_HDsnapshot": {
+          "newLine": true,
+          "type": "checkbox",
+          "label": "Delete old one",
+          "sm": 12,
+          "md": 6,
+          "lg": 2
+        },
+        "overlay_HDsnapshot": {
+          "type": "checkbox",
+          "label": "Overlay",
+          "sm": 12,
+          "md": 6,
+          "lg": 2
+        },
+        "sharpen_HDsnapshot": {
+          "newLine": true,
+          "type": "select",
+          "label": "Sharpening",
+          "options": [
+            {
+              "value": 0,
+              "label": "without"
+            },
+            {
+              "value": 1,
+              "label": "less"
+            },
+            {
+              "value": 2,
+              "label": "more"
+            },
+            {
+              "value": 3,
+              "label": "much"
+            },
+            {
+              "value": 4,
+              "label": "most"
+            }
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 2
+        },
+        "night_sharpen_HDsnapshot": {
+          "type": "checkbox",
+          "label": "only at Night",
+          "sm": 12,
+          "md": 6,
+          "lg": 2,
+          "hidden": "!data.sharpen_HDsnapshot"
+        },
+        "contrast_HDsnapshot": {
+          "newLine": true,
+          "type": "select",
+          "label": "Sharpening",
+          "options": [
+            {
+              "value": 0,
+              "label": "without"
+            },
+            {
+              "value": 1,
+              "label": "more"
+            },
+            {
+              "value": 2,
+              "label": "most"
+            }
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 2
+        },
+        "night_contrast_HDsnapshot": {
+          "type": "checkbox",
+          "label": "only at Night",
+          "sm": 12,
+          "md": 6,
+          "lg": 2,
+          "hidden": "!data.contrast_HDsnapshot"
+        }
+      }
+    },
+    "_livestream": {
+      "label": "HD Snapshot",
+      "icon": "camera-photo-6.png",
+      "type": "panel",
+      "items": {
+        "auto_livestream": {
+          "type": "checkbox",
+          "label": "Auto event",
+          "sm": 12
+        },
+        "_staticText": {
+          "newLine": true,
+          "type": "staticText",
+          "text": "Usage without a subscription!",
+          "sm": 12
+        },
+        "save_livestream": {
+          "newLine": true,
+          "type": "select",
+          "label": "Auto save",
+          "options": [
+            {
+              "value": 0,
+              "label": "-"
+            },
+            {
+              "value": 5,
+              "label": "5 seconds"
+            },
+            {
+              "value": 15,
+              "label": "15 seconds"
+            },
+            {
+              "value": 30,
+              "label": "30 seconds"
+            },
+            {
+              "value": 60,
+              "label": "1 minute"
+            },
+            {
+              "value": 3600,
+              "label": "1 hour"
+            }
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 2
+        },
+        "recordtime_auto_livestream": {
+          "type": "number",
+          "min": 0,
+          "max": 60,
+          "label": "Automatic recording time in seconds",
+          "sm": 12,
+          "md": 6,
+          "lg": 2
+        },
+        "recordtime_livestream": {
+          "type": "number",
+          "min": 0,
+          "max": 60,
+          "label": "Recording time in seconds",
+          "sm": 12,
+          "md": 6,
+          "lg": 2
+        },
+        "path_livestream": {
+          "newLine": true,
+          "type": "text",
+          "label": "Path",
+          "sm": 12,
+          "md": 12,
+          "lg": 4
+        },
+        "filename_livestream": {
+          "newLine": true,
+          "type": "text",
+          "label": "Filename",
+          "sm": 12,
+          "md": 12,
+          "lg": 4
+        },
+        "del_old_livestream": {
+          "newLine": true,
+          "type": "checkbox",
+          "label": "Delete old one",
+          "sm": 12,
+          "md": 6,
+          "lg": 2
+        },
+        "overlay_Livestream": {
+          "type": "checkbox",
+          "label": "Overlay",
+          "sm": 12,
+          "md": 6,
+          "lg": 2
+        }
+      }
+    }
+  }
+}

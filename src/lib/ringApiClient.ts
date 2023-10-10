@@ -1,11 +1,12 @@
 import { Location, RingApi, RingCamera, RingIntercom } from "ring-client-api";
+import pathToFfmpeg from "ffmpeg-static";
+
 import { RingAdapter } from "../main";
 import { OwnRingCamera } from "./ownRingCamera";
 import { COMMON_NEW_TOKEN, COMMON_OLD_TOKEN } from "./constants";
 import { OwnRingLocation } from "./ownRingLocation";
 import { OwnRingDevice } from "./ownRingDevice";
 import { OwnRingIntercom } from "./ownRingIntercom";
-import pathToFfmpeg from "ffmpeg-static"
 
 export class RingApiClient {
   public refreshing = false;
@@ -23,11 +24,11 @@ export class RingApiClient {
   public validateRefreshToken(): boolean {
     const token: string = this.adapter.config.refreshtoken;
     if (!token || token === "") {
-      this.adapter.log.error(`Refresh Token missing.`)
+      this.adapter.log.error(`Refresh Token missing.`);
       return false;
     }
     if (token.length < 10) {
-      this.adapter.log.error(`Refresh Token is odly short.`)
+      this.adapter.log.error(`Refresh Token is oddly short.`);
       return false;
     }
 
@@ -39,7 +40,7 @@ export class RingApiClient {
       return this._api;
     }
     if (!this.adapter.config.refreshtoken) {
-      throw (`Refresh Token needed.`)
+      throw (`Refresh Token needed.`);
     }
     this._api = new RingApi({
       controlCenterDisplayName: "iobroker.ring",
@@ -52,25 +53,23 @@ export class RingApiClient {
     });
     this._api.onRefreshTokenUpdated.subscribe((data) => {
       this.adapter.log.info(
-        `Recieved new Refresh Token. Will use the new one until the token in config gets changed`
+        `Received new Refresh Token. Will use the new one until the token in config gets changed`
       );
       this.adapter.upsertState(
         "next_refresh_token",
         COMMON_NEW_TOKEN,
-        data.newRefreshToken
+        data.newRefreshToken,
       );
       this.adapter.upsertState(
         "old_user_refresh_token",
         COMMON_OLD_TOKEN,
-        this.adapter.config.refreshtoken
+        this.adapter.config.refreshtoken,
       );
     });
     const profile = await this._api.getProfile()
-      .catch((reason: any) => {
-        this.handleApiError(reason)
-      })
+      .catch((reason: any) => this.handleApiError(reason));
     if (profile === undefined) {
-      this.warn("Couldn't Retrieve profile, please make sure your api-token is fresh and correct")
+      this.warn("Couldn't Retrieve profile, please make sure your api-token is fresh and correct");
     }
     return this._api;
   }
@@ -84,12 +83,12 @@ export class RingApiClient {
 
   public async init(): Promise<void> {
     await this.refreshAll(true);
-    this._refreshInterval = setInterval(this.refreshAll.bind(this), 120 * 60 * 1000)
+    this._refreshInterval = setInterval(this.refreshAll.bind(this), 120 * 60 * 1000);
   }
 
   public async refreshAll(initial = false): Promise<void> {
     /**
-     *  TH 2022-05-30: It seems like Ring Api drops it's socket connection from time to time
+     *  TH 2022-05-30: It seems like Ring Api drops its socket connection from time to time,
      *  so we should reconnect ourselves
      */
     this.debug(`Refresh Ring Connection`);
@@ -119,7 +118,7 @@ export class RingApiClient {
       const l = this._locations[key];
       this.debug(`Process Location ${l.name}`);
       const devices = await l.getDevices();
-      this.debug(`Recieved ${devices.length} Devices in Location ${l.name}`);
+      this.debug(`Received ${devices.length} Devices in Location ${l.name}`);
       this.debug(`Location has ${l.loc.cameras.length} Cameras`);
       for (const c of l.loc.cameras) {
         this.updateCamera(c, l);
@@ -138,7 +137,7 @@ export class RingApiClient {
     const targetDevice = this.cameras[targetId] ?? this.intercoms[targetId];
     const targetLocation = this._locations[targetId];
     if (!targetDevice && !targetLocation) {
-      this.adapter.log.error(`Recieved State Change on Subscribed State, for unknown Device/Location "${targetId}"`);
+      this.adapter.log.error(`Received State Change on Subscribed State, for unknown Device/Location "${targetId}"`);
       return;
     } else if (targetDevice) {
       targetDevice.processUserInput(channelID, stateID, state);

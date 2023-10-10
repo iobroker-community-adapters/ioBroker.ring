@@ -1,7 +1,8 @@
+import util from "util";
+import { RingCamera, RingCameraKind, RingDeviceType, RingIntercom } from "ring-client-api";
+
 import { RingAdapter } from "../main";
 import { RingApiClient } from "./ringApiClient";
-import { RingCamera, RingCameraKind, RingDeviceType, RingIntercom } from "ring-client-api";
-import util from "util";
 import { OwnRingLocation } from "./ownRingLocation";
 
 export abstract class OwnRingDevice {

@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OwnRingDevice = void 0;
-const ring_client_api_1 = require("ring-client-api");
 const util_1 = __importDefault(require("util"));
+const ring_client_api_1 = require("ring-client-api");
 class OwnRingDevice {
     constructor(location, adapter, apiClient, kind, shortId, description) {
         this._adapter = adapter;

@@ -1,7 +1,8 @@
 import util from "util";
+import { Location, LocationMode, LocationModeInput, RingDevice } from "ring-client-api";
+
 import { RingAdapter } from "../main";
 import { RingApiClient } from "./ringApiClient";
-import { Location, LocationMode, LocationModeInput, RingDevice } from "ring-client-api";
 import {
   COMMON_DEBUG_REQUEST,
   COMMON_LOCATIONMODE,
@@ -40,10 +41,10 @@ export class OwnRingLocation {
     this._adapter = adapter;
     this._client = apiClient;
     this._loc.onDataUpdate.subscribe((message) => {
-      this.debug(`Recieved Location Update Event: "${message}"`);
+      this.debug(`Received Location Update Event: "${message}"`);
     });
     this._loc.onConnected.subscribe((connected) => {
-      this.debug(`Recieved Location Connection Status Change to ${connected}`);
+      this.debug(`Received Location Connection Status Change to ${connected}`);
       if(!connected && !apiClient.refreshing) {
         this.warn(`Lost connection to Location ${this._loc.name}... Will try a reconnect in 5s`);
         setTimeout(() => {
@@ -62,7 +63,7 @@ export class OwnRingLocation {
   private async recreateDeviceObjectTree(): Promise<void> {
     this.silly(`Recreate LocationObjectTree`);
     this._adapter.createDevice(this._fullId, {
-      name: `Location ${this.id} ("${this.name}")`
+      name: `Location ${this.id} ("${this.name}")`,
     });
     // this._adapter.createChannel(this._fullId, CHANNEL_NAME_INFO, {name: `Info ${this.id}`});
     this._adapter.upsertState(
@@ -70,7 +71,7 @@ export class OwnRingLocation {
       COMMON_DEBUG_REQUEST,
       false,
       true,
-      true
+      true,
     );
   }
 
@@ -124,50 +125,44 @@ export class OwnRingLocation {
   private async performLocationModeChange(state: ioBroker.State): Promise<void> {
     const parsedNumber = parseInt(state.val as string, 10);
     let desiredState;
-    if(typeof desiredState == "number") {
+    if (typeof desiredState == "number") {
       desiredState = LOCATION_MODE_OPTIONS[state.val as number];
     } else if(!isNaN(parsedNumber)) {
       desiredState = LOCATION_MODE_OPTIONS[state.val as number];
     } else {
       desiredState = state.val as string;
     }
-    if(desiredState == this._currentLocationMode) {
+    if (desiredState == this._currentLocationMode) {
       return;
     }
-    if(["home", "away", "disarmed"].indexOf(desiredState) === -1) {
+    if (["home", "away", "disarmed"].indexOf(desiredState) === -1) {
       this.updateModeObject(this._currentLocationMode, true);
-      this.warn(`Invalid input "${desiredState}"... Only "home","away" and "disarmed" are chooseable by user.`);
+      this.warn(`Invalid input "${desiredState}"... Only "home","away" and "disarmed" are choose-able by user.`);
       return;
     }
     this.debug(`Change Location Mode to ${desiredState}`)
     this._loc.setLocationMode(desiredState as LocationModeInput)
-      .then((r) => {
-        this.updateModeObject(r.mode);
-      })
-      .catch((reason) => { this._adapter.logCatch(`Failed setting location mode`, reason)});
+      .then((r) => this.updateModeObject(r.mode))
+      .catch(reason => { this._adapter.logCatch(`Failed setting location mode`, reason)});
   }
 
   private updateModeObject(newMode: LocationMode, preventLog = false): void {
     this._currentLocationMode = newMode;
     if(!preventLog) {
-      this.silly(`Recieved new LocationMode: ${newMode}`)
+      this.silly(`Received new LocationMode: ${newMode}`)
     }
     this._adapter.upsertState(
       `${this._fullId}.locationMode`,
       COMMON_LOCATIONMODE,
       newMode,
       true,
-      true
+      true,
     );
   }
 
   private async getLocationMode(): Promise<void> {
     this._loc.getLocationMode()
-      .then((r) => {
-        this.updateModeObject(r.mode)
-      })
-      .catch((reason) => {
-        this._adapter.logCatch("Couldn't retrieve Location Mode", reason);
-      });
+      .then((r) => this.updateModeObject(r.mode))
+      .catch(reason => this._adapter.logCatch("Couldn't retrieve Location Mode", reason));
   }
 }

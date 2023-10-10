@@ -26,10 +26,10 @@ class OwnRingLocation {
         this._adapter = adapter;
         this._client = apiClient;
         this._loc.onDataUpdate.subscribe((message) => {
-            this.debug(`Recieved Location Update Event: "${message}"`);
+            this.debug(`Received Location Update Event: "${message}"`);
         });
         this._loc.onConnected.subscribe((connected) => {
-            this.debug(`Recieved Location Connection Status Change to ${connected}`);
+            this.debug(`Received Location Connection Status Change to ${connected}`);
             if (!connected && !apiClient.refreshing) {
                 this.warn(`Lost connection to Location ${this._loc.name}... Will try a reconnect in 5s`);
                 setTimeout(() => {
@@ -47,7 +47,7 @@ class OwnRingLocation {
     async recreateDeviceObjectTree() {
         this.silly(`Recreate LocationObjectTree`);
         this._adapter.createDevice(this._fullId, {
-            name: `Location ${this.id} ("${this.name}")`
+            name: `Location ${this.id} ("${this.name}")`,
         });
         // this._adapter.createChannel(this._fullId, CHANNEL_NAME_INFO, {name: `Info ${this.id}`});
         this._adapter.upsertState(`${this._fullId}.${constants_1.STATE_ID_DEBUG_REQUEST}`, constants_1.COMMON_DEBUG_REQUEST, false, true, true);
@@ -105,31 +105,25 @@ class OwnRingLocation {
         }
         if (["home", "away", "disarmed"].indexOf(desiredState) === -1) {
             this.updateModeObject(this._currentLocationMode, true);
-            this.warn(`Invalid input "${desiredState}"... Only "home","away" and "disarmed" are chooseable by user.`);
+            this.warn(`Invalid input "${desiredState}"... Only "home","away" and "disarmed" are choose-able by user.`);
             return;
         }
         this.debug(`Change Location Mode to ${desiredState}`);
         this._loc.setLocationMode(desiredState)
-            .then((r) => {
-            this.updateModeObject(r.mode);
-        })
-            .catch((reason) => { this._adapter.logCatch(`Failed setting location mode`, reason); });
+            .then((r) => this.updateModeObject(r.mode))
+            .catch(reason => { this._adapter.logCatch(`Failed setting location mode`, reason); });
     }
     updateModeObject(newMode, preventLog = false) {
         this._currentLocationMode = newMode;
         if (!preventLog) {
-            this.silly(`Recieved new LocationMode: ${newMode}`);
+            this.silly(`Received new LocationMode: ${newMode}`);
         }
         this._adapter.upsertState(`${this._fullId}.locationMode`, constants_1.COMMON_LOCATIONMODE, newMode, true, true);
     }
     async getLocationMode() {
         this._loc.getLocationMode()
-            .then((r) => {
-            this.updateModeObject(r.mode);
-        })
-            .catch((reason) => {
-            this._adapter.logCatch("Couldn't retrieve Location Mode", reason);
-        });
+            .then((r) => this.updateModeObject(r.mode))
+            .catch(reason => this._adapter.logCatch("Couldn't retrieve Location Mode", reason));
     }
 }
 exports.OwnRingLocation = OwnRingLocation;

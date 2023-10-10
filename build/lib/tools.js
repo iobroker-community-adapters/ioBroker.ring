@@ -30,7 +30,7 @@ exports.isArray = isArray;
 /**
  * Translates text using the Google Translate API
  * @param text The text to translate
- * @param targetLang The target languate
+ * @param targetLang The target language
  * @param yandexApiKey The yandex API key. You can create one for free at https://translate.yandex.com/developers
  */
 async function translateText(text, targetLang, yandexApiKey) {
@@ -51,7 +51,7 @@ exports.translateText = translateText;
 /**
  * Translates text with Yandex API
  * @param text The text to translate
- * @param targetLang The target languate
+ * @param targetLang The target language
  * @param apiKey The yandex API key. You can create one for free at https://translate.yandex.com/developers
  */
 async function translateYandex(text, targetLang, apiKey) {
@@ -74,7 +74,7 @@ async function translateYandex(text, targetLang, apiKey) {
 /**
  * Translates text with Google API
  * @param text The text to translate
- * @param targetLang The target languate
+ * @param targetLang The target language
  */
 async function translateGoogle(text, targetLang) {
     var _a;

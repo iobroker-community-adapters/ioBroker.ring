@@ -5,12 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RingApiClient = void 0;
 const ring_client_api_1 = require("ring-client-api");
+const ffmpeg_static_1 = __importDefault(require("ffmpeg-static"));
 const ownRingCamera_1 = require("./ownRingCamera");
 const constants_1 = require("./constants");
 const ownRingLocation_1 = require("./ownRingLocation");
 const ownRingDevice_1 = require("./ownRingDevice");
 const ownRingIntercom_1 = require("./ownRingIntercom");
-const ffmpeg_static_1 = __importDefault(require("ffmpeg-static"));
 class RingApiClient {
     get locations() {
         return this._locations;
@@ -22,7 +22,7 @@ class RingApiClient {
             return false;
         }
         if (token.length < 10) {
-            this.adapter.log.error(`Refresh Token is odly short.`);
+            this.adapter.log.error(`Refresh Token is oddly short.`);
             return false;
         }
         return true;
@@ -44,14 +44,12 @@ class RingApiClient {
             // debug: true
         });
         this._api.onRefreshTokenUpdated.subscribe((data) => {
-            this.adapter.log.info(`Recieved new Refresh Token. Will use the new one until the token in config gets changed`);
+            this.adapter.log.info(`Received new Refresh Token. Will use the new one until the token in config gets changed`);
             this.adapter.upsertState("next_refresh_token", constants_1.COMMON_NEW_TOKEN, data.newRefreshToken);
             this.adapter.upsertState("old_user_refresh_token", constants_1.COMMON_OLD_TOKEN, this.adapter.config.refreshtoken);
         });
         const profile = await this._api.getProfile()
-            .catch((reason) => {
-            this.handleApiError(reason);
-        });
+            .catch((reason) => this.handleApiError(reason));
         if (profile === undefined) {
             this.warn("Couldn't Retrieve profile, please make sure your api-token is fresh and correct");
         }
@@ -73,7 +71,7 @@ class RingApiClient {
     async refreshAll(initial = false) {
         var _a;
         /**
-         *  TH 2022-05-30: It seems like Ring Api drops it's socket connection from time to time
+         *  TH 2022-05-30: It seems like Ring Api drops its socket connection from time to time,
          *  so we should reconnect ourselves
          */
         this.debug(`Refresh Ring Connection`);
@@ -104,7 +102,7 @@ class RingApiClient {
             const l = this._locations[key];
             this.debug(`Process Location ${l.name}`);
             const devices = await l.getDevices();
-            this.debug(`Recieved ${devices.length} Devices in Location ${l.name}`);
+            this.debug(`Received ${devices.length} Devices in Location ${l.name}`);
             this.debug(`Location has ${l.loc.cameras.length} Cameras`);
             for (const c of l.loc.cameras) {
                 this.updateCamera(c, l);
@@ -122,7 +120,7 @@ class RingApiClient {
         const targetDevice = (_a = this.cameras[targetId]) !== null && _a !== void 0 ? _a : this.intercoms[targetId];
         const targetLocation = this._locations[targetId];
         if (!targetDevice && !targetLocation) {
-            this.adapter.log.error(`Recieved State Change on Subscribed State, for unknown Device/Location "${targetId}"`);
+            this.adapter.log.error(`Received State Change on Subscribed State, for unknown Device/Location "${targetId}"`);
             return;
         }
         else if (targetDevice) {

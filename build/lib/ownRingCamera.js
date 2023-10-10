@@ -28,15 +28,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OwnRingCamera = void 0;
 const rxjs_1 = require("rxjs");
-const constants_1 = require("./constants");
-const lastAction_1 = require("./lastAction");
 const fs = __importStar(require("fs"));
-const file_service_1 = require("./services/file-service");
 const util = __importStar(require("util"));
-const ownRingDevice_1 = require("./ownRingDevice");
 const sharp_1 = __importDefault(require("sharp"));
 const strftime_1 = __importDefault(require("strftime"));
 const node_schedule_1 = __importDefault(require("node-schedule"));
+const constants_1 = require("./constants");
+const lastAction_1 = require("./lastAction");
+const file_service_1 = require("./services/file-service");
+const ownRingDevice_1 = require("./ownRingDevice");
 var EventState;
 (function (EventState) {
     EventState[EventState["Idle"] = 0] = "Idle";
@@ -67,39 +67,20 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         const it = ["lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"];
         const es = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
         const pl = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"];
+        const uk = ["понеділок", "вівторок", "середа", "четвер", "п'ятниця", "субота", "неділя"];
         const zh = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
         const dow = (new Date().getDay() + 6) % 7;
         switch (this._adapter.language) {
-            case "en":
-                return en[dow];
-                break;
-            case "de":
-                return de[dow];
-                break;
-            case "ru":
-                return ru[dow];
-                break;
-            case "pt":
-                return pt[dow];
-                break;
-            case "nl":
-                return nl[dow];
-                break;
-            case "fr":
-                return fr[dow];
-                break;
-            case "it":
-                return it[dow];
-                break;
-            case "es":
-                return es[dow];
-                break;
-            case "pl":
-                return pl[dow];
-                break;
-            case "zh-cn":
-                return zh[dow];
-                break;
+            case "en": return en[dow];
+            case "de": return de[dow];
+            case "ru": return ru[dow];
+            case "pt": return pt[dow];
+            case "nl": return nl[dow];
+            case "fr": return fr[dow];
+            case "it": return it[dow];
+            case "es": return es[dow];
+            case "pl": return pl[dow];
+            case "zh-cn": return zh[dow];
         }
         return en[dow];
     }
@@ -117,31 +98,31 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         for (const val of this._adapter.dateFormat.split(sPattern)) {
             switch (val) {
                 case "YYYY":
-                    rDate = rDate + "%y";
+                    rDate += "%y";
                     break;
                 case "YY":
-                    rDate = rDate + "%y";
+                    rDate += "%y";
                     break;
                 case "Y":
-                    rDate = rDate + "%Y";
+                    rDate += "%Y";
                     break;
                 case "MMMM":
-                    rDate = rDate + "%B";
+                    rDate += "%B";
                     break;
                 case "MMM":
-                    rDate = rDate + "%b";
+                    rDate += "%b";
                     break;
                 case "MM":
-                    rDate = rDate + "%m";
+                    rDate += "%m";
                     break;
                 case "M":
-                    rDate = rDate + "%-m";
+                    rDate += "%-m";
                     break;
                 case "DD":
-                    rDate = rDate + "%d";
+                    rDate += "%d";
                     break;
                 case "D":
-                    rDate = rDate + "%-d";
+                    rDate += "%-d";
                     break;
             }
             rDate = rDate + sPattern;
@@ -206,10 +187,12 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                     schedMinute = "1";
                     schedHour = "12";
                 }
-                else if (m.val === 60)
+                else if (m.val === 60) {
                     schedMinute = "3";
-                else if (m.val < 60)
+                }
+                else if (m.val < 60) {
                     schedMinute = `${m.start}-59/${m.val.toString()}`;
+                }
                 node_schedule_1.default.scheduleJob(`Auto save ${m.name}_${this._adapter.name}_${this._adapter.instance}`, `${m.start * 10} ${schedMinute} ${schedHour} * * *`, () => {
                     this.info(`Cronjob Auto save ${m.name} starts`);
                     m.fct();
@@ -283,9 +266,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                         if (success) {
                             this._adapter.upsertState(`${this.lightChannelId}.light_state`, constants_1.COMMON_LIGHT_STATE, targetVal);
                             this._adapter.upsertState(`${this.lightChannelId}.light_switch`, constants_1.COMMON_LIGHT_SWITCH, targetVal, true, true);
-                            setTimeout(() => {
-                                this.updateHealth.bind(this);
-                            }, 65000);
+                            setTimeout(() => this.updateHealth.bind(this), 65000);
                         }
                     });
                 }
@@ -298,7 +279,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                     const targetVal = state.val;
                     this._adapter.log.debug(`Get Snapshot request for ${this.shortId} to value ${targetVal}`);
                     if (targetVal) {
-                        await this.takeSnapshot().catch((reason) => {
+                        await this.takeSnapshot().catch(reason => {
                             this.updateSnapshotRequest();
                             this.catcher("Couldn't retrieve Snapshot.", reason);
                         });
@@ -328,7 +309,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                     const targetVal = state.val;
                     this._adapter.log.debug(`Get Livestream request for ${this.shortId} to value ${targetVal}`);
                     if (targetVal) {
-                        await this.startLivestream().catch((reason) => {
+                        await this.startLivestream().catch(reason => {
                             this.updateLivestreamRequest();
                             this.catcher("Couldn't retrieve Livestream.", reason);
                         });
@@ -353,7 +334,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this.update(ringDevice.data);
     }
     update(data) {
-        this.debug(`Recieved Update`);
+        this.debug(`Received Update`);
         this.updateDeviceInfoObject(data);
         this.updateHealth();
         // noinspection JSIgnoredPromiseFromCall
@@ -377,13 +358,13 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path_livestream, this._adapter.config.filename_livestream, ++this._liveStreamCount, this.shortId, this.fullId, this.kind);
         if (!(await file_service_1.FileService.prepareFolder(dirname))) {
             this.warn(`Failed to prepare Livestream folder ("${fullPath}")`);
-            this.updateLivestreamRequest(false);
+            await this.updateLivestreamRequest(false);
             return;
         }
         file_service_1.FileService.deleteFileIfExistSync(fullPath, this._adapter);
         if (this._ringDevice.isOffline) {
             this.info(` is offline --> won't take LiveStream`);
-            this.updateLivestreamRequest(false);
+            await this.updateLivestreamRequest(false);
             return;
         }
         const tempPath = (await file_service_1.FileService.getTempDir(this._adapter)) + `/temp_${this.shortId}_livestream.mp4`;
@@ -393,8 +374,8 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         });
         await (0, rxjs_1.firstValueFrom)(liveCall.onCallEnded);
         if (!fs.existsSync(tempPath)) {
-            this.warn(`Could't create livestream`);
-            this.updateLivestreamRequest(false);
+            this.warn(`Couldn't create livestream`);
+            await this.updateLivestreamRequest(false);
             return;
         }
         const video = fs.readFileSync(tempPath);
@@ -409,7 +390,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         }
         if (visPath) {
             this.silly(`Locally storing Filestream (Length: ${video.length})`);
-            file_service_1.FileService.writeFile(visPath, video, this._adapter, () => {
+            await file_service_1.FileService.writeFile(visPath, video, this._adapter, () => {
                 this._lastLiveStreamUrl = visURL;
             });
         }
@@ -430,13 +411,13 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path_snapshot, this._adapter.config.filename_snapshot, ++this._HDsnapshotCount, this.shortId, this.fullId, this.kind);
         if (!(await file_service_1.FileService.prepareFolder(dirname))) {
             this.warn(`prepare folder problem --> won't take Snapshot`);
-            this.updateSnapshotRequest(false);
+            await this.updateSnapshotRequest(false);
             return;
         }
         file_service_1.FileService.deleteFileIfExistSync(fullPath, this._adapter);
         if (this._ringDevice.isOffline) {
             this.info(`is offline --> won't take Snapshot`);
-            this.updateSnapshotRequest(false);
+            await this.updateSnapshotRequest(false);
             return;
         }
         /*
@@ -449,9 +430,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         })
         */
         const image = await this._ringDevice.getNextSnapshot({ force: true, uuid: uuid })
-            .then((result) => {
-            return result;
-        })
+            .then((result) => result)
             .catch((err) => {
             if (eventBased) {
                 this.warn("Taking Snapshot on Event failed. Will try again after livestream finished.");
@@ -465,7 +444,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             if (!eventBased) {
                 this.warn("Could not create snapshot from image");
             }
-            this.updateSnapshotRequest(false);
+            await this.updateSnapshotRequest(false);
             return;
         }
         else {
@@ -478,10 +457,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         let image_txt = image;
         if (this._adapter.config.overlay_snapshot) {
             image_txt = await this.addText(image)
-                .then((value) => {
-                return value;
-            })
-                .catch((reason) => {
+                .catch(reason => {
                 this.catcher("Couldn't add text to Snapshot.", reason);
                 return reason;
             });
@@ -497,9 +473,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             await file_service_1.FileService.writeFile(visPath, image_txt, this._adapter);
         }
         this.silly(`Writing Snapshot (Length: ${image.length}) to "${fullPath}"`);
-        await file_service_1.FileService.writeFile(fullPath, image_txt, this._adapter, () => {
-            this.updateSnapshotObject();
-        });
+        await file_service_1.FileService.writeFile(fullPath, image_txt, this._adapter, () => this.updateSnapshotObject());
         this.debug(`Done creating snapshot to ${fullPath}`);
     }
     async takeHDSnapshot() {
@@ -508,41 +482,41 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         const { visURL, visPath } = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "HDSnapshot.jpg");
         if (!visURL || !visPath) {
             this.warn("Vis not available! Please install e.g. flot or other Vis related adapter");
-            this.updateHDSnapshotRequest(false);
+            await this.updateHDSnapshotRequest(false);
             return;
         }
-        const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path_snapshot, "HD" + this._adapter.config.filename_snapshot, ++this._snapshotCount, this.shortId, this.fullId, this.kind);
+        const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path_snapshot, `HD${this._adapter.config.filename_snapshot}`, ++this._snapshotCount, this.shortId, this.fullId, this.kind);
         if (!(await file_service_1.FileService.prepareFolder(dirname))) {
             this.warn(`prepare folder problem --> won't take HD Snapshot`);
-            this.updateHDSnapshotRequest(false);
+            await this.updateHDSnapshotRequest(false);
             return;
         }
         file_service_1.FileService.deleteFileIfExistSync(fullPath, this._adapter);
         if (this._ringDevice.isOffline) {
             this.info(`is offline --> won't take HD Snapshot`);
-            this.updateHDSnapshotRequest(false);
+            await this.updateHDSnapshotRequest(false);
             return;
         }
         let night_contrast = false;
         let night_sharpen = false;
         if (this._adapter.Sunrise > 0 && this._adapter.Sunset > 0) {
             const today = Date.now();
-            this.silly("Now: " + today + ", sunrise: " + this._adapter.Sunrise + ", sunset: " + this._adapter.Sunset);
+            this.silly(`Now: ${today}, sunrise: ${this._adapter.Sunrise}, sunset: ${this._adapter.Sunset}`);
             const isNight = today < this._adapter.Sunrise || today > this._adapter.Sunset;
-            this.debug("is Night:" + isNight);
+            this.debug(`is Night: ${isNight}`);
             night_contrast = this._adapter.config.night_contrast_HDsnapshot && isNight || !this._adapter.config.night_contrast_HDsnapshot;
             night_sharpen = this._adapter.config.night_sharpen_HDsnapshot && isNight || !this._adapter.config.night_sharpen_HDsnapshot;
         }
         const tempPath = (await file_service_1.FileService.getTempDir(this._adapter)) + `/temp_${this.shortId}_livestream.jpg`;
         const liveCall = await this._ringDevice.streamVideo({
-            video: this.videoFilter(this._adapter.config.overlay_HDsnapshot, (night_contrast ? this._adapter.config.contrast_HDsnapshot : 0)),
+            video: this.videoFilter(this._adapter.config.overlay_HDsnapshot, night_contrast ? this._adapter.config.contrast_HDsnapshot : 0),
             // output: ["-t", duration.toString(), "-f", "mjpeg", "-q:v", 3, "-frames:v", 1, tempPath]
             output: ["-f", "mjpeg", "-q:v", 3, "-frames:v", 1, tempPath]
         });
         await (0, rxjs_1.firstValueFrom)(liveCall.onCallEnded);
         if (!fs.existsSync(tempPath)) {
-            this.warn(`Could't create HD Snapshot`);
-            this.updateHDSnapshotRequest(false);
+            this.warn(`Couldn't create HD Snapshot`);
+            await this.updateHDSnapshotRequest(false);
             return;
         }
         else {
@@ -551,9 +525,12 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         let jpg = fs.readFileSync(tempPath);
         if (night_sharpen && this._adapter.config.sharpen_HDsnapshot && this._adapter.config.sharpen_HDsnapshot > 0) {
             const sharpen = this._adapter.config.sharpen_HDsnapshot == 1 ? undefined : { sigma: this._adapter.config.sharpen_HDsnapshot - 1 };
-            jpg = await (0, sharp_1.default)(jpg).sharpen(sharpen).toBuffer().then((value) => { return (value); }).catch((reason) => {
+            jpg = await (0, sharp_1.default)(jpg)
+                .sharpen(sharpen)
+                .toBuffer()
+                .catch(reason => {
                 this.catcher("Couldn't sharpen HD Snapshot.", reason);
-                return (reason);
+                return reason;
             });
         }
         // clean up
@@ -567,12 +544,10 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         }
         if (visPath) {
             this.silly(`Locally storing HD Snapshot (Length: ${jpg.length})`);
-            await file_service_1.FileService.writeFile(visPath, jpg, this._adapter, () => {
-                this._lastHDSnapShotUrl = visURL;
-            });
+            await file_service_1.FileService.writeFile(visPath, jpg, this._adapter, () => this._lastHDSnapShotUrl = visURL);
         }
         this.silly(`Writing HD Snapshot to ${fullPath} (Length: ${jpg.length})`);
-        file_service_1.FileService.writeFile(fullPath, jpg, this._adapter, () => {
+        await file_service_1.FileService.writeFile(fullPath, jpg, this._adapter, () => {
             this._lastHDSnapShotDir = fullPath;
             this._lastHDSnapshotTimestamp = Date.now();
             this.updateHDSnapshotObject();
@@ -587,7 +562,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this.silly(`Update History`);
         this._ringDevice.getEvents({ limit: 50 })
             .then(async (r) => {
-            this.silly(`Recieved Event History`);
+            this.silly(`Received Event History`);
             const lastAction = r.events.find((event) => {
                 const kind = event.kind;
                 switch (kind) {
@@ -610,7 +585,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
     async recreateDeviceObjectTree() {
         this.silly(`Recreate DeviceObjectTree`);
         this._adapter.createDevice(this.fullId, {
-            name: `Device ${this.shortId} ("${this._ringDevice.data.description}")`
+            name: `Device ${this.shortId} ("${this._ringDevice.data.description}")`,
         });
         this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_INFO, { name: `Info ${this.shortId}` });
         this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_SNAPSHOT, { name: `Snapshot ${this.shortId}` });
@@ -645,15 +620,15 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                 this.onMotion(motion);
             },
             error: (err) => {
-                this.catcher(`Motion Observer recieved error`, err);
+                this.catcher(`Motion Observer received error`, err);
             },
         });
         this._ringDevice.onDoorbellPressed.subscribe({
             next: (ding) => {
-                this.onDorbell(ding);
+                this.onDoorbell(ding);
             },
             error: (err) => {
-                this.catcher(`Dorbell Observer recieved error`, err);
+                this.catcher(`Doorbell Observer received error`, err);
             },
         });
         this._ringDevice.onNewNotification.subscribe({
@@ -661,7 +636,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                 this.onDing(ding);
             },
             error: (err) => {
-                this.catcher(`Ding Observer recieved error`, err);
+                this.catcher(`Ding Observer received error`, err);
             },
         });
     }
@@ -719,7 +694,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
     }
     updateHealthObject(health) {
         var _a;
-        this.debug(`Update Health Callback`);
+        this.debug("Update Health Callback");
         let batteryPercent = parseInt((_a = health.battery_percentage) !== null && _a !== void 0 ? _a : "-1");
         if (isNaN(batteryPercent)) {
             batteryPercent = -1;
@@ -739,7 +714,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
     }
     onDing(value) {
         var _a;
-        this.debug(`Recieved Ding Event (${util.inspect(value, true, 1)})`);
+        this.debug(`Received Ding Event (${util.inspect(value, true, 1)})`);
         this.conditionalRecording(EventState.ReactingOnDing, value.ding.image_uuid);
         this._adapter.upsertState(`${this.eventsChannelId}.type`, constants_1.COMMON_EVENTS_TYPE, value.subtype);
         this._adapter.upsertState(`${this.eventsChannelId}.detectionType`, constants_1.COMMON_EVENTS_DETECTIONTYPE, (_a = value.ding.detection_type) !== null && _a !== void 0 ? _a : value.subtype);
@@ -747,25 +722,23 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._adapter.upsertState(`${this.eventsChannelId}.message`, constants_1.COMMON_EVENTS_MESSAGE, value.aps.alert);
     }
     onMotion(value) {
-        this.debug(`Recieved Motion Event (${util.inspect(value, true, 1)})`);
+        this.debug(`Received Motion Event (${util.inspect(value, true, 1)})`);
         this._adapter.upsertState(`${this.eventsChannelId}.motion`, constants_1.COMMON_MOTION, value);
         value && this.conditionalRecording(EventState.ReactingOnMotion);
     }
-    onDorbell(value) {
+    onDoorbell(value) {
         if (this._doorbellEventActive) {
-            this.debug(`Recieved Doorbell Event, but we are already reacting. Ignoring.`);
+            this.debug(`Received Doorbell Event, but we are already reacting. Ignoring.`);
             return;
         }
         this.info("Doorbell pressed --> Will ignore additional presses for the next 25s.");
-        this.debug(`Recieved Doorbell Event (${util.inspect(value, true, 1)})`);
+        this.debug(`Received Doorbell Event (${util.inspect(value, true, 1)})`);
         this._doorbellEventActive = true;
         this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, constants_1.COMMON_EVENTS_DOORBELL, true);
         setTimeout(() => {
             this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, constants_1.COMMON_EVENTS_DOORBELL, false);
         }, 5000);
-        setTimeout(() => {
-            this._doorbellEventActive = false;
-        }, 25000);
+        setTimeout(() => this._doorbellEventActive = false, 25000);
         this.conditionalRecording(EventState.ReactingOnDoorbell, value.ding.image_uuid);
     }
     async conditionalRecording(state, uuid) {

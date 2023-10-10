@@ -12,21 +12,21 @@ export const COMMON_INFO_DESCRIPTION: Partial<ioBroker.StateCommon> = {
   role: "text",
   name: "Device Name",
   read: true,
-  write: false
+  write: false,
 }
 export const COMMON_INFO_EXTERNAL_CONNECTION: Partial<ioBroker.StateCommon> = {
   type: "boolean",
   role: "state",
   name: "External Power",
   read: true,
-  write: false
+  write: false,
 }
 export const COMMON_INFO_KIND: Partial<ioBroker.StateCommon> = {
   type: "string",
   role: "text",
   name: "Product",
   read: true,
-  write: false
+  write: false,
 }
 export const COMMON_INFO_BATTERY_PERCENTAGE: Partial<ioBroker.StateCommon> = {
   type: "number",
@@ -34,21 +34,21 @@ export const COMMON_INFO_BATTERY_PERCENTAGE: Partial<ioBroker.StateCommon> = {
   name: "Battery",
   read: true,
   write: false,
-  unit: "%"
+  unit: "%",
 }
 export const COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY: Partial<ioBroker.StateCommon> = {
   type: "string",
   role: "state",
   name: "Battery Category",
   read: true,
-  write: false
+  write: false,
 }
 export const COMMON_INFO_WIFI_NAME: Partial<ioBroker.StateCommon> = {
   type: "string",
   role: "text",
   name: "Wifi",
   read: true,
-  write: false
+  write: false,
 }
 export const COMMON_INFO_LATEST_SIGNAL_STRENGTH: Partial<ioBroker.StateCommon> = {
   type: "number",
