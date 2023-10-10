@@ -61,6 +61,19 @@
     "mode": "daemon",
     "name": "ring",
     "news": {
+      "5.0.0": {
+        "en": "migrated the configuration to JSON\nmany changes for livestream and high-definition screenshots\nRefactoring and cleanup",
+        "de": "die Konfiguration zu JSON migriert\nviele änderungen für livestream und high-definition screenshots\nHerstellung und Reinigung",
+        "ru": "мигрировали конфигурацию в JSON\nмного изменений для скриншотов livestream и high-definition\nРефакторинг и очистка",
+        "pt": "migraram a configuração para JSON\nmuitas alterações para livestream e capturas de tela de alta definição\nRefactoring e limpeza",
+        "nl": "de configuratie van JSON\nveel veranderingen voor livestream and high-definition screenshots\nHerstarten en opruimen",
+        "fr": "a migré la configuration vers JSON\nde nombreux changements pour les captures d'écran en direct et haute définition\nRefactoring and cleanup",
+        "it": "migrata la configurazione a JSON\nmolte modifiche per gli screenshot livestream e ad alta definizione\nRefactoring e pulizia",
+        "es": "migraron la configuración a JSON\nmuchos cambios para pantallas de flujo vivo y alta definición\nRefactorización y limpieza",
+        "pl": "przeprowadziło to do migracji do JSON\nwiele zmian na żywostream i high-definition screenshot\nOdtwarzanie i oczyszczanie",
+        "uk": "мігрувати конфігурацію в JSON\nбагато змін для живого потоку та знімків високої чіткості\nРефакторинг і очищення",
+        "zh-cn": "迁移到联合协商会的组合\n对上游和高指标屏幕进行的许多变化\n改建和清洁"
+      },
       "5.0.0-alpha.0": {
         "en": "Ding event is now working again for Ring-Intercom\nauto livestream creation takes now value from config, before fix\nsnapshot now async, because snapshot and livestream in parallel does not work\nlivestream duration now settable via tree entry will be auto reset via livestream request.\ntwo new config entries auto_livestream and auto_snapshot to disable auto creation of livestream and snapshot.\nsome minor corrections to code\nRemoved binary States\nImprovements for vis compatibility\nRefactoring and cleanup\nUpdate Packages",
         "de": "Ding-Event funktioniert jetzt wieder für Ring-Intercom\nauto livestream schöpfung nimmt jetzt wert von config, bevor fix\nsnapshot jetzt async, weil snapshot und livestream parallel nicht funktionieren\ndie jetzt über den baumeintrag einstellbare livestream-dauer wird über die livestream-anfrage automatisch zurückgesetzt.\nzwei neue config einträge auto_livestream und auto_snapshot, um die automatische erstellung von livestream und snapshot zu deaktivieren.\neinige kleinere korrekturen zum code\nEntfernt binäre Staaten\nVerbesserung der Vis-Kompatibilität\nHerstellung und Reinigung\nPakete aktualisieren",
@@ -138,19 +151,6 @@
         "pl": "Package Update\nUwaga z Type stickup_longfinem nie była jeszcze wspierana",
         "uk": "Оновлення пакетів\nПристрої з Type stickup_cam_longfin ще не підтримується #483",
         "zh-cn": "最新包装\n第483号行动"
-      },
-      "3.2.7": {
-        "en": "prepare js-controller v5",
-        "de": "js-controller v5",
-        "ru": "подготовить js-контроллер v5",
-        "pt": "preparar js-controller v5",
-        "nl": "bereid js-controller v5",
-        "fr": "préparer js-controller v5",
-        "it": "preparare js-controller v5",
-        "es": "preparar js-controller v5",
-        "pl": "js-kontroler v5",
-        "uk": "підготовка js-controller v5",
-        "zh-cn": "j 准备控制勒诉5"
       }
     },
     "platform": "Javascript/Node.js",
@@ -170,7 +170,7 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "5.0.0-alpha.0"
+    "version": "5.0.0"
   },
   "instanceObjects": [
     {

@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FileService = void 0;
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
-const main_1 = require("../../main");
 require("@iobroker/types");
+const main_1 = require("../../main");
 class FileService {
     static getPath(basePath, extendedPath, count, shortId, fullId, kind) {
         const fullPath = path_1.default.join(basePath, fullId, extendedPath)
@@ -18,7 +18,7 @@ class FileService {
         return {
             fullPath: fullPath,
             dirname: path_1.default.dirname(fullPath),
-            filename: path_1.default.basename(fullPath)
+            filename: path_1.default.basename(fullPath),
         };
     }
     static async prepareFolder(dirname) {
@@ -50,7 +50,8 @@ class FileService {
         fs_1.default.unlinkSync(fullPath);
     }
     static async getVisUrl(adapter, fullId, fileName) {
-        const vis = await adapter.getForeignObjectAsync("system.adapter.web.0").catch((reason) => {
+        const vis = await adapter.getForeignObjectAsync("system.adapter.web.0")
+            .catch(reason => {
             adapter.logCatch(`Couldn't load "web.0" Adapter object.`, reason);
         });
         if (vis && vis.native) {
@@ -58,7 +59,7 @@ class FileService {
             const prefix = `${adapter.namespace}/${adapter.name}_${adapter.instance}_${fullId}_${fileName}`;
             return {
                 visURL: `${secure}://${adapter.host}:${vis.native.port}/${prefix}`,
-                visPath: `${adapter.absoluteDefaultDir}files/${prefix}`
+                visPath: `${adapter.absoluteDefaultDir}files/${prefix}`,
             };
         }
         return { visURL: "", visPath: "" };
@@ -70,10 +71,7 @@ class FileService {
     }
     static async writeFile(fullPath, data, adapter, cb) {
         if (!this.IOBROKER_FILES_REGEX.test(fullPath)) {
-            fs_1.default.writeFile(fullPath, data, () => {
-                if (cb)
-                    cb();
-            });
+            fs_1.default.writeFile(fullPath, data, () => cb && cb());
             return;
         }
         adapter.writeFile(adapter.namespace, this.reducePath(fullPath, adapter), data, (r) => {
@@ -82,8 +80,7 @@ class FileService {
             }
             else {
                 adapter.log.silly(`Adapter File ${fullPath} written!`);
-                if (cb)
-                    cb();
+                cb && cb();
             }
         });
     }
