@@ -1,12 +1,25 @@
 {
   "common": {
+    "adminUI": {
+      "config": "materialize",
+      "tab": "materialize"
+    },
     "adminTab": {
       "singleton": true,
       "name": {
         "en": "Ring Adapter",
-        "de": "Ring Adapter"
+        "de": "Ring Adapter",
+        "ru": "Кольцо адаптер",
+        "pt": "Adaptador de anel",
+        "nl": "Ring Adapter",
+        "fr": "Adaptateur de réglage",
+        "it": "Adattatore di anelli",
+        "es": "Adaptador de anillos",
+        "pl": "Pierścień",
+        "uk": "Кільковий адаптер",
+        "zh-cn": "导 言"
       },
-      "link": "",
+      "link": "/adapter/ring/tab_m.html?noFooter=true&instance=0",
       "fa-icon": "info"
     },
     "authors": [
@@ -172,17 +185,20 @@
     }
   ],
   "native": {
-    "del_old_livestream": true,
-    "del_old_snapshot": true,
     "email": "email@test.foo",
+    "del_old_livestream": true,
+    "path_livestream": "",
     "filename_livestream": "livestream%i_%d.mp4",
-    "filename_snapshot": "snapshot%i_%d.jpg",
-    "password": "password",
-    "pollsec": 15,
     "recordtime_livestream": 10,
     "recordtime_auto_livestream": 20,
-    "path_livestream": "",
+    "del_old_snapshot": true,
+    "filename_snapshot": "snapshot%i_%d.jpg",
     "path_snapshot": "",
+    "del_old_HDsnapshot": true,
+    "filename_HDsnapshot": "snapshot%i_%d.jpg",
+    "path_HDsnapshot": "",
+    "password": "password",
+    "pollsec": 15,
     "refreshtoken": "",
     "sentry_enable": true,
     "timeout": 5,

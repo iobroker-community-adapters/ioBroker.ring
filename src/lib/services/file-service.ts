@@ -1,8 +1,8 @@
-import path from "path";
-import fs from "fs";
-import { RingAdapter } from "../../main";
-import "@iobroker/types";
-import { PathInfo } from "./path-info";
+import path from "path"
+import fs from "fs"
+import { RingAdapter } from "../../main"
+import "@iobroker/types"
+import { PathInfo } from "./path-info"
 
 export class FileService {
   public static readonly IOBROKER_FILES_REGEX = new RegExp(/.*iobroker-data\/files.*/);
@@ -81,21 +81,20 @@ export class FileService {
     return tempPath;
   }
 
-  public static async writeFile(fullPath: string, data: Buffer, adapter: RingAdapter): Promise<void> {
+  public static async writeFile(fullPath: string, data: Buffer, adapter: RingAdapter, cb?: ()=>void): Promise<void> {
     if (!this.IOBROKER_FILES_REGEX.test(fullPath)) {
-      fs.writeFileSync(fullPath, data);
+      fs.writeFile(fullPath, data, ()=>{
+        if (cb) cb();
+      })
       return;
     }
-    return new Promise<void>((resolve, reject) => {
-      adapter.writeFile(adapter.namespace, this.reducePath(fullPath, adapter), data, (r) => {
-        if (r) {
-          adapter.logCatch(`Failed to write Adapter File '${fullPath}'`, r.message);
-          reject(r);
-        } else {
-          adapter.log.silly(`Adapter File ${fullPath} written!`);
-          resolve();
-        }
-      });
+    adapter.writeFile(adapter.namespace, this.reducePath(fullPath, adapter), data, (r) => {
+      if (r) {
+        adapter.logCatch(`Failed to write Adapter File '${fullPath}'`, r.message)
+      } else {
+        adapter.log.silly(`Adapter File ${fullPath} written!`)
+        if (cb) cb()
+      }
     });
   }
 

@@ -37,6 +37,8 @@ const adapter_core_1 = require("@iobroker/adapter-core");
 const ringApiClient_1 = require("./lib/ringApiClient");
 const path_1 = __importDefault(require("path"));
 const file_service_1 = require("./lib/services/file-service");
+const node_schedule_1 = __importDefault(require("node-schedule"));
+const suncalc_1 = __importDefault(require("suncalc"));
 // Load your modules here, e.g.:
 // import * as fs from "fs";
 class RingAdapter extends adapter_core_1.Adapter {
@@ -46,18 +48,47 @@ class RingAdapter extends adapter_core_1.Adapter {
     get absoluteDefaultDir() {
         return utils.getAbsoluteDefaultDataDir();
     }
+    get Sunrise() {
+        return this.sunrise;
+    }
+    get Sunset() {
+        return this.sunset;
+    }
     constructor(options = {}) {
         options.systemConfig = true;
         super({
             ...options,
             name: "ring",
+            useFormatDate: true,
         });
         this.states = {};
+        this.sunrise = 0;
+        this.sunset = 0;
         this.on("ready", this.onReady.bind(this));
         this.on("stateChange", this.onStateChange.bind(this));
         // this.on("objectChange", this.onObjectChange.bind(this));
         // this.on("message", this.onMessage.bind(this));
         this.on("unload", this.onUnload.bind(this));
+    }
+    async CalcSunData() {
+        try {
+            this.log.debug("Run CalcSunData");
+            if (this.latitude && this.longitude) {
+                const today = new Date();
+                const sunData = suncalc_1.default.getTimes(today, this.latitude, this.longitude);
+                this.sunset = sunData.night.getTime(); // night is really dark, sunset is to early
+                this.sunrise = sunData.nightEnd.getTime(); // same here vice versa
+                this.log.debug("Sunset: " + new Date(this.sunset).toLocaleString() + ", Sunrise: " + new Date(this.sunrise).toLocaleString());
+            }
+            else {
+                this.log.error("Latitude or Longtidue not defined in System");
+            }
+        }
+        catch (error) {
+            const eMsg = "Error in CalcSunData: " + error;
+            this.log.error(eMsg);
+            console.error(eMsg);
+        }
     }
     /**
      * Is called when databases are connected and adapter received configuration.
@@ -102,6 +133,15 @@ class RingAdapter extends adapter_core_1.Adapter {
         }
         this.log.info(`Initializing Api Client`);
         await this.apiClient.init();
+        this.log.info(`Get sunset and sunrise`);
+        await this.CalcSunData();
+        //Daily schedule somewhen from 00:00:20 to 00:00:40
+        const scheduleSeconds = Math.round(Math.random() * 20 + 20);
+        this.log.info(`Daily sun parameter calculation scheduled for 00:00:${scheduleSeconds}`);
+        node_schedule_1.default.scheduleJob("SunData", `${scheduleSeconds} 0 0 * * *`, async () => {
+            this.log.info(`Cronjob 'Sun parameter calculation' starts`);
+            await this.CalcSunData();
+        });
     }
     /**
      * Is called when adapter shuts down - callback has to be called under any circumstances!
@@ -209,48 +249,6 @@ class RingAdapter extends adapter_core_1.Adapter {
         }
         catch (e) {
             this.log.warn(`Error Updating State ${id} to ${value}: ${(_a = e === null || e === void 0 ? void 0 : e.message) !== null && _a !== void 0 ? _a : e}`);
-            if ((e === null || e === void 0 ? void 0 : e.stack) !== undefined) {
-                this.log.debug(`Error Stack: ${e.stack}`);
-            }
-        }
-    }
-    async upsertFile(id, common, value, MIME_Type, timestamp) {
-        var _a;
-        try {
-            if (this.states[id] === timestamp) {
-                this.log.silly(`upsertFile ${id} prevented as timestamp is the same`);
-                // Unchanged Value
-                return;
-            }
-            this.log.silly(`upsertFile ${id}, length: ${value.length}`);
-            const foreignId = `${this.namespace}.${id}`;
-            if (this.states[id] !== undefined) {
-                this.states[id] = timestamp;
-                await this.setForeignBinaryStateAsync(foreignId, value).catch((reason) => {
-                    this.logCatch("Couldn't write File-State", reason);
-                });
-                return;
-            }
-            const { device, channel, stateName } = RingAdapter.getSplittedIds(id);
-            this.log.silly(`upsertFile.First File create State first for ${id}.\n Device: ${device}; Channel: ${channel}; StateName: ${stateName}`);
-            // this.log.silly(`Create Binary State Common: ${JSON.stringify(common)}`);
-            const obj = {
-                _id: foreignId,
-                native: {},
-                type: "state",
-                common: common
-            };
-            await this.setObjectNotExistsAsync(id, obj).catch((reason) => {
-                // await this.createStateAsync(device, channel, stateName, common).catch((reason) => {
-                this.logCatch("Couldn't Create File-State", reason);
-            });
-            await this.setForeignBinaryStateAsync(foreignId, value).catch((reason) => {
-                this.logCatch("Couldn't write File-State", reason);
-            });
-            this.states[id] = timestamp;
-        }
-        catch (e) {
-            this.log.warn(`Error Updating File State ${id}: ${(_a = e === null || e === void 0 ? void 0 : e.message) !== null && _a !== void 0 ? _a : e}`);
             if ((e === null || e === void 0 ? void 0 : e.stack) !== undefined) {
                 this.log.debug(`Error Stack: ${e.stack}`);
             }

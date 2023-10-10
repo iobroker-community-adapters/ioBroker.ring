@@ -91,7 +91,6 @@
 <body>
 
 <div class="m adapter-container">
-
     <div class="row">
         <div class="input-field col s6">
             <img src="ring.png" class="logo">
@@ -101,13 +100,16 @@
     <div class="row">
         <div class="col s12">
             <ul class="tabs">
-                <li class="tab col s2"><a href="#tab-login"><img src="preferences-system-login.png"
+                <li class="tab col s3"><a href="#tab-login"><img src="preferences-system-login.png"
                                                                  style="width: 5%; min-width: 50px;" title="Login"
                                                                  alt="login" class="logo"></a></li>
-                <li class="tab col s2"><a href="#tab-snapshot"><img src="camera-photo-5.png"
+                <li class="tab col s3"><a href="#tab-snapshot"><img src="camera-photo-5.png"
                                                                     style="width: 5%; min-width: 50px;" title="Snapshot"
                                                                     alt="snapshot" class="logo"></a></li>
-                <li class="tab col s2"><a href="#tab-livestream"><img src="camera-video.png"
+                <li class="tab col s3"><a href="#tab-HDsnapshot"><img src="camera-photo-6.png"
+                                                                    style="width: 5%; min-width: 50px;" title="HD Snapshot"
+                                                                    alt="HD snapshot" class="logo"></a></li>
+                <li class="tab col s3"><a href="#tab-livestream"><img src="camera-video.png"
                                                                       style="width: 5%; min-width: 50px;"
                                                                       title="Livestream" alt="livestream" class="logo"></a>
                 </li>
@@ -119,7 +121,7 @@
             <div class="col s12">
                 <a href="https://github.com/iobroker-community-adapters/ioBroker.ring#install--configuration"
                    target="_blank">
-                    <p class="translate">ringdescription</p>
+                    <p class="translate">ring-description</p>
                 </a>
             </div>
         </div>
@@ -128,7 +130,7 @@
               <input class="value" id="twofaceauth" type="checkbox" />
               <label for="twofaceauth" class="translate">Set two face auth (once)</label>
             </div -->
-            <div class="input-field col s12 m6 l16">
+            <div class="input-field col s12 m8 l6">
                 <input id="refreshtoken" type="text" size="30" class="value"/>
                 <label class="translate" for="refreshtoken">Refreshtoken (Two Face Auth)</label>
             </div>
@@ -143,6 +145,22 @@
             </div>
         </div>
         <div class="row">
+            <div class="iob-text col s12">
+                <p class="translate">wo Sub</p>
+            </div>
+            <div class="input-field col s12 m6 l4">
+                <select id="save_snapshot" class="value">
+                    <option value=0>-</option>
+                    <option value=5>5</option>
+                    <option value=15>15</option>
+                    <option value=30>30</option>
+                    <option value=60>60</option>
+                    <option value=3600>3600</option>
+                </select>
+                <label class="translate" for="save_snapshot">Auto save</label>
+            </div>
+        </div>
+        <div class="row">
             <div class="input-field col s12 m6 l4">
                 <input id="path_snapshot" type="text" size="30" class="value"/>
                 <label class="translate" for="path_snapshot">Path</label>
@@ -152,43 +170,143 @@
             <div class="input-field col s12 m6 l4">
                 <input id="filename_snapshot" type="text" size="30" class="value"/>
                 <label class="translate" for="filename_snapshot">Filename</label>
-                <input class="value" id="del_old_snapshot" type="checkbox"/>
-                <label for="del_old_snapshot" class="translate">Delete old one</label>
+                <div class="col s12 m6 l6">
+                    <input class="value" id="del_old_snapshot" type="checkbox"/>
+                    <label for="del_old_snapshot" class="translate">Delete old one</label>
+                </div>
+                <div class="col s12 m6 l6">
+                    <input class="value" id="overlay_snapshot" type="checkbox"/>
+                    <label for="overlay_snapshot" class="translate">Overlay</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-HDsnapshot" class="col s12 page">
+        <div class="row">
+            <div class="iob-text col s12">
+                <p class="translate">info</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12 m8 l4">
+                <input class="value" id="auto_HDsnapshot" type="checkbox"/>
+                <label for="auto_HDsnapshot" class="translate">Auto event</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="iob-text col s12">
+                <p class="translate">wo Sub</p>
+            </div>
+            <div class="input-field col s12 m6 l4">
+                <select id="save_HDsnapshot" class="value">
+                    <option value=0>-</option>
+                    <option value=5>5</option>
+                    <option value=15>15</option>
+                    <option value=30>30</option>
+                    <option value=60>60</option>
+                    <option value=3600>3600</option>
+                </select>
+                <label class="translate" for="save_HDsnapshot">Auto save</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12 m8 l4">
+                <input id="path_HDsnapshot" type="text" size="30" class="value"/>
+                <label class="translate" for="path_HDsnapshot">Path</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12 m8 l4">
+                <input id="filename_HDsnapshot" type="text" size="30" class="value"/>
+                <label class="translate" for="filename_HDsnapshot">Filename</label>
+                <div class="col s12 m6 l6">
+                    <input class="value" id="del_old_HDsnapshot" type="checkbox"/>
+                    <label for="del_old_HDsnapshot" class="translate">Delete old one</label>
+                </div>
+                <div class="col s12 m6 l6">
+                    <input class="value" id="overlay_HDsnapshot" type="checkbox"/>
+                    <label for="overlay_HDsnapshot" class="translate">Overlay</label>
+                </div>
+            </div>
+            <div class="input-field col s12 m8 l4">
+                <select id="sharpen_HDsnapshot" class="value">
+                    <option value=0 class="translate">wo</option>
+                    <option value=1 class="translate">less</option>
+                    <option value=2 class="translate">more</option>
+                    <option value=3 class="translate">much</option>
+                    <option value=4 class="translate">most</option>
+                </select>
+                <label class="translate" for="sharpen_HDsnapshot">Sharpening</label>
+                <input class="value" id="night_sharpen_HDsnapshot" type="checkbox"/>
+                <label class="translate" for="night_sharpen_HDsnapshot">only at Night</label>
+            </div>
+            <div class="input-field col s12 m8 l4">
+                <select id="contrast_HDsnapshot" class="value">
+                    <option value=0 class="translate">wo</option>
+                    <option value=1 class="translate">more</option>
+                    <option value=2 class="translate">most</option>
+                </select>
+                <label for="contrast_HDsnapshot" class="translate">Contrast</label>
+                <input class="value" id="night_contrast_HDsnapshot" type="checkbox"/>
+                <label class="translate" for="night_contrast_HDsnapshot">only at Night</label>
             </div>
         </div>
     </div>
 
     <div id="tab-livestream" class="col s12 page">
         <div class="row">
-            <div class="input-field col s12 m6 l4">
+            <div class="input-field col s12 m8 l4">
                 <input class="value" id="auto_livestream" type="checkbox"/>
                 <label for="auto_livestream" class="translate">Auto event</label>
             </div>
         </div>
         <div class="row">
+            <div class="iob-text col s12">
+                <p class="translate">wo Sub</p>
+            </div>
             <div class="input-field col s12 m6 l4">
+                <select id="save_livestream" class="value">
+                    <option value=0>-</option>
+                    <option value=5>5</option>
+                    <option value=15>15</option>
+                    <option value=30>30</option>
+                    <option value=60>60</option>
+                    <option value=3600>3600</option>
+                </select>
+                <label class="translate" for="save_livestream">Auto save</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12 m8 l4">
                 <input class="value number" id="recordtime_auto_livestream" min="0" max="60" type="number"/>
                 <label class="translate" for="recordtime_auto_livestream">Automatic recording time in seconds</label>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12 m6 l4">
+            <div class="input-field col s12 m8 l4">
                 <input class="value number" id="recordtime_livestream" min="0" max="60" type="number"/>
                 <label class="translate" for="recordtime_livestream">Recording time in seconds</label>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12 m6 l4">
+            <div class="input-field col s12 m8 l4">
                 <input id="path_livestream" type="text" size="30" class="value"/>
                 <label class="translate" for="path_livestream">Path</label>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12 m6 l4">
+            <div class="input-field col s12 m8 l4">
                 <input id="filename_livestream" type="text" size="30" class="value"/>
                 <label class="translate" for="filename_livestream">Filename</label>
-                <input class="value" id="del_old_livestream" type="checkbox"/>
-                <label for="del_old_livestream" class="translate">Delete old one</label>
+                <div class="col s12 m6 l6">
+                    <input class="value" id="del_old_livestream" type="checkbox"/>
+                    <label for="del_old_livestream" class="translate">Delete old one</label>
+                </div>
+                <div class="col s12 m6 l6">
+                    <input class="value" id="overlay_Livestream" type="checkbox"/>
+                    <label for="overlay_Livestream" class="translate">Overlay</label>
+                </div>
             </div>
         </div>
     </div>
