@@ -30,7 +30,7 @@
   "Refreshtoken (Two Face Auth)": "Refreshtoken (Two Face Auth)",
   "Delete old one": "Delete old files",
   "without": "without",
-  "Usage without a subscription!": "Usage without a subscription!",
+  "NoSub": "Usage without a subscription!",
   "Login": "Login",
   "HD Snapshot": "HD Snapshot",
   "5 seconds": "5 seconds",
@@ -39,5 +39,6 @@
   "1 minute": "1 minute",
   "1 hour": "1 hour",
   "-": "-",
-  "hd_info": "<br>Important information!<br>The settings \"Overlaying text\", \"Picture sharpening\" and \"Picture contrast\" are time consuming (up to a few Seconds).<br>If a fast display time is important, please turn them all off.<br><br>Tip: Picture sharpening and Picture contrast working best at night."
+  "HDInfo": "<br>Important information!<br>The settings \"Overlaying text\", \"Picture sharpening\" and \"Picture contrast\" are time consuming (up to a few Seconds).<br>If a fast display time is important, please turn them all off.",
+  "HDInfoTip": "Tip: Picture sharpening and Picture contrast working best at night."
 }

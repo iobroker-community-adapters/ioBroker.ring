@@ -27,10 +27,10 @@
   "Contrast": "Bildkontrast",
   "only at Night": "Nur nachts aktiv.",
   "Set two face auth (once)": "Setze Tow Face Authentification (einmal)",
-  "Refreshtoken (Two Face Auth)": "Refreshtoken (Two Face Auth)",
+  "Refreshtoken (Two Face Auth)": "Token erneuern (Zwei-Faktor-Auth.)",
   "Delete old one": "Alte Dateien löschen",
   "without": "ohne",
-  "Usage without a subscription!": "Nutzung ohne Abonnement!",
+  "NoSub": "Nutzung ohne Abonnement!",
   "Login": "Anmeldung",
   "HD Snapshot": "HD-Schnappschuss",
   "5 seconds": "5 Sekunden",
@@ -39,5 +39,6 @@
   "1 minute": "1 Minute",
   "1 hour": "1 Stunde",
   "-": "-",
-  "hd_info": "Wichtige Informationen!<br>Die Einstellungen \"Überlagerungstext\", \"Bildschärfe\" und \"Bildkontrast\" sind zeitaufwendig (bis zu einigen Sekunden).<br>Wenn eine schnelle Anzeigezeit wichtig ist, bitte abschalten.<br><br>Tipp: Bildschärfe und Bildkontrast arbeiten am Besten in der Nacht."
+  "HDInfo": "Wichtige Informationen!<br>Die Einstellungen \"Überlagerungstext\", \"Bildschärfe\" und \"Bildkontrast\" sind zeitaufwendig (bis zu einigen Sekunden).<br>Wenn eine schnelle Anzeigezeit wichtig ist, bitte abschalten.",
+  "HDInfoTip": "Tipp: Bildschärfe und Bildkontrast arbeiten am Besten in der Nacht."
 }

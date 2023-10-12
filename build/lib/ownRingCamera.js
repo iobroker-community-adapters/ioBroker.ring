@@ -67,7 +67,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         const it = ["lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"];
         const es = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
         const pl = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"];
-        // const uk = ["понеділок", "вівторок", "середа", "четвер", "п'ятниця", "субота", "неділя"];
+        const uk = ["понеділок", "вівторок", "середа", "четвер", "п'ятниця", "субота", "неділя"];
         const zh = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
         const dow = (new Date().getDay() + 6) % 7;
         switch (this._adapter.language) {
@@ -80,7 +80,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             case "it": return it[dow];
             case "es": return es[dow];
             case "pl": return pl[dow];
-            // case "uk": return pl[dow];
+            case "uk": return uk[dow];
             case "zh-cn": return zh[dow];
         }
         return en[dow];
@@ -602,6 +602,12 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._lastSnapShotDir = await this._adapter.tryGetStringState(`${this.snapshotChannelId}.file`);
         this._lastHDSnapShotDir = await this._adapter.tryGetStringState(`${this.HDsnapshotChannelId}.file`);
         this._lastLiveStreamDir = await this._adapter.tryGetStringState(`${this.liveStreamChannelId}.file`);
+        if (this._adapter.config.auto_snapshot === undefined)
+            this._adapter.config.auto_snapshot = false;
+        if (this._adapter.config.auto_HDsnapshot === undefined)
+            this._adapter.config.auto_HDsnapshot = false;
+        if (this._adapter.config.auto_livestream === undefined)
+            this._adapter.config.auto_livestream = false;
         this._adapter.upsertState(`${this.fullId}.${constants_1.STATE_ID_DEBUG_REQUEST}`, constants_1.COMMON_DEBUG_REQUEST, false, true, true);
         this._adapter.upsertState(`${this.snapshotChannelId}.auto`, constants_1.COMMON_SNAPSHOT_AUTO, this._adapter.config.auto_snapshot, true, true);
         this._adapter.upsertState(`${this.HDsnapshotChannelId}.auto`, constants_1.COMMON_HDSNAPSHOT_AUTO, this._adapter.config.auto_HDsnapshot, true, true);

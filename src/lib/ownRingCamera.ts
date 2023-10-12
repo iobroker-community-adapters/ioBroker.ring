@@ -139,7 +139,7 @@ export class OwnRingCamera extends OwnRingDevice {
     const it = ["lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"];
     const es = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
     const pl = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"];
-    // const uk = ["понеділок", "вівторок", "середа", "четвер", "п'ятниця", "субота", "неділя"];
+    const uk = ["понеділок", "вівторок", "середа", "четвер", "п'ятниця", "субота", "неділя"];
     const zh = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
 
     const dow = (new Date().getDay()+ 6) % 7
@@ -154,7 +154,7 @@ export class OwnRingCamera extends OwnRingDevice {
       case "it": return it[dow];
       case "es": return es[dow];
       case "pl": return pl[dow];
-      // case "uk": return pl[dow];
+      case "uk": return uk[dow];
       case "zh-cn": return zh[dow];
     }
     return en[dow];
@@ -730,15 +730,15 @@ export class OwnRingCamera extends OwnRingDevice {
     this._adapter.createDevice(this.fullId, {
       name: `Device ${this.shortId} ("${this._ringDevice.data.description}")`,
     })
-    this._adapter.createChannel(this.fullId, CHANNEL_NAME_INFO, {name: `Info ${this.shortId}`});
-    this._adapter.createChannel(this.fullId, CHANNEL_NAME_SNAPSHOT, {name: `Snapshot ${this.shortId}`});
-    this._adapter.createChannel(this.fullId, CHANNEL_NAME_HDSNAPSHOT, {name: `HD Snapshot ${this.shortId}`});
-    this._adapter.createChannel(this.fullId, CHANNEL_NAME_LIVESTREAM, {name: `Livestream ${this.shortId}`});
-    this._adapter.createChannel(this.fullId, CHANNEL_NAME_HISTORY);
-    this._adapter.createChannel(this.fullId, CHANNEL_NAME_EVENTS);
+    this._adapter.createChannel(this.fullId, CHANNEL_NAME_INFO, {name: `Info ${this.shortId}`})
+    this._adapter.createChannel(this.fullId, CHANNEL_NAME_SNAPSHOT, {name: `Snapshot ${this.shortId}`})
+    this._adapter.createChannel(this.fullId, CHANNEL_NAME_HDSNAPSHOT, {name: `HD Snapshot ${this.shortId}`})
+    this._adapter.createChannel(this.fullId, CHANNEL_NAME_LIVESTREAM, {name: `Livestream ${this.shortId}`})
+    this._adapter.createChannel(this.fullId, CHANNEL_NAME_HISTORY)
+    this._adapter.createChannel(this.fullId, CHANNEL_NAME_EVENTS)
     if (this._ringDevice.hasLight) {
       this.debug(`Device with Light Capabilities detected`)
-      this._adapter.createChannel(this.fullId, CHANNEL_NAME_LIGHT, {name: `Light ${this.shortId}`});
+      this._adapter.createChannel(this.fullId, CHANNEL_NAME_LIGHT, {name: `Light ${this.shortId}`})
       this._adapter.upsertState(
         `${this.lightChannelId}.${STATE_ID_LIGHT_SWITCH}`,
         COMMON_LIGHT_SWITCH,
@@ -747,9 +747,12 @@ export class OwnRingCamera extends OwnRingDevice {
         true,
       );
     }
-    this._lastSnapShotDir = await this._adapter.tryGetStringState(`${this.snapshotChannelId}.file`);
-    this._lastHDSnapShotDir = await this._adapter.tryGetStringState(`${this.HDsnapshotChannelId}.file`);
-    this._lastLiveStreamDir = await this._adapter.tryGetStringState(`${this.liveStreamChannelId}.file`);
+    this._lastSnapShotDir = await this._adapter.tryGetStringState(`${this.snapshotChannelId}.file`)
+    this._lastHDSnapShotDir = await this._adapter.tryGetStringState(`${this.HDsnapshotChannelId}.file`)
+    this._lastLiveStreamDir = await this._adapter.tryGetStringState(`${this.liveStreamChannelId}.file`)
+    if (this._adapter.config.auto_snapshot === undefined) this._adapter.config.auto_snapshot = false
+    if (this._adapter.config.auto_HDsnapshot === undefined) this._adapter.config.auto_HDsnapshot = false
+    if (this._adapter.config.auto_livestream === undefined) this._adapter.config.auto_livestream = false
     this._adapter.upsertState(
       `${this.fullId}.${STATE_ID_DEBUG_REQUEST}`,
       COMMON_DEBUG_REQUEST,

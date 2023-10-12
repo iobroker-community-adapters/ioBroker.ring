@@ -30,7 +30,7 @@
   "Refreshtoken (Two Face Auth)": "Refreshtoken (Two Face Auth)",
   "Delete old one": "Eliminare vecchi file",
   "without": "senza",
-  "Usage without a subscription!": "Utilizzo senza abbonamento!",
+  "NoSub": "Utilizzo senza abbonamento!",
   "Login": "Login",
   "HD Snapshot": "Istantanea HD",
   "5 seconds": "5 secondi",
@@ -39,5 +39,6 @@
   "1 minute": "1 minuto",
   "1 hour": "1 ora",
   "-": "-",
-  "hd_info": "<br>Informazioni importanti!<br>Le impostazioni \"Testo di sovrapposizione\", \"Immagine affilare\" e \"Contrasto immagine\" consumano tempo (fino a pochi secondi).<br>Se un tempo di visualizzazione veloce è importante, si prega di spegnerli tutti.<br><br>Suggerimento: Immagine affilare e Immagine contrasto funziona meglio di notte."
+  "HDInfo": "<br>Informazioni importanti!<br>Le impostazioni \"Testo di sovrapposizione\", \"Immagine affilare\" e \"Contrasto immagine\" consumano tempo (fino a pochi secondi).<br>Se un tempo di visualizzazione veloce è importante, si prega di spegnerli tutti.",
+  "HDInfoTip": "Suggerimento: Immagine affilare e Immagine contrasto funziona meglio di notte."
 }

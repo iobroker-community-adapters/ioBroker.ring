@@ -16,10 +16,12 @@
         "refreshtoken": {
           "newLine": true,
           "type": "text",
+          "minRows": 2,
+          "maxRows": 20,
           "label": "Refreshtoken (Two Face Auth)",
           "sm": 12,
-          "md": 12,
-          "lg": 4
+          "md": 8,
+          "lg": 6
         }
       }
     },
@@ -35,8 +37,9 @@
         },
         "_staticText": {
           "newLine": true,
+          "style": {"color": "red"},
           "type": "staticText",
-          "text": "Usage without a subscription!",
+          "text": "NoSub",
           "sm": 12
         },
         "save_snapshot": {
@@ -71,38 +74,38 @@
           ],
           "sm": 12,
           "md": 6,
-          "lg": 2
+          "lg": 3
         },
         "path_snapshot": {
           "newLine": true,
           "type": "text",
           "label": "Path",
           "sm": 12,
-          "md": 12,
-          "lg": 4
+          "md": 8,
+          "lg": 6
         },
         "filename_snapshot": {
           "newLine": true,
           "type": "text",
           "label": "Filename",
           "sm": 12,
-          "md": 12,
-          "lg": 4
+          "md": 8,
+          "lg": 6
         },
         "del_old_snapshot": {
           "newLine": true,
           "type": "checkbox",
           "label": "Delete old one",
           "sm": 12,
-          "md": 6,
-          "lg": 2
+          "md": 4,
+          "lg": 3
         },
         "overlay_snapshot": {
           "type": "checkbox",
           "label": "Overlay",
           "sm": 12,
-          "md": 6,
-          "lg": 2
+          "md": 4,
+          "lg": 3
         }
       }
     },
@@ -112,8 +115,9 @@
       "type": "panel",
       "items": {
         "_info": {
+          "style": {"color": "orange", "fontWeight": "bold"},
           "type": "staticText",
-          "text": "hd_info",
+          "text": "HDInfo",
           "sm": 12
         },
         "auto_HDsnapshot": {
@@ -123,8 +127,9 @@
         },
         "_staticText": {
           "newLine": true,
+          "style": {"color": "red"},
           "type": "staticText",
-          "text": "Usage without a subscription!",
+          "text": "NoSub",
           "sm": 12
         },
         "save_HDsnapshot": {
@@ -159,38 +164,44 @@
           ],
           "sm": 12,
           "md": 6,
-          "lg": 2
+          "lg": 3
         },
         "path_HDsnapshot": {
           "newLine": true,
           "type": "text",
           "label": "Path",
           "sm": 12,
-          "md": 12,
-          "lg": 4
+          "md": 8,
+          "lg": 6
         },
         "filename_HDsnapshot": {
           "newLine": true,
           "type": "text",
           "label": "Filename",
           "sm": 12,
-          "md": 12,
-          "lg": 4
+          "md": 8,
+          "lg": 6
         },
         "del_old_HDsnapshot": {
           "newLine": true,
           "type": "checkbox",
           "label": "Delete old one",
           "sm": 12,
-          "md": 6,
-          "lg": 2
+          "md": 4,
+          "lg": 3
         },
         "overlay_HDsnapshot": {
           "type": "checkbox",
           "label": "Overlay",
           "sm": 12,
-          "md": 6,
-          "lg": 2
+          "md": 4,
+          "lg": 3
+        },
+        "_info_tip": {
+          "style": {"color": "blue"},
+          "type": "staticText",
+          "text": "HDInfoTip",
+          "sm": 12
         },
         "sharpen_HDsnapshot": {
           "newLine": true,
@@ -218,14 +229,14 @@
               "label": "most"
             }
           ],
-          "sm": 12,
+          "sm": 6,
           "md": 6,
           "lg": 2
         },
         "night_sharpen_HDsnapshot": {
           "type": "checkbox",
           "label": "only at Night",
-          "sm": 12,
+          "sm": 6,
           "md": 6,
           "lg": 2,
           "hidden": "!data.sharpen_HDsnapshot"
@@ -233,7 +244,7 @@
         "contrast_HDsnapshot": {
           "newLine": true,
           "type": "select",
-          "label": "Sharpening",
+          "label": "Contrast",
           "options": [
             {
               "value": 0,
@@ -248,14 +259,14 @@
               "label": "most"
             }
           ],
-          "sm": 12,
+          "sm": 6,
           "md": 6,
           "lg": 2
         },
         "night_contrast_HDsnapshot": {
           "type": "checkbox",
           "label": "only at Night",
-          "sm": 12,
+          "sm": 6,
           "md": 6,
           "lg": 2,
           "hidden": "!data.contrast_HDsnapshot"
@@ -263,8 +274,8 @@
       }
     },
     "_livestream": {
-      "label": "HD Snapshot",
-      "icon": "camera-photo-6.png",
+      "label": "Livestream",
+      "icon": "camera-video.png",
       "type": "panel",
       "items": {
         "auto_livestream": {
@@ -274,8 +285,9 @@
         },
         "_staticText": {
           "newLine": true,
+          "style": {"color": "red"},
           "type": "staticText",
-          "text": "Usage without a subscription!",
+          "text": "NoSub",
           "sm": 12
         },
         "save_livestream": {
@@ -309,8 +321,8 @@
             }
           ],
           "sm": 12,
-          "md": 6,
-          "lg": 2
+          "md": 7,
+          "lg": 4
         },
         "recordtime_auto_livestream": {
           "type": "number",
@@ -319,7 +331,7 @@
           "label": "Automatic recording time in seconds",
           "sm": 12,
           "md": 6,
-          "lg": 2
+          "lg": 4
         },
         "recordtime_livestream": {
           "type": "number",
@@ -328,38 +340,38 @@
           "label": "Recording time in seconds",
           "sm": 12,
           "md": 6,
-          "lg": 2
+          "lg": 4
         },
         "path_livestream": {
           "newLine": true,
           "type": "text",
           "label": "Path",
           "sm": 12,
-          "md": 12,
-          "lg": 4
+          "md": 8,
+          "lg": 6
         },
         "filename_livestream": {
           "newLine": true,
           "type": "text",
           "label": "Filename",
           "sm": 12,
-          "md": 12,
-          "lg": 4
+          "md": 8,
+          "lg": 6
         },
         "del_old_livestream": {
           "newLine": true,
           "type": "checkbox",
           "label": "Delete old one",
           "sm": 12,
-          "md": 6,
-          "lg": 2
+          "md": 4,
+          "lg": 3
         },
         "overlay_Livestream": {
           "type": "checkbox",
           "label": "Overlay",
           "sm": 12,
-          "md": 6,
-          "lg": 2
+          "md": 4,
+          "lg": 3
         }
       }
     }

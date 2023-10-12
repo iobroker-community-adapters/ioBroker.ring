@@ -30,7 +30,7 @@
   "Refreshtoken (Two Face Auth)": "Refreshtoken (uwierzytelnianie dwóch twarzy)",
   "Delete old one": "Delete stare pliki",
   "without": "bezpłodnie",
-  "Usage without a subscription!": "Użycie bez poboru!",
+  "NoSub": "Użycie bez poboru!",
   "Login": "Zaloguj sie",
   "HD Snapshot": "Migawka HD",
   "5 seconds": "5 sekund",
@@ -39,5 +39,6 @@
   "1 minute": "1 minuta",
   "1 hour": "1 godzina",
   "-": "-",
-  "hd_info": "<br>Important information!<br>Ustawienia  \"Tekst Overlaying\", \"Zdjęcie ostrym\" i \"Kontrast\" czas spędzania czasu (do kilku sekund).<br>Jeśli czas szybkiego wyświetlania jest bardzo ważny, to wszystko się odwraca.<br>Tip: ostry film i film kontrastują w nocy.<br><br>Tip: ostry film i film kontrastują w nocy."
+  "HDInfo": "<br>Important information!<br>Ustawienia  \"Tekst Overlaying\", \"Zdjęcie ostrym\" i \"Kontrast\" czas spędzania czasu (do kilku sekund).<br>Jeśli czas szybkiego wyświetlania jest bardzo ważny, to wszystko się odwraca.<br>Tip: ostry film i film kontrastują w nocy.",
+  "HDInfoTip": "Tip: ostry film i film kontrastują w nocy."
 }
