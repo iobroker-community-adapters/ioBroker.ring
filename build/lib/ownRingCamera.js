@@ -79,6 +79,8 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             case "fr": return fr[dow];
             case "it": return it[dow];
             case "es": return es[dow];
+            case "uk":
+                return uk[dow];
             case "pl": return pl[dow];
             case "zh-cn": return zh[dow];
         }
