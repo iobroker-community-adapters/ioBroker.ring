@@ -81,7 +81,7 @@ If you are using the [ring.com](https://ring.com) cloud, you find under history 
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### 5.0.0 (2023-10-10)
+### 5.0.1-beta.0 (2023-10-14)
 * (bluefox) migrated the configuration to JSON
 * (crocri) many changes for livestream and high-definition screenshots
 * (theimo1221) Refactoring and cleanup

@@ -20,18 +20,23 @@ import { RingAdapter } from "../main";
 import { RingApiClient } from "./ringApiClient";
 import {
   CHANNEL_NAME_EVENTS,
+  CHANNEL_NAME_HDSNAPSHOT,
   CHANNEL_NAME_HISTORY,
   CHANNEL_NAME_INFO,
   CHANNEL_NAME_LIGHT,
   CHANNEL_NAME_LIVESTREAM,
   CHANNEL_NAME_SNAPSHOT,
-  CHANNEL_NAME_HDSNAPSHOT,
   COMMON_DEBUG_REQUEST,
   COMMON_EVENTS_DETECTIONTYPE,
   COMMON_EVENTS_DOORBELL,
   COMMON_EVENTS_MESSAGE,
   COMMON_EVENTS_MOMENT,
   COMMON_EVENTS_TYPE,
+  COMMON_HDSNAPSHOT_AUTO,
+  COMMON_HDSNAPSHOT_FILE,
+  COMMON_HDSNAPSHOT_MOMENT,
+  COMMON_HDSNAPSHOT_REQUEST,
+  COMMON_HDSNAPSHOT_URL,
   COMMON_HISTORY_CREATED_AT,
   COMMON_HISTORY_KIND,
   COMMON_HISTORY_URL,
@@ -62,17 +67,12 @@ import {
   COMMON_SNAPSHOT_MOMENT,
   COMMON_SNAPSHOT_REQUEST,
   COMMON_SNAPSHOT_URL,
-  COMMON_HDSNAPSHOT_AUTO,
-  COMMON_HDSNAPSHOT_FILE,
-  COMMON_HDSNAPSHOT_MOMENT,
-  COMMON_HDSNAPSHOT_REQUEST,
-  COMMON_HDSNAPSHOT_URL,
   STATE_ID_DEBUG_REQUEST,
+  STATE_ID_HDSNAPSHOT_REQUEST,
   STATE_ID_LIGHT_SWITCH,
   STATE_ID_LIVESTREAM_DURATION,
   STATE_ID_LIVESTREAM_REQUEST,
   STATE_ID_SNAPSHOT_REQUEST,
-  STATE_ID_HDSNAPSHOT_REQUEST,
 } from "./constants";
 import { LastAction } from "./lastAction";
 import { FileService } from "./services/file-service";
@@ -144,7 +144,7 @@ export class OwnRingCamera extends OwnRingDevice {
 
     const dow = (new Date().getDay()+ 6) % 7
 
-    switch (this._adapter.language) {
+    switch (this._adapter.language as string) {
       case "en": return en[dow];
       case "de": return de[dow];
       case "ru": return ru[dow];
@@ -153,6 +153,8 @@ export class OwnRingCamera extends OwnRingDevice {
       case "fr": return fr[dow];
       case "it": return it[dow];
       case "es": return es[dow];
+      case "uk":
+        return uk[dow];
       case "pl": return pl[dow];
       case "uk": return uk[dow];
       case "zh-cn": return zh[dow];
