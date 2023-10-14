@@ -48,18 +48,31 @@ systemDictionary = {
         "uk": "Цей адаптер потребує дійсного токену. Щоб створити його, слідуйте опису в чителю.",
         "zh-cn": "这种适应者需要一个有效的基础。 为产生这一趋势,在读者说明之后。."
     },
-    "info": {
-        "en": "<br>Important information!<br>The settings \"Overlaying text\", \"Picture sharpening\" and \"Picture contrast\" are time consuming (up to a few Seconds).<br>If a fast display time is important, please turn them all off.<br><br>Tip: Picture sharpening and Picture contrast working best at night.",
-        "de": "<br>Wichtige Informationen!<br>Die Einstellungen \"Überlagerungstext\", \"Bildschärfe\" und \"Bildkontrast\" sind zeitaufwendig (bis zu einigen Sekunden).<br>Wenn eine schnelle Anzeigezeit wichtig ist, bitte abschalten.<br><br>Tipp: Bildschärfe und Bildkontrast arbeiten am Besten in der Nacht.",
-        "ru": "<br>Важная информация!<br>Настройки \"Overlaying текст\", \"Заточка изображения\" и \"Рисунок контраст\" теряют время (до нескольких секунд).<br>Если быстрое время отображения важно, пожалуйста, выключите их все.<br><br>Совет: заточка изображения и контраст изображения работают лучше всего ночью.",
-        "pt": "<br>InformaÃ§Ã£o Importante!<br>As definições \"Sobreposição de texto\", \"Afiar imagem\" e \"Contraste de imagem\" são demorados (até alguns segundos).<br>Se um tempo de exibição rápido é importante, por favor, desligue todos.<br><br>Dica: Afiação de imagem e contraste de imagem que funcionam melhor à noite.",
-        "nl": "<br>Belangrijke informatie!<br>De setting \"Vertaling:, \"Picture scherp\" en \"In tegenstelling tot\" het is tijd voor een paar seconden.<br>Als een snelle tijd belangrijk is, zet ze dan allemaal uit.<br><br>Foto's slijpend en Picture contrast werkt 's nachts het beste.",
-        "fr": "<br>Informations importantes !<br>Les paramètres \"Remplacer le texte\", \"Aiguillage de la photo\" et \"Contraste visuel\" consomme du temps (jusqu'à quelques secondes).<br>Si un temps d'affichage rapide est important, veuillez les éteindre.<br><br>Astuce: Aiguillage d'image et contraste d'image fonctionne le mieux la nuit.",
-        "it": "<br>Informazioni importanti!<br>Le impostazioni \"Testo di sovrapposizione\", \"Immagine affilare\" e \"Contrasto immagine\" consumano tempo (fino a pochi secondi).<br>Se un tempo di visualizzazione veloce è importante, si prega di spegnerli tutti.<br><br>Suggerimento: Immagine affilare e Immagine contrasto funziona meglio di notte.",
-        "es": "<br>¡Información importante!<br>La configuración \"Texto superpuesto\", \"Afilado de la imagen\" y \"Contraste de imagen\" son el consumo de tiempo (hasta unos segundos).<br>Si un tiempo de visualización rápido es importante, por favor apague todos.<br><br>Consejo: Afilado de imágenes y contraste de imagen trabajando mejor por la noche.",
-        "pl": "<br>Important information!<br>Ustawienia  \"Tekst Overlaying\", \"Zdjęcie ostrym\" i \"Kontrast\" czas spędzania czasu (do kilku sekund).<br>Jeśli czas szybkiego wyświetlania jest bardzo ważny, to wszystko się odwraca.<br>Tip: ostry film i film kontrastują w nocy.<br><br>Tip: ostry film i film kontrastują w nocy.",
-        "uk": "<br>Головна!<br>Налаштування \"Налаштування тексту\", \"Заточування зображень\" і \"Фото контраст\" час споживання (до декількох секунд).<br>Якщо час швидкого відображення важливо, будь ласка, ввімкніть їх всі.<br><br>Порада: малюнок заточування і контрастність зображень найкраще працює вночі.",
+    "HDInfo": {
+        "en": "<br>Important information!<br>The settings \"Overlaying text\", \"Picture sharpening\" and \"Picture contrast\" are time consuming (up to a few Seconds).<br>If a fast display time is important, please turn them all off.",
+        "de": "<br>Wichtige Informationen!<br>Die Einstellungen \"Überlagerungstext\", \"Bildschärfe\" und \"Bildkontrast\" sind zeitaufwendig (bis zu einigen Sekunden).<br>Wenn eine schnelle Anzeigezeit wichtig ist, bitte abschalten.",
+        "ru": "<br>Важная информация!<br>Настройки \"Overlaying текст\", \"Заточка изображения\" и \"Рисунок контраст\" теряют время (до нескольких секунд).<br>Если быстрое время отображения важно, пожалуйста, выключите их все.",
+        "pt": "<br>InformaÃ§Ã£o Importante!<br>As definições \"Sobreposição de texto\", \"Afiar imagem\" e \"Contraste de imagem\" são demorados (até alguns segundos).<br>Se um tempo de exibição rápido é importante, por favor, desligue todos.",
+        "nl": "<br>Belangrijke informatie!<br>De setting \"Vertaling:, \"Picture scherp\" en \"In tegenstelling tot\" het is tijd voor een paar seconden.<br>Als een snelle tijd belangrijk is, zet ze dan allemaal uit.",
+        "fr": "<br>Informations importantes !<br>Les paramètres \"Remplacer le texte\", \"Aiguillage de la photo\" et \"Contraste visuel\" consomme du temps (jusqu'à quelques secondes).<br>Si un temps d'affichage rapide est important, veuillez les éteindre.",
+        "it": "<br>Informazioni importanti!<br>Le impostazioni \"Testo di sovrapposizione\", \"Immagine affilare\" e \"Contrasto immagine\" consumano tempo (fino a pochi secondi).<br>Se un tempo di visualizzazione veloce è importante, si prega di spegnerli tutti.",
+        "es": "<br>¡Información importante!<br>La configuración \"Texto superpuesto\", \"Afilado de la imagen\" y \"Contraste de imagen\" son el consumo de tiempo (hasta unos segundos).<br>Si un tiempo de visualización rápido es importante, por favor apague todos.",
+        "pl": "<br>Important information!<br>Ustawienia  \"Tekst Overlaying\", \"Zdjęcie ostrym\" i \"Kontrast\" czas spędzania czasu (do kilku sekund).<br>Jeśli czas szybkiego wyświetlania jest bardzo ważny, to wszystko się odwraca.<br>Tip: ostry film i film kontrastują w nocy.",
+        "uk": "<br>Головна!<br>Налаштування \"Налаштування тексту\", \"Заточування зображень\" і \"Фото контраст\" час споживання (до декількох секунд).<br>Якщо час швидкого відображення важливо, будь ласка, ввімкніть їх всі.",
         "zh-cn": "<br>重要信息!<br>环境 \"全文\", \"B. 加剧和加剧\" A. \"形状\" 现在耗费时间(几秒)。.<br>如果快速展示时间很重要,请将其赶出。.<br><br>参与:在夜间最好地进行紧张和紧张关系。."
+    },
+    "HDInfoTip": {
+        "en": "Tip: Picture sharpening and Picture contrast working best at night.",
+        "de": "Tipp: Bildschärfe und Bildkontrast arbeiten am Besten in der Nacht.",
+        "ru": "Совет: заточка изображения и контраст изображения работают лучше всего ночью.",
+        "pt": "Dica: Afiação de imagem e contraste de imagem que funcionam melhor à noite.",
+        "nl": "Tip: Foto's slijpend en Picture contrast werkt 's nachts het beste.",
+        "fr": "Astuce: Aiguillage d'image et contraste d'image fonctionne le mieux la nuit.",
+        "it": "Suggerimento: Immagine affilare e Immagine contrasto funziona meglio di notte.",
+        "es": "Consejo: Afilado de imágenes y contraste de imagen trabajando mejor por la noche.",
+        "pl": "Tip: ostry film i film kontrastują w nocy.",
+        "uk": "Порада: малюнок заточування і контрастність зображень найкраще працює вночі.",
+        "zh-cn": "参与:在夜间最好地进行紧张和紧张关系。."
     },
     "User": {
         "en": "User",
@@ -249,7 +262,7 @@ systemDictionary = {
         "uk": "Автоматично зберігайте всі х хвилини",
         "zh-cn": "自动节约每分钟"
     },
-    "wo Sub": {
+    "NoSub": {
         "en": "Usage without a subscription!",
         "de": "Nutzung ohne Abonnement!",
         "ru": "Использование без подписки!",

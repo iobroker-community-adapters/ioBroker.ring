@@ -82,6 +82,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             case "uk":
                 return uk[dow];
             case "pl": return pl[dow];
+            case "uk": return uk[dow];
             case "zh-cn": return zh[dow];
         }
         return en[dow];
@@ -603,6 +604,12 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._lastSnapShotDir = await this._adapter.tryGetStringState(`${this.snapshotChannelId}.file`);
         this._lastHDSnapShotDir = await this._adapter.tryGetStringState(`${this.HDsnapshotChannelId}.file`);
         this._lastLiveStreamDir = await this._adapter.tryGetStringState(`${this.liveStreamChannelId}.file`);
+        if (this._adapter.config.auto_snapshot === undefined)
+            this._adapter.config.auto_snapshot = false;
+        if (this._adapter.config.auto_HDsnapshot === undefined)
+            this._adapter.config.auto_HDsnapshot = false;
+        if (this._adapter.config.auto_livestream === undefined)
+            this._adapter.config.auto_livestream = false;
         this._adapter.upsertState(`${this.fullId}.${constants_1.STATE_ID_DEBUG_REQUEST}`, constants_1.COMMON_DEBUG_REQUEST, false, true, true);
         this._adapter.upsertState(`${this.snapshotChannelId}.auto`, constants_1.COMMON_SNAPSHOT_AUTO, this._adapter.config.auto_snapshot, true, true);
         this._adapter.upsertState(`${this.HDsnapshotChannelId}.auto`, constants_1.COMMON_HDSNAPSHOT_AUTO, this._adapter.config.auto_HDsnapshot, true, true);

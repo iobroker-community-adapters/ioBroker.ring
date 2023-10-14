@@ -25,7 +25,7 @@
   "Refreshtoken (Two Face Auth)": "刷新令牌（两面验证）",
   "Delete old one": "删除旧档案",
   "without": "无",
-  "Usage without a subscription!": "无订阅!",
+  "NoSub": "无订阅!",
   "Auto": "汽车",
   "Confirm Password": "确认密码",
   "Manual": "手动的",
@@ -39,5 +39,6 @@
   "1 minute": "1分钟",
   "1 hour": "1小时",
   "-": "-",
-  "hd_info": "<br>重要信息!<br>环境 \"全文\", \"B. 加剧和加剧\" A. \"形状\" 现在耗费时间(几秒)。.<br>如果快速展示时间很重要,请将其赶出。.<br><br>参与:在夜间最好地进行紧张和紧张关系。."
+  "HDInfo": "<br>重要信息!<br>环境 \"全文\", \"B. 加剧和加剧\" A. \"形状\" 现在耗费时间(几秒)。.<br>如果快速展示时间很重要,请将其赶出。.",
+  "HDInfoTip": "参与:在夜间最好地进行紧张和紧张关系。."
 }
