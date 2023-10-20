@@ -99,6 +99,12 @@ doorbell recorded video.
 
 ### **WORK IN PROGRESS**
 
+* (theimo1221) Updated Packages
+* (theimo1221) Remove legacy states
+* (theimo1221) Add stickup_cam_mini_v2
+
+### 5.0.0 (2023-10-10)
+
 * (bluefox) migrated the configuration to JSON
 * (crocri) many changes for livestream and high-definition screenshots
 * (theimo1221) Refactoring and cleanup
@@ -111,9 +117,6 @@ doorbell recorded video.
 * (crocri) Removed binary States
 * (crocri) Improvements for vis compatibility done
 * (theimo1221) Refactoring and cleanup
-* (theimo1221) Updated Packages
-* (theimo1221) Remove legacy states
-* (theimo1221) Add stickup_cam_mini_v2
 
 ### 4.0.0 (2023-08-22)
 
