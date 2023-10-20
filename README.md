@@ -59,6 +59,11 @@ the fault of this adapter.
 
 ### V5 Breaking Changes
 
+1. Some datapoints got renamed to be more consistent (e.g. `livestream_request` got reduced to `request` as it already
+   is in channel `livestream`).
+2. You can now configure wether you want to react on events (with recording, snapshot, ...) or not.
+3. Binary states got removed.
+
 
 ### V3 Rewrite Breaking Changes
 
