@@ -58,7 +58,7 @@ class OwnRingDevice {
             case ring_client_api_1.RingCameraKind.stickup_cam_lunar:
             case ring_client_api_1.RingCameraKind.stickup_cam_elite:
             case ring_client_api_1.RingCameraKind.stickup_cam_longfin:
-            case "stickup_cam_longfin":
+            case "stickup_cam_mini_v2":
                 return `stickup`;
             case ring_client_api_1.RingDeviceType.IntercomHandsetAudio:
                 return `intercom`;

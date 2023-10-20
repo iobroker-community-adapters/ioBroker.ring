@@ -61,6 +61,19 @@
     "mode": "daemon",
     "name": "ring",
     "news": {
+      "5.0.1": {
+        "en": "Updated Packages\nRemove legacy states\nAdd stickup_cam_mini_v2",
+        "de": "Aktualisierte Pakete\nEntfernen ältere Staaten\nStickup_cam_mini_v2 hinzufügen",
+        "ru": "Обновленные пакеты\nУдалить состояния наследия\nДобавить Stickup_cam_mini_v2",
+        "pt": "Pacotes atualizados\nRemover estados legados\nAdicionar stickup_cam_mini_v2",
+        "nl": "Verouderde pakket\nVerwijder de nalatenschap\nAdd stickupupcamini",
+        "fr": "Forfaits mis à jour\nSupprimer les États\nAjouter stickup_cam_mini_v2",
+        "it": "Pacchetti aggiornati\nRimuovi gli stati legacy\nAggiungi stickup_cam_mini_v2",
+        "es": "Paquetes actualizados\nEliminar los estados heredados\nAñadir stickup_cam_mini_v2",
+        "pl": "Package Update\nRemove dziedzictwo państw członkowskich\nAdd stickup_mini_v2 (ang.)",
+        "uk": "Оновлені пакети\nВидаліть стани спадщини Legacy\nДодати палицю_cam_mini_v2",
+        "zh-cn": "最新包装\n消除遗留状况\n增加stickup_cam_mini_v2"
+      },
       "5.0.1-beta.0": {
         "en": "migrated the configuration to JSON\nmany changes for livestream and high-definition screenshots\nRefactoring and cleanup",
         "de": "die Konfiguration zu JSON migriert\nviele änderungen für livestream und high-definition screenshots\nHerstellung und Reinigung",
@@ -138,19 +151,6 @@
         "pl": "Update Packages (ang.)",
         "uk": "Оновлення пакетів (що дозволяє встановити 20 тепер)",
         "zh-cn": "最新包装(现在不允许20个)"
-      },
-      "3.3.1": {
-        "en": "Update Packages",
-        "de": "Pakete aktualisieren",
-        "ru": "Обновление пакетов",
-        "pt": "Pacotes de atualização",
-        "nl": "Update Packages",
-        "fr": "Mise à jour des paquets",
-        "it": "Pacchetti di aggiornamento",
-        "es": "Paquetes de actualización",
-        "pl": "Package Update",
-        "uk": "Оновлення пакетів",
-        "zh-cn": "最新包装"
       }
     },
     "platform": "Javascript/Node.js",
@@ -170,7 +170,7 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "5.0.1-beta.0"
+    "version": "5.0.1"
   },
   "instanceObjects": [
     {
