@@ -26,10 +26,10 @@ declare global {
       filename_HDsnapshot: string;
       path_HDsnapshot: string;
       overlay_HDsnapshot: boolean;
-      sharpen_HDsnapshot: 0;
-      night_sharpen_HDsnapshot: false;
-      contrast_HDsnapshot: 0;
-      night_contrast_HDsnapshot: false;
+      sharpen_HDsnapshot: number;
+      night_sharpen_HDsnapshot: boolean;
+      contrast_HDsnapshot: number;
+      night_contrast_HDsnapshot: boolean;
 
       pollsec: number;
       refreshtoken: string;
