@@ -614,6 +614,13 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._adapter.upsertState(`${this.snapshotChannelId}.auto`, constants_1.COMMON_SNAPSHOT_AUTO, this._adapter.config.auto_snapshot, true, true);
         this._adapter.upsertState(`${this.HDsnapshotChannelId}.auto`, constants_1.COMMON_HDSNAPSHOT_AUTO, this._adapter.config.auto_HDsnapshot, true, true);
         this._adapter.upsertState(`${this.liveStreamChannelId}.auto`, constants_1.COMMON_LIVESTREAM_AUTO, this._adapter.config.auto_livestream, true, true);
+        // Remove legacy states
+        this._adapter.delObject(`${this.snapshotChannelId}.snapshot_request`);
+        this._adapter.delObject(`${this.snapshotChannelId}.snapshot_file`);
+        this._adapter.delObject(`${this.snapshotChannelId}.snapshot_url`);
+        this._adapter.delObject(`${this.liveStreamChannelId}.livestream_request`);
+        this._adapter.delObject(`${this.liveStreamChannelId}.livestream_file`);
+        this._adapter.delObject(`${this.liveStreamChannelId}.livestream_url`);
     }
     async subscribeToEvents() {
         this.silly(`Start device subscriptions`);

@@ -108,6 +108,7 @@ doorbell recorded video.
 * (theimo1221) Refactoring and cleanup
 * (theimo1221) Updated Packages
 * (theimo1221) Remove legacy states
+* (theimo1221) Add stickup_cam_mini_v2
 
 ### 4.0.0 (2023-08-22)
 
