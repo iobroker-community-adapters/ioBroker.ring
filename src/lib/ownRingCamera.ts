@@ -783,6 +783,14 @@ export class OwnRingCamera extends OwnRingDevice {
       true,
       true,
     );
+
+    // Remove legacy states
+    this._adapter.delObject(`${this.snapshotChannelId}.snapshot_request`);
+    this._adapter.delObject(`${this.snapshotChannelId}.snapshot_file`);
+    this._adapter.delObject(`${this.snapshotChannelId}.snapshot_url`);
+    this._adapter.delObject(`${this.liveStreamChannelId}.livestream_request`);
+    this._adapter.delObject(`${this.liveStreamChannelId}.livestream_file`);
+    this._adapter.delObject(`${this.liveStreamChannelId}.livestream_url`);
   }
 
   private async subscribeToEvents(): Promise<void> {
