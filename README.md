@@ -96,6 +96,10 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+* (theimo1221) Remove mixup of callback and async within same function
 ### 5.0.1 (2023-10-20)
 
 * (theimo1221) Updated Packages

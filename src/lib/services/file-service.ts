@@ -84,18 +84,29 @@ export class FileService {
     return tempPath;
   }
 
-  public static async writeFile(fullPath: string, data: Buffer, adapter: RingAdapter, cb?: ()=>void): Promise<void> {
-    if (!this.IOBROKER_FILES_REGEX.test(fullPath)) {
-      fs.writeFile(fullPath, data, ()=> cb && cb());
-      return;
-    }
-    adapter.writeFile(adapter.namespace, this.reducePath(fullPath, adapter), data, (r) => {
-      if (r) {
-        adapter.logCatch(`Failed to write Adapter File '${fullPath}'`, r.message);
-      } else {
-        adapter.log.silly(`Adapter File ${fullPath} written!`);
-        cb && cb();
+  public static async writeFile(fullPath: string, data: Buffer, adapter: RingAdapter): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (!this.IOBROKER_FILES_REGEX.test(fullPath)) {
+        fs.writeFile(fullPath, data, (r) => {
+          if (r) {
+            adapter.logCatch(`Failed to write File '${fullPath}'`, r.message);
+            reject(r);
+          } else {
+            adapter.log.silly(`File ${fullPath} written!`);
+            resolve();
+          }
+        });
+        return;
       }
+      adapter.writeFile(adapter.namespace, this.reducePath(fullPath, adapter), data, (r) => {
+        if (r) {
+          adapter.logCatch(`Failed to write Adapter File '${fullPath}'`, r.message);
+          reject(r);
+        } else {
+          adapter.log.silly(`Adapter File ${fullPath} written!`);
+          resolve();
+        }
+      });
     });
   }
 
