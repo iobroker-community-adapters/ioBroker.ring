@@ -100,6 +100,7 @@ doorbell recorded video.
 ### **WORK IN PROGRESS**
 
 * (theimo1221) Remove mixup of callback and async within same function
+* (theimo1221) #603 Harden usage of "firstValueFrom"
 ### 5.0.1 (2023-10-20)
 
 * (theimo1221) Updated Packages

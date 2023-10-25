@@ -78,6 +78,7 @@ import { LastAction } from "./lastAction";
 import { FileService } from "./services/file-service";
 import { OwnRingLocation } from "./ownRingLocation";
 import { OwnRingDevice } from "./ownRingDevice";
+import { FileInfo } from "./services/file-info";
 
 enum EventState {
   Idle,
@@ -132,32 +133,15 @@ export class OwnRingCamera extends OwnRingDevice {
   public async startLivestream(duration?: number): Promise<void> {
     this.silly(`${this.shortId}.startLivestream()`);
     duration ??= this._durationLiveStream;
-    const {visURL, visPath} =
-      await FileService.getVisUrl(
-        this._adapter,
-        this.fullId,
-        "Livestream.mp4",
-      );
-    if (!visURL || !visPath) {
-      this.warn("Vis not available");
-    }
-
-    const {fullPath, dirname} =
-      FileService.getPath(
-        this._adapter.config.path_livestream,
-        this._adapter.config.filename_livestream,
-        ++this._liveStreamCount,
-        this.shortId,
-        this.fullId,
-        this.kind,
-      );
-
-    if (!(await FileService.prepareFolder(dirname))) {
-      this.warn(`Failed to prepare Livestream folder ("${fullPath}")`);
+    const {visURL, visPath, fullPath} =
+      await this.prepareLivestreamTargetFile().catch(reason => {
+        this.catcher("Couldn't prepare Livestream Target File.", reason);
+        return {visURL: "", visPath: "", fullPath: ""};
+      });
+    if (!visURL || !visPath || !fullPath) {
       await this.updateLivestreamRequest(false);
       return;
     }
-    FileService.deleteFileIfExistSync(fullPath, this._adapter);
     if (this._ringDevice.isOffline) {
       this.info(` is offline --> won't take LiveStream`);
       await this.updateLivestreamRequest(false);
@@ -167,10 +151,24 @@ export class OwnRingCamera extends OwnRingDevice {
     const liveCall = await this._ringDevice.streamVideo({
       video: this.videoFilter(this._adapter.config.overlay_Livestream),
       output: ["-t", duration.toString(), tempPath],
+    }).catch(reason => {
+      this.catcher("Couldn't create Livestream.", reason);
+      return null;
     })
-    await firstValueFrom(liveCall.onCallEnded);
+    if (!liveCall) {
+      this.warn(`Couldn't create Livestream`);
+      await this.updateLivestreamRequest(false);
+      return;
+    }
 
-    if (!fs.existsSync(tempPath)) {
+    const liveCallSucceeded = await firstValueFrom(liveCall.onCallEnded).then(_result => {
+      return true;
+    }).catch(reason => {
+      this.catcher("Couldn't create HD Snapshot.", reason);
+      return null;
+    });
+
+    if (!fs.existsSync(tempPath) || !liveCallSucceeded) {
       this.warn(`Couldn't create livestream`);
       await this.updateLivestreamRequest(false);
       return;
@@ -198,6 +196,110 @@ export class OwnRingCamera extends OwnRingDevice {
     this._lastLiveStreamTimestamp = Date.now();
     await this.updateLiveStreamObject();
     this.debug(`Done creating livestream to ${fullPath}`);
+  }
+
+  public async takeHDSnapshot(): Promise<void> {  // from very short Livestream
+    this.silly(`${this.shortId}.takeHDSnapshot()`);
+    // const duration = 2.0;
+    const {visURL, visPath} =
+      await FileService.getVisUrl(
+        this._adapter,
+        this.fullId,
+        "HDSnapshot.jpg",
+      ).catch(reason => {
+        this.catcher("Couldn't get Vis URL.", reason);
+        return {visURL: "", visPath: ""}
+      });
+    if (!visURL || !visPath) {
+      this.warn("Vis not available! Please install e.g. flot or other Vis related adapter");
+      await this.updateHDSnapshotRequest(false);
+      return;
+    }
+
+    const {fullPath, dirname} =
+      FileService.getPath(
+        this._adapter.config.path_snapshot,
+        `HD${this._adapter.config.filename_snapshot}`,
+        ++this._snapshotCount,
+        this.shortId,
+        this.fullId,
+        this.kind,
+      );
+
+    if (!(await FileService.prepareFolder(dirname))) {
+      this.warn(`prepare folder problem --> won't take HD Snapshot`);
+      await this.updateHDSnapshotRequest(false);
+      return;
+    }
+    FileService.deleteFileIfExistSync(fullPath, this._adapter);
+    if (this._ringDevice.isOffline) {
+      this.info(`is offline --> won't take HD Snapshot`);
+      await this.updateHDSnapshotRequest(false);
+      return;
+    }
+    const {night_contrast, night_sharpen} = this.getActiveNightImageOptions();
+    const tempPath = (await FileService.getTempDir(this._adapter)) + `/temp_${this.shortId}_livestream.jpg`;
+    const liveCall = await this._ringDevice.streamVideo({
+      video: this.videoFilter(this._adapter.config.overlay_HDsnapshot, night_contrast ? this._adapter.config.contrast_HDsnapshot : 0),
+      // output: ["-t", duration.toString(), "-f", "mjpeg", "-q:v", 3, "-frames:v", 1, tempPath]
+      output: ["-f", "mjpeg", "-q:v", 3, "-frames:v", 1, tempPath]
+    }).catch(reason => {
+      this.catcher("Couldn't create HD Snapshot.", reason);
+      return null;
+    });
+    if (!liveCall) {
+      this.warn(`Couldn't create HD Snapshot`);
+      await this.updateHDSnapshotRequest(false);
+      return;
+    }
+    const liveCallSucceeded = await firstValueFrom(liveCall.onCallEnded).then(_result => {
+      return true;
+    }).catch(reason => {
+      this.catcher("Couldn't create HD Snapshot.", reason);
+      return null;
+    });
+
+    if (!fs.existsSync(tempPath) || !liveCallSucceeded) {
+      this.warn(`Couldn't create HD Snapshot`);
+      await this.updateHDSnapshotRequest(false);
+      return;
+    } else {
+      this.silly(`HD Snapshot from livestream created`);
+    }
+    let jpg = fs.readFileSync(tempPath);
+
+    if (night_sharpen && this._adapter.config.sharpen_HDsnapshot && this._adapter.config.sharpen_HDsnapshot > 0) {
+      const sharpen = this._adapter.config.sharpen_HDsnapshot == 1 ? undefined : {sigma: this._adapter.config.sharpen_HDsnapshot - 1}
+      jpg = await Sharp(jpg)
+        .sharpen(sharpen)
+        .toBuffer()
+        .catch(reason => {
+          this.catcher("Couldn't sharpen HD Snapshot.", reason);
+          return null;
+        }) ?? jpg;
+    }
+
+    // clean up
+    fs.unlink(tempPath, (err) => {
+      if (err) {
+        this._adapter.logCatch(`Couldn't delete temp file ${tempPath}`, err);
+      }
+    })
+    if (this._lastHDSnapShotDir !== "" && this._adapter.config.del_old_HDsnapshot) {
+      FileService.deleteFileIfExistSync(this._lastHDSnapShotDir, this._adapter);
+    }
+
+    if (visPath) {
+      this.silly(`Locally storing HD Snapshot (Length: ${jpg.length})`)
+      await FileService.writeFile(visPath, jpg, this._adapter);
+      this._lastHDSnapShotUrl = visURL
+    }
+    this.silly(`Writing HD Snapshot to ${fullPath} (Length: ${jpg.length})`);
+    await FileService.writeFile(fullPath, jpg, this._adapter)
+    this._lastHDSnapShotDir = fullPath;
+    this._lastHDSnapshotTimestamp = Date.now();
+    await this.updateHDSnapshotObject();
+    this.debug(`Done creating HDSnapshot to ${visPath}`);
   }
 
   public async takeSnapshot(uuid?: string, eventBased = false): Promise<void> {
@@ -294,45 +396,46 @@ export class OwnRingCamera extends OwnRingDevice {
     this.debug(`Done creating snapshot to ${fullPath}`);
   }
 
-  public async takeHDSnapshot(): Promise<void> {  // from very short Livestream
-    this.silly(`${this.shortId}.takeHDSnapshot()`);
-    // const duration = 2.0;
+  private async prepareLivestreamTargetFile(): Promise<FileInfo> {
     const {visURL, visPath} =
       await FileService.getVisUrl(
         this._adapter,
         this.fullId,
-        "HDSnapshot.jpg",
+        "Livestream.mp4",
       ).catch(reason => {
         this.catcher("Couldn't get Vis URL.", reason);
         return {visURL: "", visPath: ""}
       });
-    if (!visURL || !visPath) {
-      this.warn("Vis not available! Please install e.g. flot or other Vis related adapter");
-      await this.updateHDSnapshotRequest(false);
-      return;
-    }
+    return new Promise<FileInfo>(async (resolve, reject) => {
+      if (!visURL || !visPath) {
+        reject("Vis not available");
+      }
 
-    const {fullPath, dirname} =
-      FileService.getPath(
-        this._adapter.config.path_snapshot,
-        `HD${this._adapter.config.filename_snapshot}`,
-        ++this._snapshotCount,
-        this.shortId,
-        this.fullId,
-        this.kind,
-      );
+      const {fullPath, dirname} =
+        FileService.getPath(
+          this._adapter.config.path_livestream,
+          this._adapter.config.filename_livestream,
+          ++this._liveStreamCount,
+          this.shortId,
+          this.fullId,
+          this.kind,
+        );
 
-    if (!(await FileService.prepareFolder(dirname))) {
-      this.warn(`prepare folder problem --> won't take HD Snapshot`);
-      await this.updateHDSnapshotRequest(false);
-      return;
-    }
-    FileService.deleteFileIfExistSync(fullPath, this._adapter);
-    if (this._ringDevice.isOffline) {
-      this.info(`is offline --> won't take HD Snapshot`);
-      await this.updateHDSnapshotRequest(false);
-      return;
-    }
+      const folderPrepared = await FileService.prepareFolder(dirname).catch(reason => {
+        this.catcher("Couldn't prepare folder.", reason);
+        return false;
+      });
+      if (!folderPrepared) {
+        this.warn(`Failed to prepare Livestream folder ("${fullPath}")`);
+        reject("Failed to prepare Livestream folder");
+        return;
+      }
+      FileService.deleteFileIfExistSync(fullPath, this._adapter);
+      resolve({visURL: visURL, visPath: visPath, fullPath: fullPath});
+    });
+  }
+
+  private getActiveNightImageOptions(): { night_contrast: boolean; night_sharpen: boolean } {
     let night_contrast: boolean = false;
     let night_sharpen: boolean = false;
 
@@ -344,55 +447,7 @@ export class OwnRingCamera extends OwnRingDevice {
       night_contrast = this._adapter.config.night_contrast_HDsnapshot && isNight || !this._adapter.config.night_contrast_HDsnapshot
       night_sharpen = this._adapter.config.night_sharpen_HDsnapshot && isNight || !this._adapter.config.night_sharpen_HDsnapshot
     }
-    const tempPath = (await FileService.getTempDir(this._adapter)) + `/temp_${this.shortId}_livestream.jpg`;
-    const liveCall = await this._ringDevice.streamVideo({
-      video: this.videoFilter(this._adapter.config.overlay_HDsnapshot, night_contrast ? this._adapter.config.contrast_HDsnapshot : 0),
-      // output: ["-t", duration.toString(), "-f", "mjpeg", "-q:v", 3, "-frames:v", 1, tempPath]
-      output: ["-f", "mjpeg", "-q:v", 3, "-frames:v", 1, tempPath]
-    })
-    await firstValueFrom(liveCall.onCallEnded);
-
-    if (!fs.existsSync(tempPath)) {
-      this.warn(`Couldn't create HD Snapshot`);
-      await this.updateHDSnapshotRequest(false);
-      return;
-    } else {
-      this.silly(`HD Snapshot from livestream created`);
-    }
-    let jpg = fs.readFileSync(tempPath);
-
-    if (night_sharpen && this._adapter.config.sharpen_HDsnapshot && this._adapter.config.sharpen_HDsnapshot > 0) {
-      const sharpen = this._adapter.config.sharpen_HDsnapshot == 1 ? undefined : {sigma: this._adapter.config.sharpen_HDsnapshot - 1}
-      jpg = await Sharp(jpg)
-        .sharpen(sharpen)
-        .toBuffer()
-        .catch(reason => {
-          this.catcher("Couldn't sharpen HD Snapshot.", reason);
-          return null;
-        }) ?? jpg;
-    }
-
-    // clean up
-    fs.unlink(tempPath, (err) => {
-      if (err) {
-        this._adapter.logCatch(`Couldn't delete temp file ${tempPath}`, err);
-      }
-    })
-    if (this._lastHDSnapShotDir !== "" && this._adapter.config.del_old_HDsnapshot) {
-      FileService.deleteFileIfExistSync(this._lastHDSnapShotDir, this._adapter);
-    }
-
-    if (visPath) {
-      this.silly(`Locally storing HD Snapshot (Length: ${jpg.length})`)
-      await FileService.writeFile(visPath, jpg, this._adapter);
-      this._lastHDSnapShotUrl = visURL
-    }
-    this.silly(`Writing HD Snapshot to ${fullPath} (Length: ${jpg.length})`);
-    await FileService.writeFile(fullPath, jpg, this._adapter)
-    this._lastHDSnapShotDir = fullPath;
-    this._lastHDSnapshotTimestamp = Date.now();
-    await this.updateHDSnapshotObject();
-    this.debug(`Done creating HDSnapshot to ${visPath}`);
+    return {night_contrast, night_sharpen};
   }
 
   public async updateHistory(): Promise<void> {
