@@ -119,104 +119,6 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         await this.updateLiveStreamObject();
         this.debug(`Done creating livestream to ${fullPath}`);
     }
-    async prepareLivestreamTargetFile() {
-        const { visURL, visPath } = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "Livestream.mp4").catch(reason => {
-            this.catcher("Couldn't get Vis URL.", reason);
-            return { visURL: "", visPath: "" };
-        });
-        return new Promise(async (resolve, reject) => {
-            if (!visURL || !visPath) {
-                reject("Vis not available");
-            }
-            const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path_livestream, this._adapter.config.filename_livestream, ++this._liveStreamCount, this.shortId, this.fullId, this.kind);
-            const folderPrepared = await file_service_1.FileService.prepareFolder(dirname).catch(reason => {
-                this.catcher("Couldn't prepare folder.", reason);
-                return false;
-            });
-            if (!folderPrepared) {
-                this.warn(`Failed to prepare Livestream folder ("${fullPath}")`);
-                reject("Failed to prepare Livestream folder");
-                return;
-            }
-            file_service_1.FileService.deleteFileIfExistSync(fullPath, this._adapter);
-            resolve({ visURL: visURL, visPath: visPath, fullPath: fullPath });
-        });
-    }
-    async takeSnapshot(uuid, eventBased = false) {
-        this.silly(`${this.shortId}.takeSnapshot()`);
-        const { visURL, visPath } = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "Snapshot.jpg");
-        if (!visURL || !visPath) {
-            this.warn("Vis not available");
-        }
-        const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path_snapshot, this._adapter.config.filename_snapshot, ++this._HDsnapshotCount, this.shortId, this.fullId, this.kind);
-        if (!(await file_service_1.FileService.prepareFolder(dirname))) {
-            this.warn(`prepare folder problem --> won't take Snapshot`);
-            await this.updateSnapshotRequest(false);
-            return;
-        }
-        file_service_1.FileService.deleteFileIfExistSync(fullPath, this._adapter);
-        if (this._ringDevice.isOffline) {
-            this.info(`is offline --> won't take Snapshot`);
-            await this.updateSnapshotRequest(false);
-            return;
-        }
-        /*
-        const image = await this._ringDevice.getNextSnapshot({uuid: uuid}).catch((reason) => {
-          if (eventBased) {
-            this.warn("Taking Snapshot on Event failed. Will try again after livestream finished.");
-          } else {
-            this.catcher("Couldn't get Snapshot from api.", reason);
-          }
-        })
-        */
-        const image = await this._ringDevice.getNextSnapshot({ force: true, uuid: uuid })
-            .then((result) => result)
-            .catch((err) => {
-            if (eventBased) {
-                this.warn("Taking Snapshot on Event failed. Will try again after livestream finished.");
-            }
-            else {
-                this.catcher("Couldn't get Snapshot from api.", err);
-            }
-            return err;
-        });
-        if (!image.byteLength) {
-            if (!eventBased) {
-                this.warn("Could not create snapshot from image");
-            }
-            await this.updateSnapshotRequest(false);
-            return;
-        }
-        else {
-            this.silly(`Response timestamp: ${image.responseTimestamp}, 
-                  Byte Length: ${image.byteLength},
-                  Byte Offset: ${image.byteOffset},
-                  Length: ${image.length},
-                  Time in ms: ${image.timeMillis}`);
-        }
-        let image_txt = image;
-        if (this._adapter.config.overlay_snapshot) {
-            image_txt = await this.addText(image)
-                .catch(reason => {
-                this.catcher("Couldn't add text to Snapshot.", reason);
-                return reason;
-            });
-        }
-        if (this._lastSnapShotDir !== "" && this._adapter.config.del_old_snapshot) {
-            file_service_1.FileService.deleteFileIfExistSync(this._lastSnapShotDir, this._adapter);
-        }
-        this._lastSnapShotUrl = visURL;
-        this._lastSnapShotDir = fullPath;
-        this._lastSnapshotTimestamp = image.timeMillis;
-        if (visPath) {
-            this.silly(`Locally storing Snapshot (Length: ${image.length})`);
-            await file_service_1.FileService.writeFile(visPath, image_txt, this._adapter);
-        }
-        this.silly(`Writing Snapshot (Length: ${image.length}) to "${fullPath}"`);
-        await file_service_1.FileService.writeFile(fullPath, image_txt, this._adapter);
-        await this.updateSnapshotObject();
-        this.debug(`Done creating snapshot to ${fullPath}`);
-    }
     async takeHDSnapshot() {
         var _a;
         this.silly(`${this.shortId}.takeHDSnapshot()`);
@@ -302,6 +204,104 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._lastHDSnapshotTimestamp = Date.now();
         await this.updateHDSnapshotObject();
         this.debug(`Done creating HDSnapshot to ${visPath}`);
+    }
+    async takeSnapshot(uuid, eventBased = false) {
+        this.silly(`${this.shortId}.takeSnapshot()`);
+        const { visURL, visPath } = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "Snapshot.jpg");
+        if (!visURL || !visPath) {
+            this.warn("Vis not available");
+        }
+        const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path_snapshot, this._adapter.config.filename_snapshot, ++this._HDsnapshotCount, this.shortId, this.fullId, this.kind);
+        if (!(await file_service_1.FileService.prepareFolder(dirname))) {
+            this.warn(`prepare folder problem --> won't take Snapshot`);
+            await this.updateSnapshotRequest(false);
+            return;
+        }
+        file_service_1.FileService.deleteFileIfExistSync(fullPath, this._adapter);
+        if (this._ringDevice.isOffline) {
+            this.info(`is offline --> won't take Snapshot`);
+            await this.updateSnapshotRequest(false);
+            return;
+        }
+        /*
+        const image = await this._ringDevice.getNextSnapshot({uuid: uuid}).catch((reason) => {
+          if (eventBased) {
+            this.warn("Taking Snapshot on Event failed. Will try again after livestream finished.");
+          } else {
+            this.catcher("Couldn't get Snapshot from api.", reason);
+          }
+        })
+        */
+        const image = await this._ringDevice.getNextSnapshot({ force: true, uuid: uuid })
+            .then((result) => result)
+            .catch((err) => {
+            if (eventBased) {
+                this.warn("Taking Snapshot on Event failed. Will try again after livestream finished.");
+            }
+            else {
+                this.catcher("Couldn't get Snapshot from api.", err);
+            }
+            return err;
+        });
+        if (!image.byteLength) {
+            if (!eventBased) {
+                this.warn("Could not create snapshot from image");
+            }
+            await this.updateSnapshotRequest(false);
+            return;
+        }
+        else {
+            this.silly(`Response timestamp: ${image.responseTimestamp}, 
+                  Byte Length: ${image.byteLength},
+                  Byte Offset: ${image.byteOffset},
+                  Length: ${image.length},
+                  Time in ms: ${image.timeMillis}`);
+        }
+        let image_txt = image;
+        if (this._adapter.config.overlay_snapshot) {
+            image_txt = await this.addText(image)
+                .catch(reason => {
+                this.catcher("Couldn't add text to Snapshot.", reason);
+                return reason;
+            });
+        }
+        if (this._lastSnapShotDir !== "" && this._adapter.config.del_old_snapshot) {
+            file_service_1.FileService.deleteFileIfExistSync(this._lastSnapShotDir, this._adapter);
+        }
+        this._lastSnapShotUrl = visURL;
+        this._lastSnapShotDir = fullPath;
+        this._lastSnapshotTimestamp = image.timeMillis;
+        if (visPath) {
+            this.silly(`Locally storing Snapshot (Length: ${image.length})`);
+            await file_service_1.FileService.writeFile(visPath, image_txt, this._adapter);
+        }
+        this.silly(`Writing Snapshot (Length: ${image.length}) to "${fullPath}"`);
+        await file_service_1.FileService.writeFile(fullPath, image_txt, this._adapter);
+        await this.updateSnapshotObject();
+        this.debug(`Done creating snapshot to ${fullPath}`);
+    }
+    async prepareLivestreamTargetFile() {
+        const { visURL, visPath } = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "Livestream.mp4").catch(reason => {
+            this.catcher("Couldn't get Vis URL.", reason);
+            return { visURL: "", visPath: "" };
+        });
+        return new Promise(async (resolve, reject) => {
+            if (!visURL || !visPath) {
+                reject("Vis not available");
+            }
+            const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path_livestream, this._adapter.config.filename_livestream, ++this._liveStreamCount, this.shortId, this.fullId, this.kind);
+            const folderPrepared = await file_service_1.FileService.prepareFolder(dirname).catch(reason => {
+                this.catcher("Couldn't prepare folder.", reason);
+                return false;
+            });
+            if (!folderPrepared) {
+                this.warn(`Failed to prepare Livestream folder ("${fullPath}")`);
+                reject("Failed to prepare Livestream folder");
+                return;
+            }
+            file_service_1.FileService.deleteFileIfExistSync(fullPath, this._adapter);
+            resolve({ visURL: visURL, visPath: visPath, fullPath: fullPath });
+        });
     }
     getActiveNightImageOptions() {
         let night_contrast = false;
