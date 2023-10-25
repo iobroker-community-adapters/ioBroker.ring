@@ -96,11 +96,11 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 5.0.2 (2023-10-25)
 
 * (theimo1221) Remove mixup of callback and async within same function
 * (theimo1221) #603 Harden usage of "firstValueFrom"
+
 ### 5.0.1 (2023-10-20)
 
 * (theimo1221) Updated Packages

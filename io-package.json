@@ -61,6 +61,19 @@
     "mode": "daemon",
     "name": "ring",
     "news": {
+      "5.0.2": {
+        "en": "Remove mixup of callback and async within same function\n#603 Harden usage of \"firstValueFrom\"",
+        "de": "Entfernen Sie die Mischung von Callback und Async innerhalb derselben Funktion\n#603 Harden Nutzung der ersten ValueFrom",
+        "ru": "Удалить перемешивание callback и async в рамках одной функции\n#603 Harden использование первого ЗначениеОт",
+        "pt": "Remover a mistura de callback e async dentro da mesma função\n#603 Harden use of first Valor a partir de",
+        "nl": "Verwijder mengsel en async binnen dezelfde functie\nVertaling: ValueFrom",
+        "fr": "Supprimer le mélange de callback et async dans la même fonction\n#603 Usage dur de la première Valeur",
+        "it": "Rimuovere il mixup di callback e asincrona all'interno della stessa funzione\n#603 Harden utilizzo del primo Valore",
+        "es": "Eliminar la mezcla de callback y async dentro de la misma función\n#603 Harden use of first Valor",
+        "pl": "Remove mieszanina połączeń i asynchronia w tej samej funkcji\n#603 Harden (ang.) ValueFrom",
+        "uk": "Видаліть міксап зворотного виклику та асинхрону в одній функції\n#603 Викорисне використання першого ValueЗ альбому",
+        "zh-cn": "在同一职能范围内消除阻断和排污\n第603号行动 价值"
+      },
       "5.0.1": {
         "en": "Updated Packages\nRemove legacy states\nAdd stickup_cam_mini_v2",
         "de": "Aktualisierte Pakete\nEntfernen ältere Staaten\nStickup_cam_mini_v2 hinzufügen",
@@ -138,19 +151,6 @@
         "pl": "Zalecenia adapter-checker-checker\nPackage Update\nDebounce Doorbell Press (ang.)\nAddd Support for cocoa_doorbell_v2 (ang.)\nAdd Support for stickup_cam_longfin (ang.)\nPorównanie Fix i rekompilacja",
         "uk": "Відповідність адаптера-шейкера\nОновлення пакетів\nDebounce Двербелл Преси\nПідтримка какао_doorbell_v2\nДодати підтримку для stickup_cam_longfin\nВиправлення сумісності та рекомпіляції",
         "zh-cn": "A. 遵守调整检查员\n最新包装\nDencebou Doorbell Presses\nA. 增加对可可可可访问的支助\nA. 增加对缺陷的支持\nIx 兼容性和变质"
-      },
-      "3.4.0": {
-        "en": "Update Packages (which allows node 20 now)",
-        "de": "Update-Pakete (was den Knoten 20 jetzt erlaubt)",
-        "ru": "Обновление пакетов (что позволяет node 20 сейчас)",
-        "pt": "Atualizar Pacotes (que permite o nó 20 agora)",
-        "nl": "Vertaling:",
-        "fr": "Mise à jour des paquets (qui permet node 20 maintenant)",
-        "it": "Pacchetti di aggiornamento (che permette nodo 20 ora)",
-        "es": "Paquetes de actualización (que permite el nodo 20 ahora)",
-        "pl": "Update Packages (ang.)",
-        "uk": "Оновлення пакетів (що дозволяє встановити 20 тепер)",
-        "zh-cn": "最新包装(现在不允许20个)"
       }
     },
     "platform": "Javascript/Node.js",
@@ -170,7 +170,7 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "5.0.1"
+    "version": "5.0.2"
   },
   "instanceObjects": [
     {
