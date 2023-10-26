@@ -7,7 +7,7 @@ import {
   DingKind,
   RingCamera
 } from "ring-client-api";
-import { firstValueFrom } from "rxjs";
+import * as rxjs from "rxjs";
 import * as fs from "fs";
 import * as util from "util";
 import Sharp from "sharp";
@@ -161,7 +161,7 @@ export class OwnRingCamera extends OwnRingDevice {
       return;
     }
 
-    const liveCallSucceeded = await firstValueFrom(liveCall.onCallEnded).then(_result => {
+    const liveCallSucceeded = await rxjs.firstValueFrom(liveCall.onCallEnded).then(_result => {
       return true;
     }).catch(reason => {
       this.catcher("Couldn't create HD Snapshot.", reason);
@@ -252,7 +252,7 @@ export class OwnRingCamera extends OwnRingDevice {
       await this.updateHDSnapshotRequest(false);
       return;
     }
-    const liveCallSucceeded = await firstValueFrom(liveCall.onCallEnded).then(_result => {
+    const liveCallSucceeded = await rxjs.firstValueFrom(liveCall.onCallEnded).then(_result => {
       return true;
     }).catch(reason => {
       this.catcher("Couldn't create HD Snapshot.", reason);

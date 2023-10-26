@@ -27,7 +27,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OwnRingCamera = void 0;
-const rxjs_1 = require("rxjs");
+const rxjs = __importStar(require("rxjs"));
 const fs = __importStar(require("fs"));
 const util = __importStar(require("util"));
 const sharp_1 = __importDefault(require("sharp"));
@@ -86,7 +86,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             await this.updateLivestreamRequest(false);
             return;
         }
-        const liveCallSucceeded = await (0, rxjs_1.firstValueFrom)(liveCall.onCallEnded).then(_result => {
+        const liveCallSucceeded = await rxjs.firstValueFrom(liveCall.onCallEnded).then(_result => {
             return true;
         }).catch(reason => {
             this.catcher("Couldn't create HD Snapshot.", reason);
@@ -159,7 +159,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             await this.updateHDSnapshotRequest(false);
             return;
         }
-        const liveCallSucceeded = await (0, rxjs_1.firstValueFrom)(liveCall.onCallEnded).then(_result => {
+        const liveCallSucceeded = await rxjs.firstValueFrom(liveCall.onCallEnded).then(_result => {
             return true;
         }).catch(reason => {
             this.catcher("Couldn't create HD Snapshot.", reason);
