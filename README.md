@@ -96,10 +96,10 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 5.0.3 (2023-10-26)
 
 * (theimo1221) #603 Change rxjs import to resolve awkward js build result.
+
 ### 5.0.2 (2023-10-25)
 
 * (theimo1221) Remove mixup of callback and async within same function

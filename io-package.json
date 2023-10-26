@@ -61,6 +61,19 @@
     "mode": "daemon",
     "name": "ring",
     "news": {
+      "5.0.3": {
+        "en": "#603 Change rxjs import to resolve awkward js build result.",
+        "de": "#603 Ändern Sie rxjs Import, um awkward js Build Ergebnis zu lösen.",
+        "ru": "#603 Измените импорт rxjs для разрешения awkward js build результат.",
+        "pt": "#603 Alterar a importação de rxjs para resolver o resultado de compilação js estranho.",
+        "nl": "#603 Verander RXJ's import om onhandige j's resultaat op te lossen.",
+        "fr": "#603 Changer l'importation rxjs pour résoudre le résultat de construction de js embarrassant.",
+        "it": "#603 Cambia l'importazione di rxjs per risolvere il risultato di costruzione di js imbarazzante.",
+        "es": "#603 Cambiar rxjs importación para resolver el resultado de construcción de js incómodo.",
+        "pl": "603 Zmiany rxjów importują do rozwiązania niezręcznego js.",
+        "uk": "#603 Зміна імпорту rxjs для вирішення результату побудови jswkward.",
+        "zh-cn": "第603号 装甲运兵车的进口,以便解决厨房。."
+      },
       "5.0.2": {
         "en": "Remove mixup of callback and async within same function\n#603 Harden usage of \"firstValueFrom\"",
         "de": "Entfernen Sie die Mischung von Callback und Async innerhalb derselben Funktion\n#603 Harden Nutzung der ersten ValueFrom",
@@ -138,19 +151,6 @@
         "pl": "! Breaking Change (ang.). Od tego czasu wymagana jest zmiana numeru 18 lub 20, nie jest ona już wspierana\nPierścień-Api potrzebuje 18 lub 20 lat\nPackage Update",
         "uk": "! Змінити зміни! Відтепер на Node 18 або 20 не потрібно, Node 16 не підтримується більше\nUpdate Ring-Api до V12, який потребує Node 18 або 20\nОновлення пакетів",
         "zh-cn": "! 打破变革! 从现在第18号或第20号要求来看,第16号建议没有得到任何支持。\n第18或20号需要更新到V12\n最新包装"
-      },
-      "3.4.1": {
-        "en": "Compliance to adapter-checker\nUpdate Packages\nDebounce Doorbell Presses\nAdd Support for cocoa_doorbell_v2\nAdd Support for stickup_cam_longfin\nFix compatibility and recompile",
-        "de": "Einhaltung des Adapter-Checkers\nPakete aktualisieren\nTürklingelpressen aussprechen\nUnterstützung für Kakao_doorbell_v2 hinzufügen\nSupport für stickup_cam_longfin hinzufügen\nKompatibilität und Recompile beheben",
-        "ru": "Соответствие адаптеру-чеку\nОбновление пакетов\nDebounce Doorbell Пресса\nДобавить поддержку cocoa_doorbell_v2\nДобавить Поддержка Stickup_cam_longfin\nИсправление совместимости и рекомпиле",
-        "pt": "Conformidade ao verificador do adaptador\nPacotes de atualização\nMáquina de montagem automática\nAdicionar suporte para cocoa_doorbell_v2\nAdicionar suporte para stickup_cam_longfin\nCorrigir compatibilidade e recumpile",
-        "nl": "Complimenten van adapter-checker\nUpdate Packages\nDebounce Doorbell Press\nAdd Support voor Cocoadoorbell2\nAdd Support voor plakband\nVergelijkbaarheid en ademhaling",
-        "fr": "Conformité à l'adaptateur-vérificateur\nMise à jour des paquets\nDebounce Doorbell Presses\nAjouter le support pour cocoa_doorbell_v2\nAjouter le support pour stickup_cam_longfin\nCompatibilité fixe et recompile",
-        "it": "Compliance to adapter-checker\nPacchetti di aggiornamento\nPresse per campanelli\nAggiungi supporto per cacao_doorbell_v2\nAggiungi supporto per stickup_cam_longfin\nFissare la compatibilità e ricompilare",
-        "es": "Cumplimiento para el control de adaptador\nPaquetes de actualización\nDebounce Doorbell Presses\nAñadir Soporte para cocoa_doorbell_v2\nAñadir Soporte para stickup_cam_longfin\nFijar compatibilidad y recompilar",
-        "pl": "Zalecenia adapter-checker-checker\nPackage Update\nDebounce Doorbell Press (ang.)\nAddd Support for cocoa_doorbell_v2 (ang.)\nAdd Support for stickup_cam_longfin (ang.)\nPorównanie Fix i rekompilacja",
-        "uk": "Відповідність адаптера-шейкера\nОновлення пакетів\nDebounce Двербелл Преси\nПідтримка какао_doorbell_v2\nДодати підтримку для stickup_cam_longfin\nВиправлення сумісності та рекомпіляції",
-        "zh-cn": "A. 遵守调整检查员\n最新包装\nDencebou Doorbell Presses\nA. 增加对可可可可访问的支助\nA. 增加对缺陷的支持\nIx 兼容性和变质"
       }
     },
     "platform": "Javascript/Node.js",
@@ -170,7 +170,7 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "5.0.2"
+    "version": "5.0.3"
   },
   "instanceObjects": [
     {
