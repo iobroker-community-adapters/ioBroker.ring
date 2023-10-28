@@ -96,10 +96,10 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 5.0.5 (2023-10-28)
 
 * (theimo1221) #602 Debounce Motion Events by 25 seconds. This prevents multiple events within a short time.
+
 ### 5.0.4 (2023-10-27)
 
 * (theimo1221) #603 Add rxjs to normal dependencies instead of dev-dependencies
