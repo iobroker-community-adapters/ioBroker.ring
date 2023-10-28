@@ -10,7 +10,7 @@
   "ring-adapter": "Ring Adapter",
   "Livestream": "Live-Stream",
   "Snapshot": "Schnappschuss",
-  "HDSnapshot": "HD Schnappschuss",
+  "HD Snapshot": "HD-Schnappschuss",
   "ChooseDate": "Bitte wählen Sie ein Datum",
   "Filename": "Dateiname",
   "Automatic recording time in seconds": "Automatische Aufnahmezeit in Sekunden",
@@ -32,13 +32,15 @@
   "without": "ohne",
   "NoSub": "Nutzung ohne Abonnement!",
   "Login": "Anmeldung",
-  "HD Snapshot": "HD-Schnappschuss",
   "5 seconds": "5 Sekunden",
   "15 seconds": "15 Sekunden",
   "30 seconds": "30 Sekunden",
   "1 minute": "1 Minute",
+  "2 minutes": "2 Minuten",
+  "3 minutes": "3 Minuten",
   "1 hour": "1 Stunde",
   "-": "-",
   "HDInfo": "Wichtige Informationen!<br>Die Einstellungen \"Überlagerungstext\", \"Bildschärfe\" und \"Bildkontrast\" sind zeitaufwendig (bis zu einigen Sekunden).<br>Wenn eine schnelle Anzeigezeit wichtig ist, bitte abschalten.",
-  "HDInfoTip": "Tipp: Bildschärfe und Bildkontrast arbeiten am Besten in der Nacht."
+  "HDInfoTip": "Tipp: Bildschärfe und Bildkontrast arbeiten am Besten in der Nacht.",
+  "Ignore multiple events": "Mehrere Ereignisse ignorieren"
 }

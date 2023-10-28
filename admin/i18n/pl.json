@@ -10,7 +10,7 @@
   "ring-adapter": "Pierścień",
   "Livestream": "Live stream",
   "Snapshot": "Snapshot",
-  "HDSnapshot": "HD Snapshot",
+  "HD Snapshot": "Migawka HD",
   "ChooseDate": "Wybieram datę",
   "Filename": "Filename",
   "Automatic recording time in seconds": "Czas nagrywania automatycznego na sekundę",
@@ -32,13 +32,15 @@
   "without": "bezpłodnie",
   "NoSub": "Użycie bez poboru!",
   "Login": "Zaloguj sie",
-  "HD Snapshot": "Migawka HD",
   "5 seconds": "5 sekund",
   "15 seconds": "15 sekund",
   "30 seconds": "30 sekund",
   "1 minute": "1 minuta",
+  "2 minutes": "2 minuty",
+  "3 minutes": "3 minuty",
   "1 hour": "1 godzina",
   "-": "-",
   "HDInfo": "<br>Important information!<br>Ustawienia  \"Tekst Overlaying\", \"Zdjęcie ostrym\" i \"Kontrast\" czas spędzania czasu (do kilku sekund).<br>Jeśli czas szybkiego wyświetlania jest bardzo ważny, to wszystko się odwraca.<br>Tip: ostry film i film kontrastują w nocy.",
-  "HDInfoTip": "Tip: ostry film i film kontrastują w nocy."
+  "HDInfoTip": "Tip: ostry film i film kontrastują w nocy.",
+  "Ignore multiple events": "Nienawiść wielu zdarzeń"
 }

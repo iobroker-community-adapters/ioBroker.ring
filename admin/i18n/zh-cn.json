@@ -5,7 +5,7 @@
   "ring-adapter": "导 言",
   "Livestream": "流动",
   "Snapshot": "绑架",
-  "HDSnapshot": "人权观察社",
+  "HD Snapshot": "高清快照",
   "ChooseDate": "请选择日期",
   "Filename": "导 言",
   "Automatic recording time in seconds": "第二期自动记录时间",
@@ -32,13 +32,15 @@
   "Password Enable": "使用密码登录",
   "User": "用户",
   "Login": "登录",
-  "HD Snapshot": "高清快照",
   "5 seconds": "5秒",
   "15 seconds": "15秒",
   "30 seconds": "30秒",
   "1 minute": "1分钟",
+  "2 minutes": "2分钟",
+  "3 minutes": "3分钟",
   "1 hour": "1小时",
   "-": "-",
   "HDInfo": "<br>重要信息!<br>环境 \"全文\", \"B. 加剧和加剧\" A. \"形状\" 现在耗费时间(几秒)。.<br>如果快速展示时间很重要,请将其赶出。.",
-  "HDInfoTip": "参与:在夜间最好地进行紧张和紧张关系。."
+  "HDInfoTip": "参与:在夜间最好地进行紧张和紧张关系。.",
+  "Ignore multiple events": "忽略多个事件"
 }

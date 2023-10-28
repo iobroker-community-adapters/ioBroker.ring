@@ -1139,6 +1139,13 @@ export class OwnRingCamera extends OwnRingDevice {
     }
   }
 
+  private ignoreMutlipleEvents(obj: typeof this.onDing | typeof this.onMotion | typeof this.onDoorbell ): void  {
+    clearTimeout(obj.timerId)
+    obj.timerId = setTimeout(() => {
+      obj.active = false
+    }, 60000)
+  }
+
   private onDing = Object.assign(
     (value: PushNotificationDing) => {
       if (! this.onDing.active) {
@@ -1165,14 +1172,13 @@ export class OwnRingCamera extends OwnRingDevice {
           COMMON_EVENTS_MESSAGE,
           value.aps.alert,
         )
-        setTimeout(() => {
-          this.onDing.active = false
-        }, 60000);
       } else {
-        this.debug("Ding event ignored")
+        this.debug("ignore ding event...")
       }
+      this.ignoreMutlipleEvents(this.onDing)
     },
-    { active: false }
+    { active: false },
+    { timerId: <NodeJS.Timeout>{}}
   )
 
   private onMotion = Object.assign(
@@ -1186,14 +1192,13 @@ export class OwnRingCamera extends OwnRingDevice {
           value,
         );
         value && this.conditionalRecording(EventState.ReactingOnMotion)
-        setTimeout(() => {
-          this.onMotion.active = false
-        }, 60000)
       } else {
-        this.debug("Motion event ignored")
+        this.debug("ignore motion event...")
       }
+      this.ignoreMutlipleEvents(this.onDing)
     },
-    { active: false }
+    { active: false },
+    { timerId: <NodeJS.Timeout>{}}
   )
 
   private onDoorbell = Object.assign(
@@ -1214,14 +1219,13 @@ export class OwnRingCamera extends OwnRingDevice {
           );
         }, 5000);
         this.conditionalRecording(EventState.ReactingOnDoorbell, value.ding.image_uuid)
-        setTimeout(() => {
-          this.onDoorbell.active = false
-        }, 60000)
       } else {
-        this.debug("Doorbell event ignored")
+        this.debug("ignore doorbell event...")
       }
+      this.ignoreMutlipleEvents(this.onDing)
     },
-    { active: false }
+    { active: false },
+    { timerId: <NodeJS.Timeout>{}}
   )
 
   private async conditionalRecording(state: EventState, uuid?: string): Promise<void> {

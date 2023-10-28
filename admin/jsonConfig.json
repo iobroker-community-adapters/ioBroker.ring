@@ -25,6 +25,38 @@
         }
       }
     },
+    "_events": {
+      "label": "Events",
+      "icon": "preferences-desktop-notification-bell-3.png",
+      "items": {
+        "ignore_events": {
+          "newLine": true,
+          "type": "select",
+          "label": "Ignore multiple events",
+          "options": [
+            {
+              "value": 0,
+              "label": "-"
+            },
+            {
+              "value": 60,
+              "label": "1 minute"
+            },
+            {
+              "value": 120,
+              "label": "2 minutes"
+            },
+            {
+              "value": 180,
+              "label": "3 minutes"
+            }
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 3
+        }
+      }
+    },
     "_snapshot": {
       "label": "Snapshot",
       "icon": "camera-photo-5.png",
