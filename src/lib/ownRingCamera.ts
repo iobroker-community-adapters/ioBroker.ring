@@ -113,6 +113,7 @@ export class OwnRingCamera extends OwnRingDevice {
   private _liveStreamCount = 0;
   private _state = EventState.Idle;
   private _doorbellEventActive: boolean = false;
+  private _motionEventActive: boolean = false;
 
   get lastLiveStreamDir(): string {
     return this._lastLiveStreamDir;
@@ -1165,12 +1166,29 @@ export class OwnRingCamera extends OwnRingDevice {
   }
 
   private onMotion(value: boolean): void {
+    if (!value) {
+      return;
+    }
+    if (this._motionEventActive) {
+      this.debug(`Received Motion Event, but we are already reacting. Ignoring.`)
+      return;
+    }
+    this.info("Motion Event --> Will ignore additional motions for the next 25s.")
     this.debug(`Received Motion Event (${util.inspect(value, true, 1)})`);
+    this._motionEventActive = true;
     this._adapter.upsertState(
       `${this.eventsChannelId}.motion`,
       COMMON_MOTION,
-      value,
+      true,
     );
+    setTimeout(() => {
+      this._doorbellEventActive = false
+      this._adapter.upsertState(
+        `${this.eventsChannelId}.motion`,
+        COMMON_EVENTS_DOORBELL,
+        false,
+      );
+    }, 25000);
     value && this.conditionalRecording(EventState.ReactingOnMotion);
   }
 
