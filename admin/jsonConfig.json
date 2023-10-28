@@ -28,6 +28,7 @@
     "_events": {
       "label": "Events",
       "icon": "preferences-desktop-notification-bell-3.png",
+      "type": "panel",
       "items": {
         "ignore_events": {
           "newLine": true,

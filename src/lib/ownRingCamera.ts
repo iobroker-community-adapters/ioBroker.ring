@@ -1143,7 +1143,7 @@ export class OwnRingCamera extends OwnRingDevice {
     clearTimeout(obj.timerId)
     obj.timerId = setTimeout(() => {
       obj.active = false
-    }, 60000)
+    }, this._adapter.config.ignore_events * 1000)
   }
 
   private onDing = Object.assign(

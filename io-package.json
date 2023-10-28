@@ -209,7 +209,8 @@
     "refreshtoken": "",
     "sentry_enable": true,
     "timeout": 5,
-    "twofaceauth": false
+    "twofaceauth": false,
+    "ignore_events": 0
   },
   "objects": []
 }
