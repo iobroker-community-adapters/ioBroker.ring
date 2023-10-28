@@ -1140,10 +1140,12 @@ export class OwnRingCamera extends OwnRingDevice {
   }
 
   private ignoreMutlipleEvents(obj: typeof this.onDing | typeof this.onMotion | typeof this.onDoorbell ): void  {
-    clearTimeout(obj.timerId)
-    obj.timerId = setTimeout(() => {
-      obj.active = false
-    }, this._adapter.config.ignore_events * 1000)
+    if (this._adapter.config.ignore_events > 0) {
+      clearTimeout(obj.timerId)
+      obj.timerId = setTimeout(() => {
+        obj.active = false
+      }, this._adapter.config.ignore_events * 1000)
+    }
   }
 
   private onDing = Object.assign(

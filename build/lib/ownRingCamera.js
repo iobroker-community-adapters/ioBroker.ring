@@ -848,10 +848,12 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         }
     }
     ignoreMutlipleEvents(obj) {
-        clearTimeout(obj.timerId);
-        obj.timerId = setTimeout(() => {
-            obj.active = false;
-        }, this._adapter.config.ignore_events * 1000);
+        if (this._adapter.config.ignore_events > 0) {
+            clearTimeout(obj.timerId);
+            obj.timerId = setTimeout(() => {
+                obj.active = false;
+            }, this._adapter.config.ignore_events * 1000);
+        }
     }
     async conditionalRecording(state, uuid) {
         if (this._state !== EventState.Idle) {
