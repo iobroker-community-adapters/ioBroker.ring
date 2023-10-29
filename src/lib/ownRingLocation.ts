@@ -1,5 +1,12 @@
 import util from "util";
-import { Location, LocationMode, LocationModeInput, RingDevice } from "ring-client-api";
+import {
+  Location,
+  LocationMode,
+  LocationModeInput,
+  LocationModeResponse,
+  RingDevice,
+  SocketIoMessage
+} from "ring-client-api";
 
 import { RingAdapter } from "../main";
 import { RingApiClient } from "./ringApiClient";
@@ -10,6 +17,7 @@ import {
   STATE_ID_DEBUG_REQUEST,
   STATE_ID_LOCATIONMODE,
 } from "./constants";
+import { ExtendedResponse } from "ring-client-api/lib/rest-client";
 
 export class OwnRingLocation {
   private _currentLocationMode: LocationMode = "unset";
@@ -40,19 +48,19 @@ export class OwnRingLocation {
     this._fullId = `Location_${this.id}`;
     this._adapter = adapter;
     this._client = apiClient;
-    this._loc.onDataUpdate.subscribe((message) => {
+    this._loc.onDataUpdate.subscribe((message: SocketIoMessage): void => {
       this.debug(`Received Location Update Event: "${message}"`);
     });
-    this._loc.onConnected.subscribe((connected) => {
+    this._loc.onConnected.subscribe((connected: boolean): void => {
       this.debug(`Received Location Connection Status Change to ${connected}`);
       if(!connected && !apiClient.refreshing) {
         this.warn(`Lost connection to Location ${this._loc.name}... Will try a reconnect in 5s`);
-        setTimeout(() => {
+        setTimeout((): void => {
           this._client.refreshAll();
         }, 5000);
       }
     });
-    this._loc.onLocationMode.subscribe((newMode) => {
+    this._loc.onLocationMode.subscribe((newMode: "home" | "away" | "disarmed" | "disabled" | "unset"): void => {
       this.updateModeObject(newMode);
     });
     this.silly(`Location Debug Data: ${util.inspect(this._loc, false, 2)}`);
@@ -111,7 +119,7 @@ export class OwnRingLocation {
   }
 
   private performDebugOnUserRequest(state: ioBroker.State): void {
-    const targetVal = state.val as boolean;
+    const targetVal: boolean = state.val as boolean;
     if (targetVal) {
       this._adapter.log.info(`Location Debug Data for ${this.id}: ${util.inspect(this._loc, false, 1)}`);
       this._adapter.upsertState(
@@ -123,12 +131,12 @@ export class OwnRingLocation {
   }
 
   private async performLocationModeChange(state: ioBroker.State): Promise<void> {
-    const parsedNumber = parseInt(state.val as string, 10);
-    let desiredState;
-    if (typeof desiredState == "number") {
+    const parsedNumber: number = parseInt(state.val as string, 10);
+    let desiredState: string | LocationMode;
+    if (typeof state.val == "number") {
       desiredState = LOCATION_MODE_OPTIONS[state.val as number];
     } else if(!isNaN(parsedNumber)) {
-      desiredState = LOCATION_MODE_OPTIONS[state.val as number];
+      desiredState = LOCATION_MODE_OPTIONS[parsedNumber];
     } else {
       desiredState = state.val as string;
     }
@@ -140,16 +148,18 @@ export class OwnRingLocation {
       this.warn(`Invalid input "${desiredState}"... Only "home","away" and "disarmed" are choose-able by user.`);
       return;
     }
-    this.debug(`Change Location Mode to ${desiredState}`)
+    this.debug(`Change Location Mode to ${desiredState}`);
     this._loc.setLocationMode(desiredState as LocationModeInput)
-      .then((r) => this.updateModeObject(r.mode))
-      .catch(reason => { this._adapter.logCatch(`Failed setting location mode`, reason)});
+      .then((r: LocationModeResponse & ExtendedResponse): void => this.updateModeObject(r.mode))
+      .catch((reason: any): void => {
+        this._adapter.logCatch(`Failed setting location mode`, reason);
+      });
   }
 
-  private updateModeObject(newMode: LocationMode, preventLog = false): void {
+  private updateModeObject(newMode: LocationMode, preventLog: boolean = false): void {
     this._currentLocationMode = newMode;
     if(!preventLog) {
-      this.silly(`Received new LocationMode: ${newMode}`)
+      this.silly(`Received new LocationMode: ${newMode}`);
     }
     this._adapter.upsertState(
       `${this._fullId}.locationMode`,
@@ -162,7 +172,7 @@ export class OwnRingLocation {
 
   private async getLocationMode(): Promise<void> {
     this._loc.getLocationMode()
-      .then((r) => this.updateModeObject(r.mode))
-      .catch(reason => this._adapter.logCatch("Couldn't retrieve Location Mode", reason));
+      .then((r: LocationModeResponse & ExtendedResponse): void => this.updateModeObject(r.mode))
+      .catch((reason: any): void => this._adapter.logCatch("Couldn't retrieve Location Mode", reason));
   }
 }

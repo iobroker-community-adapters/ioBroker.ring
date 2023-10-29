@@ -28,13 +28,13 @@ export abstract class OwnRingDevice {
     this._client = apiClient;
     this.kind = kind;
     this.shortId = shortId;
-    this.fullId = `${this.kind}_${this.shortId}`
+    this.fullId = `${this.kind}_${this.shortId}`;
     this.description = description;
   }
 
   protected _locationId: string;
 
-  get locationId(): string {
+  public get locationId(): string {
     return this._locationId;
   }
 
@@ -79,9 +79,9 @@ export abstract class OwnRingDevice {
       case RingCameraKind.stickup_cam_elite:
       case RingCameraKind.stickup_cam_longfin:
       case "stickup_cam_mini_v2":
-        return `stickup`
+        return `stickup`;
       case RingDeviceType.IntercomHandsetAudio:
-        return `intercom`
+        return `intercom`;
       default:
         adapter.log.error(
           `Device with Type ${deviceType} not yet supported, please inform dev Team via Github`

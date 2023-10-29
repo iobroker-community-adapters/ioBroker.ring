@@ -91,11 +91,11 @@ class OwnRingLocation {
     async performLocationModeChange(state) {
         const parsedNumber = parseInt(state.val, 10);
         let desiredState;
-        if (typeof desiredState == "number") {
+        if (typeof state.val == "number") {
             desiredState = constants_1.LOCATION_MODE_OPTIONS[state.val];
         }
         else if (!isNaN(parsedNumber)) {
-            desiredState = constants_1.LOCATION_MODE_OPTIONS[state.val];
+            desiredState = constants_1.LOCATION_MODE_OPTIONS[parsedNumber];
         }
         else {
             desiredState = state.val;
@@ -111,7 +111,7 @@ class OwnRingLocation {
         this.debug(`Change Location Mode to ${desiredState}`);
         this._loc.setLocationMode(desiredState)
             .then((r) => this.updateModeObject(r.mode))
-            .catch(reason => { this._adapter.logCatch(`Failed setting location mode`, reason); });
+            .catch((reason) => { this._adapter.logCatch(`Failed setting location mode`, reason); });
     }
     updateModeObject(newMode, preventLog = false) {
         this._currentLocationMode = newMode;
@@ -123,7 +123,7 @@ class OwnRingLocation {
     async getLocationMode() {
         this._loc.getLocationMode()
             .then((r) => this.updateModeObject(r.mode))
-            .catch(reason => this._adapter.logCatch("Couldn't retrieve Location Mode", reason));
+            .catch((reason) => this._adapter.logCatch("Couldn't retrieve Location Mode", reason));
     }
 }
 exports.OwnRingLocation = OwnRingLocation;

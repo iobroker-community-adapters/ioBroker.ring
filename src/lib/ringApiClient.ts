@@ -1,4 +1,4 @@
-import { Location, RingApi, RingCamera, RingIntercom } from "ring-client-api";
+import { Location, ProfileResponse, RingApi, RingCamera, RingDevice, RingIntercom } from "ring-client-api";
 import pathToFfmpeg from "ffmpeg-static";
 
 import { RingAdapter } from "../main";
@@ -7,15 +7,16 @@ import { COMMON_NEW_TOKEN, COMMON_OLD_TOKEN } from "./constants";
 import { OwnRingLocation } from "./ownRingLocation";
 import { OwnRingDevice } from "./ownRingDevice";
 import { OwnRingIntercom } from "./ownRingIntercom";
+import { ExtendedResponse } from "ring-client-api/lib/rest-client";
 
 export class RingApiClient {
-  public refreshing = false;
+  public refreshing: boolean = false;
   private cameras: { [id: string]: OwnRingCamera } = {};
   private intercoms: { [id: string]: OwnRingIntercom } = {};
   private _refreshInterval: NodeJS.Timeout | null = null;
   private _retryTimeout: NodeJS.Timeout | null = null;
 
-  get locations(): { [id: string]: OwnRingLocation } {
+  public get locations(): { [id: string]: OwnRingLocation } {
     return this._locations;
   }
 
@@ -48,10 +49,14 @@ export class RingApiClient {
       systemId: `${this.adapter.host}.ring_v${this.adapter.version}_${Math.random() * Math.pow(10, 6)}`,
       cameraStatusPollingSeconds: 120,
       locationModePollingSeconds: 120,
-      ffmpegPath: pathToFfmpeg ? pathToFfmpeg : undefined // overwrite "ffmpeg for homebridge" with many missing libraries, use actual ffmpeg-static!
+      // overwrite "ffmpeg for homebridge" with many missing libraries, use actual ffmpeg-static!
+      ffmpegPath: pathToFfmpeg ? pathToFfmpeg : undefined,
       // debug: true
     });
-    this._api.onRefreshTokenUpdated.subscribe((data) => {
+    this._api.onRefreshTokenUpdated.subscribe((data: {
+      oldRefreshToken?: string | undefined;
+      newRefreshToken: string;
+    }): void => {
       this.adapter.log.info(
         `Received new Refresh Token. Will use the new one until the token in config gets changed`
       );
@@ -66,8 +71,8 @@ export class RingApiClient {
         this.adapter.config.refreshtoken,
       );
     });
-    const profile = await this._api.getProfile()
-      .catch((reason: any) => this.handleApiError(reason));
+    const profile: (ProfileResponse & ExtendedResponse) | void = await this._api.getProfile()
+      .catch((reason: any): void => this.handleApiError(reason));
     if (profile === undefined) {
       this.warn("Couldn't Retrieve profile, please make sure your api-token is fresh and correct");
     }
@@ -86,7 +91,7 @@ export class RingApiClient {
     this._refreshInterval = setInterval(this.refreshAll.bind(this), 120 * 60 * 1000);
   }
 
-  public async refreshAll(initial = false): Promise<void> {
+  public async refreshAll(initial: boolean = false): Promise<void> {
     /**
      *  TH 2022-05-30: It seems like Ring Api drops its socket connection from time to time,
      *  so we should reconnect ourselves
@@ -103,7 +108,7 @@ export class RingApiClient {
         clearTimeout(this._retryTimeout);
         this._retryTimeout = null;
       }
-      this.warn(`Couldn't load data from Ring Server on reconnect, will retry in 5 Minutes...`)
+      this.warn(`Couldn't load data from Ring Server on reconnect, will retry in 5 Minutes...`);
       this._retryTimeout = setTimeout(this.refreshAll.bind(this), 5 * 60 * 1000);
     } else {
       if (this._retryTimeout !== null) {
@@ -115,9 +120,9 @@ export class RingApiClient {
       this.adapter.terminate(`We couldn't find any locations in your Ring Account`);
     }
     for (const key in this._locations) {
-      const l = this._locations[key];
+      const l: OwnRingLocation = this._locations[key];
       this.debug(`Process Location ${l.name}`);
-      const devices = await l.getDevices();
+      const devices: RingDevice[] = await l.getDevices();
       this.debug(`Received ${devices.length} Devices in Location ${l.name}`);
       this.debug(`Location has ${l.loc.cameras.length} Cameras`);
       for (const c of l.loc.cameras) {
@@ -134,8 +139,8 @@ export class RingApiClient {
 
 
   public processUserInput(targetId: string, channelID: string, stateID: string, state: ioBroker.State): void {
-    const targetDevice = this.cameras[targetId] ?? this.intercoms[targetId];
-    const targetLocation = this._locations[targetId];
+    const targetDevice: OwnRingCamera = this.cameras[targetId] ?? this.intercoms[targetId];
+    const targetLocation: OwnRingLocation = this._locations[targetId];
     if (!targetDevice && !targetLocation) {
       this.adapter.log.error(`Received State Change on Subscribed State, for unknown Device/Location "${targetId}"`);
       return;
@@ -159,22 +164,22 @@ export class RingApiClient {
 
   private async retrieveLocations(): Promise<boolean> {
     this.debug(`Retrieve Locations`);
-    return new Promise<boolean>(async (res) => {
+    return new Promise<boolean>(async (res: (value: (PromiseLike<boolean> | boolean)) => void): Promise<void> => {
       (await this.getApi()).getLocations()
-        .catch((reason: any) => {
-          this.handleApiError(reason)
+        .catch((reason: any): void => {
+          this.handleApiError(reason);
           res(false);
         })
-        .then((locs) => {
+        .then((locs: Location[] | void): void => {
           if (typeof locs != "object" || (locs?.length ?? 0) == 0) {
-            this.debug("getLocations was successful, but received no array")
+            this.debug("getLocations was successful, but received no array");
             res(false);
             return;
           }
           this.debug(`Received ${locs?.length} Locations`);
           this._locations = {};
           for (const loc of locs as Location[]) {
-            const newLoc = new OwnRingLocation(loc, this.adapter, this);
+            const newLoc: OwnRingLocation = new OwnRingLocation(loc, this.adapter, this);
             this._locations[newLoc.fullId] = newLoc;
           }
           res(true);
@@ -188,10 +193,6 @@ export class RingApiClient {
     this.adapter.log.debug(`Call Stack: \n${(new Error()).stack}`);
   }
 
-  private silly(message: string): void {
-    this.adapter.log.silly(message);
-  }
-
   private debug(message: string): void {
     this.adapter.log.debug(message);
   }
@@ -201,7 +202,7 @@ export class RingApiClient {
   }
 
   private updateCamera(camera: RingCamera, location: OwnRingLocation): void {
-    const fullID = OwnRingCamera.getFullId(camera, this.adapter);
+    const fullID: string = OwnRingCamera.getFullId(camera, this.adapter);
     let ownRingCamera: OwnRingCamera = this.cameras[fullID];
     if (ownRingCamera === undefined) {
       ownRingCamera = new OwnRingCamera(camera, location, this.adapter, this);
@@ -212,7 +213,7 @@ export class RingApiClient {
   }
 
   private updateIntercom(intercom: RingIntercom, location: OwnRingLocation): void {
-    const fullID = OwnRingDevice.getFullId(intercom, this.adapter);
+    const fullID: string = OwnRingDevice.getFullId(intercom, this.adapter);
     let ownRingIntercom: OwnRingIntercom = this.intercoms[fullID];
     if (ownRingIntercom === undefined) {
       ownRingIntercom = new OwnRingIntercom(intercom, location, this.adapter, this);

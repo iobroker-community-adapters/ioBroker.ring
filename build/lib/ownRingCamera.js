@@ -60,7 +60,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
     async startLivestream(duration) {
         this.silly(`${this.shortId}.startLivestream()`);
         duration !== null && duration !== void 0 ? duration : (duration = this._durationLiveStream);
-        const { visURL, visPath, fullPath } = await this.prepareLivestreamTargetFile().catch(reason => {
+        const { visURL, visPath, fullPath } = await this.prepareLivestreamTargetFile().catch((reason) => {
             this.catcher("Couldn't prepare Livestream Target File.", reason);
             return { visURL: "", visPath: "", fullPath: "" };
         });
@@ -77,7 +77,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         const liveCall = await this._ringDevice.streamVideo({
             video: this.videoFilter(this._adapter.config.overlay_Livestream),
             output: ["-t", duration.toString(), tempPath],
-        }).catch(reason => {
+        }).catch((reason) => {
             this.catcher("Couldn't create Livestream.", reason);
             return null;
         });
@@ -86,9 +86,9 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             await this.updateLivestreamRequest(false);
             return;
         }
-        const liveCallSucceeded = await rxjs.firstValueFrom(liveCall.onCallEnded).then(_result => {
+        const liveCallSucceeded = await rxjs.firstValueFrom(liveCall.onCallEnded).then((_result) => {
             return true;
-        }).catch(reason => {
+        }).catch((reason) => {
             this.catcher("Couldn't create HD Snapshot.", reason);
             return null;
         });
@@ -123,7 +123,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         var _a;
         this.silly(`${this.shortId}.takeHDSnapshot()`);
         // const duration = 2.0;
-        const { visURL, visPath } = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "HDSnapshot.jpg").catch(reason => {
+        const { visURL, visPath } = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "HDSnapshot.jpg").catch((reason) => {
             this.catcher("Couldn't get Vis URL.", reason);
             return { visURL: "", visPath: "" };
         });
@@ -150,7 +150,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             video: this.videoFilter(this._adapter.config.overlay_HDsnapshot, night_contrast ? this._adapter.config.contrast_HDsnapshot : 0),
             // output: ["-t", duration.toString(), "-f", "mjpeg", "-q:v", 3, "-frames:v", 1, tempPath]
             output: ["-f", "mjpeg", "-q:v", 3, "-frames:v", 1, tempPath]
-        }).catch(reason => {
+        }).catch((reason) => {
             this.catcher("Couldn't create HD Snapshot.", reason);
             return null;
         });
@@ -159,9 +159,9 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             await this.updateHDSnapshotRequest(false);
             return;
         }
-        const liveCallSucceeded = await rxjs.firstValueFrom(liveCall.onCallEnded).then(_result => {
+        const liveCallSucceeded = await rxjs.firstValueFrom(liveCall.onCallEnded).then((_result) => {
             return true;
-        }).catch(reason => {
+        }).catch((reason) => {
             this.catcher("Couldn't create HD Snapshot.", reason);
             return null;
         });
@@ -175,11 +175,13 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         }
         let jpg = fs.readFileSync(tempPath);
         if (night_sharpen && this._adapter.config.sharpen_HDsnapshot && this._adapter.config.sharpen_HDsnapshot > 0) {
-            const sharpen = this._adapter.config.sharpen_HDsnapshot == 1 ? undefined : { sigma: this._adapter.config.sharpen_HDsnapshot - 1 };
+            const sharpen = this._adapter.config.sharpen_HDsnapshot == 1
+                ? undefined
+                : { sigma: this._adapter.config.sharpen_HDsnapshot - 1 };
             jpg = (_a = await (0, sharp_1.default)(jpg)
                 .sharpen(sharpen)
                 .toBuffer()
-                .catch(reason => {
+                .catch((reason) => {
                 this.catcher("Couldn't sharpen HD Snapshot.", reason);
                 return null;
             })) !== null && _a !== void 0 ? _a : jpg;
@@ -260,7 +262,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         let image_txt = image;
         if (this._adapter.config.overlay_snapshot) {
             image_txt = await this.addText(image)
-                .catch(reason => {
+                .catch((reason) => {
                 this.catcher("Couldn't add text to Snapshot.", reason);
                 return reason;
             });
@@ -281,7 +283,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this.debug(`Done creating snapshot to ${fullPath}`);
     }
     async prepareLivestreamTargetFile() {
-        const { visURL, visPath } = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "Livestream.mp4").catch(reason => {
+        const { visURL, visPath } = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "Livestream.mp4").catch((reason) => {
             this.catcher("Couldn't get Vis URL.", reason);
             return { visURL: "", visPath: "" };
         });
@@ -290,7 +292,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                 reject("Vis not available");
             }
             const { fullPath, dirname } = file_service_1.FileService.getPath(this._adapter.config.path_livestream, this._adapter.config.filename_livestream, ++this._liveStreamCount, this.shortId, this.fullId, this.kind);
-            const folderPrepared = await file_service_1.FileService.prepareFolder(dirname).catch(reason => {
+            const folderPrepared = await file_service_1.FileService.prepareFolder(dirname).catch((reason) => {
                 this.catcher("Couldn't prepare folder.", reason);
                 return false;
             });
@@ -461,7 +463,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                     const targetVal = state.val;
                     this._adapter.log.debug(`Get Snapshot request for ${this.shortId} to value ${targetVal}`);
                     if (targetVal) {
-                        await this.takeSnapshot().catch(reason => {
+                        await this.takeSnapshot().catch((reason) => {
                             this.updateSnapshotRequest();
                             this.catcher("Couldn't retrieve Snapshot.", reason);
                         });
@@ -491,7 +493,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                     const targetVal = state.val;
                     this._adapter.log.debug(`Get Livestream request for ${this.shortId} to value ${targetVal}`);
                     if (targetVal) {
-                        await this.startLivestream().catch(reason => {
+                        await this.startLivestream().catch((reason) => {
                             this.updateLivestreamRequest();
                             this.catcher("Couldn't retrieve Livestream.", reason);
                         });
@@ -626,19 +628,28 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
     autoSched() {
         const media = [
             {
-                name: "Snaspshot", val: this._adapter.config.save_snapshot, fct: () => {
+                name: "Snaspshot",
+                val: this._adapter.config.save_snapshot,
+                fct: () => {
                     this.takeSnapshot();
-                }, start: 0
+                },
+                start: 0
             },
             {
-                name: "HD Snapshot", val: this._adapter.config.save_HDsnapshot, fct: () => {
+                name: "HD Snapshot",
+                val: this._adapter.config.save_HDsnapshot,
+                fct: () => {
                     this.takeHDSnapshot();
-                }, start: 2
+                },
+                start: 2
             },
             {
-                name: "Livestream", val: this._adapter.config.save_livestream, fct: () => {
+                name: "Livestream",
+                val: this._adapter.config.save_livestream,
+                fct: () => {
                     this.startLivestream();
-                }, start: 4
+                },
+                start: 4
             }
         ];
         for (const m of media) {

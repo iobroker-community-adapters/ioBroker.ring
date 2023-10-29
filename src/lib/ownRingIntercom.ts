@@ -41,11 +41,11 @@ export class OwnRingIntercom extends OwnRingDevice {
 
   private _ringIntercom: RingIntercom;
 
-  get ringIntercom(): RingIntercom {
+  public get ringIntercom(): RingIntercom {
     return this._ringIntercom;
   }
 
-  private set ringIntercom(device) {
+  private set ringIntercom(device: RingIntercom) {
     this._ringIntercom = device;
     this.subscribeToEvents();
   }
@@ -53,7 +53,7 @@ export class OwnRingIntercom extends OwnRingDevice {
   public processUserInput(channelID: string, stateID: string, state: ioBroker.State): void {
     switch (channelID) {
       case "":
-        const targetBoolVal = state.val as boolean;
+        const targetBoolVal: boolean = state.val as boolean;
         switch (stateID) {
           case STATE_ID_DEBUG_REQUEST:
             if (targetBoolVal) {
@@ -68,7 +68,7 @@ export class OwnRingIntercom extends OwnRingDevice {
           case STATE_ID_INTERCOM_UNLOCK:
             if (targetBoolVal) {
               this._adapter.log.info(`Unlock door request for ${this.shortId}.`);
-              this._ringIntercom.unlock().catch((reason) => {
+              this._ringIntercom.unlock().catch((reason: any): void => {
                 this.catcher("Couldn't unlock door.", reason);
               });
               this._adapter.upsertState(
@@ -120,19 +120,19 @@ export class OwnRingIntercom extends OwnRingDevice {
 
   private async subscribeToEvents(): Promise<void> {
     this.silly(`Start device subscriptions`);
-    await this._ringIntercom.subscribeToDingEvents().catch((r) => {
+    await this._ringIntercom.subscribeToDingEvents().catch((r: any): void => {
       this.catcher(`Failed subscribing to Ding Events for ${this._ringIntercom.name}`, r);
     });
     this._ringIntercom.onDing.subscribe(
       {
-        next: () => {
+        next: (): void => {
           this.onDing();
         },
-        error: (err: Error) => {
+        error: (err: Error): void => {
           this.catcher(`Ding Observer received error`, err);
         },
       }
-    )
+    );
   }
 
   private updateDeviceInfoObject(data: IntercomHandsetAudioData): void {
@@ -160,7 +160,7 @@ export class OwnRingIntercom extends OwnRingDevice {
       COMMON_EVENTS_INTERCOM_DING,
       true
     );
-    setTimeout(() => {
+    setTimeout((): void => {
       this._adapter.upsertState(
         `${this.eventsChannelId}.ding`,
         COMMON_EVENTS_INTERCOM_DING,

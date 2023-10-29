@@ -40,7 +40,8 @@ class RingApiClient {
             systemId: `${this.adapter.host}.ring_v${this.adapter.version}_${Math.random() * Math.pow(10, 6)}`,
             cameraStatusPollingSeconds: 120,
             locationModePollingSeconds: 120,
-            ffmpegPath: ffmpeg_static_1.default ? ffmpeg_static_1.default : undefined // overwrite "ffmpeg for homebridge" with many missing libraries, use actual ffmpeg-static!
+            // overwrite "ffmpeg for homebridge" with many missing libraries, use actual ffmpeg-static!
+            ffmpegPath: ffmpeg_static_1.default ? ffmpeg_static_1.default : undefined,
             // debug: true
         });
         this._api.onRefreshTokenUpdated.subscribe((data) => {
@@ -169,9 +170,6 @@ class RingApiClient {
         this.adapter.log.error(`Api Call failed`);
         this.adapter.log.debug(`Failure reason:\n${reason}`);
         this.adapter.log.debug(`Call Stack: \n${(new Error()).stack}`);
-    }
-    silly(message) {
-        this.adapter.log.silly(message);
     }
     debug(message) {
         this.adapter.log.debug(message);

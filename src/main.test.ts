@@ -10,10 +10,10 @@ import { expect } from "chai";
 
 describe("module to test => function to test", () => {
   // initializing logic
-  const expected = 5;
+  const expected: number = 5;
 
   it(`should return ${expected}`, () => {
-    const result = 5;
+    const result: number = 5;
     // assign result a value from functionToTest
     expect(result).to.equal(expected);
     // or using the should() syntax

@@ -6,7 +6,7 @@ import { RingAdapter } from "../../main";
 import { PathInfo } from "./path-info";
 
 export class FileService {
-  public static readonly IOBROKER_FILES_REGEX = new RegExp(/.*iobroker-data\/files.*/);
+  public static readonly IOBROKER_FILES_REGEX: RegExp = new RegExp(/.*iobroker-data\/files.*/);
 
   public static getPath(
     basePath: string,
@@ -16,7 +16,7 @@ export class FileService {
     fullId: string,
     kind: string
   ): PathInfo {
-    const fullPath = path.join(basePath, fullId, extendedPath)
+    const fullPath: string = path.join(basePath, fullId, extendedPath)
       .replace("%d", String(Date.now()))
       .replace("%n", String(count))
       .replace("%i", shortId)
@@ -33,9 +33,9 @@ export class FileService {
     if (this.IOBROKER_FILES_REGEX.test(dirname)) {
       return true;
     }
-    return new Promise<boolean>((resolve) => {
+    return new Promise<boolean>((resolve: (value: (PromiseLike<boolean> | boolean)) => void): void => {
       if (!fs.existsSync(dirname)) {
-        fs.mkdirSync(dirname, { recursive: true });
+        fs.mkdirSync(dirname, {recursive: true});
         if (!RingAdapter.isWindows) {
           fs.chmodSync(dirname, 508);
         }
@@ -49,7 +49,7 @@ export class FileService {
       return;
     }
     if (this.IOBROKER_FILES_REGEX.test(fullPath)) {
-      adapter.delFile(adapter.namespace, this.reducePath(fullPath, adapter), (r) => {
+      adapter.delFile(adapter.namespace, this.reducePath(fullPath, adapter), (r: NodeJS.ErrnoException | null | undefined): void => {
         if (r) {
           adapter.logCatch(`Failed to delete File '${fullPath}'`, r.message);
         }
@@ -63,31 +63,31 @@ export class FileService {
     visURL: string,
     visPath: string,
   }> {
-    const vis = await adapter.getForeignObjectAsync("system.adapter.web.0")
-      .catch(reason => {
+    const vis: ioBroker.InstanceObject | null | void = await adapter.getForeignObjectAsync("system.adapter.web.0")
+      .catch((reason: any): void => {
         adapter.logCatch(`Couldn't load "web.0" Adapter object.`, reason);
       });
     if (vis && vis.native) {
-      const secure = vis.native.secure ? "https" : "http";
-      const prefix = `${adapter.namespace}/${adapter.name}_${adapter.instance}_${fullId}_${fileName}`;
+      const secure: string = vis.native.secure ? "https" : "http";
+      const prefix: string = `${adapter.namespace}/${adapter.name}_${adapter.instance}_${fullId}_${fileName}`;
       return {
         visURL: `${secure}://${adapter.host}:${vis.native.port}/${prefix}`,
         visPath: `${adapter.absoluteDefaultDir}files/${prefix}`,
       };
     }
-    return { visURL: "", visPath: "" };
+    return {visURL: "", visPath: ""};
   }
 
   public static async getTempDir(adapter: RingAdapter): Promise<string> {
-    const tempPath = path.join(adapter.absoluteInstanceDir);
+    const tempPath: string = path.join(adapter.absoluteInstanceDir);
     await this.prepareFolder(tempPath);
     return tempPath;
   }
 
   public static async writeFile(fullPath: string, data: Buffer, adapter: RingAdapter): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve: (value: void) => void, reject: (reason?: any) => void): void => {
       if (!this.IOBROKER_FILES_REGEX.test(fullPath)) {
-        fs.writeFile(fullPath, data, (r) => {
+        fs.writeFile(fullPath, data, (r: NodeJS.ErrnoException | null): void => {
           if (r) {
             adapter.logCatch(`Failed to write File '${fullPath}'`, r.message);
             reject(r);
@@ -98,15 +98,19 @@ export class FileService {
         });
         return;
       }
-      adapter.writeFile(adapter.namespace, this.reducePath(fullPath, adapter), data, (r) => {
-        if (r) {
-          adapter.logCatch(`Failed to write Adapter File '${fullPath}'`, r.message);
-          reject(r);
-        } else {
-          adapter.log.silly(`Adapter File ${fullPath} written!`);
-          resolve();
-        }
-      });
+      adapter.writeFile(
+        adapter.namespace,
+        this.reducePath(fullPath, adapter),
+        data,
+        (r: NodeJS.ErrnoException | null | undefined): void => {
+          if (r) {
+            adapter.logCatch(`Failed to write Adapter File '${fullPath}'`, r.message);
+            reject(r);
+          } else {
+            adapter.log.silly(`Adapter File ${fullPath} written!`);
+            resolve(undefined);
+          }
+        });
     });
   }
 

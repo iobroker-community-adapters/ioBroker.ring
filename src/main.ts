@@ -8,7 +8,7 @@ import * as utils from "@iobroker/adapter-core";
 import { Adapter } from "@iobroker/adapter-core";
 import path from "path";
 import schedule from "node-schedule";
-import suncalc from "suncalc";
+import suncalc, { GetTimesResult } from "suncalc";
 
 import { RingApiClient } from "./lib/ringApiClient";
 import { FileService } from "./lib/services/file-service";
@@ -47,84 +47,35 @@ export class RingAdapter extends Adapter {
     this.on("unload", this.onUnload.bind(this));
   }
 
-  private async CalcSunData():Promise<void> {
-    try {
-      this.log.debug("Run CalcSunData");
-      if (this.latitude && this.longitude) {
-        const today = new Date();
-        const sunData = suncalc.getTimes(today, this.latitude, this.longitude);
-        this.sunset = sunData.night.getTime()     // night is really dark, sunset is too early
-        this.sunrise = sunData.nightEnd.getTime() // same here vice versa
-        this.log.debug(`Sunset: ${new Date(this.sunset).toLocaleString()}, Sunrise: ${new Date(this.sunrise).toLocaleString()}`);
-      } else {
-        this.log.error("Latitude or Longtime not defined in System");
-      }
-    } catch (error) {
-      const eMsg = `Error in CalcSunData: ${error}`;
-      this.log.error(eMsg);
-      console.error(eMsg);
+  public static getSplitIds(id: string): { device: string, channel: string, stateName: string } {
+    const splits: string[] = id.split(".");
+    let device: string = "";
+    let channel: string = "";
+    let stateName: string = splits[0];
+    if (splits.length === 2) {
+      device = splits[0];
+      stateName = splits[1];
+    } else if (splits.length === 3) {
+      device = splits[0];
+      channel = splits[1];
+      stateName = splits[2];
     }
+    return { device, channel, stateName };
   }
 
-  /**
-   * Is called when databases are connected and adapter received configuration.
-   */
-  private async onReady(): Promise<void> {
-    // Initialize your adapter here
-    // The adapters config (in the instance object everything under the attribute "native") is accessible via
-    // this.config:
-    this.apiClient = new RingApiClient(this);
-    if (!this.apiClient.validateRefreshToken()) {
-      this.terminate(`Invalid Refresh Token, please follow steps provided within Readme to generate a new one`);
+  public upsertState(
+    id: string,
+    common: Partial<ioBroker.StateCommon>,
+    value: ioBroker.StateValue,
+    ack: boolean = true,
+    subscribe: boolean = false
+  ): void {
+    if (this.states[id] === value && !subscribe) {
+      // Unchanged and from user not changeable Value
       return;
     }
-
-    /*
-    this.log.debug(`Configured Path: "${this.config.path}"`);
-    const dataDir = (this.systemConfig) ? this.systemConfig.dataDir : "";
-    this.log.silly(`DataDir: ${dataDir}`);
-    if (!this.config.path) {
-      this.config.path = path.join(utils.getAbsoluteDefaultDataDir(), "files", this.namespace)
-      this.log.debug(`New Config Path: "${this.config.path}"`);
-    }
-    await FileService.prepareFolder(this.config.path);
-    */
-
-    const config_path: string[] = [this.config.path_snapshot, this.config.path_livestream];
-    for (const index in config_path) {
-      this.log.debug(`Configured Path: "${config_path[index]}"`);
-      const dataDir = this.systemConfig ? this.systemConfig.dataDir : "";
-      this.log.silly(`DataDir: ${dataDir}`);
-      if (!config_path[index]) {
-        config_path[index] = path.join(this.absoluteDefaultDir, "files", this.namespace);
-        if (index == "0") {
-          this.config.path_snapshot = config_path[index];
-        } else {
-          this.config.path_livestream = config_path[index];
-        }
-        this.log.debug(`New Config Path: "${config_path[index]}"`);
-      }
-      await FileService.prepareFolder(config_path[index]);
-    }
-
-    const objectDevices = this.getDevicesAsync();
-    for (const objectDevice in objectDevices) {
-      this.deleteDevice(objectDevice);
-    }
-
-    this.log.info(`Initializing Api Client`);
-    await this.apiClient.init();
-
-    this.log.info(`Get sunset and sunrise`);
-    await this.CalcSunData();
-
-    // Daily schedule sometime from 00:00:20 to 00:00:40
-    const scheduleSeconds = Math.round(Math.random() * 20 + 20);
-    this.log.info(`Daily sun parameter calculation scheduled for 00:00:${scheduleSeconds}`);
-    schedule.scheduleJob("SunData", `${scheduleSeconds} 0 0 * * *`, async () => {
-      this.log.info(`Cronjob 'Sun parameter calculation' starts`);
-      await this.CalcSunData();
-    });
+    // noinspection JSIgnoredPromiseFromCall
+    this.upsertStateAsync(id, common, value, ack, subscribe);
   }
 
   /**
@@ -161,32 +112,12 @@ export class RingAdapter extends Adapter {
   // 	}
   // }
 
-  /**
-   * Is called if a subscribed state changes
-   */
-  private onStateChange(id: string, state: ioBroker.State | null | undefined): void {
-    if (!state || !this.apiClient) {
-      // The state was deleted
-      this.log.silly(`state ${id} deleted`);
-      return;
+  public async tryGetStringState(id: string): Promise<string> {
+    const cachedVal: string | number | boolean | null = this.states[id];
+    if (cachedVal !== undefined && cachedVal !== null) {
+      return cachedVal + "";
     }
-
-    if (state.ack) {
-      // As it is already ack, don't react on it (could be set by us).
-      return;
-    }
-    // The state was changed
-    this.log.silly(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-    const splits = id.split(".");
-    const targetId = splits[2];
-    let stateID = splits[3];
-    let channelID = "";
-    if (splits.length === 5) {
-      channelID = splits[3];
-      stateID = splits[4];
-    }
-
-    this.apiClient.processUserInput(targetId, channelID, stateID, state);
+    return ((await this.getStateAsync(id))?.val ?? "") + "";
   }
 
   // If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
@@ -206,24 +137,136 @@ export class RingAdapter extends Adapter {
   // 	}
   // }
 
-  upsertState(id: string, common: Partial<ioBroker.StateCommon>, value: ioBroker.StateValue, ack = true, subscribe = false): void {
-    if (this.states[id] === value && !subscribe) {
-      // Unchanged and from user not changeable Value
+  public async getRefreshToken(): Promise<string> {
+    const newTokenStateVal: string = await this.tryGetStringState("next_refresh_token");
+    const oldTokenStateVal: string = await this.tryGetStringState("old_user_refresh_token");
+    if (newTokenStateVal && oldTokenStateVal === this.config.refreshtoken) {
+      this.log.debug(`As the configured refresh token hasn't changed the state one will be used`);
+      return newTokenStateVal;
+    }
+    return this.config.refreshtoken;
+  }
+
+  private async CalcSunData():Promise<void> {
+    try {
+      this.log.debug("Run CalcSunData");
+      if (this.latitude && this.longitude) {
+        const today: Date = new Date();
+        const sunData: GetTimesResult = suncalc.getTimes(today, this.latitude, this.longitude);
+        this.sunset = sunData.night.getTime();     // night is really dark, sunset is too early
+        this.sunrise = sunData.nightEnd.getTime(); // same here vice versa
+        this.log.debug(`Sunset: ${new Date(this.sunset).toLocaleString()}, Sunrise: ${new Date(this.sunrise).toLocaleString()}`);
+      } else {
+        this.log.error("Latitude or Longtime not defined in System");
+      }
+    } catch (error) {
+      const eMsg: string = `Error in CalcSunData: ${error}`;
+      this.log.error(eMsg);
+      console.error(eMsg);
+    }
+  }
+
+  /**
+   * Is called when databases are connected and adapter received configuration.
+   */
+  private async onReady(): Promise<void> {
+    // Initialize your adapter here
+    // The adapters config (in the instance object everything under the attribute "native") is accessible via
+    // this.config:
+    this.apiClient = new RingApiClient(this);
+    if (!this.apiClient.validateRefreshToken()) {
+      this.terminate(`Invalid Refresh Token, please follow steps provided within Readme to generate a new one`);
       return;
     }
-    // noinspection JSIgnoredPromiseFromCall
-    this.upsertStateAsync(id, common, value, ack, subscribe);
-  }
 
-  async tryGetStringState(id: string): Promise<string> {
-    const cachedVal = this.states[id];
-    if (cachedVal !== undefined && cachedVal !== null) {
-      return cachedVal + "";
+    /*
+    this.log.debug(`Configured Path: "${this.config.path}"`);
+    const dataDir = (this.systemConfig) ? this.systemConfig.dataDir : "";
+    this.log.silly(`DataDir: ${dataDir}`);
+    if (!this.config.path) {
+      this.config.path = path.join(utils.getAbsoluteDefaultDataDir(), "files", this.namespace)
+      this.log.debug(`New Config Path: "${this.config.path}"`);
     }
-    return ((await this.getStateAsync(id))?.val ?? "") + "";
+    await FileService.prepareFolder(this.config.path);
+    */
+
+    const config_path: string[] = [this.config.path_snapshot, this.config.path_livestream];
+    for (const index in config_path) {
+      this.log.debug(`Configured Path: "${config_path[index]}"`);
+      const dataDir: any = this.systemConfig ? this.systemConfig.dataDir : "";
+      this.log.silly(`DataDir: ${dataDir}`);
+      if (!config_path[index]) {
+        config_path[index] = path.join(this.absoluteDefaultDir, "files", this.namespace);
+        if (index == "0") {
+          this.config.path_snapshot = config_path[index];
+        } else {
+          this.config.path_livestream = config_path[index];
+        }
+        this.log.debug(`New Config Path: "${config_path[index]}"`);
+      }
+      await FileService.prepareFolder(config_path[index]);
+    }
+
+    const objectDevices: Promise<ioBroker.DeviceObject[]> = this.getDevicesAsync();
+    for (const objectDevice in objectDevices) {
+      this.deleteDevice(objectDevice);
+    }
+
+    this.log.info(`Initializing Api Client`);
+    await this.apiClient.init();
+
+    this.log.info(`Get sunset and sunrise`);
+    await this.CalcSunData();
+
+    // Daily schedule sometime from 00:00:20 to 00:00:40
+    const scheduleSeconds: number = Math.round(Math.random() * 20 + 20);
+    this.log.info(`Daily sun parameter calculation scheduled for 00:00:${scheduleSeconds}`);
+    schedule.scheduleJob("SunData", `${scheduleSeconds} 0 0 * * *`, async (): Promise<void> => {
+      this.log.info(`Cronjob 'Sun parameter calculation' starts`);
+      await this.CalcSunData();
+    });
   }
 
-  private async upsertStateAsync(id: string, common: Partial<ioBroker.StateCommon>, value: ioBroker.StateValue, ack = true, subscribe = false): Promise<void> {
+  /**
+   * Is called if a subscribed state changes
+   */
+  private onStateChange(id: string, state: ioBroker.State | null | undefined): void {
+    if (!state || !this.apiClient) {
+      // The state was deleted
+      this.log.silly(`state ${id} deleted`);
+      return;
+    }
+
+    if (state.ack) {
+      // As it is already ack, don't react on it (could be set by us).
+      return;
+    }
+    // The state was changed
+    this.log.silly(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+    const splits: string[] = id.split(".");
+    const targetId: string = splits[2];
+    let stateID: string = splits[3];
+    let channelID: string = "";
+    if (splits.length === 5) {
+      channelID = splits[3];
+      stateID = splits[4];
+    }
+
+    this.apiClient.processUserInput(targetId, channelID, stateID, state);
+  }
+
+  public logCatch(message: string, reason: any): void {
+    this.log.info(message);
+    this.log.debug(`Reason: "${reason}"`);
+  }
+
+  private async upsertStateAsync(
+    id: string,
+    common: Partial<ioBroker.StateCommon>,
+    value: ioBroker.StateValue,
+    ack: boolean = true,
+    subscribe: boolean = false
+  ): Promise<void> {
     try {
       if (this.states[id] !== undefined) {
         this.states[id] = value;
@@ -231,7 +274,7 @@ export class RingAdapter extends Adapter {
         return;
       }
 
-      const { device, channel, stateName } = RingAdapter.getSplitIds(id);
+      const {device, channel, stateName}: { device: string; channel: string; stateName: string } = RingAdapter.getSplitIds(id);
       await this.createStateAsync(device, channel, stateName, common);
       this.states[id] = value;
       await this.setStateAsync(id, value, ack);
@@ -245,43 +288,12 @@ export class RingAdapter extends Adapter {
       }
     }
   }
-
-  public static getSplitIds(id: string): { device: string, channel: string, stateName: string } {
-    const splits = id.split(".");
-    let device = "";
-    let channel = "";
-    let stateName = splits[0];
-    if (splits.length === 2) {
-      device = splits[0];
-      stateName = splits[1];
-    } else if (splits.length === 3) {
-      device = splits[0];
-      channel = splits[1];
-      stateName = splits[2];
-    }
-    return { device, channel, stateName };
-  }
-
-  public logCatch(message: string, reason: any): void {
-    this.log.info(message);
-    this.log.debug(`Reason: "${reason}"`);
-  }
-
-  public async getRefreshToken(): Promise<string> {
-    const newTokenStateVal = await this.tryGetStringState("next_refresh_token");
-    const oldTokenStateVal = await this.tryGetStringState("old_user_refresh_token");
-    if (newTokenStateVal && oldTokenStateVal === this.config.refreshtoken) {
-      this.log.debug(`As the configured refresh token hasn't changed the state one will be used`);
-      return newTokenStateVal;
-    }
-    return this.config.refreshtoken;
-  }
 }
 
 if (require.main !== module) {
   // Export the constructor in compact mode
-  module.exports = (options: Partial<utils.AdapterOptions> | undefined) => new RingAdapter(options);
+  module.exports = (options: Partial<utils.AdapterOptions> | undefined): RingAdapter => new RingAdapter(options);
 } else {
   // otherwise start the instance directly
-  (() => new RingAdapter())();
+  ((): RingAdapter => new RingAdapter())();
 }

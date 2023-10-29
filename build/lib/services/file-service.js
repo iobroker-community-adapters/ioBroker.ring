@@ -51,7 +51,7 @@ class FileService {
     }
     static async getVisUrl(adapter, fullId, fileName) {
         const vis = await adapter.getForeignObjectAsync("system.adapter.web.0")
-            .catch(reason => {
+            .catch((reason) => {
             adapter.logCatch(`Couldn't load "web.0" Adapter object.`, reason);
         });
         if (vis && vis.native) {
@@ -91,7 +91,7 @@ class FileService {
                 }
                 else {
                     adapter.log.silly(`Adapter File ${fullPath} written!`);
-                    resolve();
+                    resolve(undefined);
                 }
             });
         });
