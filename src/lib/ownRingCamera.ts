@@ -82,6 +82,8 @@ import { FileInfo } from "./services/file-info";
 import { StreamingSession } from "ring-client-api/lib/streaming/streaming-session";
 import { PathInfo } from "./services/path-info";
 import { EventBlocker } from "./services/event-blocker";
+import { ImageService } from "./services/image-service";
+import { TextService } from "./services/text-service";
 
 enum EventState {
   Idle,
@@ -161,7 +163,12 @@ export class OwnRingCamera extends OwnRingDevice {
     }
     const tempPath: string = (await FileService.getTempDir(this._adapter)) + `/temp_${this.shortId}_livestream.mp4`;
     const liveCall: StreamingSession | null = await this._ringDevice.streamVideo({
-      video: this.videoFilter(this._adapter.config.overlay_Livestream),
+      video: ImageService.videoFilter(
+        this._adapter.config.overlay_Livestream,
+        this._adapter.dateFormat,
+        this._adapter.language,
+        this._ringDevice.data.description
+      ),
       output: ["-t", duration.toString(), tempPath],
     }).catch((reason: any): null => {
       this.catcher("Couldn't create Livestream.", reason);
@@ -252,7 +259,13 @@ export class OwnRingCamera extends OwnRingDevice {
     const {night_contrast, night_sharpen}: { night_contrast: boolean; night_sharpen: boolean } = this.getActiveNightImageOptions();
     const tempPath: string = (await FileService.getTempDir(this._adapter)) + `/temp_${this.shortId}_livestream.jpg`;
     const liveCall: StreamingSession | null = await this._ringDevice.streamVideo({
-      video: this.videoFilter(this._adapter.config.overlay_HDsnapshot, night_contrast ? this._adapter.config.contrast_HDsnapshot : 0),
+      video: ImageService.videoFilter(
+        this._adapter.config.overlay_HDsnapshot,
+        this._adapter.dateFormat,
+        this._adapter.language,
+        this._ringDevice.data.description,
+        night_contrast ? this._adapter.config.contrast_HDsnapshot : 0
+      ),
       // output: ["-t", duration.toString(), "-f", "mjpeg", "-q:v", 3, "-frames:v", 1, tempPath]
       output: ["-f", "mjpeg", "-q:v", 3, "-frames:v", 1, tempPath]
     }).catch((reason: any): null => {
@@ -387,11 +400,16 @@ export class OwnRingCamera extends OwnRingDevice {
 
     let image_txt: Buffer = image;
     if (this._adapter.config.overlay_snapshot) {
-      image_txt = await this.addText(image)
-        .catch((reason: any): any => {
-          this.catcher("Couldn't add text to Snapshot.", reason);
-          return reason;
-        });
+      image_txt =
+        await ImageService.addTextToJpgBuffer(
+          image,
+          this._ringDevice.data.description,
+          strftime(`${TextService.getTodayName(this._adapter.language)}, ${TextService.getDateFormat(this._adapter.dateFormat)} %T`)
+        )
+          .catch((reason: any): any => {
+            this.catcher("Couldn't add text to Snapshot.", reason);
+            return reason;
+          });
     }
 
     if (this._lastSnapShotDir !== "" && this._adapter.config.del_old_snapshot) {
@@ -718,149 +736,9 @@ export class OwnRingCamera extends OwnRingDevice {
     this.debug(`Livestream duration set to: ${val}`);
   }
 
-  private getDay(): string {
-    const en: string[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    const de: string[] = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
-    const ru: string[] = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"];
-    const pt: string[] = ["segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado", "domingo"];
-    const nl: string[] = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
-    const fr: string[] = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
-    const it: string[] = ["lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"];
-    const es: string[] = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
-    const pl: string[] = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"];
-    const uk: string[] = ["понеділок", "вівторок", "середа", "четвер", "п'ятниця", "субота", "неділя"];
-    const zh: string[] = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
-
-    const dow: number = (new Date().getDay() + 6) % 7;
-
-    switch (this._adapter.language as string) {
-      case "en":
-        return en[dow];
-      case "de":
-        return de[dow];
-      case "ru":
-        return ru[dow];
-      case "pt":
-        return pt[dow];
-      case "nl":
-        return nl[dow];
-      case "fr":
-        return fr[dow];
-      case "it":
-        return it[dow];
-      case "es":
-        return es[dow];
-      case "uk":
-        return uk[dow];
-      case "pl":
-        return pl[dow];
-      case "uk":
-        return uk[dow];
-      case "zh-cn":
-        return zh[dow];
-    }
-    return en[dow];
-  }
-
-  private getDateFormat(): string {
-    let sPattern: string = "/";
-    if (!this._adapter.dateFormat.includes(sPattern)) {
-      sPattern = "-";
-      if (!this._adapter.dateFormat.includes(sPattern)) {
-        sPattern = ".";
-        if (!this._adapter.dateFormat.includes(sPattern))
-          return "%y/%m/%d";
-      }
-    }
-    let rDate: string = "";
-    for (const val of this._adapter.dateFormat.split(sPattern)) {
-      switch (val) {
-        case "YYYY":
-          rDate += "%y";
-          break;
-        case "YY":
-          rDate += "%y";
-          break;
-        case "Y":
-          rDate += "%Y";
-          break;
-        case "MMMM":
-          rDate += "%B";
-          break;
-        case "MMM":
-          rDate += "%b";
-          break;
-        case "MM":
-          rDate += "%m";
-          break;
-        case "M":
-          rDate += "%-m";
-          break;
-        case "DD":
-          rDate += "%d";
-          break;
-        case "D":
-          rDate += "%-d";
-          break;
-      }
-      rDate = rDate + sPattern;
-    }
-    rDate = rDate.slice(0, rDate.length - 1);
-    return rDate;
-  }
-
-  private videoFilter(overlay: boolean, startTime: number = 0): string[] {
-    const start: string = `00:00:0${startTime.toString()}`;
-    const filter: string = `drawtext='
-                      fontsize=30:
-                      fontcolor=white:
-                      x=(main_w-text_w-20):
-                      y=20:shadowcolor=black:
-                      shadowx=2:
-                      shadowy=2:
-                      text=${this._ringDevice.data.description}',
-                    drawtext='
-                      fontsize=30:
-                      fontcolor=white:
-                      x=20:
-                      y=(main_h-text_h-20):
-                      shadowcolor=black:
-                      shadowx=2:
-                      shadowy=2:
-                      text=%{localtime\\:${this.getDay()}, ${this.getDateFormat()} %T}'`;
-    return (overlay && startTime > 0 ? ["-ss", start, "-vf", filter] :
-      (overlay ? ["-vf", filter] :
-        (startTime > 0 ? ["-ss", start] : [])));
-  }
-
   public updateHealth(): void {
     this.silly(`Update Health`);
     this._ringDevice.getHealth().then(this.updateHealthObject.bind(this));
-  }
-
-  private async addText(jpg: Buffer): Promise<Buffer> {
-    const width: number = 640;
-    const height: number = 360;
-    const font_size: number = 15;
-    const border_dist: number = 10;
-
-    const text1: string = this._ringDevice.data.description;
-    const text2: string = strftime(`${this.getDay()}, ${this.getDateFormat()} %T`);
-
-    const svgText: string = `
-      <svg width="${width}" height="${height}">
-        <style>
-          .title { fill: white; font-size: ${font_size}px; filter: drop-shadow(2px 2px 1px rgb(0 0 0 / 0.9))}
-        </style>
-        <text x="${width - border_dist}" y="${border_dist + font_size}" text-anchor="end" class="title">${text1}</text>
-        <text x="10" y="${height - border_dist}" text-anchor="start" class="title">${text2}</text>
-      </svg>`;
-
-    const svgBuffer: Buffer = Buffer.from(svgText);
-
-    return Sharp(jpg)
-      .composite([{input: svgBuffer, left: 0, top: 0}])
-      .toBuffer();
   }
 
   private autoSched(): void {

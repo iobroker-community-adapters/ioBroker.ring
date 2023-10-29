@@ -38,6 +38,8 @@ const lastAction_1 = require("./lastAction");
 const file_service_1 = require("./services/file-service");
 const ownRingDevice_1 = require("./ownRingDevice");
 const event_blocker_1 = require("./services/event-blocker");
+const image_service_1 = require("./services/image-service");
+const text_service_1 = require("./services/text-service");
 var EventState;
 (function (EventState) {
     EventState[EventState["Idle"] = 0] = "Idle";
@@ -80,7 +82,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         }
         const tempPath = (await file_service_1.FileService.getTempDir(this._adapter)) + `/temp_${this.shortId}_livestream.mp4`;
         const liveCall = await this._ringDevice.streamVideo({
-            video: this.videoFilter(this._adapter.config.overlay_Livestream),
+            video: image_service_1.ImageService.videoFilter(this._adapter.config.overlay_Livestream, this._adapter.dateFormat, this._adapter.language, this._ringDevice.data.description),
             output: ["-t", duration.toString(), tempPath],
         }).catch((reason) => {
             this.catcher("Couldn't create Livestream.", reason);
@@ -152,7 +154,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         const { night_contrast, night_sharpen } = this.getActiveNightImageOptions();
         const tempPath = (await file_service_1.FileService.getTempDir(this._adapter)) + `/temp_${this.shortId}_livestream.jpg`;
         const liveCall = await this._ringDevice.streamVideo({
-            video: this.videoFilter(this._adapter.config.overlay_HDsnapshot, night_contrast ? this._adapter.config.contrast_HDsnapshot : 0),
+            video: image_service_1.ImageService.videoFilter(this._adapter.config.overlay_HDsnapshot, this._adapter.dateFormat, this._adapter.language, this._ringDevice.data.description, night_contrast ? this._adapter.config.contrast_HDsnapshot : 0),
             // output: ["-t", duration.toString(), "-f", "mjpeg", "-q:v", 3, "-frames:v", 1, tempPath]
             output: ["-f", "mjpeg", "-q:v", 3, "-frames:v", 1, tempPath]
         }).catch((reason) => {
@@ -266,11 +268,12 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         }
         let image_txt = image;
         if (this._adapter.config.overlay_snapshot) {
-            image_txt = await this.addText(image)
-                .catch((reason) => {
-                this.catcher("Couldn't add text to Snapshot.", reason);
-                return reason;
-            });
+            image_txt =
+                await image_service_1.ImageService.addTextToJpgBuffer(image, this._ringDevice.data.description, (0, strftime_1.default)(`${text_service_1.TextService.getTodayName(this._adapter.language)}, ${text_service_1.TextService.getDateFormat(this._adapter.dateFormat)} %T`))
+                    .catch((reason) => {
+                    this.catcher("Couldn't add text to Snapshot.", reason);
+                    return reason;
+                });
         }
         if (this._lastSnapShotDir !== "" && this._adapter.config.del_old_snapshot) {
             file_service_1.FileService.deleteFileIfExistSync(this._lastSnapShotDir, this._adapter);
@@ -531,139 +534,9 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._adapter.upsertState(`${this.liveStreamChannelId}.${constants_1.STATE_ID_LIVESTREAM_DURATION}`, constants_1.COMMON_LIVESTREAM_DURATION, this._durationLiveStream, true);
         this.debug(`Livestream duration set to: ${val}`);
     }
-    getDay() {
-        const en = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-        const de = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
-        const ru = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"];
-        const pt = ["segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado", "domingo"];
-        const nl = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
-        const fr = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
-        const it = ["lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"];
-        const es = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
-        const pl = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"];
-        const uk = ["понеділок", "вівторок", "середа", "четвер", "п'ятниця", "субота", "неділя"];
-        const zh = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
-        const dow = (new Date().getDay() + 6) % 7;
-        switch (this._adapter.language) {
-            case "en":
-                return en[dow];
-            case "de":
-                return de[dow];
-            case "ru":
-                return ru[dow];
-            case "pt":
-                return pt[dow];
-            case "nl":
-                return nl[dow];
-            case "fr":
-                return fr[dow];
-            case "it":
-                return it[dow];
-            case "es":
-                return es[dow];
-            case "uk":
-                return uk[dow];
-            case "pl":
-                return pl[dow];
-            case "uk":
-                return uk[dow];
-            case "zh-cn":
-                return zh[dow];
-        }
-        return en[dow];
-    }
-    getDateFormat() {
-        let sPattern = "/";
-        if (!this._adapter.dateFormat.includes(sPattern)) {
-            sPattern = "-";
-            if (!this._adapter.dateFormat.includes(sPattern)) {
-                sPattern = ".";
-                if (!this._adapter.dateFormat.includes(sPattern))
-                    return "%y/%m/%d";
-            }
-        }
-        let rDate = "";
-        for (const val of this._adapter.dateFormat.split(sPattern)) {
-            switch (val) {
-                case "YYYY":
-                    rDate += "%y";
-                    break;
-                case "YY":
-                    rDate += "%y";
-                    break;
-                case "Y":
-                    rDate += "%Y";
-                    break;
-                case "MMMM":
-                    rDate += "%B";
-                    break;
-                case "MMM":
-                    rDate += "%b";
-                    break;
-                case "MM":
-                    rDate += "%m";
-                    break;
-                case "M":
-                    rDate += "%-m";
-                    break;
-                case "DD":
-                    rDate += "%d";
-                    break;
-                case "D":
-                    rDate += "%-d";
-                    break;
-            }
-            rDate = rDate + sPattern;
-        }
-        rDate = rDate.slice(0, rDate.length - 1);
-        return rDate;
-    }
-    videoFilter(overlay, startTime = 0) {
-        const start = `00:00:0${startTime.toString()}`;
-        const filter = `drawtext='
-                      fontsize=30:
-                      fontcolor=white:
-                      x=(main_w-text_w-20):
-                      y=20:shadowcolor=black:
-                      shadowx=2:
-                      shadowy=2:
-                      text=${this._ringDevice.data.description}',
-                    drawtext='
-                      fontsize=30:
-                      fontcolor=white:
-                      x=20:
-                      y=(main_h-text_h-20):
-                      shadowcolor=black:
-                      shadowx=2:
-                      shadowy=2:
-                      text=%{localtime\\:${this.getDay()}, ${this.getDateFormat()} %T}'`;
-        return (overlay && startTime > 0 ? ["-ss", start, "-vf", filter] :
-            (overlay ? ["-vf", filter] :
-                (startTime > 0 ? ["-ss", start] : [])));
-    }
     updateHealth() {
         this.silly(`Update Health`);
         this._ringDevice.getHealth().then(this.updateHealthObject.bind(this));
-    }
-    async addText(jpg) {
-        const width = 640;
-        const height = 360;
-        const font_size = 15;
-        const border_dist = 10;
-        const text1 = this._ringDevice.data.description;
-        const text2 = (0, strftime_1.default)(`${this.getDay()}, ${this.getDateFormat()} %T`);
-        const svgText = `
-      <svg width="${width}" height="${height}">
-        <style>
-          .title { fill: white; font-size: ${font_size}px; filter: drop-shadow(2px 2px 1px rgb(0 0 0 / 0.9))}
-        </style>
-        <text x="${width - border_dist}" y="${border_dist + font_size}" text-anchor="end" class="title">${text1}</text>
-        <text x="10" y="${height - border_dist}" text-anchor="start" class="title">${text2}</text>
-      </svg>`;
-        const svgBuffer = Buffer.from(svgText);
-        return (0, sharp_1.default)(jpg)
-            .composite([{ input: svgBuffer, left: 0, top: 0 }])
-            .toBuffer();
     }
     autoSched() {
         const media = [
