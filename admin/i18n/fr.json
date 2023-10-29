@@ -42,5 +42,7 @@
   "-": "-",
   "HDInfo": "<br>Informations importantes !<br>Les paramètres \"Remplacer le texte\", \"Aiguillage de la photo\" et \"Contraste visuel\" consomme du temps (jusqu'à quelques secondes).<br>Si un temps d'affichage rapide est important, veuillez les éteindre.",
   "HDInfoTip": "Astuce: Aiguillage d'image et contraste d'image fonctionne le mieux la nuit.",
-  "Ignore multiple events": "Ignore plusieurs événements"
+  "Ignore multiple events": "Ignore plusieurs événements",
+  "Motion": "Mouvement",
+  "Doorbell": "Sonnette"
 }

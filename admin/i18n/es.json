@@ -43,5 +43,7 @@
   "-": "-",
   "HDInfo": "<br>¡Información importante!<br>La configuración \"Texto superpuesto\", \"Afilado de la imagen\" y \"Contraste de imagen\" son el consumo de tiempo (hasta unos segundos).<br>Si un tiempo de visualización rápido es importante, por favor apague todos.",
   "HDInfoTip": "Consejo: Afilado de imágenes y contraste de imagen trabajando mejor por la noche.",
-  "Ignore multiple events": "Ignorar múltiples eventos"
+  "Ignore multiple events": "Ignorar múltiples eventos",
+  "Motion": "Movimiento",
+  "Doorbell": "Timbre de la puerta"
 }

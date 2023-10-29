@@ -42,5 +42,7 @@
   "-": "-",
   "HDInfo": "<br>InformaÃ§Ã£o Importante!<br>As definições \"Sobreposição de texto\", \"Afiar imagem\" e \"Contraste de imagem\" são demorados (até alguns segundos).<br>Se um tempo de exibição rápido é importante, por favor, desligue todos.",
   "HDInfoTip": "Dica: Afiação de imagem e contraste de imagem que funcionam melhor à noite.",
-  "Ignore multiple events": "Ignorar vários eventos"
+  "Ignore multiple events": "Ignorar vários eventos",
+  "Motion": "Movimento",
+  "Doorbell": "Campainha"
 }

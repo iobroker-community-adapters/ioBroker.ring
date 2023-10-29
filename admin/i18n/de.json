@@ -42,5 +42,7 @@
   "-": "-",
   "HDInfo": "Wichtige Informationen!<br>Die Einstellungen \"Überlagerungstext\", \"Bildschärfe\" und \"Bildkontrast\" sind zeitaufwendig (bis zu einigen Sekunden).<br>Wenn eine schnelle Anzeigezeit wichtig ist, bitte abschalten.",
   "HDInfoTip": "Tipp: Bildschärfe und Bildkontrast arbeiten am Besten in der Nacht.",
-  "Ignore multiple events": "Mehrere Ereignisse ignorieren"
+  "Ignore multiple events": "Mehrere Ereignisse ignorieren",
+  "Motion": "Bewegung",
+  "Doorbell": "Türklingel"
 }

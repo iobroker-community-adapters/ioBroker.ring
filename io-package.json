@@ -215,8 +215,8 @@
     "sentry_enable": true,
     "timeout": 5,
     "twofaceauth": false,
-    "ignore_events": 2,
-    "keep_ignoring_if_retriggered": false
+    "ignore_events_Motion": 0,
+    "ignore_events_Doorbell": 0
   },
   "objects": []
 }

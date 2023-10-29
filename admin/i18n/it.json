@@ -42,5 +42,7 @@
   "-": "-",
   "HDInfo": "<br>Informazioni importanti!<br>Le impostazioni \"Testo di sovrapposizione\", \"Immagine affilare\" e \"Contrasto immagine\" consumano tempo (fino a pochi secondi).<br>Se un tempo di visualizzazione veloce è importante, si prega di spegnerli tutti.",
   "HDInfoTip": "Suggerimento: Immagine affilare e Immagine contrasto funziona meglio di notte.",
-  "Ignore multiple events": "Ignora più eventi"
+  "Ignore multiple events": "Ignora più eventi",
+  "Motion": "Movimento",
+  "Doorbell": "Campanello di casa"
 }

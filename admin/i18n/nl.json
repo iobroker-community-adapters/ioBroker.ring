@@ -42,5 +42,7 @@
   "-": "-",
   "HDInfo": "<br>Belangrijke informatie!<br>De setting \"Vertaling:, \"Picture scherp\" en \"In tegenstelling tot\" het is tijd voor een paar seconden.<br>Als een snelle tijd belangrijk is, zet ze dan allemaal uit.",
   "HDInfoTip": "Tip: Foto's slijpend en Picture contrast werkt 's nachts het beste.",
-  "Ignore multiple events": "Negeer meerdere gebeurtenissen"
+  "Ignore multiple events": "Negeer meerdere gebeurtenissen",
+  "Motion": "Motion",
+  "Doorbell": "Doorbell"
 }

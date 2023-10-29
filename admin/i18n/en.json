@@ -42,5 +42,7 @@
   "-": "-",
   "HDInfo": "<br>Important information!<br>The settings \"Overlaying text\", \"Picture sharpening\" and \"Picture contrast\" are time consuming (up to a few Seconds).<br>If a fast display time is important, please turn them all off.",
   "HDInfoTip": "Tip: Picture sharpening and Picture contrast working best at night.",
-  "Ignore multiple events": "Ignore multiple events"
+  "Ignore multiple events": "Ignore multiple events",
+  "Motion": "Motion",
+  "Doorbell": "Doorbell"
 }

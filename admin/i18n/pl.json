@@ -42,5 +42,7 @@
   "-": "-",
   "HDInfo": "<br>Important information!<br>Ustawienia  \"Tekst Overlaying\", \"Zdjęcie ostrym\" i \"Kontrast\" czas spędzania czasu (do kilku sekund).<br>Jeśli czas szybkiego wyświetlania jest bardzo ważny, to wszystko się odwraca.<br>Tip: ostry film i film kontrastują w nocy.",
   "HDInfoTip": "Tip: ostry film i film kontrastują w nocy.",
-  "Ignore multiple events": "Nienawiść wielu zdarzeń"
+  "Ignore multiple events": "Nienawiść wielu zdarzeń",
+  "Motion": "Ruch",
+  "Doorbell": "Dzwonek do drzwi"
 }
