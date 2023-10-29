@@ -45,5 +45,7 @@
   "HDInfoTip": "Consejo: Afilado de imágenes y contraste de imagen trabajando mejor por la noche.",
   "Ignore multiple events": "Ignorar múltiples eventos",
   "Motion": "Movimiento",
-  "Doorbell": "Timbre de la puerta"
+  "Doorbell": "Timbre de la puerta",
+  "General": "General",
+  "Extend ignore duration on retrigger": "Extender la duración de ignorar en retrigger"
 }

@@ -44,5 +44,7 @@
   "HDInfoTip": "Tipp: Bildschärfe und Bildkontrast arbeiten am Besten in der Nacht.",
   "Ignore multiple events": "Mehrere Ereignisse ignorieren",
   "Motion": "Bewegung",
-  "Doorbell": "Türklingel"
+  "Doorbell": "Türklingel",
+  "General": "Allgemein",
+  "Extend ignore duration on retrigger": "Sperrzeit bei erneutem Auslösen verlängern."
 }

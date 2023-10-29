@@ -44,5 +44,7 @@
   "HDInfoTip": "Suggerimento: Immagine affilare e Immagine contrasto funziona meglio di notte.",
   "Ignore multiple events": "Ignora più eventi",
   "Motion": "Movimento",
-  "Doorbell": "Campanello di casa"
+  "Doorbell": "Campanello di casa",
+  "General": "Generale",
+  "Extend ignore duration on retrigger": "Estendi la durata dell'ignorare su retrigger"
 }

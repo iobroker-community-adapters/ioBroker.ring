@@ -44,5 +44,7 @@
   "HDInfoTip": "Tip: Foto's slijpend en Picture contrast werkt 's nachts het beste.",
   "Ignore multiple events": "Negeer meerdere gebeurtenissen",
   "Motion": "Motion",
-  "Doorbell": "Doorbell"
+  "Doorbell": "Doorbell",
+  "General": "Algemeen",
+  "Extend ignore duration on retrigger": "Verleng de duur van het negeren opnieuw",
 }

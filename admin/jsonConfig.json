@@ -30,6 +30,21 @@
       "icon": "preferences-desktop-notification-bell-3.png",
       "type": "panel",
       "items": {
+        "_staticText0": {
+          "newLine": true,
+          "style": {"fontSize": "130%", "fontWeight": "bold"},
+          "type": "staticText",
+          "text": "General",
+          "sm": 12,
+          "md": 6,
+          "lg": 3
+        },
+        "keep_ignoring_if_retriggered": {
+          "newLine": true,
+          "type": "checkbox",
+          "label": "Extend ignore duration on retrigger",
+          "sm": 12
+        },
         "_staticText1": {
           "newLine": true,
           "style": {"fontSize": "130%", "fontWeight": "bold"},

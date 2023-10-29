@@ -44,5 +44,7 @@
   "HDInfoTip": "Dica: Afiação de imagem e contraste de imagem que funcionam melhor à noite.",
   "Ignore multiple events": "Ignorar vários eventos",
   "Motion": "Movimento",
-  "Doorbell": "Campainha"
+  "Doorbell": "Campainha",
+  "General": "Geral",
+  "Extend ignore duration on retrigger": "Estender a duração do ignorar no retrigger"
 }

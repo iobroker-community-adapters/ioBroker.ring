@@ -44,5 +44,7 @@
   "HDInfoTip": "参与:在夜间最好地进行紧张和紧张关系。.",
   "Ignore multiple events": "忽略多个事件",
   "Motion": "运动",
-  "Doorbell": "门铃"
+  "Doorbell": "门铃",
+  "General": "一般",
+  "Extend ignore duration on retrigger": "在重新触发时延长忽略持续时间"
 }

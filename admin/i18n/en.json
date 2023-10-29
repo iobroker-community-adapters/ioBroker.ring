@@ -44,5 +44,7 @@
   "HDInfoTip": "Tip: Picture sharpening and Picture contrast working best at night.",
   "Ignore multiple events": "Ignore multiple events",
   "Motion": "Motion",
-  "Doorbell": "Doorbell"
+  "Doorbell": "Doorbell",
+  "General": "General",
+  "Extend ignore duration on retrigger": "Extend ignore duration on retrigger"
 }
