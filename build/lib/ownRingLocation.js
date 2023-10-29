@@ -111,7 +111,9 @@ class OwnRingLocation {
         this.debug(`Change Location Mode to ${desiredState}`);
         this._loc.setLocationMode(desiredState)
             .then((r) => this.updateModeObject(r.mode))
-            .catch((reason) => { this._adapter.logCatch(`Failed setting location mode`, reason); });
+            .catch((reason) => {
+            this._adapter.logCatch(`Failed setting location mode`, reason);
+        });
     }
     updateModeObject(newMode, preventLog = false) {
         this._currentLocationMode = newMode;
