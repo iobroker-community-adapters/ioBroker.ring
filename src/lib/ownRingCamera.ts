@@ -113,6 +113,7 @@ export class OwnRingCamera extends OwnRingDevice {
   private _liveStreamCount = 0;
   private _state = EventState.Idle;
   private _doorbellEventActive: boolean = false;
+  private _motionEventActive: boolean = false;
 
   get lastLiveStreamDir(): string {
     return this._lastLiveStreamDir;
@@ -1148,60 +1149,57 @@ export class OwnRingCamera extends OwnRingDevice {
     }
   }
 
-  private onDing = Object.assign(
-    (value: PushNotificationDing) => {
-      if (! this.onDing.active) {
-        this.onDing.active = true
-        this.debug(`Received Ding Event (${util.inspect(value, true, 1)})`)
-        this.conditionalRecording(EventState.ReactingOnDing, value.ding.image_uuid)
-        this._adapter.upsertState(
-          `${this.eventsChannelId}.type`,
-          COMMON_EVENTS_TYPE,
-          value.subtype,
-        )
-        this._adapter.upsertState(
-          `${this.eventsChannelId}.detectionType`,
-          COMMON_EVENTS_DETECTIONTYPE,
-          value.ding.detection_type ?? value.subtype,
-        )
-        this._adapter.upsertState(
-          `${this.eventsChannelId}.created_at`,
-          COMMON_EVENTS_MOMENT,
-          Date.now(),
-        )
-        this._adapter.upsertState(
-          `${this.eventsChannelId}.message`,
-          COMMON_EVENTS_MESSAGE,
-          value.aps.alert,
-        )
-      } else {
-        this.debug("ignore ding event...")
-      }
-      this.ignoreMutlipleEvents(this.onDing)
-    },
-    { active: false },
-    { timerId: <NodeJS.Timeout>{}}
-  )
+  private onDing(value: PushNotificationDing): void {
+    this.debug(`Received Ding Event (${util.inspect(value, true, 1)})`);
+    this.conditionalRecording(EventState.ReactingOnDing, value.ding.image_uuid);
+    this._adapter.upsertState(
+      `${this.eventsChannelId}.type`,
+      COMMON_EVENTS_TYPE,
+      value.subtype,
+    );
+    this._adapter.upsertState(
+      `${this.eventsChannelId}.detectionType`,
+      COMMON_EVENTS_DETECTIONTYPE,
+      value.ding.detection_type ?? value.subtype,
+    );
+    this._adapter.upsertState(
+      `${this.eventsChannelId}.created_at`,
+      COMMON_EVENTS_MOMENT,
+      Date.now(),
+    );
+    this._adapter.upsertState(
+      `${this.eventsChannelId}.message`,
+      COMMON_EVENTS_MESSAGE,
+      value.aps.alert,
+    );
+  }
 
-  private onMotion = Object.assign(
-    (value: boolean) => {
-      if (! this.onMotion.active) {
-        this.onMotion.active = true
-        this.debug(`Received Motion Event (${util.inspect(value, true, 1)})`);
-        this._adapter.upsertState(
-          `${this.eventsChannelId}.motion`,
-          COMMON_MOTION,
-          value,
-        );
-        value && this.conditionalRecording(EventState.ReactingOnMotion)
-      } else {
-        this.debug("ignore motion event...")
-      }
-      this.ignoreMutlipleEvents(this.onDing)
-    },
-    { active: false },
-    { timerId: <NodeJS.Timeout>{}}
-  )
+  private onMotion(value: boolean): void {
+    if (!value) {
+      return;
+    }
+    if (this._motionEventActive) {
+      this.debug(`Received Motion Event, but we are already reacting. Ignoring.`)
+      return;
+    }
+    this.info("Motion Event --> Will ignore additional motions for the next 25s.")
+    this.debug(`Received Motion Event (${util.inspect(value, true, 1)})`);
+    this._motionEventActive = true;
+    this._adapter.upsertState(
+      `${this.eventsChannelId}.motion`,
+      COMMON_MOTION,
+      true,
+    );
+    setTimeout(() => {
+      this._doorbellEventActive = false
+      this._adapter.upsertState(
+        `${this.eventsChannelId}.motion`,
+        COMMON_EVENTS_DOORBELL,
+        false,
+      );
+    }, 25000);
+    value && this.conditionalRecording(EventState.ReactingOnMotion);
+  }
 
   private onDoorbell = Object.assign(
     (value: PushNotificationDing) => {
