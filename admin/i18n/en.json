@@ -10,7 +10,6 @@
   "ring-adapter": "Ring Adapter",
   "Livestream": "Live stream",
   "Snapshot": "Snapshot",
-  "HDSnapshot": "HD Snapshot",
   "ChooseDate": "Please choose a date",
   "Filename": "Filename",
   "Automatic recording time in seconds": "Automatic recording time in seconds",
@@ -37,8 +36,15 @@
   "15 seconds": "15 seconds",
   "30 seconds": "30 seconds",
   "1 minute": "1 minute",
+  "2 minutes": "2 minutes",
+  "3 minutes": "3 minutes",
   "1 hour": "1 hour",
   "-": "-",
   "HDInfo": "<br>Important information!<br>The settings \"Overlaying text\", \"Picture sharpening\" and \"Picture contrast\" are time consuming (up to a few Seconds).<br>If a fast display time is important, please turn them all off.",
-  "HDInfoTip": "Tip: Picture sharpening and Picture contrast working best at night."
+  "HDInfoTip": "Tip: Picture sharpening and Picture contrast working best at night.",
+  "Ignore multiple events": "Ignore multiple events",
+  "Motion": "Motion",
+  "Doorbell": "Doorbell",
+  "General": "General",
+  "Extend ignore duration on retrigger": "Extend ignore duration on retrigger"
 }

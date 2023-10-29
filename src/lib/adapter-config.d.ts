@@ -31,6 +31,9 @@ declare global {
       contrast_HDsnapshot: number;
       night_contrast_HDsnapshot: boolean;
 
+      ignore_events_Motion: number;
+      ignore_events_Doorbell: number;
+      keep_ignoring_if_retriggered: boolean;
       pollsec: number;
       refreshtoken: string;
       twofaceauth: boolean;

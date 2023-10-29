@@ -1,215 +1,223 @@
 {
-  "common": {
-    "adminUI": {
-      "config": "json",
-      "tab": "materialize"
+    "common": {
+        "adminUI": {
+            "config": "json",
+            "tab": "materialize"
+        },
+        "adminTab": {
+            "singleton": true,
+            "name": {
+                "en": "Ring Adapter",
+                "de": "Ring Adapter",
+                "ru": "Кольцо адаптер",
+                "pt": "Adaptador de anel",
+                "nl": "Ring Adapter",
+                "fr": "Adaptateur de réglage",
+                "it": "Adattatore di anelli",
+                "es": "Adaptador de anillos",
+                "pl": "Pierścień",
+                "uk": "Кільковий адаптер",
+                "zh-cn": "导 言"
+            },
+            "link": "/adapter/ring/tab_m.html?noFooter=true&instance=0",
+            "fa-icon": "info"
+        },
+        "authors": [
+            "Thorsten Stueben <thorsten@stueben.de>"
+        ],
+        "compact": true,
+        "connectionType": "cloud",
+        "dataSource": "push",
+        "dependencies": [
+            {
+                "js-controller": ">=4.0.0"
+            }
+        ],
+        "desc": {
+            "en": "Ring Adapter",
+            "de": "Ring Adapter",
+            "ru": "Кольцо адаптер",
+            "pt": "Adaptador de anel",
+            "nl": "Ring Adapter",
+            "fr": "Adaptateur de réglage",
+            "it": "Adattatore di anelli",
+            "es": "Adaptador de anillos",
+            "pl": "Pierścień",
+            "uk": "Кільковий адаптер",
+            "zh-cn": "导 言"
+        },
+        "enabled": true,
+        "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.ring/master/admin/ring.png",
+        "icon": "ring.png",
+        "keywords": [
+            "Ring",
+            "Camera",
+            "Doorbell"
+        ],
+        "license": "MIT",
+        "loglevel": "info",
+        "main": "build/main.js",
+        "materializeTab": true,
+        "mode": "daemon",
+        "name": "ring",
+        "news": {
+            "5.0.5": {
+                "en": "#602 Debounce Motion Events by 25 seconds. This prevents multiple events within a short time.",
+                "de": "#602 Debounce Motion Ereignisse um 25 Sekunden. Dies verhindert mehrere Ereignisse innerhalb kurzer Zeit.",
+                "ru": "#602 Прекращение События за 25 секунд. Это предотвращает несколько событий в течение короткого времени.",
+                "pt": "#602 Debounce Motion Eventos em 25 segundos. Isso evita vários eventos em pouco tempo.",
+                "nl": "♪602 Debounce Motion Evenementen met 25 seconden. Dit verhindert meerdere gebeurtenissen binnen een korte tijd.",
+                "fr": "#602 Debounce Motion Évènements de 25 secondes. Cela empêche plusieurs événements en peu de temps.",
+                "it": "#602 Debounce Motion Eventi di 25 secondi. Ciò previene più eventi in breve tempo.",
+                "es": "#602 Debounce Motion Eventos en 25 segundos. Esto evita múltiples eventos en poco tiempo.",
+                "pl": "602 Debounce Motion (ang.). Wydarzenia o 25 sekund. Zapobiega to na wiele wydarzeń w krótkim czasie.",
+                "uk": "#602 Дебатний рух Події за 25 секунд. Це запобігає кількох подій протягом короткого часу.",
+                "zh-cn": "第602号 25秒。 这在短时间内阻止了多种事件。."
+            },
+            "5.0.4": {
+                "en": "#603 Add rxjs to normal dependencies instead of dev-dependencies",
+                "de": "#603 Hinzufügen von rxjs zu normalen Abhängigkeiten anstelle von dev-dependencies",
+                "ru": "#603 Добавьте rxjs в нормальные зависимости вместо dev-зависимости",
+                "pt": "#603 Adicione rxjs a dependências normais em vez de dependências dev",
+                "nl": "#603 Voeg RXJ toe aan normale afhankelijkheid in plaats van onafhankelijkheid",
+                "fr": "#603 Ajouter rxjs aux dépendances normales au lieu des dépendances dev",
+                "it": "#603 Aggiungere rxjs alle dipendenze normali invece di dev-dipendenze",
+                "es": "#603 Añadir rxjs a dependencias normales en lugar de dev-dependencies",
+                "pl": "603 Add rxj w normalnych zależnościach zamiast dev-dependencji",
+                "uk": "#603 Додати rxjs до нормальних залежностей замість",
+                "zh-cn": "第603号 增加正常的依赖性,而不是降水"
+            },
+            "5.0.3": {
+                "en": "#603 Change rxjs import to resolve awkward js build result.",
+                "de": "#603 Ändern Sie rxjs Import, um awkward js Build Ergebnis zu lösen.",
+                "ru": "#603 Измените импорт rxjs для разрешения awkward js build результат.",
+                "pt": "#603 Alterar a importação de rxjs para resolver o resultado de compilação js estranho.",
+                "nl": "#603 Verander RXJ's import om onhandige j's resultaat op te lossen.",
+                "fr": "#603 Changer l'importation rxjs pour résoudre le résultat de construction de js embarrassant.",
+                "it": "#603 Cambia l'importazione di rxjs per risolvere il risultato di costruzione di js imbarazzante.",
+                "es": "#603 Cambiar rxjs importación para resolver el resultado de construcción de js incómodo.",
+                "pl": "603 Zmiany rxjów importują do rozwiązania niezręcznego js.",
+                "uk": "#603 Зміна імпорту rxjs для вирішення результату побудови jswkward.",
+                "zh-cn": "第603号 装甲运兵车的进口,以便解决厨房。."
+            },
+            "5.0.2": {
+                "en": "Remove mixup of callback and async within same function\n#603 Harden usage of \"firstValueFrom\"",
+                "de": "Entfernen Sie die Mischung von Callback und Async innerhalb derselben Funktion\n#603 Harden Nutzung der ersten ValueFrom",
+                "ru": "Удалить перемешивание callback и async в рамках одной функции\n#603 Harden использование первого ЗначениеОт",
+                "pt": "Remover a mistura de callback e async dentro da mesma função\n#603 Harden use of first Valor a partir de",
+                "nl": "Verwijder mengsel en async binnen dezelfde functie\nVertaling: ValueFrom",
+                "fr": "Supprimer le mélange de callback et async dans la même fonction\n#603 Usage dur de la première Valeur",
+                "it": "Rimuovere il mixup di callback e asincrona all'interno della stessa funzione\n#603 Harden utilizzo del primo Valore",
+                "es": "Eliminar la mezcla de callback y async dentro de la misma función\n#603 Harden use of first Valor",
+                "pl": "Remove mieszanina połączeń i asynchronia w tej samej funkcji\n#603 Harden (ang.) ValueFrom",
+                "uk": "Видаліть міксап зворотного виклику та асинхрону в одній функції\n#603 Викорисне використання першого ValueЗ альбому",
+                "zh-cn": "在同一职能范围内消除阻断和排污\n第603号行动 价值"
+            },
+            "5.0.1": {
+                "en": "Updated Packages\nRemove legacy states\nAdd stickup_cam_mini_v2",
+                "de": "Aktualisierte Pakete\nEntfernen ältere Staaten\nStickup_cam_mini_v2 hinzufügen",
+                "ru": "Обновленные пакеты\nУдалить состояния наследия\nДобавить Stickup_cam_mini_v2",
+                "pt": "Pacotes atualizados\nRemover estados legados\nAdicionar stickup_cam_mini_v2",
+                "nl": "Verouderde pakket\nVerwijder de nalatenschap\nAdd stickupupcamini",
+                "fr": "Forfaits mis à jour\nSupprimer les États\nAjouter stickup_cam_mini_v2",
+                "it": "Pacchetti aggiornati\nRimuovi gli stati legacy\nAggiungi stickup_cam_mini_v2",
+                "es": "Paquetes actualizados\nEliminar los estados heredados\nAñadir stickup_cam_mini_v2",
+                "pl": "Package Update\nRemove dziedzictwo państw członkowskich\nAdd stickup_mini_v2 (ang.)",
+                "uk": "Оновлені пакети\nВидаліть стани спадщини Legacy\nДодати палицю_cam_mini_v2",
+                "zh-cn": "最新包装\n消除遗留状况\n增加stickup_cam_mini_v2"
+            },
+            "5.0.1-beta.0": {
+                "en": "migrated the configuration to JSON\nmany changes for livestream and high-definition screenshots\nRefactoring and cleanup",
+                "de": "die Konfiguration zu JSON migriert\nviele änderungen für livestream und high-definition screenshots\nHerstellung und Reinigung",
+                "ru": "мигрировали конфигурацию в JSON\nмного изменений для скриншотов livestream и high-definition\nРефакторинг и очистка",
+                "pt": "migraram a configuração para JSON\nmuitas alterações para livestream e capturas de tela de alta definição\nRefactoring e limpeza",
+                "nl": "de configuratie van JSON\nveel veranderingen voor livestream and high-definition screenshots\nHerstarten en opruimen",
+                "fr": "a migré la configuration vers JSON\nde nombreux changements pour les captures d'écran en direct et haute définition\nRefactoring and cleanup",
+                "it": "migrata la configurazione a JSON\nmolte modifiche per gli screenshot livestream e ad alta definizione\nRefactoring e pulizia",
+                "es": "migraron la configuración a JSON\nmuchos cambios para pantallas de flujo vivo y alta definición\nRefactorización y limpieza",
+                "pl": "przeprowadziło to do migracji do JSON\nwiele zmian na żywostream i high-definition screenshot\nOdtwarzanie i oczyszczanie",
+                "uk": "мігрувати конфігурацію в JSON\nбагато змін для живого потоку та знімків високої чіткості\nРефакторинг і очищення",
+                "zh-cn": "迁移到联合协商会的组合\n对上游和高指标屏幕进行的许多变化\n改建和清洁"
+            },
+            "5.0.0": {
+                "en": "migrated the configuration to JSON\nmany changes for livestream and high-definition screenshots\nRefactoring and cleanup",
+                "de": "die Konfiguration zu JSON migriert\nviele änderungen für livestream und high-definition screenshots\nHerstellung und Reinigung",
+                "ru": "мигрировали конфигурацию в JSON\nмного изменений для скриншотов livestream и high-definition\nРефакторинг и очистка",
+                "pt": "migraram a configuração para JSON\nmuitas alterações para livestream e capturas de tela de alta definição\nRefactoring e limpeza",
+                "nl": "de configuratie van JSON\nveel veranderingen voor livestream and high-definition screenshots\nHerstarten en opruimen",
+                "fr": "a migré la configuration vers JSON\nde nombreux changements pour les captures d'écran en direct et haute définition\nRefactoring and cleanup",
+                "it": "migrata la configurazione a JSON\nmolte modifiche per gli screenshot livestream e ad alta definizione\nRefactoring e pulizia",
+                "es": "migraron la configuración a JSON\nmuchos cambios para pantallas de flujo vivo y alta definición\nRefactorización y limpieza",
+                "pl": "przeprowadziło to do migracji do JSON\nwiele zmian na żywostream i high-definition screenshot\nOdtwarzanie i oczyszczanie",
+                "uk": "мігрувати конфігурацію в JSON\nбагато змін для живого потоку та знімків високої чіткості\nРефакторинг і очищення",
+                "zh-cn": "迁移到联合协商会的组合\n对上游和高指标屏幕进行的许多变化\n改建和清洁"
+            }
+        },
+        "platform": "Javascript/Node.js",
+        "readme": "https://github.com/iobroker-community-adapters/ioBroker.ring/blob/master/README.md",
+        "supportCustoms": false,
+        "titleLang": {
+            "en": "ring",
+            "de": "ring",
+            "ru": "ring",
+            "pt": "ring",
+            "nl": "ring",
+            "fr": "ring",
+            "it": "ring",
+            "es": "ring",
+            "pl": "ring",
+            "uk": "ring",
+            "zh-cn": "环 圈"
+        },
+        "type": "hardware",
+        "version": "5.0.5"
     },
-    "adminTab": {
-      "singleton": true,
-      "name": {
-        "en": "Ring Adapter",
-        "de": "Ring Adapter",
-        "ru": "Кольцо адаптер",
-        "pt": "Adaptador de anel",
-        "nl": "Ring Adapter",
-        "fr": "Adaptateur de réglage",
-        "it": "Adattatore di anelli",
-        "es": "Adaptador de anillos",
-        "pl": "Pierścień",
-        "uk": "Кільковий адаптер",
-        "zh-cn": "导 言"
-      },
-      "link": "/adapter/ring/tab_m.html?noFooter=true&instance=0",
-      "fa-icon": "info"
-    },
-    "authors": [
-      "Thorsten Stueben <thorsten@stueben.de>"
+    "instanceObjects": [
+        {
+            "_id": "",
+            "type": "meta",
+            "common": {
+                "name": "Snapshots and videos from Ring",
+                "type": "meta"
+            },
+            "native": {}
+        }
     ],
-    "compact": true,
-    "connectionType": "cloud",
-    "dataSource": "push",
-    "dependencies": [
-      {
-        "js-controller": ">=4.0.0"
-      }
-    ],
-    "desc": {
-      "en": "Ring Adapter",
-      "de": "Ring Adapter",
-      "ru": "Кольцо адаптер",
-      "pt": "Adaptador de anel",
-      "nl": "Ring Adapter",
-      "fr": "Adaptateur de réglage",
-      "it": "Adattatore di anelli",
-      "es": "Adaptador de anillos",
-      "pl": "Pierścień",
-      "uk": "Кільковий адаптер",
-      "zh-cn": "导 言"
+    "native": {
+        "email": "email@test.foo",
+        "del_old_livestream": true,
+        "auto_livestream": true,
+        "save_livestream": 0,
+        "filename_livestream": "livestream%i_%d.mp4",
+        "path_livestream": "",
+        "overlay_Livestream": false,
+        "recordtime_livestream": 10,
+        "recordtime_auto_livestream": 20,
+        "del_old_snapshot": true,
+        "auto_snapshot": true,
+        "save_snapshot": 0,
+        "filename_snapshot": "snapshot%i_%d.jpg",
+        "path_snapshot": "",
+        "overlay_snapshot": false,
+        "del_old_HDsnapshot": true,
+        "auto_HDsnapshot": true,
+        "save_HDsnapshot": 0,
+        "filename_HDsnapshot": "snapshot%i_%d.jpg",
+        "path_HDsnapshot": "",
+        "overlay_HDsnapshot": false,
+        "sharpen_HDsnapshot": 0,
+        "night_sharpen_HDsnapshot": false,
+        "contrast_HDsnapshot": 0,
+        "night_contrast_HDsnapshot": false,
+        "password": "password",
+        "pollsec": 15,
+        "refreshtoken": "",
+        "sentry_enable": true,
+        "timeout": 5,
+        "twofaceauth": false,
+        "ignore_events_Motion": 0,
+        "ignore_events_Doorbell": 0,
+        "keep_ignoring_if_retriggered": false
     },
-    "enabled": true,
-    "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.ring/master/admin/ring.png",
-    "icon": "ring.png",
-    "keywords": [
-      "Ring",
-      "Camera",
-      "Doorbell"
-    ],
-    "license": "MIT",
-    "loglevel": "info",
-    "main": "build/main.js",
-    "materializeTab": true,
-    "mode": "daemon",
-    "name": "ring",
-    "news": {
-      "5.0.5": {
-        "en": "#602 Debounce Motion Events by 25 seconds. This prevents multiple events within a short time.",
-        "de": "#602 Debounce Motion Ereignisse um 25 Sekunden. Dies verhindert mehrere Ereignisse innerhalb kurzer Zeit.",
-        "ru": "#602 Прекращение События за 25 секунд. Это предотвращает несколько событий в течение короткого времени.",
-        "pt": "#602 Debounce Motion Eventos em 25 segundos. Isso evita vários eventos em pouco tempo.",
-        "nl": "♪602 Debounce Motion Evenementen met 25 seconden. Dit verhindert meerdere gebeurtenissen binnen een korte tijd.",
-        "fr": "#602 Debounce Motion Évènements de 25 secondes. Cela empêche plusieurs événements en peu de temps.",
-        "it": "#602 Debounce Motion Eventi di 25 secondi. Ciò previene più eventi in breve tempo.",
-        "es": "#602 Debounce Motion Eventos en 25 segundos. Esto evita múltiples eventos en poco tiempo.",
-        "pl": "602 Debounce Motion (ang.). Wydarzenia o 25 sekund. Zapobiega to na wiele wydarzeń w krótkim czasie.",
-        "uk": "#602 Дебатний рух Події за 25 секунд. Це запобігає кількох подій протягом короткого часу.",
-        "zh-cn": "第602号 25秒。 这在短时间内阻止了多种事件。."
-      },
-      "5.0.4": {
-        "en": "#603 Add rxjs to normal dependencies instead of dev-dependencies",
-        "de": "#603 Hinzufügen von rxjs zu normalen Abhängigkeiten anstelle von dev-dependencies",
-        "ru": "#603 Добавьте rxjs в нормальные зависимости вместо dev-зависимости",
-        "pt": "#603 Adicione rxjs a dependências normais em vez de dependências dev",
-        "nl": "#603 Voeg RXJ toe aan normale afhankelijkheid in plaats van onafhankelijkheid",
-        "fr": "#603 Ajouter rxjs aux dépendances normales au lieu des dépendances dev",
-        "it": "#603 Aggiungere rxjs alle dipendenze normali invece di dev-dipendenze",
-        "es": "#603 Añadir rxjs a dependencias normales en lugar de dev-dependencies",
-        "pl": "603 Add rxj w normalnych zależnościach zamiast dev-dependencji",
-        "uk": "#603 Додати rxjs до нормальних залежностей замість",
-        "zh-cn": "第603号 增加正常的依赖性,而不是降水"
-      },
-      "5.0.3": {
-        "en": "#603 Change rxjs import to resolve awkward js build result.",
-        "de": "#603 Ändern Sie rxjs Import, um awkward js Build Ergebnis zu lösen.",
-        "ru": "#603 Измените импорт rxjs для разрешения awkward js build результат.",
-        "pt": "#603 Alterar a importação de rxjs para resolver o resultado de compilação js estranho.",
-        "nl": "#603 Verander RXJ's import om onhandige j's resultaat op te lossen.",
-        "fr": "#603 Changer l'importation rxjs pour résoudre le résultat de construction de js embarrassant.",
-        "it": "#603 Cambia l'importazione di rxjs per risolvere il risultato di costruzione di js imbarazzante.",
-        "es": "#603 Cambiar rxjs importación para resolver el resultado de construcción de js incómodo.",
-        "pl": "603 Zmiany rxjów importują do rozwiązania niezręcznego js.",
-        "uk": "#603 Зміна імпорту rxjs для вирішення результату побудови jswkward.",
-        "zh-cn": "第603号 装甲运兵车的进口,以便解决厨房。."
-      },
-      "5.0.2": {
-        "en": "Remove mixup of callback and async within same function\n#603 Harden usage of \"firstValueFrom\"",
-        "de": "Entfernen Sie die Mischung von Callback und Async innerhalb derselben Funktion\n#603 Harden Nutzung der ersten ValueFrom",
-        "ru": "Удалить перемешивание callback и async в рамках одной функции\n#603 Harden использование первого ЗначениеОт",
-        "pt": "Remover a mistura de callback e async dentro da mesma função\n#603 Harden use of first Valor a partir de",
-        "nl": "Verwijder mengsel en async binnen dezelfde functie\nVertaling: ValueFrom",
-        "fr": "Supprimer le mélange de callback et async dans la même fonction\n#603 Usage dur de la première Valeur",
-        "it": "Rimuovere il mixup di callback e asincrona all'interno della stessa funzione\n#603 Harden utilizzo del primo Valore",
-        "es": "Eliminar la mezcla de callback y async dentro de la misma función\n#603 Harden use of first Valor",
-        "pl": "Remove mieszanina połączeń i asynchronia w tej samej funkcji\n#603 Harden (ang.) ValueFrom",
-        "uk": "Видаліть міксап зворотного виклику та асинхрону в одній функції\n#603 Викорисне використання першого ValueЗ альбому",
-        "zh-cn": "在同一职能范围内消除阻断和排污\n第603号行动 价值"
-      },
-      "5.0.1": {
-        "en": "Updated Packages\nRemove legacy states\nAdd stickup_cam_mini_v2",
-        "de": "Aktualisierte Pakete\nEntfernen ältere Staaten\nStickup_cam_mini_v2 hinzufügen",
-        "ru": "Обновленные пакеты\nУдалить состояния наследия\nДобавить Stickup_cam_mini_v2",
-        "pt": "Pacotes atualizados\nRemover estados legados\nAdicionar stickup_cam_mini_v2",
-        "nl": "Verouderde pakket\nVerwijder de nalatenschap\nAdd stickupupcamini",
-        "fr": "Forfaits mis à jour\nSupprimer les États\nAjouter stickup_cam_mini_v2",
-        "it": "Pacchetti aggiornati\nRimuovi gli stati legacy\nAggiungi stickup_cam_mini_v2",
-        "es": "Paquetes actualizados\nEliminar los estados heredados\nAñadir stickup_cam_mini_v2",
-        "pl": "Package Update\nRemove dziedzictwo państw członkowskich\nAdd stickup_mini_v2 (ang.)",
-        "uk": "Оновлені пакети\nВидаліть стани спадщини Legacy\nДодати палицю_cam_mini_v2",
-        "zh-cn": "最新包装\n消除遗留状况\n增加stickup_cam_mini_v2"
-      },
-      "5.0.1-beta.0": {
-        "en": "migrated the configuration to JSON\nmany changes for livestream and high-definition screenshots\nRefactoring and cleanup",
-        "de": "die Konfiguration zu JSON migriert\nviele änderungen für livestream und high-definition screenshots\nHerstellung und Reinigung",
-        "ru": "мигрировали конфигурацию в JSON\nмного изменений для скриншотов livestream и high-definition\nРефакторинг и очистка",
-        "pt": "migraram a configuração para JSON\nmuitas alterações para livestream e capturas de tela de alta definição\nRefactoring e limpeza",
-        "nl": "de configuratie van JSON\nveel veranderingen voor livestream and high-definition screenshots\nHerstarten en opruimen",
-        "fr": "a migré la configuration vers JSON\nde nombreux changements pour les captures d'écran en direct et haute définition\nRefactoring and cleanup",
-        "it": "migrata la configurazione a JSON\nmolte modifiche per gli screenshot livestream e ad alta definizione\nRefactoring e pulizia",
-        "es": "migraron la configuración a JSON\nmuchos cambios para pantallas de flujo vivo y alta definición\nRefactorización y limpieza",
-        "pl": "przeprowadziło to do migracji do JSON\nwiele zmian na żywostream i high-definition screenshot\nOdtwarzanie i oczyszczanie",
-        "uk": "мігрувати конфігурацію в JSON\nбагато змін для живого потоку та знімків високої чіткості\nРефакторинг і очищення",
-        "zh-cn": "迁移到联合协商会的组合\n对上游和高指标屏幕进行的许多变化\n改建和清洁"
-      },
-      "5.0.0": {
-        "en": "migrated the configuration to JSON\nmany changes for livestream and high-definition screenshots\nRefactoring and cleanup",
-        "de": "die Konfiguration zu JSON migriert\nviele änderungen für livestream und high-definition screenshots\nHerstellung und Reinigung",
-        "ru": "мигрировали конфигурацию в JSON\nмного изменений для скриншотов livestream и high-definition\nРефакторинг и очистка",
-        "pt": "migraram a configuração para JSON\nmuitas alterações para livestream e capturas de tela de alta definição\nRefactoring e limpeza",
-        "nl": "de configuratie van JSON\nveel veranderingen voor livestream and high-definition screenshots\nHerstarten en opruimen",
-        "fr": "a migré la configuration vers JSON\nde nombreux changements pour les captures d'écran en direct et haute définition\nRefactoring and cleanup",
-        "it": "migrata la configurazione a JSON\nmolte modifiche per gli screenshot livestream e ad alta definizione\nRefactoring e pulizia",
-        "es": "migraron la configuración a JSON\nmuchos cambios para pantallas de flujo vivo y alta definición\nRefactorización y limpieza",
-        "pl": "przeprowadziło to do migracji do JSON\nwiele zmian na żywostream i high-definition screenshot\nOdtwarzanie i oczyszczanie",
-        "uk": "мігрувати конфігурацію в JSON\nбагато змін для живого потоку та знімків високої чіткості\nРефакторинг і очищення",
-        "zh-cn": "迁移到联合协商会的组合\n对上游和高指标屏幕进行的许多变化\n改建和清洁"
-      }
-    },
-    "platform": "Javascript/Node.js",
-    "readme": "https://github.com/iobroker-community-adapters/ioBroker.ring/blob/master/README.md",
-    "supportCustoms": false,
-    "titleLang": {
-      "en": "ring",
-      "de": "ring",
-      "ru": "ring",
-      "pt": "ring",
-      "nl": "ring",
-      "fr": "ring",
-      "it": "ring",
-      "es": "ring",
-      "pl": "ring",
-      "uk": "ring",
-      "zh-cn": "环 圈"
-    },
-    "type": "hardware",
-    "version": "5.0.5"
-  },
-  "instanceObjects": [
-    {
-      "_id": "",
-      "type": "meta",
-      "common": {
-        "name": "Snapshots and videos from Ring",
-        "type": "meta"
-      },
-      "native": {}
-    }
-  ],
-  "native": {
-    "email": "email@test.foo",
-    "del_old_livestream": true,
-    "path_livestream": "",
-    "filename_livestream": "livestream%i_%d.mp4",
-    "recordtime_livestream": 10,
-    "recordtime_auto_livestream": 20,
-    "auto_livestream": true,
-    "auto_snapshot": true,
-    "auto_HDsnapshot": true,
-    "del_old_snapshot": true,
-    "filename_snapshot": "snapshot%i_%d.jpg",
-    "path_snapshot": "",
-    "del_old_HDsnapshot": true,
-    "filename_HDsnapshot": "snapshot%i_%d.jpg",
-    "path_HDsnapshot": "",
-    "overlay_HDsnapshot": false,
-    "sharpen_HDsnapshot": 0,
-    "night_sharpen_HDsnapshot": false,
-    "contrast_HDsnapshot": 0,
-    "night_contrast_HDsnapshot": false,
-    "password": "password",
-    "pollsec": 15,
-    "refreshtoken": "",
-    "sentry_enable": true,
-    "timeout": 5,
-    "twofaceauth": false
-  },
-  "objects": []
+    "objects": []
 }

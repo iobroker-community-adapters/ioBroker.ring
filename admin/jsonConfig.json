@@ -25,6 +25,122 @@
         }
       }
     },
+    "_events": {
+      "label": "Events",
+      "icon": "preferences-desktop-notification-bell-3.png",
+      "type": "panel",
+      "items": {
+        "_staticText0": {
+          "newLine": true,
+          "style": {"fontSize": "130%", "fontWeight": "bold"},
+          "type": "staticText",
+          "text": "General",
+          "sm": 12,
+          "md": 6,
+          "lg": 3
+        },
+        "keep_ignoring_if_retriggered": {
+          "newLine": true,
+          "type": "checkbox",
+          "label": "Extend ignore duration on retrigger",
+          "sm": 12
+        },
+        "_staticText1": {
+          "newLine": true,
+          "style": {"fontSize": "130%", "fontWeight": "bold"},
+          "type": "staticText",
+          "text": "Motion",
+          "sm": 12,
+          "md": 6,
+          "lg": 3
+        },
+        "ignore_events_Motion": {
+          "newLine": true,
+          "type": "select",
+          "label": "Ignore multiple events",
+          "options": [
+            {
+              "value": 0,
+              "label": "-"
+            },
+            {
+              "value": 5,
+              "label": "5 seconds"
+            },
+            {
+              "value": 15,
+              "label": "15 seconds"
+            },
+            {
+              "value": 30,
+              "label": "30 seconds"
+            },
+            {
+              "value": 60,
+              "label": "1 minute"
+            },
+            {
+              "value": 120,
+              "label": "2 minutes"
+            },
+            {
+              "value": 180,
+              "label": "3 minutes"
+            }
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 3
+        },
+        "_staticText2": {
+          "newLine": true,
+          "style": {"fontSize": "130%", "fontWeight": "bold"},
+          "type": "staticText",
+          "text": "Doorbell",
+          "sm": 12,
+          "md": 6,
+          "lg": 3
+        },
+        "ignore_events_Doorbell": {
+          "newLine": true,
+          "type": "select",
+          "label": "Ignore multiple events",
+          "options": [
+            {
+              "value": 0,
+              "label": "-"
+            },
+            {
+              "value": 5,
+              "label": "5 seconds"
+            },
+            {
+              "value": 15,
+              "label": "15 seconds"
+            },
+            {
+              "value": 30,
+              "label": "30 seconds"
+            },
+            {
+              "value": 60,
+              "label": "1 minute"
+            },
+            {
+              "value": 120,
+              "label": "2 minutes"
+            },
+            {
+              "value": 180,
+              "label": "3 minutes"
+            }
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 3
+        }
+      }
+    },
     "_snapshot": {
       "label": "Snapshot",
       "icon": "camera-photo-5.png",

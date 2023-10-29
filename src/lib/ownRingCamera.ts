@@ -112,8 +112,8 @@ export class OwnRingCamera extends OwnRingDevice {
   private _HDsnapshotCount = 0;
   private _liveStreamCount = 0;
   private _state = EventState.Idle;
-  private _doorbellEventActive: boolean = false;
-  private _motionEventActive: boolean = false;
+  private _lastDoorbellEvent: number = 0;
+  private _lastMotionEvent: number = 0;
 
   get lastLiveStreamDir(): string {
     return this._lastLiveStreamDir;
@@ -1169,37 +1169,44 @@ export class OwnRingCamera extends OwnRingDevice {
     if (!value) {
       return;
     }
-    if (this._motionEventActive) {
-      this.debug(`Received Motion Event, but we are already reacting. Ignoring.`)
+    const timeSinceLastMotion = new Date().getTime() - this._lastMotionEvent;
+    if (this._adapter.config.keep_ignoring_if_retriggered) {
+      this._lastMotionEvent = new Date().getTime();
+    }
+    if (timeSinceLastMotion < this._adapter.config.ignore_events_Motion * 1000 && timeSinceLastMotion > 0) {
+      this.debug(`Received Motion Event, but we are ignoring it due to ignore_events setting. (${timeSinceLastMotion}ms)`)
       return;
     }
-    this.info("Motion Event --> Will ignore additional motions for the next 25s.")
+    this._lastMotionEvent = new Date().getTime();
+    this.info(`Motion Event --> Will ignore additional motions for the next ${this._adapter.config.ignore_events_Motion}s.`);
     this.debug(`Received Motion Event (${util.inspect(value, true, 1)})`);
-    this._motionEventActive = true;
     this._adapter.upsertState(
       `${this.eventsChannelId}.motion`,
       COMMON_MOTION,
       true,
     );
     setTimeout(() => {
-      this._doorbellEventActive = false
       this._adapter.upsertState(
         `${this.eventsChannelId}.motion`,
         COMMON_EVENTS_DOORBELL,
         false,
       );
-    }, 25000);
+    }, this._adapter.config.ignore_events_Motion * 1000 - 100);
     value && this.conditionalRecording(EventState.ReactingOnMotion);
   }
 
   private onDoorbell(value: PushNotificationDing): void {
-    if (this._doorbellEventActive) {
-      this.debug(`Received Doorbell Event, but we are already reacting. Ignoring.`)
+    const timeSinceLastDoorbell = new Date().getTime() - this._lastDoorbellEvent;
+    if (this._adapter.config.keep_ignoring_if_retriggered) {
+      this._lastDoorbellEvent = new Date().getTime();
+    }
+    if (timeSinceLastDoorbell < this._adapter.config.ignore_events_Doorbell * 1000 && timeSinceLastDoorbell > 0) {
+      this.debug(`Received Doorbell Event, but we are still ignoring it due to ignore_events setting. (${timeSinceLastDoorbell}ms)`)
       return;
     }
-    this.info("Doorbell pressed --> Will ignore additional presses for the next 25s.")
+    this.info(`Doorbell pressed --> Will ignore additional presses for the next ${this._adapter.config.ignore_events_Doorbell}s.`);
     this.debug(`Received Doorbell Event (${util.inspect(value, true, 1)})`);
-    this._doorbellEventActive = true;
+    this._lastDoorbellEvent = new Date().getTime();
     this._adapter.upsertState(
       `${this.eventsChannelId}.doorbell`,
       COMMON_EVENTS_DOORBELL,
@@ -1212,7 +1219,6 @@ export class OwnRingCamera extends OwnRingDevice {
         false,
       );
     }, 5000);
-    setTimeout(() => this._doorbellEventActive = false, 25000);
     this.conditionalRecording(EventState.ReactingOnDoorbell, value.ding.image_uuid);
   }
 
