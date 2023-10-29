@@ -32,6 +32,7 @@ declare global {
       night_contrast_HDsnapshot: boolean;
 
       ignore_events: number;
+      keep_ignoring_if_retriggered: boolean;
       pollsec: number;
       refreshtoken: string;
       twofaceauth: boolean;
