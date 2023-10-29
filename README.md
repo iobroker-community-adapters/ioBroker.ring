@@ -97,6 +97,8 @@ doorbell recorded video.
 	### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
+
+* (theimo1221) Updated Packages
 * (crocri) Make event debouncing configurable
 
 ### 5.0.5 (2023-10-28)
