@@ -68,6 +68,95 @@ class RingAdapter extends adapter_core_1.Adapter {
         // this.on("message", this.onMessage.bind(this));
         this.on("unload", this.onUnload.bind(this));
     }
+    static getSplitIds(id) {
+        const splits = id.split(".");
+        let device = "";
+        let channel = "";
+        let stateName = splits[0];
+        if (splits.length === 2) {
+            device = splits[0];
+            stateName = splits[1];
+        }
+        else if (splits.length === 3) {
+            device = splits[0];
+            channel = splits[1];
+            stateName = splits[2];
+        }
+        return { device, channel, stateName };
+    }
+    upsertState(id, common, value, ack = true, subscribe = false) {
+        if (this.states[id] === value && !subscribe) {
+            // Unchanged and from user not changeable Value
+            return;
+        }
+        // noinspection JSIgnoredPromiseFromCall
+        this.upsertStateAsync(id, common, value, ack, subscribe);
+    }
+    /**
+     * Is called when adapter shuts down - callback has to be called under any circumstances!
+     */
+    onUnload(callback) {
+        try {
+            // Here you must clear all timeouts or intervals that may still be active
+            // clearTimeout(timeout1);
+            // clearTimeout(timeout2);
+            // ...
+            // clearInterval(interval1);
+            if (this.apiClient) {
+                this.apiClient.unload();
+            }
+            callback();
+        }
+        catch (e) {
+            callback();
+        }
+    }
+    // If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
+    // You also need to subscribe to the objects with `this.subscribeObjects`, similar to `this.subscribeStates`.
+    // /**
+    //  * Is called if a subscribed object changes
+    //  */
+    // private onObjectChange(id: string, obj: ioBroker.Object | null | undefined): void {
+    // 	if (obj) {
+    // 		// The object was changed
+    // 		this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
+    // 	} else {
+    // 		// The object was deleted
+    // 		this.log.info(`object ${id} deleted`);
+    // 	}
+    // }
+    async tryGetStringState(id) {
+        var _a, _b;
+        const cachedVal = this.states[id];
+        if (cachedVal !== undefined && cachedVal !== null) {
+            return cachedVal + "";
+        }
+        return ((_b = (_a = (await this.getStateAsync(id))) === null || _a === void 0 ? void 0 : _a.val) !== null && _b !== void 0 ? _b : "") + "";
+    }
+    // If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
+    // /**
+    //  * Some message was sent to this instance over the message box. Used by email, pushover, text2speech, ...
+    //  * Using this method requires "common.messagebox" property to be set to true in io-package.json
+    //  */
+    // private onMessage(obj: ioBroker.Message): void {
+    // 	if (typeof obj === "object" && obj.message) {
+    // 		if (obj.command === "send") {
+    // 			// e.g. send email or pushover or whatever
+    // 			this.log.info("send command");
+    // 			// Send response in callback if required
+    // 			if (obj.callback) this.sendTo(obj.from, obj.command, "Message received", obj.callback);
+    // 		}
+    // 	}
+    // }
+    async getRefreshToken() {
+        const newTokenStateVal = await this.tryGetStringState("next_refresh_token");
+        const oldTokenStateVal = await this.tryGetStringState("old_user_refresh_token");
+        if (newTokenStateVal && oldTokenStateVal === this.config.refreshtoken) {
+            this.log.debug(`As the configured refresh token hasn't changed the state one will be used`);
+            return newTokenStateVal;
+        }
+        return this.config.refreshtoken;
+    }
     async CalcSunData() {
         try {
             this.log.debug("Run CalcSunData");
@@ -144,39 +233,6 @@ class RingAdapter extends adapter_core_1.Adapter {
         });
     }
     /**
-     * Is called when adapter shuts down - callback has to be called under any circumstances!
-     */
-    onUnload(callback) {
-        try {
-            // Here you must clear all timeouts or intervals that may still be active
-            // clearTimeout(timeout1);
-            // clearTimeout(timeout2);
-            // ...
-            // clearInterval(interval1);
-            if (this.apiClient) {
-                this.apiClient.unload();
-            }
-            callback();
-        }
-        catch (e) {
-            callback();
-        }
-    }
-    // If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
-    // You also need to subscribe to the objects with `this.subscribeObjects`, similar to `this.subscribeStates`.
-    // /**
-    //  * Is called if a subscribed object changes
-    //  */
-    // private onObjectChange(id: string, obj: ioBroker.Object | null | undefined): void {
-    // 	if (obj) {
-    // 		// The object was changed
-    // 		this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
-    // 	} else {
-    // 		// The object was deleted
-    // 		this.log.info(`object ${id} deleted`);
-    // 	}
-    // }
-    /**
      * Is called if a subscribed state changes
      */
     onStateChange(id, state) {
@@ -201,36 +257,9 @@ class RingAdapter extends adapter_core_1.Adapter {
         }
         this.apiClient.processUserInput(targetId, channelID, stateID, state);
     }
-    // If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
-    // /**
-    //  * Some message was sent to this instance over the message box. Used by email, pushover, text2speech, ...
-    //  * Using this method requires "common.messagebox" property to be set to true in io-package.json
-    //  */
-    // private onMessage(obj: ioBroker.Message): void {
-    // 	if (typeof obj === "object" && obj.message) {
-    // 		if (obj.command === "send") {
-    // 			// e.g. send email or pushover or whatever
-    // 			this.log.info("send command");
-    // 			// Send response in callback if required
-    // 			if (obj.callback) this.sendTo(obj.from, obj.command, "Message received", obj.callback);
-    // 		}
-    // 	}
-    // }
-    upsertState(id, common, value, ack = true, subscribe = false) {
-        if (this.states[id] === value && !subscribe) {
-            // Unchanged and from user not changeable Value
-            return;
-        }
-        // noinspection JSIgnoredPromiseFromCall
-        this.upsertStateAsync(id, common, value, ack, subscribe);
-    }
-    async tryGetStringState(id) {
-        var _a, _b;
-        const cachedVal = this.states[id];
-        if (cachedVal !== undefined && cachedVal !== null) {
-            return cachedVal + "";
-        }
-        return ((_b = (_a = (await this.getStateAsync(id))) === null || _a === void 0 ? void 0 : _a.val) !== null && _b !== void 0 ? _b : "") + "";
+    logCatch(message, reason) {
+        this.log.info(message);
+        this.log.debug(`Reason: "${reason}"`);
     }
     async upsertStateAsync(id, common, value, ack = true, subscribe = false) {
         var _a;
@@ -254,35 +283,6 @@ class RingAdapter extends adapter_core_1.Adapter {
                 this.log.debug(`Error Stack: ${e.stack}`);
             }
         }
-    }
-    static getSplitIds(id) {
-        const splits = id.split(".");
-        let device = "";
-        let channel = "";
-        let stateName = splits[0];
-        if (splits.length === 2) {
-            device = splits[0];
-            stateName = splits[1];
-        }
-        else if (splits.length === 3) {
-            device = splits[0];
-            channel = splits[1];
-            stateName = splits[2];
-        }
-        return { device, channel, stateName };
-    }
-    logCatch(message, reason) {
-        this.log.info(message);
-        this.log.debug(`Reason: "${reason}"`);
-    }
-    async getRefreshToken() {
-        const newTokenStateVal = await this.tryGetStringState("next_refresh_token");
-        const oldTokenStateVal = await this.tryGetStringState("old_user_refresh_token");
-        if (newTokenStateVal && oldTokenStateVal === this.config.refreshtoken) {
-            this.log.debug(`As the configured refresh token hasn't changed the state one will be used`);
-            return newTokenStateVal;
-        }
-        return this.config.refreshtoken;
     }
 }
 exports.RingAdapter = RingAdapter;

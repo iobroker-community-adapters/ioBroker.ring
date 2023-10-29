@@ -81,6 +81,7 @@ import { OwnRingDevice } from "./ownRingDevice";
 import { FileInfo } from "./services/file-info";
 import { StreamingSession } from "ring-client-api/lib/streaming/streaming-session";
 import { PathInfo } from "./services/path-info";
+import { EventBlocker } from "./services/event-blocker";
 
 enum EventState {
   Idle,
@@ -111,16 +112,16 @@ export class OwnRingCamera extends OwnRingDevice {
   private _HDsnapshotCount: number = 0;
   private _liveStreamCount: number = 0;
   private _state: EventState = EventState.Idle;
-
   private _lastLiveStreamDir: string = "";
+  private _lastSnapShotDir: string = "";
+  private _eventBlocker: { [name: string]: EventBlocker } = {
+    motion: new EventBlocker(),
+    ding: new EventBlocker(),
+  };
 
   public get lastLiveStreamDir(): string {
     return this._lastLiveStreamDir;
   }
-
-  private _lastSnapShotDir: string = "";
-  private _lastDoorbellEvent: number = 0;
-  private _lastMotionEvent: number = 0;
 
   public get lastSnapShotDir(): string {
     return this._lastSnapShotDir;
@@ -1191,47 +1192,31 @@ export class OwnRingCamera extends OwnRingDevice {
   }
 
   private onMotion(value: boolean): void {
-    if (!value) {
+    if (value && this._eventBlocker.motion.checkBlock(
+      this._adapter.config.ignore_events_Motion,
+      this._adapter.config.keep_ignoring_if_retriggered)
+    ) {
+      this.debug(`ignore Motion event...`);
       return;
     }
-    const timeSinceLastMotion: number = new Date().getTime() - this._lastMotionEvent;
-    if (this._adapter.config.keep_ignoring_if_retriggered) {
-      this._lastMotionEvent = new Date().getTime();
-    }
-    if (timeSinceLastMotion < this._adapter.config.ignore_events_Motion * 1000 && timeSinceLastMotion > 0) {
-      this.debug(`Received Motion Event, but we are ignoring it due to ignore_events setting. (${timeSinceLastMotion}ms)`);
-      return;
-    }
-    this._lastMotionEvent = new Date().getTime();
-    this.info(`Motion Event --> Will ignore additional motions for the next ${this._adapter.config.ignore_events_Motion}s.`);
     this.debug(`Received Motion Event (${util.inspect(value, true, 1)})`);
     this._adapter.upsertState(
       `${this.eventsChannelId}.motion`,
       COMMON_MOTION,
-      true,
+      value,
     );
-    setTimeout((): void => {
-      this._adapter.upsertState(
-        `${this.eventsChannelId}.motion`,
-        COMMON_EVENTS_DOORBELL,
-        false,
-      );
-    }, this._adapter.config.ignore_events_Motion * 1000 - 100);
     value && this.conditionalRecording(EventState.ReactingOnMotion);
   }
 
   private onDoorbell(value: PushNotificationDing): void {
-    const timeSinceLastDoorbell: number = new Date().getTime() - this._lastDoorbellEvent;
-    if (this._adapter.config.keep_ignoring_if_retriggered) {
-      this._lastDoorbellEvent = new Date().getTime();
-    }
-    if (timeSinceLastDoorbell < this._adapter.config.ignore_events_Doorbell * 1000 && timeSinceLastDoorbell > 0) {
-      this.debug(`Received Doorbell Event, but we are still ignoring it due to ignore_events setting. (${timeSinceLastDoorbell}ms)`);
+    if (value && this._eventBlocker.doorbell.checkBlock(
+      this._adapter.config.ignore_events_Doorbell,
+      this._adapter.config.keep_ignoring_if_retriggered)
+    ) {
+      this.debug(`ignore Doorbell event...`);
       return;
     }
-    this.info(`Doorbell pressed --> Will ignore additional presses for the next ${this._adapter.config.ignore_events_Doorbell}s.`);
     this.debug(`Received Doorbell Event (${util.inspect(value, true, 1)})`);
-    this._lastDoorbellEvent = new Date().getTime();
     this._adapter.upsertState(
       `${this.eventsChannelId}.doorbell`,
       COMMON_EVENTS_DOORBELL,
