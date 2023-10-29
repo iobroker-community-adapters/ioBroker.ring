@@ -216,7 +216,7 @@
         "timeout": 5,
         "twofaceauth": false,
         "ignore_events_Motion": 0,
-        "ignore_events_Doorbell": 0,
+        "ignore_events_Ring": 0,
         "keep_ignoring_if_retriggered": false
     },
     "objects": []

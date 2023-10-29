@@ -101,7 +101,7 @@
           "md": 6,
           "lg": 3
         },
-        "ignore_events_Doorbell": {
+        "ignore_events_Ring": {
           "newLine": true,
           "type": "select",
           "label": "Ignore multiple events",
