@@ -111,20 +111,16 @@ export class OwnRingCamera extends OwnRingDevice {
   private _HDsnapshotCount: number = 0;
   private _liveStreamCount: number = 0;
   private _state: EventState = EventState.Idle;
-
   private _lastLiveStreamDir: string = "";
-
-  public get lastLiveStreamDir(): string {
-    return this._lastLiveStreamDir;
-  }
-
   private _lastSnapShotDir: string = "";
-  private _lastDoorbellEvent: number = 0;
-  private _lastMotionEvent: number = 0;
   private _event_timer_IDs = {
     "onMotion" :  { "id": <NodeJS.Timeout>{}, "active": false },
     "onDing":     { "id": <NodeJS.Timeout>{}, "active": false },
     "onDoorbell": { "id": <NodeJS.Timeout>{}, "active": false }
+  }
+
+  public get lastLiveStreamDir(): string {
+    return this._lastLiveStreamDir;
   }
 
   public get lastSnapShotDir(): string {
