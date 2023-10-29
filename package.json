@@ -100,7 +100,7 @@
     "check": "tsc --noEmit",
     "check-package-upgrades": "npx npm-check-updates -i",
     "coverage": "nyc npm run test:ts",
-    "lint": "eslint ./**/*.ts --no-error-on-unmatched-pattern",
+    "lint": "eslint src/**/*.ts",
     "release": "release-script",
     "release-patch": "release-script patch --yes",
     "release-minor": "release-script minor --yes",
