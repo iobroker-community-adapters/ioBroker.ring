@@ -37,6 +37,7 @@ const constants_1 = require("./constants");
 const lastAction_1 = require("./lastAction");
 const file_service_1 = require("./services/file-service");
 const ownRingDevice_1 = require("./ownRingDevice");
+const event_blocker_1 = require("./services/event-blocker");
 const image_service_1 = require("./services/image-service");
 const text_service_1 = require("./services/text-service");
 var EventState;
@@ -61,6 +62,45 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
     }
     set ringDevice(device) {
         this._ringDevice = device;
+        this.subscribeToEvents();
+    }
+    constructor(ringDevice, location, adapter, apiClient) {
+        super(location, adapter, apiClient, OwnRingCamera.evaluateKind(ringDevice.deviceType, adapter, ringDevice), `${ringDevice.id}`, ringDevice.data.description);
+        this._durationLiveStream = this._adapter.config.recordtime_livestream;
+        this._lastLightCommand = 0;
+        this._lastLiveStreamUrl = "";
+        this._lastLiveStreamTimestamp = 0;
+        this._lastSnapShotUrl = "";
+        this._lastSnapshotTimestamp = 0;
+        this._snapshotCount = 0;
+        this._lastHDSnapShotUrl = "";
+        this._lastHDSnapshotTimestamp = 0;
+        this._HDsnapshotCount = 0;
+        this._liveStreamCount = 0;
+        this._state = EventState.Idle;
+        this._lastLiveStreamDir = "";
+        this._lastSnapShotDir = "";
+        this._lastHDSnapShotDir = "";
+        this._eventBlocker = {
+            "motion": new event_blocker_1.EventBlocker(this._adapter.config.ignore_events_Motion, this._adapter.config.keep_ignoring_if_retriggered),
+            "doorbell": new event_blocker_1.EventBlocker(this._adapter.config.ignore_events_Doorbell, this._adapter.config.keep_ignoring_if_retriggered)
+        };
+        this._ringDevice = ringDevice;
+        this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
+        this.historyChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HISTORY}`;
+        this.lightChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIGHT}`;
+        this.snapshotChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_SNAPSHOT}`;
+        this.HDsnapshotChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HDSNAPSHOT}`;
+        this.liveStreamChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIVESTREAM}`;
+        this.eventsChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_EVENTS}`;
+        this.recreateDeviceObjectTree();
+        this.updateDeviceInfoObject(ringDevice.data);
+        this.updateHealth();
+        this.updateHistory();
+        this.updateSnapshotObject();
+        this.updateHDSnapshotObject();
+        this.updateLiveStreamObject();
+        this.autoSched();
         this.subscribeToEvents();
     }
     async startLivestream(duration) {
@@ -450,42 +490,6 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             resolve({ visURL: visURL, visPath: visPath, fullPath: fullPath });
         });
     }
-    constructor(ringDevice, location, adapter, apiClient) {
-        super(location, adapter, apiClient, OwnRingCamera.evaluateKind(ringDevice.deviceType, adapter, ringDevice), `${ringDevice.id}`, ringDevice.data.description);
-        this._durationLiveStream = this._adapter.config.recordtime_livestream;
-        this._lastLightCommand = 0;
-        this._lastLiveStreamUrl = "";
-        this._lastLiveStreamTimestamp = 0;
-        this._lastSnapShotUrl = "";
-        this._lastSnapshotTimestamp = 0;
-        this._snapshotCount = 0;
-        this._lastHDSnapShotUrl = "";
-        this._lastHDSnapshotTimestamp = 0;
-        this._HDsnapshotCount = 0;
-        this._liveStreamCount = 0;
-        this._state = EventState.Idle;
-        this._lastLiveStreamDir = "";
-        this._lastSnapShotDir = "";
-        this._eventBlocker = {};
-        this._lastHDSnapShotDir = "";
-        this._ringDevice = ringDevice;
-        this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
-        this.historyChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HISTORY}`;
-        this.lightChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIGHT}`;
-        this.snapshotChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_SNAPSHOT}`;
-        this.HDsnapshotChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HDSNAPSHOT}`;
-        this.liveStreamChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIVESTREAM}`;
-        this.eventsChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_EVENTS}`;
-        this.recreateDeviceObjectTree();
-        this.updateDeviceInfoObject(ringDevice.data);
-        this.updateHealth();
-        this.updateHistory();
-        this.updateSnapshotObject();
-        this.updateHDSnapshotObject();
-        this.updateLiveStreamObject();
-        this.autoSched();
-        this.subscribeToEvents();
-    }
     getActiveNightImageOptions() {
         let night_contrast = false;
         let night_sharpen = false;
@@ -686,7 +690,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._adapter.upsertState(`${this.eventsChannelId}.message`, constants_1.COMMON_EVENTS_MESSAGE, value.aps.alert);
     }
     onMotion(value) {
-        if (value && this._eventBlocker.motion.checkBlock(this._adapter.config.ignore_events_Motion, this._adapter.config.keep_ignoring_if_retriggered)) {
+        if (value && this._eventBlocker.motion.checkBlock()) {
             this.debug(`ignore Motion event...`);
             return;
         }
@@ -695,7 +699,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         value && this.conditionalRecording(EventState.ReactingOnMotion);
     }
     onDoorbell(value) {
-        if (value && this._eventBlocker.doorbell.checkBlock(this._adapter.config.ignore_events_Doorbell, this._adapter.config.keep_ignoring_if_retriggered)) {
+        if (value && this._eventBlocker.doorbell.checkBlock()) {
             this.debug(`ignore Doorbell event...`);
             return;
         }

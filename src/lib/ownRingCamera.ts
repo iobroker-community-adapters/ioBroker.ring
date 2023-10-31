@@ -116,7 +116,11 @@ export class OwnRingCamera extends OwnRingDevice {
   private _state: EventState = EventState.Idle;
   private _lastLiveStreamDir: string = "";
   private _lastSnapShotDir: string = "";
-  private _eventBlocker: { [name: string]: EventBlocker } = {};
+  private _lastHDSnapShotDir: string = "";
+  private _eventBlocker: { [name: string]: EventBlocker } = {
+    "motion":   new EventBlocker(this._adapter.config.ignore_events_Motion,   this._adapter.config.keep_ignoring_if_retriggered),
+    "doorbell": new EventBlocker(this._adapter.config.ignore_events_Doorbell, this._adapter.config.keep_ignoring_if_retriggered)
+  };
 
   public get lastLiveStreamDir(): string {
     return this._lastLiveStreamDir;
@@ -125,8 +129,6 @@ export class OwnRingCamera extends OwnRingDevice {
   public get lastSnapShotDir(): string {
     return this._lastSnapShotDir;
   }
-
-  private _lastHDSnapShotDir: string = "";
 
   public get lastHDSnapShotDir(): string {
     return this._lastHDSnapShotDir;
@@ -138,6 +140,35 @@ export class OwnRingCamera extends OwnRingDevice {
 
   private set ringDevice(device: RingCamera) {
     this._ringDevice = device;
+    this.subscribeToEvents();
+  }
+
+  public constructor(ringDevice: RingCamera, location: OwnRingLocation, adapter: RingAdapter, apiClient: RingApiClient) {
+    super(
+      location,
+      adapter,
+      apiClient,
+      OwnRingCamera.evaluateKind(ringDevice.deviceType as string, adapter, ringDevice),
+      `${ringDevice.id}`,
+      ringDevice.data.description,
+    );
+    this._ringDevice = ringDevice;
+    this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
+    this.historyChannelId = `${this.fullId}.${CHANNEL_NAME_HISTORY}`;
+    this.lightChannelId = `${this.fullId}.${CHANNEL_NAME_LIGHT}`;
+    this.snapshotChannelId = `${this.fullId}.${CHANNEL_NAME_SNAPSHOT}`;
+    this.HDsnapshotChannelId = `${this.fullId}.${CHANNEL_NAME_HDSNAPSHOT}`;
+    this.liveStreamChannelId = `${this.fullId}.${CHANNEL_NAME_LIVESTREAM}`;
+    this.eventsChannelId = `${this.fullId}.${CHANNEL_NAME_EVENTS}`;
+
+    this.recreateDeviceObjectTree();
+    this.updateDeviceInfoObject(ringDevice.data as CameraData);
+    this.updateHealth();
+    this.updateHistory();
+    this.updateSnapshotObject();
+    this.updateHDSnapshotObject();
+    this.updateLiveStreamObject();
+    this.autoSched();
     this.subscribeToEvents();
   }
 
@@ -651,35 +682,6 @@ export class OwnRingCamera extends OwnRingDevice {
     });
   }
 
-  public constructor(ringDevice: RingCamera, location: OwnRingLocation, adapter: RingAdapter, apiClient: RingApiClient) {
-    super(
-      location,
-      adapter,
-      apiClient,
-      OwnRingCamera.evaluateKind(ringDevice.deviceType as string, adapter, ringDevice),
-      `${ringDevice.id}`,
-      ringDevice.data.description,
-    );
-    this._ringDevice = ringDevice;
-    this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
-    this.historyChannelId = `${this.fullId}.${CHANNEL_NAME_HISTORY}`;
-    this.lightChannelId = `${this.fullId}.${CHANNEL_NAME_LIGHT}`;
-    this.snapshotChannelId = `${this.fullId}.${CHANNEL_NAME_SNAPSHOT}`;
-    this.HDsnapshotChannelId = `${this.fullId}.${CHANNEL_NAME_HDSNAPSHOT}`;
-    this.liveStreamChannelId = `${this.fullId}.${CHANNEL_NAME_LIVESTREAM}`;
-    this.eventsChannelId = `${this.fullId}.${CHANNEL_NAME_EVENTS}`;
-
-    this.recreateDeviceObjectTree();
-    this.updateDeviceInfoObject(ringDevice.data as CameraData);
-    this.updateHealth();
-    this.updateHistory();
-    this.updateSnapshotObject();
-    this.updateHDSnapshotObject();
-    this.updateLiveStreamObject();
-    this.autoSched();
-    this.subscribeToEvents();
-  }
-
   private getActiveNightImageOptions(): { night_contrast: boolean; night_sharpen: boolean } {
     let night_contrast: boolean = false;
     let night_sharpen: boolean = false;
@@ -1056,9 +1058,7 @@ export class OwnRingCamera extends OwnRingDevice {
   }
 
   private onMotion(value: boolean): void {
-    if (value && this._eventBlocker.motion.checkBlock(
-      this._adapter.config.ignore_events_Motion,
-      this._adapter.config.keep_ignoring_if_retriggered)
+    if (value && this._eventBlocker.motion.checkBlock()
     ) {
       this.debug(`ignore Motion event...`);
       return;
@@ -1073,9 +1073,7 @@ export class OwnRingCamera extends OwnRingDevice {
   }
 
   private onDoorbell(value: PushNotificationDing): void {
-    if (value && this._eventBlocker.doorbell.checkBlock(
-      this._adapter.config.ignore_events_Doorbell,
-      this._adapter.config.keep_ignoring_if_retriggered)
+    if (value && this._eventBlocker.doorbell.checkBlock()
     ) {
       this.debug(`ignore Doorbell event...`);
       return;

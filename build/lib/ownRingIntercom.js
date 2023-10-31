@@ -6,22 +6,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OwnRingIntercom = void 0;
 const util_1 = __importDefault(require("util"));
 const ownRingDevice_1 = require("./ownRingDevice");
+const event_blocker_1 = require("./services/event-blocker");
 const constants_1 = require("./constants");
 class OwnRingIntercom extends ownRingDevice_1.OwnRingDevice {
-    constructor(ringDevice, location, adapter, apiClient) {
-        super(location, adapter, apiClient, ownRingDevice_1.OwnRingDevice.evaluateKind(ringDevice.deviceType, adapter, ringDevice), `${ringDevice.id}`, ringDevice.data.description);
-        this._eventBlocker = {};
-        this._ringIntercom = ringDevice;
-        this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
-        this.eventsChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_EVENTS}`;
-        this.recreateDeviceObjectTree();
-        this.subscribeToEvents();
-    }
     get ringIntercom() {
         return this._ringIntercom;
     }
     set ringIntercom(device) {
         this._ringIntercom = device;
+        this.subscribeToEvents();
+    }
+    constructor(ringDevice, location, adapter, apiClient) {
+        super(location, adapter, apiClient, ownRingDevice_1.OwnRingDevice.evaluateKind(ringDevice.deviceType, adapter, ringDevice), `${ringDevice.id}`, ringDevice.data.description);
+        this._eventBlocker = {
+            "ding": new event_blocker_1.EventBlocker(this._adapter.config.ignore_events_Doorbell, this._adapter.config.keep_ignoring_if_retriggered)
+        };
+        this._ringIntercom = ringDevice;
+        this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
+        this.eventsChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_EVENTS}`;
+        this.recreateDeviceObjectTree();
         this.subscribeToEvents();
     }
     processUserInput(channelID, stateID, state) {
@@ -88,7 +91,7 @@ class OwnRingIntercom extends ownRingDevice_1.OwnRingDevice {
         this._adapter.upsertState(`${this.infoChannelId}.description`, constants_1.COMMON_INFO_DESCRIPTION, data.description);
     }
     onDing() {
-        if (this._eventBlocker.ding.checkBlock(this._adapter.config.ignore_events_Doorbell, this._adapter.config.keep_ignoring_if_retriggered)) {
+        if (this._eventBlocker.ding.checkBlock()) {
             this.debug(`ignore Ding event...`);
             return;
         }
