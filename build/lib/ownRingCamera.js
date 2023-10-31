@@ -86,6 +86,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             "doorbell": new event_blocker_1.EventBlocker(this._adapter.config.ignore_events_Doorbell, this._adapter.config.keep_ignoring_if_retriggered)
         };
         this._ringDevice = ringDevice;
+        this.ringDevice = ringDevice; // subscribe to events
         this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
         this.historyChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HISTORY}`;
         this.lightChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIGHT}`;
@@ -101,7 +102,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this.updateHDSnapshotObject();
         this.updateLiveStreamObject();
         this.autoSched();
-        this.subscribeToEvents();
+        // this.subscribeToEvents();
     }
     async startLivestream(duration) {
         this.silly(`${this.shortId}.startLivestream()`);

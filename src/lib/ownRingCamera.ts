@@ -153,6 +153,7 @@ export class OwnRingCamera extends OwnRingDevice {
       ringDevice.data.description,
     );
     this._ringDevice = ringDevice;
+    this.ringDevice = ringDevice; // subscribe to events
     this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
     this.historyChannelId = `${this.fullId}.${CHANNEL_NAME_HISTORY}`;
     this.lightChannelId = `${this.fullId}.${CHANNEL_NAME_LIGHT}`;
@@ -169,7 +170,7 @@ export class OwnRingCamera extends OwnRingDevice {
     this.updateHDSnapshotObject();
     this.updateLiveStreamObject();
     this.autoSched();
-    this.subscribeToEvents();
+    // this.subscribeToEvents();
   }
 
   public async startLivestream(duration?: number): Promise<void> {

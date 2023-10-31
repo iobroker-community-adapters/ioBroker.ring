@@ -46,10 +46,11 @@ export class OwnRingIntercom extends OwnRingDevice {
       ringDevice.data.description
     );
     this._ringIntercom = ringDevice;
+    this.ringIntercom = ringDevice; // subscribe to events
     this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
     this.eventsChannelId = `${this.fullId}.${CHANNEL_NAME_EVENTS}`;
     this.recreateDeviceObjectTree();
-    this.subscribeToEvents();
+    // this.subscribeToEvents();
   }
 
   public processUserInput(channelID: string, stateID: string, state: ioBroker.State): void {
