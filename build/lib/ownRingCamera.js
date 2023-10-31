@@ -37,7 +37,6 @@ const constants_1 = require("./constants");
 const lastAction_1 = require("./lastAction");
 const file_service_1 = require("./services/file-service");
 const ownRingDevice_1 = require("./ownRingDevice");
-const event_blocker_1 = require("./services/event-blocker");
 const image_service_1 = require("./services/image-service");
 const text_service_1 = require("./services/text-service");
 var EventState;
@@ -232,15 +231,6 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             await this.updateSnapshotRequest(false);
             return;
         }
-        /*
-        const image = await this._ringDevice.getNextSnapshot({uuid: uuid}).catch((reason) => {
-          if (eventBased) {
-            this.warn("Taking Snapshot on Event failed. Will try again after livestream finished.");
-          } else {
-            this.catcher("Couldn't get Snapshot from api.", reason);
-          }
-        })
-        */
         const image = await this._ringDevice.getNextSnapshot({ force: true, uuid: uuid })
             .then((result) => result)
             .catch((err) => {
@@ -476,13 +466,9 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._state = EventState.Idle;
         this._lastLiveStreamDir = "";
         this._lastSnapShotDir = "";
-        this._eventBlocker = {
-            motion: new event_blocker_1.EventBlocker(),
-            ding: new event_blocker_1.EventBlocker(),
-        };
+        this._eventBlocker = {};
         this._lastHDSnapShotDir = "";
         this._ringDevice = ringDevice;
-        this.debug(`Create device`);
         this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
         this.historyChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HISTORY}`;
         this.lightChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIGHT}`;
@@ -493,13 +479,12 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this.recreateDeviceObjectTree();
         this.updateDeviceInfoObject(ringDevice.data);
         this.updateHealth();
-        // noinspection JSIgnoredPromiseFromCall
         this.updateHistory();
         this.updateSnapshotObject();
         this.updateHDSnapshotObject();
         this.updateLiveStreamObject();
-        this.ringDevice = ringDevice; // subscribes to the events
         this.autoSched();
+        this.subscribeToEvents();
     }
     getActiveNightImageOptions() {
         let night_contrast = false;
@@ -523,7 +508,6 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this.debug(`Received Update`);
         this.updateDeviceInfoObject(data);
         this.updateHealth();
-        // noinspection JSIgnoredPromiseFromCall
         this.updateHistory();
         this.updateSnapshotObject();
         this.updateHDSnapshotObject();
@@ -719,7 +703,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, constants_1.COMMON_EVENTS_DOORBELL, true);
         setTimeout(() => {
             this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, constants_1.COMMON_EVENTS_DOORBELL, false);
-        }, 5000);
+        }, 1000);
         this.conditionalRecording(EventState.ReactingOnDoorbell, value.ding.image_uuid);
     }
     async conditionalRecording(state, uuid) {

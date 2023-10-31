@@ -5,6 +5,7 @@ import { OwnRingDevice } from "./ownRingDevice";
 import { OwnRingLocation } from "./ownRingLocation";
 import { RingAdapter } from "../main";
 import { RingApiClient } from "./ringApiClient";
+import { EventBlocker } from "./services/event-blocker";
 import {
   CHANNEL_NAME_EVENTS,
   CHANNEL_NAME_INFO,
@@ -21,6 +22,7 @@ import {
 export class OwnRingIntercom extends OwnRingDevice {
   private readonly infoChannelId: string;
   private readonly eventsChannelId: string;
+  private _eventBlocker: { [name: string]: EventBlocker } = {};
 
   public constructor(ringDevice: RingIntercom, location: OwnRingLocation, adapter: RingAdapter, apiClient: RingApiClient) {
     super(
@@ -32,11 +34,10 @@ export class OwnRingIntercom extends OwnRingDevice {
       ringDevice.data.description
     );
     this._ringIntercom = ringDevice;
-    this.subscribeToEvents();
     this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
     this.eventsChannelId = `${this.fullId}.${CHANNEL_NAME_EVENTS}`;
-
     this.recreateDeviceObjectTree();
+    this.subscribeToEvents();
   }
 
   private _ringIntercom: RingIntercom;
@@ -154,6 +155,13 @@ export class OwnRingIntercom extends OwnRingDevice {
   }
 
   private onDing(): void {
+    if (this._eventBlocker.ding.checkBlock(
+      this._adapter.config.ignore_events_Doorbell,
+      this._adapter.config.keep_ignoring_if_retriggered)
+    ) {
+      this.debug(`ignore Ding event...`);
+      return;
+    }
     this.debug(`Received Ding Event`);
     this._adapter.upsertState(
       `${this.eventsChannelId}.ding`,
@@ -166,6 +174,6 @@ export class OwnRingIntercom extends OwnRingDevice {
         COMMON_EVENTS_INTERCOM_DING,
         false
       );
-    }, 100);
+    }, 1000);
   }
 }

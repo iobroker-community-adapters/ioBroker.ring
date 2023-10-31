@@ -116,10 +116,7 @@ export class OwnRingCamera extends OwnRingDevice {
   private _state: EventState = EventState.Idle;
   private _lastLiveStreamDir: string = "";
   private _lastSnapShotDir: string = "";
-  private _eventBlocker: { [name: string]: EventBlocker } = {
-    motion: new EventBlocker(),
-    ding: new EventBlocker(),
-  };
+  private _eventBlocker: { [name: string]: EventBlocker } = {};
 
   public get lastLiveStreamDir(): string {
     return this._lastLiveStreamDir;
@@ -364,15 +361,7 @@ export class OwnRingCamera extends OwnRingDevice {
       await this.updateSnapshotRequest(false);
       return;
     }
-    /*
-    const image = await this._ringDevice.getNextSnapshot({uuid: uuid}).catch((reason) => {
-      if (eventBased) {
-        this.warn("Taking Snapshot on Event failed. Will try again after livestream finished.");
-      } else {
-        this.catcher("Couldn't get Snapshot from api.", reason);
-      }
-    })
-    */
+
     const image: Buffer & ExtendedResponse = await this._ringDevice.getNextSnapshot({force: true, uuid: uuid})
       .then((result: Buffer & ExtendedResponse): Buffer & ExtendedResponse => result)
       .catch((err: any): Buffer & ExtendedResponse => {
@@ -672,7 +661,6 @@ export class OwnRingCamera extends OwnRingDevice {
       ringDevice.data.description,
     );
     this._ringDevice = ringDevice;
-    this.debug(`Create device`);
     this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
     this.historyChannelId = `${this.fullId}.${CHANNEL_NAME_HISTORY}`;
     this.lightChannelId = `${this.fullId}.${CHANNEL_NAME_LIGHT}`;
@@ -684,13 +672,12 @@ export class OwnRingCamera extends OwnRingDevice {
     this.recreateDeviceObjectTree();
     this.updateDeviceInfoObject(ringDevice.data as CameraData);
     this.updateHealth();
-    // noinspection JSIgnoredPromiseFromCall
     this.updateHistory();
     this.updateSnapshotObject();
     this.updateHDSnapshotObject();
     this.updateLiveStreamObject();
-    this.ringDevice = ringDevice; // subscribes to the events
     this.autoSched();
+    this.subscribeToEvents();
   }
 
   private getActiveNightImageOptions(): { night_contrast: boolean; night_sharpen: boolean } {
@@ -718,7 +705,6 @@ export class OwnRingCamera extends OwnRingDevice {
     this.debug(`Received Update`);
     this.updateDeviceInfoObject(data as CameraData);
     this.updateHealth();
-    // noinspection JSIgnoredPromiseFromCall
     this.updateHistory();
     this.updateSnapshotObject();
     this.updateHDSnapshotObject();
@@ -1106,7 +1092,7 @@ export class OwnRingCamera extends OwnRingDevice {
         COMMON_EVENTS_DOORBELL,
         false,
       );
-    }, 5000);
+    }, 1000);
     this.conditionalRecording(EventState.ReactingOnDoorbell, value.ding.image_uuid);
   }
 

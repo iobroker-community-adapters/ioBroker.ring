@@ -10,11 +10,12 @@ const constants_1 = require("./constants");
 class OwnRingIntercom extends ownRingDevice_1.OwnRingDevice {
     constructor(ringDevice, location, adapter, apiClient) {
         super(location, adapter, apiClient, ownRingDevice_1.OwnRingDevice.evaluateKind(ringDevice.deviceType, adapter, ringDevice), `${ringDevice.id}`, ringDevice.data.description);
+        this._eventBlocker = {};
         this._ringIntercom = ringDevice;
-        this.subscribeToEvents();
         this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
         this.eventsChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_EVENTS}`;
         this.recreateDeviceObjectTree();
+        this.subscribeToEvents();
     }
     get ringIntercom() {
         return this._ringIntercom;
@@ -87,11 +88,15 @@ class OwnRingIntercom extends ownRingDevice_1.OwnRingDevice {
         this._adapter.upsertState(`${this.infoChannelId}.description`, constants_1.COMMON_INFO_DESCRIPTION, data.description);
     }
     onDing() {
+        if (this._eventBlocker.ding.checkBlock(this._adapter.config.ignore_events_Doorbell, this._adapter.config.keep_ignoring_if_retriggered)) {
+            this.debug(`ignore Ding event...`);
+            return;
+        }
         this.debug(`Received Ding Event`);
         this._adapter.upsertState(`${this.eventsChannelId}.ding`, constants_1.COMMON_EVENTS_INTERCOM_DING, true);
         setTimeout(() => {
             this._adapter.upsertState(`${this.eventsChannelId}.ding`, constants_1.COMMON_EVENTS_INTERCOM_DING, false);
-        }, 100);
+        }, 1000);
     }
 }
 exports.OwnRingIntercom = OwnRingIntercom;
