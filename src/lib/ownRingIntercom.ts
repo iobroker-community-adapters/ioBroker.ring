@@ -22,14 +22,10 @@ import {
 export class OwnRingIntercom extends OwnRingDevice {
   private readonly infoChannelId: string;
   private readonly eventsChannelId: string;
-  private _ringIntercom: RingIntercom;
+  private _ringIntercom!: RingIntercom; // typescript not recognize the setter call, so exclamation mark is needed -> _ringIntercom!
   private _eventBlocker: { [name: string]: EventBlocker } = {
     "ding": new EventBlocker(this._adapter.config.ignore_events_Doorbell, this._adapter.config.keep_ignoring_if_retriggered)
   };
-
-  public get ringIntercom(): RingIntercom {
-    return this._ringIntercom;
-  }
 
   private set ringIntercom(device: RingIntercom) {
     this._ringIntercom = device;
@@ -45,12 +41,10 @@ export class OwnRingIntercom extends OwnRingDevice {
       `${ringDevice.id}`,
       ringDevice.data.description
     );
-    this._ringIntercom = ringDevice;
-    this.ringIntercom = ringDevice; // subscribe to events
+    this.ringIntercom = ringDevice; // calls setter, set _ringIntercom and calls subscription
     this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
     this.eventsChannelId = `${this.fullId}.${CHANNEL_NAME_EVENTS}`;
     this.recreateDeviceObjectTree();
-    // this.subscribeToEvents();
   }
 
   public processUserInput(channelID: string, stateID: string, state: ioBroker.State): void {
@@ -89,7 +83,7 @@ export class OwnRingIntercom extends OwnRingDevice {
   }
 
   public updateByDevice(intercom: RingIntercom): void {
-    this.ringIntercom = intercom;
+    if (this._ringIntercom !== intercom) this.ringIntercom = intercom; // setter with new subscription, only needed if new RingIntercom
     this.update(intercom.data);
   }
 

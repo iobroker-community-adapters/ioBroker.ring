@@ -100,8 +100,8 @@ export class OwnRingCamera extends OwnRingDevice {
   private readonly snapshotChannelId: string;
   private readonly HDsnapshotChannelId: string;
   private readonly liveStreamChannelId: string;
-  private _ringDevice: RingCamera;
   private lastAction: LastAction | undefined;
+  private _ringDevice!: RingCamera; // typescript not recognize the setter call, so exclamation mark is needed -> _ringDevice!
   private _durationLiveStream: number = this._adapter.config.recordtime_livestream;
   private _lastLightCommand: number = 0;
   private _lastLiveStreamUrl: string = "";
@@ -122,22 +122,6 @@ export class OwnRingCamera extends OwnRingDevice {
     "doorbell": new EventBlocker(this._adapter.config.ignore_events_Doorbell, this._adapter.config.keep_ignoring_if_retriggered)
   };
 
-  public get lastLiveStreamDir(): string {
-    return this._lastLiveStreamDir;
-  }
-
-  public get lastSnapShotDir(): string {
-    return this._lastSnapShotDir;
-  }
-
-  public get lastHDSnapShotDir(): string {
-    return this._lastHDSnapShotDir;
-  }
-
-  public get ringDevice(): RingCamera {
-    return this._ringDevice;
-  }
-
   private set ringDevice(device: RingCamera) {
     this._ringDevice = device;
     this.subscribeToEvents();
@@ -152,8 +136,7 @@ export class OwnRingCamera extends OwnRingDevice {
       `${ringDevice.id}`,
       ringDevice.data.description,
     );
-    this._ringDevice = ringDevice;
-    this.ringDevice = ringDevice; // subscribe to events
+    this.ringDevice = ringDevice;       // calls the setter, set _ringDevice and calls subscription
     this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
     this.historyChannelId = `${this.fullId}.${CHANNEL_NAME_HISTORY}`;
     this.lightChannelId = `${this.fullId}.${CHANNEL_NAME_LIGHT}`;
@@ -170,7 +153,6 @@ export class OwnRingCamera extends OwnRingDevice {
     this.updateHDSnapshotObject();
     this.updateLiveStreamObject();
     this.autoSched();
-    // this.subscribeToEvents();
   }
 
   public async startLivestream(duration?: number): Promise<void> {
@@ -699,7 +681,7 @@ export class OwnRingCamera extends OwnRingDevice {
   }
 
   public updateByDevice(ringDevice: RingCamera): void {
-    this.ringDevice = ringDevice;
+    if (this.ringDevice !== ringDevice) this.ringDevice = ringDevice; // setter with new subscription, only needed if new RingCamera
     this._state = EventState.Idle;
     this.update(ringDevice.data as CameraData);
   }
