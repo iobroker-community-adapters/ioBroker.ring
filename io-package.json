@@ -61,6 +61,19 @@
     "mode": "daemon",
     "name": "ring",
     "news": {
+      "5.0.7": {
+        "en": "Updated Packages\nInclude missing build artifacts",
+        "de": "Aktualisierte Pakete\nInklusive fehlender Bauartefakte",
+        "ru": "Обновленные пакеты\nВключает недостающие строительные артефакты",
+        "pt": "Pacotes atualizados\nIncluir artefatos de construção em falta",
+        "nl": "Verouderde pakket\nInclusief ontbrekende bouw van artefacten",
+        "fr": "Forfaits mis à jour\nInclure des objets de construction manquants",
+        "it": "Pacchetti aggiornati\nInclude artefatti di costruzione mancanti",
+        "es": "Paquetes actualizados\nIncluye objetos de construcción desaparecidos",
+        "pl": "Package Update\nBrakuje zbiorów artefaktów",
+        "uk": "Оновлені пакети\nУ комплекті відсутніх конструкційних артефактів",
+        "zh-cn": "最新包装\n包括缺乏建筑艺术材料"
+      },
       "5.0.6": {
         "en": "Updated Packages\nMake event debouncing configurable",
         "de": "Aktualisierte Pakete\nEvent debouncing konfigurierbar machen",
@@ -138,19 +151,6 @@
         "pl": "Package Update\nRemove dziedzictwo państw członkowskich\nAdd stickup_mini_v2 (ang.)",
         "uk": "Оновлені пакети\nВидаліть стани спадщини Legacy\nДодати палицю_cam_mini_v2",
         "zh-cn": "最新包装\n消除遗留状况\n增加stickup_cam_mini_v2"
-      },
-      "5.0.1-beta.0": {
-        "en": "migrated the configuration to JSON\nmany changes for livestream and high-definition screenshots\nRefactoring and cleanup",
-        "de": "die Konfiguration zu JSON migriert\nviele änderungen für livestream und high-definition screenshots\nHerstellung und Reinigung",
-        "ru": "мигрировали конфигурацию в JSON\nмного изменений для скриншотов livestream и high-definition\nРефакторинг и очистка",
-        "pt": "migraram a configuração para JSON\nmuitas alterações para livestream e capturas de tela de alta definição\nRefactoring e limpeza",
-        "nl": "de configuratie van JSON\nveel veranderingen voor livestream and high-definition screenshots\nHerstarten en opruimen",
-        "fr": "a migré la configuration vers JSON\nde nombreux changements pour les captures d'écran en direct et haute définition\nRefactoring and cleanup",
-        "it": "migrata la configurazione a JSON\nmolte modifiche per gli screenshot livestream e ad alta definizione\nRefactoring e pulizia",
-        "es": "migraron la configuración a JSON\nmuchos cambios para pantallas de flujo vivo y alta definición\nRefactorización y limpieza",
-        "pl": "przeprowadziło to do migracji do JSON\nwiele zmian na żywostream i high-definition screenshot\nOdtwarzanie i oczyszczanie",
-        "uk": "мігрувати конфігурацію в JSON\nбагато змін для живого потоку та знімків високої чіткості\nРефакторинг і очищення",
-        "zh-cn": "迁移到联合协商会的组合\n对上游和高指标屏幕进行的许多变化\n改建和清洁"
       }
     },
     "platform": "Javascript/Node.js",
@@ -170,7 +170,7 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "5.0.6"
+    "version": "5.0.7"
   },
   "instanceObjects": [
     {
@@ -221,4 +221,3 @@
   },
   "objects": []
 }
-

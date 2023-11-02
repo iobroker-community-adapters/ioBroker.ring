@@ -96,8 +96,7 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 5.0.7 (2023-11-02)
 
 * (theimo1221) Updated Packages
 * (theimo1221) Include missing build artifacts
