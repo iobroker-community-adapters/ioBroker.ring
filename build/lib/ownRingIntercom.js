@@ -9,19 +9,16 @@ const ownRingDevice_1 = require("./ownRingDevice");
 const event_blocker_1 = require("./services/event-blocker");
 const constants_1 = require("./constants");
 class OwnRingIntercom extends ownRingDevice_1.OwnRingDevice {
-    set ringIntercom(device) {
-        this._ringIntercom = device;
-        this.subscribeToEvents();
-    }
     constructor(ringDevice, location, adapter, apiClient) {
         super(location, adapter, apiClient, ownRingDevice_1.OwnRingDevice.evaluateKind(ringDevice.deviceType, adapter, ringDevice), `${ringDevice.id}`, ringDevice.data.description);
         this._eventBlocker = {
             "ding": new event_blocker_1.EventBlocker(this._adapter.config.ignore_events_Doorbell, this._adapter.config.keep_ignoring_if_retriggered)
         };
-        this.ringIntercom = ringDevice; // calls setter, set _ringIntercom and calls subscription
+        this._ringIntercom = ringDevice; // calls setter, set _ringIntercom and calls subscription
         this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
         this.eventsChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_EVENTS}`;
         this.recreateDeviceObjectTree();
+        this.subscribeToEvents();
     }
     processUserInput(channelID, stateID, state) {
         switch (channelID) {
@@ -50,8 +47,7 @@ class OwnRingIntercom extends ownRingDevice_1.OwnRingDevice {
         }
     }
     updateByDevice(intercom) {
-        if (this._ringIntercom !== intercom)
-            this.ringIntercom = intercom; // setter with new subscription, only needed if new RingIntercom
+        this._ringIntercom = intercom; // setter with new subscription, only needed if new RingIntercom
         this.update(intercom.data);
     }
     async recreateDeviceObjectTree() {

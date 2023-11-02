@@ -48,10 +48,6 @@ var EventState;
     EventState[EventState["ReactingOnDoorbell"] = 3] = "ReactingOnDoorbell";
 })(EventState || (EventState = {}));
 class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
-    set ringDevice(device) {
-        this._ringDevice = device;
-        this.subscribeToEvents();
-    }
     constructor(ringDevice, location, adapter, apiClient) {
         super(location, adapter, apiClient, OwnRingCamera.evaluateKind(ringDevice.deviceType, adapter, ringDevice), `${ringDevice.id}`, ringDevice.data.description);
         this._durationLiveStream = this._adapter.config.recordtime_livestream;
@@ -73,7 +69,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             "motion": new event_blocker_1.EventBlocker(this._adapter.config.ignore_events_Motion, this._adapter.config.keep_ignoring_if_retriggered),
             "doorbell": new event_blocker_1.EventBlocker(this._adapter.config.ignore_events_Doorbell, this._adapter.config.keep_ignoring_if_retriggered)
         };
-        this.ringDevice = ringDevice; // calls the setter, set _ringDevice and calls subscription
+        this._ringDevice = ringDevice;
         this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
         this.historyChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HISTORY}`;
         this.lightChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIGHT}`;
@@ -89,6 +85,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this.updateHDSnapshotObject();
         this.updateLiveStreamObject();
         this.autoSched();
+        this.subscribeToEvents();
     }
     async startLivestream(duration) {
         this.silly(`${this.shortId}.startLivestream()`);
@@ -491,8 +488,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         return { night_contrast, night_sharpen };
     }
     updateByDevice(ringDevice) {
-        if (this.ringDevice !== ringDevice)
-            this.ringDevice = ringDevice; // setter with new subscription, only needed if new RingCamera
+        this._ringDevice = ringDevice;
         this._state = EventState.Idle;
         this.update(ringDevice.data);
     }
