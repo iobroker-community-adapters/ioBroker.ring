@@ -100,6 +100,7 @@ doorbell recorded video.
 ### **WORK IN PROGRESS**
 
 * (theimo1221) Updated Packages
+* (theimo1221) Include missing build artifacts
 
 ### 5.0.6 (2023-10-29)
 
