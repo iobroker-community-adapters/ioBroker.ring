@@ -36,7 +36,7 @@ export class OwnRingIntercom extends OwnRingDevice {
       `${ringDevice.id}`,
       ringDevice.data.description
     );
-    this._ringIntercom = ringDevice; // calls setter, set _ringIntercom and calls subscription
+    this._ringIntercom = ringDevice;
     this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
     this.eventsChannelId = `${this.fullId}.${CHANNEL_NAME_EVENTS}`;
     this.recreateDeviceObjectTree();
@@ -79,7 +79,7 @@ export class OwnRingIntercom extends OwnRingDevice {
   }
 
   public updateByDevice(intercom: RingIntercom): void {
-    this._ringIntercom = intercom; // setter with new subscription, only needed if new RingIntercom
+    this._ringIntercom = intercom;
     this.update(intercom.data);
   }
 
