@@ -80,6 +80,7 @@ export class OwnRingIntercom extends OwnRingDevice {
 
   public updateByDevice(intercom: RingIntercom): void {
     this._ringIntercom = intercom;
+    this.subscribeToEvents();
     this.update(intercom.data);
   }
 

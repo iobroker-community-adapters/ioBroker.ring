@@ -489,6 +489,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
     }
     updateByDevice(ringDevice) {
         this._ringDevice = ringDevice;
+        this.subscribeToEvents();
         this._state = EventState.Idle;
         this.update(ringDevice.data);
     }

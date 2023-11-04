@@ -14,7 +14,7 @@ class OwnRingIntercom extends ownRingDevice_1.OwnRingDevice {
         this._eventBlocker = {
             "ding": new event_blocker_1.EventBlocker(this._adapter.config.ignore_events_Doorbell, this._adapter.config.keep_ignoring_if_retriggered)
         };
-        this._ringIntercom = ringDevice; // calls setter, set _ringIntercom and calls subscription
+        this._ringIntercom = ringDevice;
         this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
         this.eventsChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_EVENTS}`;
         this.recreateDeviceObjectTree();
@@ -47,7 +47,8 @@ class OwnRingIntercom extends ownRingDevice_1.OwnRingDevice {
         }
     }
     updateByDevice(intercom) {
-        this._ringIntercom = intercom; // setter with new subscription, only needed if new RingIntercom
+        this._ringIntercom = intercom;
+        this.subscribeToEvents();
         this.update(intercom.data);
     }
     async recreateDeviceObjectTree() {

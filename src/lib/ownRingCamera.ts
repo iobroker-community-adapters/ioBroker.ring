@@ -678,11 +678,12 @@ export class OwnRingCamera extends OwnRingDevice {
 
   public updateByDevice(ringDevice: RingCamera): void {
     this._ringDevice = ringDevice;
+    this.subscribeToEvents();
     this._state = EventState.Idle;
     this.update(ringDevice.data as CameraData);
   }
 
-  public update(data: AnyCameraData): void {
+  private update(data: AnyCameraData): void {
     this.debug(`Received Update`);
     this.updateDeviceInfoObject(data as CameraData);
     this.updateHealth();
