@@ -61,6 +61,19 @@
     "mode": "daemon",
     "name": "ring",
     "news": {
+      "5.0.8": {
+        "en": "Code cleanup\n#614 Add @homebridge/camera-utils as direct depency to mitigate import issue",
+        "de": "Code-Reinigung\n#614 Fügen Sie @homebridge/camera-utils als direkter Anstand zur Minderung des Importproblems hinzu",
+        "ru": "Очистка кода\n#614 Добавьте @homebridge/camera-utils в качестве прямого депэнта для смягчения проблемы импорта",
+        "pt": "Limpeza de código\n#614 Adicionar @homebridge/camera-utils como depência direta para mitigar o problema de importação",
+        "nl": "Code schoonmaakmiddel\n#614 @homebridge/camera-utils als directe afhankelijkheid om import kwestie te verzachten",
+        "fr": "Nettoyage du code\n#614 Ajouter @homebridge/camera-utils comme désespoir direct pour atténuer les problèmes d'importation",
+        "it": "Pulizia del codice\n#614 # Aggiungi @homebridge/camera-utils come depency diretto per mitigare il problema dell'importazione",
+        "es": "Limpieza del código\n#614 Añadir @homebridge/camera-utils como depencia directa para mitigar el problema de importación",
+        "pl": "Kod\n614. Addd @homebridge/camera-utils jako depozyt w celu złagodzenia importu",
+        "uk": "Чистка коду\n#614 Додати @homebridge/camera-utils як пряма депенція, щоб зменшити питання імпорту",
+        "zh-cn": "守则 清洁\n行动614 增加@homebridge/camera-use是缓解进口问题的直接缺陷"
+      },
       "5.0.7": {
         "en": "Updated Packages\nInclude missing build artifacts",
         "de": "Aktualisierte Pakete\nInklusive fehlender Bauartefakte",
@@ -138,19 +151,6 @@
         "pl": "Remove mieszanina połączeń i asynchronia w tej samej funkcji\n#603 Harden (ang.) ValueFrom",
         "uk": "Видаліть міксап зворотного виклику та асинхрону в одній функції\n#603 Викорисне використання першого ValueЗ альбому",
         "zh-cn": "在同一职能范围内消除阻断和排污\n第603号行动 价值"
-      },
-      "5.0.1": {
-        "en": "Updated Packages\nRemove legacy states\nAdd stickup_cam_mini_v2",
-        "de": "Aktualisierte Pakete\nEntfernen ältere Staaten\nStickup_cam_mini_v2 hinzufügen",
-        "ru": "Обновленные пакеты\nУдалить состояния наследия\nДобавить Stickup_cam_mini_v2",
-        "pt": "Pacotes atualizados\nRemover estados legados\nAdicionar stickup_cam_mini_v2",
-        "nl": "Verouderde pakket\nVerwijder de nalatenschap\nAdd stickupupcamini",
-        "fr": "Forfaits mis à jour\nSupprimer les États\nAjouter stickup_cam_mini_v2",
-        "it": "Pacchetti aggiornati\nRimuovi gli stati legacy\nAggiungi stickup_cam_mini_v2",
-        "es": "Paquetes actualizados\nEliminar los estados heredados\nAñadir stickup_cam_mini_v2",
-        "pl": "Package Update\nRemove dziedzictwo państw członkowskich\nAdd stickup_mini_v2 (ang.)",
-        "uk": "Оновлені пакети\nВидаліть стани спадщини Legacy\nДодати палицю_cam_mini_v2",
-        "zh-cn": "最新包装\n消除遗留状况\n增加stickup_cam_mini_v2"
       }
     },
     "platform": "Javascript/Node.js",
@@ -170,7 +170,7 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "5.0.7"
+    "version": "5.0.8"
   },
   "instanceObjects": [
     {
