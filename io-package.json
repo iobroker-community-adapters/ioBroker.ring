@@ -61,6 +61,19 @@
     "mode": "daemon",
     "name": "ring",
     "news": {
+      "5.0.9": {
+        "en": "#614 Enforce @homebridge/camera-utils version 2.2.0",
+        "de": "#614 Enforce @homebridge/camera-utils version 2.2.0",
+        "ru": "#614 Enforce @homebridge/camera-utils версия 2.2.0",
+        "pt": "#614 Enforce @homebridge/camera-utils versão 2.2.0",
+        "nl": "Vertaling:",
+        "fr": "#614 Enforce @homebridge/camera-utils version 2.2.0",
+        "it": "#614 Enforce @homebridge/camera-utils versione 2.2.0",
+        "es": "#614 Enforce @homebridge/camera-utils versión 2.2.0",
+        "pl": "#614 Enforce @homebridge/camera-utils wersja 2.2.0",
+        "uk": "#614 Армування @homebridge/camera-utils version 2.2.0",
+        "zh-cn": "#614 警察部队@homebridge/camera- use 2。"
+      },
       "5.0.8": {
         "en": "Code cleanup\n#614 Add @homebridge/camera-utils as direct depency to mitigate import issue",
         "de": "Code-Reinigung\n#614 Fügen Sie @homebridge/camera-utils als direkter Anstand zur Minderung des Importproblems hinzu",
@@ -138,19 +151,6 @@
         "pl": "603 Zmiany rxjów importują do rozwiązania niezręcznego js.",
         "uk": "#603 Зміна імпорту rxjs для вирішення результату побудови jswkward.",
         "zh-cn": "第603号 装甲运兵车的进口,以便解决厨房。."
-      },
-      "5.0.2": {
-        "en": "Remove mixup of callback and async within same function\n#603 Harden usage of \"firstValueFrom\"",
-        "de": "Entfernen Sie die Mischung von Callback und Async innerhalb derselben Funktion\n#603 Harden Nutzung der ersten ValueFrom",
-        "ru": "Удалить перемешивание callback и async в рамках одной функции\n#603 Harden использование первого ЗначениеОт",
-        "pt": "Remover a mistura de callback e async dentro da mesma função\n#603 Harden use of first Valor a partir de",
-        "nl": "Verwijder mengsel en async binnen dezelfde functie\nVertaling: ValueFrom",
-        "fr": "Supprimer le mélange de callback et async dans la même fonction\n#603 Usage dur de la première Valeur",
-        "it": "Rimuovere il mixup di callback e asincrona all'interno della stessa funzione\n#603 Harden utilizzo del primo Valore",
-        "es": "Eliminar la mezcla de callback y async dentro de la misma función\n#603 Harden use of first Valor",
-        "pl": "Remove mieszanina połączeń i asynchronia w tej samej funkcji\n#603 Harden (ang.) ValueFrom",
-        "uk": "Видаліть міксап зворотного виклику та асинхрону в одній функції\n#603 Викорисне використання першого ValueЗ альбому",
-        "zh-cn": "在同一职能范围内消除阻断和排污\n第603号行动 价值"
       }
     },
     "platform": "Javascript/Node.js",
@@ -170,7 +170,7 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "5.0.8"
+    "version": "5.0.9"
   },
   "instanceObjects": [
     {
