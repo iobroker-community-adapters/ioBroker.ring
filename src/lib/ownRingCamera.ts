@@ -102,7 +102,7 @@ export class OwnRingCamera extends OwnRingDevice {
   private readonly liveStreamChannelId: string;
   private lastAction: LastAction | undefined;
   private _ringDevice: RingCamera;
-  private _durationLiveStream: number = this._adapter.config.recordtime_livestream;
+  private _durationLiveStream: number;
   private _lastLightCommand: number = 0;
   private _lastLiveStreamUrl: string = "";
   private _lastLiveStreamTimestamp: number = 0;
@@ -117,10 +117,8 @@ export class OwnRingCamera extends OwnRingDevice {
   private _lastLiveStreamDir: string = "";
   private _lastSnapShotDir: string = "";
   private _lastHDSnapShotDir: string = "";
-  private _eventBlocker: { [name: string]: EventBlocker } = {
-    "motion":   new EventBlocker(this._adapter.config.ignore_events_Motion,   this._adapter.config.keep_ignoring_if_retriggered),
-    "doorbell": new EventBlocker(this._adapter.config.ignore_events_Doorbell, this._adapter.config.keep_ignoring_if_retriggered)
-  };
+  private _motionEventBlocker: EventBlocker;
+  private _doorbellEventBlocker: EventBlocker;
 
   public constructor(ringDevice: RingCamera, location: OwnRingLocation, adapter: RingAdapter, apiClient: RingApiClient) {
     super(
@@ -131,6 +129,15 @@ export class OwnRingCamera extends OwnRingDevice {
       `${ringDevice.id}`,
       ringDevice.data.description,
     );
+    this._motionEventBlocker = new EventBlocker(
+      this._adapter.config.ignore_events_Motion,
+      this._adapter.config.keep_ignoring_if_retriggered
+    );
+    this._doorbellEventBlocker = new EventBlocker(
+      this._adapter.config.ignore_events_Doorbell,
+      this._adapter.config.keep_ignoring_if_retriggered
+    );
+    this._durationLiveStream = this._adapter.config.recordtime_livestream;
     this._ringDevice = ringDevice;
     this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
     this.historyChannelId = `${this.fullId}.${CHANNEL_NAME_HISTORY}`;
@@ -1038,8 +1045,7 @@ export class OwnRingCamera extends OwnRingDevice {
   }
 
   private onMotion(value: boolean): void {
-    if (value && this._eventBlocker.motion.checkBlock()
-    ) {
+    if (value && this._motionEventBlocker.checkBlock()) {
       this.debug(`ignore Motion event...`);
       return;
     }
@@ -1053,8 +1059,7 @@ export class OwnRingCamera extends OwnRingDevice {
   }
 
   private onDoorbell(value: PushNotificationDing): void {
-    if (value && this._eventBlocker.doorbell.checkBlock()
-    ) {
+    if (value && this._doorbellEventBlocker.checkBlock()) {
       this.debug(`ignore Doorbell event...`);
       return;
     }

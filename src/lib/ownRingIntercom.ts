@@ -23,9 +23,7 @@ export class OwnRingIntercom extends OwnRingDevice {
   private readonly infoChannelId: string;
   private readonly eventsChannelId: string;
   private _ringIntercom: RingIntercom;
-  private _eventBlocker: { [name: string]: EventBlocker } = {
-    "ding": new EventBlocker(this._adapter.config.ignore_events_Doorbell, this._adapter.config.keep_ignoring_if_retriggered)
-  };
+  private _dingEventBlocker: EventBlocker;
 
   public constructor(ringDevice: RingIntercom, location: OwnRingLocation, adapter: RingAdapter, apiClient: RingApiClient) {
     super(
@@ -35,6 +33,10 @@ export class OwnRingIntercom extends OwnRingDevice {
       OwnRingDevice.evaluateKind(ringDevice.deviceType as string, adapter, ringDevice),
       `${ringDevice.id}`,
       ringDevice.data.description
+    );
+    this._dingEventBlocker = new EventBlocker(
+      this._adapter.config.ignore_events_Doorbell,
+      this._adapter.config.keep_ignoring_if_retriggered
     );
     this._ringIntercom = ringDevice;
     this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
@@ -148,8 +150,7 @@ export class OwnRingIntercom extends OwnRingDevice {
   }
 
   private onDing(): void {
-    if (this._eventBlocker.ding.checkBlock()
-    ) {
+    if (this._dingEventBlocker.checkBlock()) {
       this.debug(`ignore Ding event...`);
       return;
     }
