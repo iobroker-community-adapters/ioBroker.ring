@@ -43,7 +43,7 @@
     "strftime": "^0.10.2",
     "suncalc": "^1.9.0",
     "rxjs": "^7.8.1",
-    "@homebridge/camera-utils": "2.2.1"
+    "@homebridge/camera-utils": "2.2.0"
   },
   "devDependencies": {
     "@alcalzone/release-script": "^3.6.0",
