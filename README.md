@@ -96,6 +96,10 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+* (theimo1221) #614 Enforce @homebridge/camera-utils version 2.2.0
 ### 5.0.8 (2023-11-05)
 
 * (crocri) Code cleanup
