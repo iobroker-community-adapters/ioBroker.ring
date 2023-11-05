@@ -50,7 +50,6 @@ var EventState;
 class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
     constructor(ringDevice, location, adapter, apiClient) {
         super(location, adapter, apiClient, OwnRingCamera.evaluateKind(ringDevice.deviceType, adapter, ringDevice), `${ringDevice.id}`, ringDevice.data.description);
-        this._durationLiveStream = this._adapter.config.recordtime_livestream;
         this._lastLightCommand = 0;
         this._lastLiveStreamUrl = "";
         this._lastLiveStreamTimestamp = 0;
@@ -65,10 +64,9 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._lastLiveStreamDir = "";
         this._lastSnapShotDir = "";
         this._lastHDSnapShotDir = "";
-        this._eventBlocker = {
-            "motion": new event_blocker_1.EventBlocker(this._adapter.config.ignore_events_Motion, this._adapter.config.keep_ignoring_if_retriggered),
-            "doorbell": new event_blocker_1.EventBlocker(this._adapter.config.ignore_events_Doorbell, this._adapter.config.keep_ignoring_if_retriggered)
-        };
+        this._motionEventBlocker = new event_blocker_1.EventBlocker(this._adapter.config.ignore_events_Motion, this._adapter.config.keep_ignoring_if_retriggered);
+        this._doorbellEventBlocker = new event_blocker_1.EventBlocker(this._adapter.config.ignore_events_Doorbell, this._adapter.config.keep_ignoring_if_retriggered);
+        this._durationLiveStream = this._adapter.config.recordtime_livestream;
         this._ringDevice = ringDevice;
         this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
         this.historyChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HISTORY}`;
@@ -675,7 +673,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._adapter.upsertState(`${this.eventsChannelId}.message`, constants_1.COMMON_EVENTS_MESSAGE, value.aps.alert);
     }
     onMotion(value) {
-        if (value && this._eventBlocker.motion.checkBlock()) {
+        if (value && this._motionEventBlocker.checkBlock()) {
             this.debug(`ignore Motion event...`);
             return;
         }
@@ -684,7 +682,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         value && this.conditionalRecording(EventState.ReactingOnMotion);
     }
     onDoorbell(value) {
-        if (value && this._eventBlocker.doorbell.checkBlock()) {
+        if (value && this._doorbellEventBlocker.checkBlock()) {
             this.debug(`ignore Doorbell event...`);
             return;
         }
