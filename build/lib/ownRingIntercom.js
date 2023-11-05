@@ -6,21 +6,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OwnRingIntercom = void 0;
 const util_1 = __importDefault(require("util"));
 const ownRingDevice_1 = require("./ownRingDevice");
+const event_blocker_1 = require("./services/event-blocker");
 const constants_1 = require("./constants");
 class OwnRingIntercom extends ownRingDevice_1.OwnRingDevice {
     constructor(ringDevice, location, adapter, apiClient) {
         super(location, adapter, apiClient, ownRingDevice_1.OwnRingDevice.evaluateKind(ringDevice.deviceType, adapter, ringDevice), `${ringDevice.id}`, ringDevice.data.description);
+        this._eventBlocker = {
+            "ding": new event_blocker_1.EventBlocker(this._adapter.config.ignore_events_Doorbell, this._adapter.config.keep_ignoring_if_retriggered)
+        };
         this._ringIntercom = ringDevice;
-        this.subscribeToEvents();
         this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
         this.eventsChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_EVENTS}`;
         this.recreateDeviceObjectTree();
-    }
-    get ringIntercom() {
-        return this._ringIntercom;
-    }
-    set ringIntercom(device) {
-        this._ringIntercom = device;
         this.subscribeToEvents();
     }
     processUserInput(channelID, stateID, state) {
@@ -50,7 +47,8 @@ class OwnRingIntercom extends ownRingDevice_1.OwnRingDevice {
         }
     }
     updateByDevice(intercom) {
-        this.ringIntercom = intercom;
+        this._ringIntercom = intercom;
+        this.subscribeToEvents();
         this.update(intercom.data);
     }
     async recreateDeviceObjectTree() {
@@ -87,11 +85,15 @@ class OwnRingIntercom extends ownRingDevice_1.OwnRingDevice {
         this._adapter.upsertState(`${this.infoChannelId}.description`, constants_1.COMMON_INFO_DESCRIPTION, data.description);
     }
     onDing() {
+        if (this._eventBlocker.ding.checkBlock()) {
+            this.debug(`ignore Ding event...`);
+            return;
+        }
         this.debug(`Received Ding Event`);
         this._adapter.upsertState(`${this.eventsChannelId}.ding`, constants_1.COMMON_EVENTS_INTERCOM_DING, true);
         setTimeout(() => {
             this._adapter.upsertState(`${this.eventsChannelId}.ding`, constants_1.COMMON_EVENTS_INTERCOM_DING, false);
-        }, 100);
+        }, 1000);
     }
 }
 exports.OwnRingIntercom = OwnRingIntercom;

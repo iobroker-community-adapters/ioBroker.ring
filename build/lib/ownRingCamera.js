@@ -48,20 +48,43 @@ var EventState;
     EventState[EventState["ReactingOnDoorbell"] = 3] = "ReactingOnDoorbell";
 })(EventState || (EventState = {}));
 class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
-    get lastLiveStreamDir() {
-        return this._lastLiveStreamDir;
-    }
-    get lastSnapShotDir() {
-        return this._lastSnapShotDir;
-    }
-    get lastHDSnapShotDir() {
-        return this._lastHDSnapShotDir;
-    }
-    get ringDevice() {
-        return this._ringDevice;
-    }
-    set ringDevice(device) {
-        this._ringDevice = device;
+    constructor(ringDevice, location, adapter, apiClient) {
+        super(location, adapter, apiClient, OwnRingCamera.evaluateKind(ringDevice.deviceType, adapter, ringDevice), `${ringDevice.id}`, ringDevice.data.description);
+        this._durationLiveStream = this._adapter.config.recordtime_livestream;
+        this._lastLightCommand = 0;
+        this._lastLiveStreamUrl = "";
+        this._lastLiveStreamTimestamp = 0;
+        this._lastSnapShotUrl = "";
+        this._lastSnapshotTimestamp = 0;
+        this._snapshotCount = 0;
+        this._lastHDSnapShotUrl = "";
+        this._lastHDSnapshotTimestamp = 0;
+        this._HDsnapshotCount = 0;
+        this._liveStreamCount = 0;
+        this._state = EventState.Idle;
+        this._lastLiveStreamDir = "";
+        this._lastSnapShotDir = "";
+        this._lastHDSnapShotDir = "";
+        this._eventBlocker = {
+            "motion": new event_blocker_1.EventBlocker(this._adapter.config.ignore_events_Motion, this._adapter.config.keep_ignoring_if_retriggered),
+            "doorbell": new event_blocker_1.EventBlocker(this._adapter.config.ignore_events_Doorbell, this._adapter.config.keep_ignoring_if_retriggered)
+        };
+        this._ringDevice = ringDevice;
+        this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
+        this.historyChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HISTORY}`;
+        this.lightChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIGHT}`;
+        this.snapshotChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_SNAPSHOT}`;
+        this.HDsnapshotChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HDSNAPSHOT}`;
+        this.liveStreamChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIVESTREAM}`;
+        this.eventsChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_EVENTS}`;
+        this.recreateDeviceObjectTree();
+        this.updateDeviceInfoObject(ringDevice.data);
+        this.updateHealth();
+        this.updateHistory();
+        this.updateSnapshotObject();
+        this.updateHDSnapshotObject();
+        this.updateLiveStreamObject();
+        this.autoSched();
         this.subscribeToEvents();
     }
     async startLivestream(duration) {
@@ -232,15 +255,6 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             await this.updateSnapshotRequest(false);
             return;
         }
-        /*
-        const image = await this._ringDevice.getNextSnapshot({uuid: uuid}).catch((reason) => {
-          if (eventBased) {
-            this.warn("Taking Snapshot on Event failed. Will try again after livestream finished.");
-          } else {
-            this.catcher("Couldn't get Snapshot from api.", reason);
-          }
-        })
-        */
         const image = await this._ringDevice.getNextSnapshot({ force: true, uuid: uuid })
             .then((result) => result)
             .catch((err) => {
@@ -460,47 +474,6 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             resolve({ visURL: visURL, visPath: visPath, fullPath: fullPath });
         });
     }
-    constructor(ringDevice, location, adapter, apiClient) {
-        super(location, adapter, apiClient, OwnRingCamera.evaluateKind(ringDevice.deviceType, adapter, ringDevice), `${ringDevice.id}`, ringDevice.data.description);
-        this._durationLiveStream = this._adapter.config.recordtime_livestream;
-        this._lastLightCommand = 0;
-        this._lastLiveStreamUrl = "";
-        this._lastLiveStreamTimestamp = 0;
-        this._lastSnapShotUrl = "";
-        this._lastSnapshotTimestamp = 0;
-        this._snapshotCount = 0;
-        this._lastHDSnapShotUrl = "";
-        this._lastHDSnapshotTimestamp = 0;
-        this._HDsnapshotCount = 0;
-        this._liveStreamCount = 0;
-        this._state = EventState.Idle;
-        this._lastLiveStreamDir = "";
-        this._lastSnapShotDir = "";
-        this._eventBlocker = {
-            motion: new event_blocker_1.EventBlocker(),
-            ding: new event_blocker_1.EventBlocker(),
-        };
-        this._lastHDSnapShotDir = "";
-        this._ringDevice = ringDevice;
-        this.debug(`Create device`);
-        this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
-        this.historyChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HISTORY}`;
-        this.lightChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIGHT}`;
-        this.snapshotChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_SNAPSHOT}`;
-        this.HDsnapshotChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HDSNAPSHOT}`;
-        this.liveStreamChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIVESTREAM}`;
-        this.eventsChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_EVENTS}`;
-        this.recreateDeviceObjectTree();
-        this.updateDeviceInfoObject(ringDevice.data);
-        this.updateHealth();
-        // noinspection JSIgnoredPromiseFromCall
-        this.updateHistory();
-        this.updateSnapshotObject();
-        this.updateHDSnapshotObject();
-        this.updateLiveStreamObject();
-        this.ringDevice = ringDevice; // subscribes to the events
-        this.autoSched();
-    }
     getActiveNightImageOptions() {
         let night_contrast = false;
         let night_sharpen = false;
@@ -515,7 +488,8 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         return { night_contrast, night_sharpen };
     }
     updateByDevice(ringDevice) {
-        this.ringDevice = ringDevice;
+        this._ringDevice = ringDevice;
+        this.subscribeToEvents();
         this._state = EventState.Idle;
         this.update(ringDevice.data);
     }
@@ -523,7 +497,6 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this.debug(`Received Update`);
         this.updateDeviceInfoObject(data);
         this.updateHealth();
-        // noinspection JSIgnoredPromiseFromCall
         this.updateHistory();
         this.updateSnapshotObject();
         this.updateHDSnapshotObject();
@@ -702,7 +675,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._adapter.upsertState(`${this.eventsChannelId}.message`, constants_1.COMMON_EVENTS_MESSAGE, value.aps.alert);
     }
     onMotion(value) {
-        if (value && this._eventBlocker.motion.checkBlock(this._adapter.config.ignore_events_Motion, this._adapter.config.keep_ignoring_if_retriggered)) {
+        if (value && this._eventBlocker.motion.checkBlock()) {
             this.debug(`ignore Motion event...`);
             return;
         }
@@ -711,7 +684,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         value && this.conditionalRecording(EventState.ReactingOnMotion);
     }
     onDoorbell(value) {
-        if (value && this._eventBlocker.doorbell.checkBlock(this._adapter.config.ignore_events_Doorbell, this._adapter.config.keep_ignoring_if_retriggered)) {
+        if (value && this._eventBlocker.doorbell.checkBlock()) {
             this.debug(`ignore Doorbell event...`);
             return;
         }
@@ -719,7 +692,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, constants_1.COMMON_EVENTS_DOORBELL, true);
         setTimeout(() => {
             this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, constants_1.COMMON_EVENTS_DOORBELL, false);
-        }, 5000);
+        }, 1000);
         this.conditionalRecording(EventState.ReactingOnDoorbell, value.ding.image_uuid);
     }
     async conditionalRecording(state, uuid) {
