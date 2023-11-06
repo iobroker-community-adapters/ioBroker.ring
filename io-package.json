@@ -61,6 +61,19 @@
     "mode": "daemon",
     "name": "ring",
     "news": {
+      "5.0.10": {
+        "en": "#614 Enforce @homebridge/camera-utils version 2.2.4",
+        "de": "#614 Enforce @homebridge/camera-utils version 2.2.4",
+        "ru": "#614 Enforce @homebridge/camera-utils версия 2.2.4",
+        "pt": "#614 Enforce @homebridge/camera-utils versão 2.2.4",
+        "nl": "Vertaling:",
+        "fr": "#614 Enforce @homebridge/camera-utils version 2.2.4",
+        "it": "#614 Enforce @homebridge/camera-utils versione 2.2.4",
+        "es": "#614 Enforce @homebridge/camera-utils versión 2.2.4",
+        "pl": "#614 Enforce @homebridge/camera-utils wersja 2.2.4",
+        "uk": "#614 Армування @homebridge/camera-utils версія 2.2.4",
+        "zh-cn": "#614 警察部队@homebridge/camera-use版本2.4"
+      },
       "5.0.9": {
         "en": "#614 Enforce @homebridge/camera-utils version 2.2.0",
         "de": "#614 Enforce @homebridge/camera-utils version 2.2.0",
@@ -138,19 +151,6 @@
         "pl": "603 Add rxj w normalnych zależnościach zamiast dev-dependencji",
         "uk": "#603 Додати rxjs до нормальних залежностей замість",
         "zh-cn": "第603号 增加正常的依赖性,而不是降水"
-      },
-      "5.0.3": {
-        "en": "#603 Change rxjs import to resolve awkward js build result.",
-        "de": "#603 Ändern Sie rxjs Import, um awkward js Build Ergebnis zu lösen.",
-        "ru": "#603 Измените импорт rxjs для разрешения awkward js build результат.",
-        "pt": "#603 Alterar a importação de rxjs para resolver o resultado de compilação js estranho.",
-        "nl": "#603 Verander RXJ's import om onhandige j's resultaat op te lossen.",
-        "fr": "#603 Changer l'importation rxjs pour résoudre le résultat de construction de js embarrassant.",
-        "it": "#603 Cambia l'importazione di rxjs per risolvere il risultato di costruzione di js imbarazzante.",
-        "es": "#603 Cambiar rxjs importación para resolver el resultado de construcción de js incómodo.",
-        "pl": "603 Zmiany rxjów importują do rozwiązania niezręcznego js.",
-        "uk": "#603 Зміна імпорту rxjs для вирішення результату побудови jswkward.",
-        "zh-cn": "第603号 装甲运兵车的进口,以便解决厨房。."
       }
     },
     "platform": "Javascript/Node.js",
@@ -170,7 +170,7 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "5.0.9"
+    "version": "5.0.10"
   },
   "instanceObjects": [
     {
