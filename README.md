@@ -38,6 +38,8 @@ You can use special variables for your livestream and snapshot path and filename
 a counter, timestamp, ring id or kind of ring.
 
 * `%d`: Unix timestamp. Example: `test_%d -> test_1588331430061`
+* `%g`: Formatted dated YYYYMMDD. Example: `test_%g -> test_20240614`
+* `%t`: Formatted time HHiiss. Example: `test_%t -> test_235901`
 * `%i`: ID of your ring device: Example: `test_%i -> test_234567890`
 * `%n`: Counter since ring instance start. Example: `test_%n -> test_1`
 * `%k`: Kind of your ring device: Example: `test_%k -> test_doorbell`
