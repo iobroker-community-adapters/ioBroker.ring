@@ -97,6 +97,11 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+* (SFGJK) #710 Enhancement of filename placeholder feature
+
 ### 5.0.10 (2023-11-06)
 
 * (theimo1221) #614 Enforce @homebridge/camera-utils version 2.2.4
