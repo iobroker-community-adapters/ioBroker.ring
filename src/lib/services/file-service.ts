@@ -8,6 +8,22 @@ import { PathInfo } from "./path-info";
 export class FileService {
   public static readonly IOBROKER_FILES_REGEX: RegExp = new RegExp(/.*iobroker-data\/files.*/);
 
+  private static getFormattedDate(): string {
+    const now = new Date();
+    const YYYY = now.getFullYear();
+    const MM = String(now.getMonth() + 1).padStart(2, '0');
+    const DD = String(now.getDate()).padStart(2, '0');
+    return `${YYYY}${MM}${DD}`;
+  }
+
+  private static getFormattedTime(): string {
+    const now = new Date();
+    const HH = String(now.getHours()).padStart(2, '0');
+    const ii = String(now.getMinutes()).padStart(2, '0');
+    const ss = String(now.getSeconds()).padStart(2, '0');
+    return `${HH}${ii}${ss}`;
+  }
+  
   public static getPath(
     basePath: string,
     extendedPath: string,
@@ -18,6 +34,8 @@ export class FileService {
   ): PathInfo {
     const fullPath: string = path.join(basePath, fullId, extendedPath)
       .replace("%d", String(Date.now()))
+      .replace("%g", this.getFormattedDate())
+      .replace("%t", this.getFormattedTime())
       .replace("%n", String(count))
       .replace("%i", shortId)
       .replace("%k", kind);
