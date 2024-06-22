@@ -101,6 +101,7 @@ doorbell recorded video.
 ### **WORK IN PROGRESS**
 
 * (SFGJK) #710 Enhancement of filename placeholder feature
+* (theimo1221) Updated Packages
 
 ### 5.0.10 (2023-11-06)
 

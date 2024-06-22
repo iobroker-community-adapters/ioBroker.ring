@@ -152,7 +152,11 @@ export class RingAdapter extends Adapter {
       this.log.debug("Run CalcSunData");
       if (this.latitude && this.longitude) {
         const today: Date = new Date();
-        const sunData: GetTimesResult = suncalc.getTimes(today, this.latitude, this.longitude);
+        const sunData: GetTimesResult = suncalc.getTimes(
+          today,
+          parseFloat(this.latitude),
+          parseFloat(this.longitude)
+        );
         this.sunset = sunData.night.getTime();     // night is really dark, sunset is too early
         this.sunrise = sunData.nightEnd.getTime(); // same here vice versa
         this.log.debug(`Sunset: ${new Date(this.sunset).toLocaleString()}, Sunrise: ${new Date(this.sunrise).toLocaleString()}`);
