@@ -97,8 +97,7 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 5.1.0 (2024-06-22)
 
 * (SFGJK) #710 Enhancement of filename placeholder feature
 * (theimo1221) Updated Packages
