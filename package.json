@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@iobroker/adapter-core": "^3.1.6",
-    "@iobroker/types": "^6.0.5",
+    "@iobroker/types": "^6.0.6",
     "@types/suncalc": "^1.9.2",
     "ffmpeg-static": "^5.2.0",
     "node-schedule": "^2.1.1",
