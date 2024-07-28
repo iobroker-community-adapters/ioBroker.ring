@@ -100,19 +100,6 @@
         "uk": "#614 Армування @homebridge/camera-utils version 2.2.0",
         "zh-cn": "#614 警察部队@homebridge/camera- use 2。"
       },
-      "5.0.8": {
-        "en": "Code cleanup\n#614 Add @homebridge/camera-utils as direct depency to mitigate import issue",
-        "de": "Code-Reinigung\n#614 Fügen Sie @homebridge/camera-utils als direkter Anstand zur Minderung des Importproblems hinzu",
-        "ru": "Очистка кода\n#614 Добавьте @homebridge/camera-utils в качестве прямого депэнта для смягчения проблемы импорта",
-        "pt": "Limpeza de código\n#614 Adicionar @homebridge/camera-utils como depência direta para mitigar o problema de importação",
-        "nl": "Code schoonmaakmiddel\n#614 @homebridge/camera-utils als directe afhankelijkheid om import kwestie te verzachten",
-        "fr": "Nettoyage du code\n#614 Ajouter @homebridge/camera-utils comme désespoir direct pour atténuer les problèmes d'importation",
-        "it": "Pulizia del codice\n#614 # Aggiungi @homebridge/camera-utils come depency diretto per mitigare il problema dell'importazione",
-        "es": "Limpieza del código\n#614 Añadir @homebridge/camera-utils como depencia directa para mitigar el problema de importación",
-        "pl": "Kod\n614. Addd @homebridge/camera-utils jako depozyt w celu złagodzenia importu",
-        "uk": "Чистка коду\n#614 Додати @homebridge/camera-utils як пряма депенція, щоб зменшити питання імпорту",
-        "zh-cn": "守则 清洁\n行动614 增加@homebridge/camera-use是缓解进口问题的直接缺陷"
-      },
       "5.0.7": {
         "en": "Updated Packages\nInclude missing build artifacts",
         "de": "Aktualisierte Pakete\nInklusive fehlender Bauartefakte",
