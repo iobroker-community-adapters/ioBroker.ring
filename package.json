@@ -61,7 +61,7 @@
     "@types/sinon": "^17.0.3",
     "@types/sinon-chai": "^3.2.12",
     "@types/strftime": "^0.9.8",
-    "@typescript-eslint/eslint-plugin": "^7.14.1",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^7.18.0",
     "axios": "^1.7.2",
     "chai": "^4.5.0",
