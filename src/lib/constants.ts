@@ -249,6 +249,13 @@ export const COMMON_MOTION: ioBroker.StateCommon = {
   read: true,
   write: false
 };
+export const COMMON_ON_DEMAND: ioBroker.StateCommon = {
+  type: "boolean",
+  role: "sensor.on_demand",
+  name: "If there is an On Demand Event",
+  read: true,
+  write: false
+};
 export const COMMON_EVENTS_DOORBELL: ioBroker.StateCommon = {
   type: "boolean",
   role: "sensor.door",

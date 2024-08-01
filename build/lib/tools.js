@@ -3,9 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isObject = isObject;
-exports.isArray = isArray;
-exports.translateText = translateText;
+exports.translateText = exports.isArray = exports.isObject = void 0;
 const axios_1 = __importDefault(require("axios"));
 /**
  * Tests whether the given variable is a real object and not an Array
@@ -18,6 +16,7 @@ function isObject(it) {
     // [] instanceof Object === true
     return Object.prototype.toString.call(it) === "[object Object]";
 }
+exports.isObject = isObject;
 /**
  * Tests whether the given variable is really an Array
  * @param it The variable to test
@@ -27,6 +26,7 @@ function isArray(it) {
         return Array.isArray(it);
     return Object.prototype.toString.call(it) === "[object Array]";
 }
+exports.isArray = isArray;
 /**
  * Translates text using the Google Translate API
  * @param text The text to translate
@@ -47,6 +47,7 @@ async function translateText(text, targetLang, yandexApiKey) {
         return translateGoogle(text, targetLang);
     }
 }
+exports.translateText = translateText;
 /**
  * Translates text with Yandex API
  * @param text The text to translate

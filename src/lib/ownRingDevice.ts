@@ -95,6 +95,9 @@ export abstract class OwnRingDevice {
 
   protected abstract recreateDeviceObjectTree(): Promise<void>;
 
+  protected error(message: string): void {
+    this._adapter.log.error(`Device ${this.shortId} ("${this.description}"): ${message}`);
+  }
   protected debug(message: string): void {
     this._adapter.log.debug(`Device ${this.shortId} ("${this.description}"): ${message}`);
   }

@@ -63,19 +63,19 @@ export class RingAdapter extends Adapter {
     return { device, channel, stateName };
   }
 
-  public upsertState(
+  public async upsertState(
     id: string,
     common: Partial<ioBroker.StateCommon>,
     value: ioBroker.StateValue,
     ack: boolean = true,
     subscribe: boolean = false
-  ): void {
+  ): Promise<void> {
     if (this.states[id] === value && !subscribe) {
       // Unchanged and from user not changeable Value
       return;
     }
     // noinspection JSIgnoredPromiseFromCall
-    this.upsertStateAsync(id, common, value, ack, subscribe);
+    await this.upsertStateAsync(id, common, value, ack, subscribe);
   }
 
   /**
@@ -161,7 +161,7 @@ export class RingAdapter extends Adapter {
         this.sunrise = sunData.nightEnd.getTime(); // same here vice versa
         this.log.debug(`Sunset: ${new Date(this.sunset).toLocaleString()}, Sunrise: ${new Date(this.sunrise).toLocaleString()}`);
       } else {
-        this.log.error("Latitude or Longtime not defined in System");
+        this.log.error("Latitude or Longitude not defined in System");
       }
     } catch (error) {
       const eMsg: string = `Error in CalcSunData: ${error}`;
