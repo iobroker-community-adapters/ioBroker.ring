@@ -16,7 +16,7 @@
   "Automatic recording time in seconds": "Tempo automático de gravação em segundos",
   "Recording time in seconds": "Tempo de gravação no gatilho manual em segundos",
   "Auto event": "Responda automaticamente a eventos",
-  "Auto event (battery)": "Responda automaticamente a eventos (apenas para câmaras sem baterias)",
+  "Auto event (battery)": "Reaja automaticamente a eventos (apenas para câmaras sem bateria ou sem subscrição)",
   "Auto save": "Salvamento automático por intervalo",
   "Path": "Caminho",
   "Overlay": "Sobreposição de texto",

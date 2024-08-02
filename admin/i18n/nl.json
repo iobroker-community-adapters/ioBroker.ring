@@ -16,7 +16,7 @@
   "Automatic recording time in seconds": "Automatische opnametijd in seconden",
   "Recording time in seconds": "De tijd van de handleiding in seconden",
   "Auto event": "Automatisch reageren op gebeurtenissen",
-  "Auto event (battery)": "Automatisch reageren op gebeurtenissen (alleen voor camera's zonder batterijen)",
+  "Auto event (battery)": "Automatisch reageren op gebeurtenissen (alleen voor camera's zonder batterij of zonder abonnement)",
   "Auto save": "Automatisch opslaan per interval",
   "Path": "Path",
   "Overlay": "Vertaling:",

@@ -16,7 +16,7 @@
   "Automatic recording time in seconds": "Temps d'enregistrement automatique en secondes",
   "Recording time in seconds": "Temps d'enregistrement sur le déclencheur manuel en quelques secondes",
   "Auto event": "Réponse automatique aux événements",
-  "Auto event (battery)": "Réponse automatique aux événements (uniquement pour les appareils photo sans piles)",
+  "Auto event (battery)": "Réagir automatiquement aux événements (uniquement pour les caméras sans batterie ou sans abonnement)",
   "Auto save": "Sauvegarde automatique par intervalle",
   "Path": "Sentier",
   "Overlay": "Remplacer le texte",

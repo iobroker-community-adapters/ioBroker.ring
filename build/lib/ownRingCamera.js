@@ -693,7 +693,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                 this.debug(`ignore Notify event...`);
                 return;
             }
-            this.notifyRecording(EventState.ReactingOnEvent, value.ding.image_uuid);
+            this.notifyRecording(EventState.ReactingOnEvent, value);
             this._adapter.upsertState(`${this.eventsChannelId}.type`, constants_1.COMMON_EVENTS_TYPE, text_service_1.TextService.getdetectionType(value.subtype, this._adapter.language));
             this._adapter.upsertState(`${this.eventsChannelId}.detectionType`, constants_1.COMMON_EVENTS_DETECTIONTYPE, text_service_1.TextService.getdetectionType((_a = value.ding.detection_type) !== null && _a !== void 0 ? _a : value.subtype, this._adapter.language));
             this._adapter.upsertState(`${this.eventsChannelId}.created_at`, constants_1.COMMON_EVENTS_MOMENT, Date.now());
@@ -724,7 +724,9 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
             }, 1000);
         }
     }
-    async notifyRecording(state, uuid) {
+    async notifyRecording(state, value) {
+        const uuid = value.ding.image_uuid;
+        const subscr = value.ding.detection_type ? true : false; // ring with subscription?
         let del_cnt = 1;
         while (this._state !== EventState.Idle) {
             this.debug(`delayed notify recording for ${del_cnt}s`);
@@ -734,7 +736,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this.silly(`Start recording for Event "${EventState[state]}"...`);
         this._state = state;
         try {
-            this._adapter.config.auto_snapshot /* && !this._ringDevice.hasBattery */ && await this.takeSnapshot(uuid, true);
+            this._adapter.config.auto_snapshot && !(this._ringDevice.hasBattery && subscr) && await this.takeSnapshot(uuid, true);
             this._adapter.config.auto_HDsnapshot && await this.takeHDSnapshot();
             this._adapter.config.auto_livestream && await this.startLivestream(this._adapter.config.recordtime_auto_livestream);
             // give some time to evaluate motion state, e.g. for node-red

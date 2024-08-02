@@ -11,7 +11,7 @@
   "Automatic recording time in seconds": "第二期自动记录时间",
   "Recording time in seconds": "二. 第二期机的录音时间",
   "Auto event": "自动响应事件",
-  "Auto event (battery)": "自动响应事件（仅适用于不带电池的相机)",
+  "Auto event (battery)": "自动对事件做出反应（仅适用于没有电池或没有订阅的相机)",
   "Auto save": "按时间间隔自动保存",
   "Path": "Path",
   "Overlay": "全文",
