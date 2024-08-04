@@ -888,7 +888,7 @@ export class OwnRingCamera extends OwnRingDevice {
         return;
       }
 
-      this.notifyRecording(EventState.ReactingOnEvent, value);
+      this.notifyRecording(EventState.ReactingOnEvent, value.ding.image_uuid, value.ding.detection_type == "null" ? false : true);
 
       this._adapter.upsertState(`${this.eventsChannelId}.type`, COMMON_EVENTS_TYPE,
         TextService.getdetectionType(value.subtype, this._adapter.language));
@@ -926,9 +926,7 @@ export class OwnRingCamera extends OwnRingDevice {
     }
   }
 
-  private async notifyRecording(state: EventState, value: PushNotificationDing): Promise<void> {
-    const uuid: string = value.ding.image_uuid;
-    const subscr: boolean = value.ding.detection_type ? true : false; // ring with subscription?
+  private async notifyRecording(state: EventState, uuid: string, subscr: boolean): Promise<void> {
     let del_cnt: number = 1;
     while (this._state !== EventState.Idle) {
       this.debug(`delayed notify recording for ${del_cnt}s`);
