@@ -888,7 +888,7 @@ export class OwnRingCamera extends OwnRingDevice {
         return;
       }
 
-      this.notifyRecording(EventState.ReactingOnEvent, value.ding.image_uuid, value.ding.detection_type == "null" ? false : true);
+      this.notifyRecording(EventState.ReactingOnEvent, value.ding.image_uuid, value.ding.detection_type !== "null");
 
       this._adapter.upsertState(`${this.eventsChannelId}.type`, COMMON_EVENTS_TYPE,
         TextService.getdetectionType(value.subtype, this._adapter.language));

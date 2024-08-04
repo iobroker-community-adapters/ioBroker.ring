@@ -693,7 +693,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                 this.debug(`ignore Notify event...`);
                 return;
             }
-            this.notifyRecording(EventState.ReactingOnEvent, value.ding.image_uuid, value.ding.detection_type == "null" ? false : true);
+            this.notifyRecording(EventState.ReactingOnEvent, value.ding.image_uuid, value.ding.detection_type !== "null");
             this._adapter.upsertState(`${this.eventsChannelId}.type`, constants_1.COMMON_EVENTS_TYPE, text_service_1.TextService.getdetectionType(value.subtype, this._adapter.language));
             this._adapter.upsertState(`${this.eventsChannelId}.detectionType`, constants_1.COMMON_EVENTS_DETECTIONTYPE, text_service_1.TextService.getdetectionType((_a = value.ding.detection_type) !== null && _a !== void 0 ? _a : value.subtype, this._adapter.language));
             this._adapter.upsertState(`${this.eventsChannelId}.created_at`, constants_1.COMMON_EVENTS_MOMENT, Date.now());
