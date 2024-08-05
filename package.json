@@ -62,7 +62,7 @@
     "@types/sinon-chai": "^3.2.12",
     "@types/strftime": "^0.9.8",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
-    "@typescript-eslint/parser": "^7.14.1",
+    "@typescript-eslint/parser": "^7.18.0",
     "axios": "^1.7.2",
     "chai": "^4.5.0",
     "chai-as-promised": "^8.0.0",
@@ -76,7 +76,7 @@
     "sinon-chai": "^3.7.0",
     "source-map-support": "^0.5.21",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.2"
+    "typescript": "^5.5.4"
   },
   "main": "build/main.js",
   "files": [
