@@ -888,7 +888,7 @@ export class OwnRingCamera extends OwnRingDevice {
         return;
       }
 
-      this.notifyRecording(EventState.ReactingOnEvent, value.ding.image_uuid, value.ding.detection_type !== "null");
+      this.notifyRecording(EventState.ReactingOnEvent, value.ding.image_uuid);
 
       this._adapter.upsertState(`${this.eventsChannelId}.type`, COMMON_EVENTS_TYPE,
         TextService.getdetectionType(value.subtype, this._adapter.language));
@@ -926,7 +926,7 @@ export class OwnRingCamera extends OwnRingDevice {
     }
   }
 
-  private async notifyRecording(state: EventState, uuid: string, subscr: boolean): Promise<void> {
+  private async notifyRecording(state: EventState, uuid: string): Promise<void> {
     let del_cnt: number = 1;
     while (this._state !== EventState.Idle) {
       this.debug(`delayed notify recording for ${del_cnt}s`);
@@ -937,7 +937,14 @@ export class OwnRingCamera extends OwnRingDevice {
     this.silly(`Start recording for Event "${EventState[state]}"...`);
     this._state = state;
     try {
-      this._adapter.config.auto_snapshot && !(this._ringDevice.hasBattery && subscr) && await this.takeSnapshot(uuid, true);
+      /*
+      if (this._adapter.config.auto_snapshot)
+        if (subscr && !this._ringDevice.hasBattery)
+          await this.takeSnapshot(uuid, true);
+        else
+          await this.takeSnapshot();
+      */
+      this._adapter.config.auto_snapshot && await this.takeSnapshot(uuid, true);
       this._adapter.config.auto_HDsnapshot && await this.takeHDSnapshot();
       this._adapter.config.auto_livestream && await this.startLivestream(this._adapter.config.recordtime_auto_livestream);
       // give some time to evaluate motion state, e.g. for node-red

@@ -15,7 +15,6 @@
   "Automatic recording time in seconds": "Automatic recording time in seconds",
   "Recording time in seconds": "Recording time on manual trigger in seconds",
   "Auto event": "Automatically respond to events",
-  "Auto event (battery)": "Automatically react to events (only for cameras without battery or without subscription)",
   "Auto save": "Automatic saving by interval",
   "Path": "Path",
   "Overlay": "Overlaying text",

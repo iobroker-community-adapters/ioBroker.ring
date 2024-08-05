@@ -187,7 +187,7 @@
       "items": {
         "auto_snapshot": {
           "type": "checkbox",
-          "label": "Auto event (battery)",
+          "label": "Auto event",
           "sm": 12
         },
         "_staticText": {
