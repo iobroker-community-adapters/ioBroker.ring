@@ -429,6 +429,19 @@ systemDictionary = {
         "pl": "Refreshtoken (uwierzytelnianie dwóch twarzy)",
         "zh-cn": "刷新令牌（两面验证）"
     },
+    "Renew registration": {
+        "en": "Renew registration",
+        "de": "Anmeldung erneuern",
+        "ru": "Продлить регистрацию",
+        "pt": "Renovar registro",
+        "nl": "Registratie verlengen",
+        "fr": "Renouveler l'inscription",
+        "it": "Rinnova la registrazione",
+        "es": "Renovar registro",
+        "pl": "Odnów rejestrację",
+        "uk": "Відновити реєстрацію",
+        "zh-cn": "更新注册"
+      },
     "Delete old one": {
         "en": "Delete old files",
         "de": "Alte Dateien löschen",

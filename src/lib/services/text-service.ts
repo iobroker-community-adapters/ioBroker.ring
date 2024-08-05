@@ -1,4 +1,83 @@
 export class TextService {
+  public static getdetectionType(type: string, desiredLang: string | undefined): string {
+    const dt: string[] = [
+      "null", "human", "loitering", "motion", "moving_vehicle",
+      "nearby_pom", "other_motion", "package_delivery", "package_pickup"
+    ];
+    const en: string[] = [
+      "not specified", "human", "loitering", "motion", "moving vehicle",
+      "nearby", "other motion", "package delivery", "package pickup"
+    ];
+    const de: string[] = [
+      "nicht angegeben", "Person", "herumlungern", "Bewegung", "Fahrzeug",
+      "nah", "andere Bewegung", "Paketzustellung", "Paketabholung"
+    ];
+    const ru: string[] = [
+      "не указан", "человек", "слоняться вокруг", "Движение", "транспортное средство",
+      "закрывать", "другое движение", "Доставка посылки", "Получение посылки"
+    ];
+    const pt: string[] = [
+      "não especificado", "Pessoa", "vadiar por aí", "Movimento", "Veículo",
+      "fechar", "outro movimento", "Entrega de encomendas", "Retirada de pacote"
+    ];
+    const nl: string[] = [
+      "niet gespecificeerd", "Persoon", "rondhangen", "Beweging", "Voertuig",
+      "dichtbij", "andere beweging", "Pakket levering", "Pakket ophalen"
+    ];
+    const fr: string[] = [
+      "non spécifié", "Personne", "flâner", "Mouvement", "Véhicule",
+      "fermer", "autre mouvement", "Livraison de colis", "Ramassage des colis"
+    ];
+    const it: string[] = [
+      "non specificato", "Persona", "bighellonare in giro", "Movimento", "Veicolo",
+      "vicino", "altro movimento", "Consegna pacchi", "Ritiro del pacco"
+    ];
+    const es: string[] = [
+      "No especificado", "Persona", "holgazanear", "Movimiento", "Vehículo",
+      "cerca", "otro movimiento", "Entrega de paquetes", "Recogida de paquetes"
+    ];
+    const pl: string[] = [
+      "nieokreślony", "Osoba", "włóczyć się po okolicy", "Ruch", "Pojazd",
+      "zamknąć", "inny ruch", "Dostawa paczek", "Odbiór paczki"
+    ];
+    const uk: string[] = [
+      "не визначено", "людина", "тинятися навколо", "Pyx", "транспортний засіб",
+      "закрити", "інший рух", "Доставка посилок", "Вивіз посилки"
+    ];
+    const zh: string[] = [
+      "未指定", "人", "闲逛", "移动", "车辆",
+      "关闭", "其他运动", "包裹递送", "包裹领取"
+    ];
+
+    const i:number = dt.indexOf(type);
+    if (i == -1) return type;
+
+    switch (desiredLang as string) {
+      case "en":
+        return en[i];
+      case "de":
+        return de[i];
+      case "ru":
+        return ru[i];
+      case "pt":
+        return pt[i];
+      case "nl":
+        return nl[i];
+      case "fr":
+        return fr[i];
+      case "it":
+        return it[i];
+      case "es":
+        return es[i];
+      case "uk":
+        return uk[i];
+      case "pl":
+        return pl[i];
+      case "zh-cn":
+        return zh[i];
+    }
+    return en[i];
+  }
   public static getTodayName(desiredLang: string | undefined): string {
     const en: string[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     const de: string[] = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];

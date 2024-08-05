@@ -49,8 +49,7 @@ class OwnRingLocation {
         this._adapter.createDevice(this._fullId, {
             name: `Location ${this.id} ("${this.name}")`,
         });
-        // this._adapter.createChannel(this._fullId, CHANNEL_NAME_INFO, {name: `Info ${this.id}`});
-        this._adapter.upsertState(`${this._fullId}.${constants_1.STATE_ID_DEBUG_REQUEST}`, constants_1.COMMON_DEBUG_REQUEST, false, true, true);
+        await this._adapter.upsertState(`${this._fullId}.${constants_1.STATE_ID_DEBUG_REQUEST}`, constants_1.COMMON_DEBUG_REQUEST, false, true, true);
     }
     silly(message) {
         this._adapter.log.silly(`Location ${this.id} ("${this.name}"): ${message}`);
@@ -115,12 +114,12 @@ class OwnRingLocation {
             this._adapter.logCatch(`Failed setting location mode`, reason);
         });
     }
-    updateModeObject(newMode, preventLog = false) {
+    async updateModeObject(newMode, preventLog = false) {
         this._currentLocationMode = newMode;
         if (!preventLog) {
             this.silly(`Received new LocationMode: ${newMode}`);
         }
-        this._adapter.upsertState(`${this._fullId}.locationMode`, constants_1.COMMON_LOCATIONMODE, newMode, true, true);
+        await this._adapter.upsertState(`${this._fullId}.locationMode`, constants_1.COMMON_LOCATIONMODE, newMode, true, true);
     }
     async getLocationMode() {
         this._loc.getLocationMode()

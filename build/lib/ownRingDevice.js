@@ -68,6 +68,9 @@ class OwnRingDevice {
         }
         return "unknown";
     }
+    error(message) {
+        this._adapter.log.error(`Device ${this.shortId} ("${this.description}"): ${message}`);
+    }
     debug(message) {
         this._adapter.log.debug(`Device ${this.shortId} ("${this.description}"): ${message}`);
     }

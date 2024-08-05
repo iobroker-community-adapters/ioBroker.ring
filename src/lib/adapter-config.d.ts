@@ -37,6 +37,7 @@ declare global {
       pollsec: number;
       refreshtoken: string;
       twofaceauth: boolean;
+      renew_registration: number;
     }
   }
 }
