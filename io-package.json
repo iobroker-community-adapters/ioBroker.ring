@@ -61,6 +61,19 @@
     "mode": "daemon",
     "name": "ring",
     "news": {
+      "6.0.0": {
+        "en": "Multiple fixes\nUpdate Ring-Api to V13",
+        "de": "Mehrere Fixes\nAktualisieren von Ring-Api auf V13",
+        "ru": "Несколько исправлений\nОбновление Ring-Api к V13",
+        "pt": "Várias correções\nAtualizar Ring-Api para V13",
+        "nl": "Meerdere correcties\nUpdate Ring-Api naar V13",
+        "fr": "Corrections multiples\nMettre à jour Ring-Api vers V13",
+        "it": "Correzioni multiple\nAggiornamento Ring-Api a V13",
+        "es": "Múltiples correcciones\nActualizar Ring-Api a V13",
+        "pl": "Wiele poprawek\nAktualizacja Ring- Api do V13",
+        "uk": "Кілька фіксаторів\nОновлення Ring-Api до V13",
+        "zh-cn": "多个修正\n将 Ring- Api 更新到 V13"
+      },
       "5.1.0": {
         "en": "(SFGJK) #710 Enhancement of filename placeholder feature\n(theimo1221) Updated Packages",
         "de": "(SFGJK) #710 Erweiterung der Dateiname Platzhalter Funktion\n(theimo1221) Aktualisierte Pakete",
@@ -157,7 +170,7 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "5.1.0"
+    "version": "6.0.0"
   },
   "instanceObjects": [
     {
