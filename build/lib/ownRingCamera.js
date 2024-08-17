@@ -693,11 +693,14 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                 this.debug(`ignore Notify event...`);
                 return;
             }
-            this.notifyRecording(EventState.ReactingOnEvent, value.ding.image_uuid);
-            this._adapter.upsertState(`${this.eventsChannelId}.type`, constants_1.COMMON_EVENTS_TYPE, text_service_1.TextService.getdetectionType(value.subtype, this._adapter.language));
-            this._adapter.upsertState(`${this.eventsChannelId}.detectionType`, constants_1.COMMON_EVENTS_DETECTIONTYPE, text_service_1.TextService.getdetectionType((_a = value.ding.detection_type) !== null && _a !== void 0 ? _a : value.subtype, this._adapter.language));
+            if (value.img != null) {
+                this.notifyRecording(EventState.ReactingOnEvent, value.img.snapshot_uuid);
+            }
+            const subType = value.data.event.ding.subtype;
+            this._adapter.upsertState(`${this.eventsChannelId}.type`, constants_1.COMMON_EVENTS_TYPE, text_service_1.TextService.getdetectionType(subType, this._adapter.language));
+            this._adapter.upsertState(`${this.eventsChannelId}.detectionType`, constants_1.COMMON_EVENTS_DETECTIONTYPE, text_service_1.TextService.getdetectionType((_a = value.data.event.ding.detection_type) !== null && _a !== void 0 ? _a : subType, this._adapter.language));
             this._adapter.upsertState(`${this.eventsChannelId}.created_at`, constants_1.COMMON_EVENTS_MOMENT, Date.now());
-            this._adapter.upsertState(`${this.eventsChannelId}.message`, constants_1.COMMON_EVENTS_MESSAGE, value.aps.alert);
+            this._adapter.upsertState(`${this.eventsChannelId}.message`, constants_1.COMMON_EVENTS_MESSAGE, value.android_config.body);
         }
     }
     onMotion(value) {

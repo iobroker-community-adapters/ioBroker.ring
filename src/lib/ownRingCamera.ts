@@ -13,7 +13,7 @@ import * as util from "util";
 import Sharp from "sharp";
 import strftime from "strftime";
 import schedule from "node-schedule";
-import { PushNotificationDing } from "ring-client-api/lib/ring-types";
+import { PushNotificationDingV2 } from "ring-client-api/lib/ring-types";
 import { ExtendedResponse } from "ring-client-api/lib/rest-client";
 
 import { RingAdapter } from "../main";
@@ -770,7 +770,7 @@ export class OwnRingCamera extends OwnRingDevice {
     );
     this._ringDevice.onDoorbellPressed.subscribe(
       {
-        next: (ding: PushNotificationDing): void => {
+        next: (ding: PushNotificationDingV2): void => {
           this.onDoorbell(ding);
         },
         error: (err: Error): void => {
@@ -780,7 +780,7 @@ export class OwnRingCamera extends OwnRingDevice {
     );
     this._ringDevice.onNewNotification.subscribe(
       {
-        next: (ding: PushNotificationDing): void => {
+        next: (ding: PushNotificationDingV2): void => {
           this.onNotify(ding);
         },
         error: (err: Error): void => {
@@ -880,7 +880,7 @@ export class OwnRingCamera extends OwnRingDevice {
     }
   }
 
-  private onNotify(value: PushNotificationDing): void {
+  private onNotify(value: PushNotificationDingV2): void {
     this.debug(`Received Notify Event (${util.inspect(value, true, 1)})`);
     if (value) {
       if (this._notifyEventBlocker.checkBlock()) {
@@ -888,15 +888,18 @@ export class OwnRingCamera extends OwnRingDevice {
         return;
       }
 
-      this.notifyRecording(EventState.ReactingOnEvent, value.ding.image_uuid);
+      if (value.img != null) {
+        this.notifyRecording(EventState.ReactingOnEvent, value.img.snapshot_uuid);
+      }
 
+      const subType: string = value.data.event.ding.subtype;
       this._adapter.upsertState(`${this.eventsChannelId}.type`, COMMON_EVENTS_TYPE,
-        TextService.getdetectionType(value.subtype, this._adapter.language));
+        TextService.getdetectionType(subType, this._adapter.language));
       this._adapter.upsertState(
         `${this.eventsChannelId}.detectionType`, COMMON_EVENTS_DETECTIONTYPE,
-        TextService.getdetectionType(value.ding.detection_type ?? value.subtype, this._adapter.language));
+        TextService.getdetectionType(value.data.event.ding.detection_type ?? subType, this._adapter.language));
       this._adapter.upsertState(`${this.eventsChannelId}.created_at`, COMMON_EVENTS_MOMENT, Date.now());
-      this._adapter.upsertState(`${this.eventsChannelId}.message`, COMMON_EVENTS_MESSAGE, value.aps.alert);
+      this._adapter.upsertState(`${this.eventsChannelId}.message`, COMMON_EVENTS_MESSAGE, value.android_config.body);
     }
   }
 
@@ -912,7 +915,7 @@ export class OwnRingCamera extends OwnRingDevice {
     }
   }
 
-  private onDoorbell(value: PushNotificationDing): void {
+  private onDoorbell(value: PushNotificationDingV2): void {
     this.debug(`Received Doorbell Event (${util.inspect(value, true, 1)})`);
     if (value) {
       if (this._doorbellEventBlocker.checkBlock()) {

@@ -154,8 +154,8 @@ export class RingAdapter extends Adapter {
         const today: Date = new Date();
         const sunData: GetTimesResult = suncalc.getTimes(
           today,
-          parseFloat(this.latitude),
-          parseFloat(this.longitude)
+          typeof this.latitude === "string" ? parseFloat(this.latitude) : this.latitude,
+          typeof this.longitude === "string" ? parseFloat(this.longitude) : this.longitude
         );
         this.sunset = sunData.night.getTime();     // night is really dark, sunset is too early
         this.sunrise = sunData.nightEnd.getTime(); // same here vice versa
