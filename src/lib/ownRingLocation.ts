@@ -73,16 +73,14 @@ export class OwnRingLocation {
     this._adapter.createDevice(this._fullId, {
       name: `Location ${this.id} ("${this.name}")`,
     });
-    // this._adapter.createChannel(this._fullId, CHANNEL_NAME_INFO, {name: `Info ${this.id}`});
-    this._adapter.upsertState(
+    await this._adapter.upsertState(
       `${this._fullId}.${STATE_ID_DEBUG_REQUEST}`,
       COMMON_DEBUG_REQUEST,
       false,
       true,
-      true,
+      true
     );
   }
-
 
   private silly(message: string): void {
     this._adapter.log.silly(`Location ${this.id} ("${this.name}"): ${message}`);
@@ -150,18 +148,18 @@ export class OwnRingLocation {
     }
     this.debug(`Change Location Mode to ${desiredState}`);
     this._loc.setLocationMode(desiredState as LocationModeInput)
-      .then((r: LocationModeResponse & ExtendedResponse): void => this.updateModeObject(r.mode))
+      .then((r: LocationModeResponse & ExtendedResponse): Promise<void> => this.updateModeObject(r.mode))
       .catch((reason: any): void => {
         this._adapter.logCatch(`Failed setting location mode`, reason);
       });
   }
 
-  private updateModeObject(newMode: LocationMode, preventLog: boolean = false): void {
+  private async updateModeObject(newMode: LocationMode, preventLog: boolean = false): Promise<void> {
     this._currentLocationMode = newMode;
     if(!preventLog) {
       this.silly(`Received new LocationMode: ${newMode}`);
     }
-    this._adapter.upsertState(
+    await this._adapter.upsertState(
       `${this._fullId}.locationMode`,
       COMMON_LOCATIONMODE,
       newMode,
@@ -172,7 +170,7 @@ export class OwnRingLocation {
 
   private async getLocationMode(): Promise<void> {
     this._loc.getLocationMode()
-      .then((r: LocationModeResponse & ExtendedResponse): void => this.updateModeObject(r.mode))
+      .then((r: LocationModeResponse & ExtendedResponse): Promise<void> => this.updateModeObject(r.mode))
       .catch((reason: any): void => this._adapter.logCatch("Couldn't retrieve Location Mode", reason));
   }
 }

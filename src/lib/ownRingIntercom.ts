@@ -52,7 +52,7 @@ export class OwnRingIntercom extends OwnRingDevice {
         switch (stateID) {
           case STATE_ID_DEBUG_REQUEST:
             if (targetBoolVal) {
-              this._adapter.log.info(`Device Debug Data for ${this.shortId}: ${util.inspect(this._ringIntercom, false, 1)}`);
+              this.info(`Device Debug Data for ${this.shortId}: ${util.inspect(this._ringIntercom, false, 1)}`);
               this._adapter.upsertState(
                 `${this.fullId}.${STATE_ID_DEBUG_REQUEST}`,
                 COMMON_DEBUG_REQUEST,
@@ -62,7 +62,7 @@ export class OwnRingIntercom extends OwnRingDevice {
             break;
           case STATE_ID_INTERCOM_UNLOCK:
             if (targetBoolVal) {
-              this._adapter.log.info(`Unlock door request for ${this.shortId}.`);
+              this.info(`Unlock door request for ${this.shortId}.`);
               this._ringIntercom.unlock().catch((reason: any): void => {
                 this.catcher("Couldn't unlock door.", reason);
               });
@@ -76,7 +76,7 @@ export class OwnRingIntercom extends OwnRingDevice {
         }
         return;
       default:
-        this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
+        this.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
     }
   }
 
