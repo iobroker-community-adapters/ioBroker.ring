@@ -100,6 +100,7 @@ doorbell recorded video.
 
 ### **WORK IN PROGRESS**
 
+* (theimo1221) Some package updates
 * (theimo1221) #749 Bump minimal Node Version to 20
 
 ### 6.0.0 (2024-08-17)
