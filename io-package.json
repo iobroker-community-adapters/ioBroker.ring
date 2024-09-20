@@ -61,6 +61,19 @@
     "mode": "daemon",
     "name": "ring",
     "news": {
+      "6.1.0": {
+        "en": "Some package updates\n#749 Bump minimal Node Version to 20",
+        "de": "Einige Paket-Updates\n#749 Bump minimal Node Version bis 20",
+        "ru": "Некоторые обновления пакетов\n#749 Bump минимальная версия узла до 20",
+        "pt": "Algumas atualizações de pacotes\n#749 Bump versão mínima do nó para 20",
+        "nl": "Enkele pakketupdates\n#749 Bump minimale knoopversie naar 20",
+        "fr": "Quelques mises à jour du paquet\n#749 Version de nœud minimal à 20",
+        "it": "Alcuni aggiornamenti dei pacchetti\n#749 Bump minimal Node Version a 20",
+        "es": "Algunas actualizaciones de paquetes\n#749 Bump minimal Node Version to 20",
+        "pl": "Niektóre aktualizacje pakietów\n# 749 Bump minimalny węzeł wersja do 20",
+        "uk": "Деякі оновлення пакета\n#749 Бам мінімальний Node версія до 20",
+        "zh-cn": "一些软件包更新\n# 749 泵最小节点版本为 20"
+      },
       "6.0.0": {
         "en": "Multiple fixes\nUpdate Ring-Api to V13",
         "de": "Mehrere Fixes\nAktualisieren von Ring-Api auf V13",
@@ -138,19 +151,6 @@
         "pl": "Package Update\nCzynnik zdarzeń rozbieżnych",
         "uk": "Оновлені пакети\nЗбережіть налаштування подій",
         "zh-cn": "最新包装\nD. 减少布局活动"
-      },
-      "5.0.5": {
-        "en": "#602 Debounce Motion Events by 25 seconds. This prevents multiple events within a short time.",
-        "de": "#602 Debounce Motion Ereignisse um 25 Sekunden. Dies verhindert mehrere Ereignisse innerhalb kurzer Zeit.",
-        "ru": "#602 Прекращение События за 25 секунд. Это предотвращает несколько событий в течение короткого времени.",
-        "pt": "#602 Debounce Motion Eventos em 25 segundos. Isso evita vários eventos em pouco tempo.",
-        "nl": "♪602 Debounce Motion Evenementen met 25 seconden. Dit verhindert meerdere gebeurtenissen binnen een korte tijd.",
-        "fr": "#602 Debounce Motion Évènements de 25 secondes. Cela empêche plusieurs événements en peu de temps.",
-        "it": "#602 Debounce Motion Eventi di 25 secondi. Ciò previene più eventi in breve tempo.",
-        "es": "#602 Debounce Motion Eventos en 25 segundos. Esto evita múltiples eventos en poco tiempo.",
-        "pl": "602 Debounce Motion (ang.). Wydarzenia o 25 sekund. Zapobiega to na wiele wydarzeń w krótkim czasie.",
-        "uk": "#602 Дебатний рух Події за 25 секунд. Це запобігає кількох подій протягом короткого часу.",
-        "zh-cn": "第602号 25秒。 这在短时间内阻止了多种事件。."
       }
     },
     "platform": "Javascript/Node.js",
@@ -170,7 +170,7 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "6.0.0"
+    "version": "6.1.0"
   },
   "instanceObjects": [
     {
