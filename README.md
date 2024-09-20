@@ -97,6 +97,11 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+* (theimo1221) #749 Bump minimal Node Version to 20
+
 ### 6.0.0 (2024-08-17)
 
 * (crocri) Multiple fixes
