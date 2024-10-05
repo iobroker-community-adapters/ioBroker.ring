@@ -347,6 +347,27 @@ export class OwnRingCamera extends OwnRingDevice {
     this.debug(`Done creating HDSnapshot to ${visPath}`);
   }
 
+   public async toggleSiren(state: boolean): Promise<void> {
+        if (this._ringDevice.hasSiren) {
+            this.debug(`Toggling siren state for ${this.shortId} to ${state}`);
+            await this._ringDevice.setSiren(state).then(() => {
+                this._adapter.upsertState(`${this.fullId}.Siren.state`, {
+                    type: "boolean",
+                    role: "switch",
+                    read: true,
+                    write: true,
+                    name: "Control the siren",
+                    desc: "Activate or deactivate the camera's siren"
+                }, state, true);
+                this.debug(`Siren state set to ${state} successfully.`);
+            }).catch((err) => {
+                this.catcher(`Couldn't toggle siren state for ${this.shortId}.`, err);
+            });
+        } else {
+            this.warn(`Device ${this.shortId} does not support siren capabilities.`);
+        }
+    }
+  
   public async takeSnapshot(uuid?: string, eventBased: boolean = false): Promise<void> {
     this.silly(`${this.shortId}.takeSnapshot()`);
 
