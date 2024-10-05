@@ -97,6 +97,10 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### 6.2.0 (2024-10-06)
+
+* (Speedbreaker12) Added siren trigger functionality to cameras
+
 ### 6.1.0 (2024-09-20)
 
 * (theimo1221) Some package updates
