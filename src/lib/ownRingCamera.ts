@@ -479,6 +479,19 @@ export class OwnRingCamera extends OwnRingDevice {
         }
         return;
 
+        case "Siren":
+            if (stateID === "state") {
+                const targetVal = state.val;
+                this.debug(`Set siren for ${this.shortId} to value ${targetVal}`);
+                await this.toggleSiren(targetVal).catch((reason) => {
+                    this.catcher("Couldn't toggle Siren.", reason);
+                });
+            }
+            else {
+                this.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
+            }
+            break;
+        
       case "Light":
         if (!this._ringDevice.hasLight) {
           return;
