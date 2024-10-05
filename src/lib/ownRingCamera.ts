@@ -562,6 +562,19 @@ export class OwnRingCamera extends OwnRingDevice {
     this._adapter.createChannel(this.fullId, CHANNEL_NAME_HISTORY);
     this._adapter.createChannel(this.fullId, CHANNEL_NAME_EVENTS);
 
+   if (this._ringDevice.hasSiren) {
+        this.debug(`Device with Siren Capabilities detected`);
+        this._adapter.createChannel(this.fullId, "Siren", { name: `Siren ${this.shortId}` });
+        await this._adapter.upsertState(`${this.fullId}.Siren.state`, {
+            type: "boolean",
+            role: "switch",
+            read: true,
+            write: true,
+            name: "Control the siren",
+            desc: "Activate or deactivate the camera's siren"
+        }, false, true, true);
+    }
+    
     if (this._ringDevice.hasLight) {
       this.debug(`Device with Light Capabilities detected`);
       this._adapter.createChannel(this.fullId, CHANNEL_NAME_LIGHT, {name: `Light ${this.shortId}`});
