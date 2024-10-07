@@ -1,15 +1,8 @@
-/*
- * Created with @iobroker/create-adapter v1.34.1
- */
-
-// The adapter-core module gives you access to the core ioBroker functions
-// you need to create an adapter
 import * as utils from "@iobroker/adapter-core";
 import { Adapter } from "@iobroker/adapter-core";
 import path from "path";
 import schedule from "node-schedule";
 import suncalc, { GetTimesResult } from "suncalc";
-
 import { RingApiClient } from "./lib/ringApiClient";
 import { FileService } from "./lib/services/file-service";
 
@@ -42,8 +35,6 @@ export class RingAdapter extends Adapter {
     });
     this.on("ready", this.onReady.bind(this));
     this.on("stateChange", this.onStateChange.bind(this));
-    // this.on("objectChange", this.onObjectChange.bind(this));
-    // this.on("message", this.onMessage.bind(this));
     this.on("unload", this.onUnload.bind(this));
   }
 
@@ -63,6 +54,9 @@ export class RingAdapter extends Adapter {
     return { device, channel, stateName };
   }
 
+  /**
+   * This method ensures that the state is updated or created if it doesn't exist.
+   */
   public async upsertState(
     id: string,
     common: Partial<ioBroker.StateCommon>,
@@ -71,23 +65,87 @@ export class RingAdapter extends Adapter {
     subscribe: boolean = false
   ): Promise<void> {
     if (this.states[id] === value && !subscribe) {
-      // Unchanged and from user not changeable Value
       return;
     }
-    // noinspection JSIgnoredPromiseFromCall
     await this.upsertStateAsync(id, common, value, ack, subscribe);
   }
 
   /**
-   * Is called when adapter shuts down - callback has to be called under any circumstances!
+   * This method handles the creation of devices, channels, and states as necessary.
+   */
+  private async upsertStateAsync(
+    id: string,
+    common: Partial<ioBroker.StateCommon>,
+    value: ioBroker.StateValue,
+    ack: boolean = true,
+    subscribe: boolean = false
+  ): Promise<void> {
+    try {
+      if (this.states[id] !== undefined) {
+        this.states[id] = value;
+        await this.setStateAsync(id, value, ack);
+        return;
+      }
+
+      const { device, channel, stateName }: { device: string; channel: string; stateName: string } = RingAdapter.getSplitIds(id);
+
+      // Create a complete `common` object to avoid type issues
+      const completeCommon: ioBroker.StateCommon = {
+        name: "Default Name",
+        type: "string",
+        role: "state",
+        read: true,
+        write: false,
+        ...common,
+      };
+
+      // Create the device if it doesn't exist yet
+      if (device && !channel) {
+        await this.setObjectNotExistsAsync(device, {
+          type: "device",
+          common: {
+            name: device,
+          },
+          native: {},
+        });
+      }
+
+      // Create the channel if it doesn't exist yet
+      if (device && channel) {
+        await this.setObjectNotExistsAsync(`${device}.${channel}`, {
+          type: "channel",
+          common: {
+            name: channel,
+          },
+          native: {},
+        });
+      }
+
+      // Create the state if it doesn't exist yet
+      await this.setObjectNotExistsAsync(`${device}.${channel ? channel + "." : ""}${stateName}`, {
+        type: "state",
+        common: completeCommon,
+        native: {},
+      });
+
+      this.states[id] = value;
+      await this.setStateAsync(id, value, ack);
+      if (subscribe) {
+        await this.subscribeStatesAsync(id);
+      }
+    } catch (e: any) {
+      this.log.warn(`Error Updating State ${id} to ${value}: ${e?.message ?? e}`);
+      if (e?.stack !== undefined) {
+        this.log.debug(`Error Stack: ${e.stack}`);
+      }
+    }
+  }
+
+  /**
+   * Is called when the adapter is unloaded - make sure to clean up timers and intervals.
    */
   private onUnload(callback: () => void): void {
     try {
-      // Here you must clear all timeouts or intervals that may still be active
-      // clearTimeout(timeout1);
-      // clearTimeout(timeout2);
-      // ...
-      // clearInterval(interval1);
       if (this.apiClient) {
         this.apiClient.unload();
       }
@@ -97,21 +155,9 @@ export class RingAdapter extends Adapter {
     }
   }
 
-  // If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
-  // You also need to subscribe to the objects with `this.subscribeObjects`, similar to `this.subscribeStates`.
-  // /**
-  //  * Is called if a subscribed object changes
-  //  */
-  // private onObjectChange(id: string, obj: ioBroker.Object | null | undefined): void {
-  // 	if (obj) {
-  // 		// The object was changed
-  // 		this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
-  // 	} else {
-  // 		// The object was deleted
-  // 		this.log.info(`object ${id} deleted`);
-  // 	}
-  // }
-
+  /**
+   * Retrieves a state value as a string from the cache or from the state object.
+   */
   public async tryGetStringState(id: string): Promise<string> {
     const cachedVal: string | number | boolean | null = this.states[id];
     if (cachedVal !== undefined && cachedVal !== null) {
@@ -120,34 +166,23 @@ export class RingAdapter extends Adapter {
     return ((await this.getStateAsync(id))?.val ?? "") + "";
   }
 
-  // If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
-  // /**
-  //  * Some message was sent to this instance over the message box. Used by email, pushover, text2speech, ...
-  //  * Using this method requires "common.messagebox" property to be set to true in io-package.json
-  //  */
-  // private onMessage(obj: ioBroker.Message): void {
-  // 	if (typeof obj === "object" && obj.message) {
-  // 		if (obj.command === "send") {
-  // 			// e.g. send email or pushover or whatever
-  // 			this.log.info("send command");
-
-  // 			// Send response in callback if required
-  // 			if (obj.callback) this.sendTo(obj.from, obj.command, "Message received", obj.callback);
-  // 		}
-  // 	}
-  // }
-
+  /**
+   * Returns the refresh token if available.
+   */
   public async getRefreshToken(): Promise<string> {
     const newTokenStateVal: string = await this.tryGetStringState("next_refresh_token");
     const oldTokenStateVal: string = await this.tryGetStringState("old_user_refresh_token");
     if (newTokenStateVal && oldTokenStateVal === this.config.refreshtoken) {
-      this.log.debug(`As the configured refresh token hasn't changed the state one will be used`);
+      this.log.debug(`As the configured refresh token hasn't changed, the stored one will be used`);
       return newTokenStateVal;
     }
     return this.config.refreshtoken;
   }
 
-  private async CalcSunData():Promise<void> {
+  /**
+   * Calculates the sun data (sunrise and sunset) based on the current latitude and longitude.
+   */
+  private async CalcSunData(): Promise<void> {
     try {
       this.log.debug("Run CalcSunData");
       if (this.latitude && this.longitude) {
@@ -157,11 +192,11 @@ export class RingAdapter extends Adapter {
           typeof this.latitude === "string" ? parseFloat(this.latitude) : this.latitude,
           typeof this.longitude === "string" ? parseFloat(this.longitude) : this.longitude
         );
-        this.sunset = sunData.night.getTime();     // night is really dark, sunset is too early
-        this.sunrise = sunData.nightEnd.getTime(); // same here vice versa
+        this.sunset = sunData.night.getTime();
+        this.sunrise = sunData.nightEnd.getTime();
         this.log.debug(`Sunset: ${new Date(this.sunset).toLocaleString()}, Sunrise: ${new Date(this.sunrise).toLocaleString()}`);
       } else {
-        this.log.error("Latitude or Longitude not defined in System");
+        this.log.error("Latitude or Longitude not defined in the system");
       }
     } catch (error) {
       const eMsg: string = `Error in CalcSunData: ${error}`;
@@ -171,28 +206,14 @@ export class RingAdapter extends Adapter {
   }
 
   /**
-   * Is called when databases are connected and adapter received configuration.
+   * Called when the adapter is ready - initializes the API client and schedules tasks.
    */
   private async onReady(): Promise<void> {
-    // Initialize your adapter here
-    // The adapters config (in the instance object everything under the attribute "native") is accessible via
-    // this.config:
     this.apiClient = new RingApiClient(this);
     if (!this.apiClient.validateRefreshToken()) {
       this.terminate(`Invalid Refresh Token, please follow steps provided within Readme to generate a new one`);
       return;
     }
-
-    /*
-    this.log.debug(`Configured Path: "${this.config.path}"`);
-    const dataDir = (this.systemConfig) ? this.systemConfig.dataDir : "";
-    this.log.silly(`DataDir: ${dataDir}`);
-    if (!this.config.path) {
-      this.config.path = path.join(utils.getAbsoluteDefaultDataDir(), "files", this.namespace)
-      this.log.debug(`New Config Path: "${this.config.path}"`);
-    }
-    await FileService.prepareFolder(this.config.path);
-    */
 
     const config_path: string[] = [this.config.path_snapshot, this.config.path_livestream];
     for (const index in config_path) {
@@ -211,18 +232,12 @@ export class RingAdapter extends Adapter {
       await FileService.prepareFolder(config_path[index]);
     }
 
-    const objectDevices: Promise<ioBroker.DeviceObject[]> = this.getDevicesAsync();
-    for (const objectDevice in objectDevices) {
-      this.deleteDevice(objectDevice);
-    }
-
     this.log.info(`Initializing Api Client`);
     await this.apiClient.init();
 
     this.log.info(`Get sunset and sunrise`);
     await this.CalcSunData();
 
-    // Daily schedule sometime from 00:00:20 to 00:00:40
     const scheduleSeconds: number = Math.round(Math.random() * 20 + 20);
     this.log.info(`Daily sun parameter calculation scheduled for 00:00:${scheduleSeconds}`);
     schedule.scheduleJob("SunData", `${scheduleSeconds} 0 0 * * *`, async (): Promise<void> => {
@@ -232,20 +247,17 @@ export class RingAdapter extends Adapter {
   }
 
   /**
-   * Is called if a subscribed state changes
+   * Called when a subscribed state changes - handles user input and updates the state.
    */
   private onStateChange(id: string, state: ioBroker.State | null | undefined): void {
     if (!state || !this.apiClient) {
-      // The state was deleted
       this.log.silly(`state ${id} deleted`);
       return;
     }
 
     if (state.ack) {
-      // As it is already ack, don't react on it (could be set by us).
       return;
     }
-    // The state was changed
     this.log.silly(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
     const splits: string[] = id.split(".");
     const targetId: string = splits[2];
@@ -263,41 +275,10 @@ export class RingAdapter extends Adapter {
     this.log.info(message);
     this.log.debug(`Reason: "${reason}"`);
   }
-
-  private async upsertStateAsync(
-    id: string,
-    common: Partial<ioBroker.StateCommon>,
-    value: ioBroker.StateValue,
-    ack: boolean = true,
-    subscribe: boolean = false
-  ): Promise<void> {
-    try {
-      if (this.states[id] !== undefined) {
-        this.states[id] = value;
-        await this.setStateAsync(id, value, ack);
-        return;
-      }
-
-      const {device, channel, stateName}: { device: string; channel: string; stateName: string } = RingAdapter.getSplitIds(id);
-      await this.createStateAsync(device, channel, stateName, common);
-      this.states[id] = value;
-      await this.setStateAsync(id, value, ack);
-      if (subscribe) {
-        await this.subscribeStatesAsync(id);
-      }
-    } catch (e: any) {
-      this.log.warn(`Error Updating State ${id} to ${value}: ${e?.message ?? e}`);
-      if (e?.stack !== undefined) {
-        this.log.debug(`Error Stack: ${e.stack}`);
-      }
-    }
-  }
 }
 
 if (require.main !== module) {
-  // Export the constructor in compact mode
   module.exports = (options: Partial<utils.AdapterOptions> | undefined): RingAdapter => new RingAdapter(options);
 } else {
-  // otherwise start the instance directly
-  ((): RingAdapter => new RingAdapter())();
+  (() => new RingAdapter())();
 }
