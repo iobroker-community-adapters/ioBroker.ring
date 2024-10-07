@@ -61,19 +61,6 @@
     "mode": "daemon",
     "name": "ring",
     "news": {
-       "6.2.0": {
-        "en": "Added siren trigger functionality to cameras",
-        "de": "Sirenen-Auslösefunktion für Kameras hinzugefügt",
-        "ru": "Добавлена функция срабатывания сирены для камер",
-        "pt": "Adicionada funcionalidade de acionamento da sirene para câmeras",
-        "nl": "Sirenetriggerfunctionaliteit toegevoegd aan camera's",
-        "fr": "Ajout de la fonctionnalité de déclenchement de la sirène pour les caméras",
-        "it": "Aggiunta la funzionalità di attivazione della sirena per le telecamere",
-        "es": "Añadida funcionalidad de activación de sirena a las cámaras",
-        "pl": "Dodano funkcję uruchamiania syreny do kamer",
-        "uk": "Додано функцію запуску сирени для камер",
-        "zh-cn": "为相机添加了警报触发功能"
-      },
       "6.1.0": {
         "en": "Some package updates\n#749 Bump minimal Node Version to 20",
         "de": "Einige Paket-Updates\n#749 Bump minimal Node Version bis 20",
