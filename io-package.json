@@ -61,6 +61,19 @@
     "mode": "daemon",
     "name": "ring",
     "news": {
+      "6.2.0": {
+        "en": "Added siren trigger functionality to cameras\nAdd battery status support for Ring Intercom\nSome minor package updates",
+        "de": "Hinzugefügt Siren Trigger Funktionalität für Kameras\nBatteriestatusunterstützung für Ring Intercom hinzufügen\nEinige kleinere Paket-Updates",
+        "ru": "Добавлена функциональность сиренового триггера к камерам\nДобавить поддержку состояния батареи Ring Intercom\nНекоторые небольшие обновления пакетов",
+        "pt": "Adicionada funcionalidade de gatilho de sirene para câmeras\nAdicionar suporte de status da bateria para Ring Intercom\nAlgumas atualizações de pacotes menores",
+        "nl": "Toegevoegd sirene trigger functionaliteit aan camera's\nToevoegen batterij status ondersteuning voor Ring Intercom\nEnkele kleine pakketupdates",
+        "fr": "Ajout de la fonctionnalité de déclenchement de sirène aux caméras\nAjouter le support de l'état de la batterie pour Ring Intercom\nQuelques mises à jour mineures du paquet",
+        "it": "Aggiunta sirena funzionalità trigger per le telecamere\nAggiungi supporto per lo stato della batteria per Ring Intercom\nAlcuni aggiornamenti sui pacchetti minori",
+        "es": "Función de disparador de sirena adicional a las cámaras\nAñadir soporte de estado de la batería para Intercomunicador de anillo\nAlgunas actualizaciones de paquetes menores",
+        "pl": "Dodano funkcję wyzwalania syren do kamer\nDodaj obsługę stanu baterii dla Ring Intercom\nNiektóre drobne aktualizacje pakietów",
+        "uk": "Додано функцію запуску siren на камери\nДодати підтримку статусу батареї для Ring Intercom\nДеякі оновлення пакету",
+        "zh-cn": "将警报触发功能添加到相机中\n为 Ring Intercom 添加电池状态支持\n一些小软件包更新"
+      },
       "6.1.0": {
         "en": "Some package updates\n#749 Bump minimal Node Version to 20",
         "de": "Einige Paket-Updates\n#749 Bump minimal Node Version bis 20",
@@ -138,19 +151,6 @@
         "pl": "Package Update\nBrakuje zbiorów artefaktów",
         "uk": "Оновлені пакети\nУ комплекті відсутніх конструкційних артефактів",
         "zh-cn": "最新包装\n包括缺乏建筑艺术材料"
-      },
-      "5.0.6": {
-        "en": "Updated Packages\nMake event debouncing configurable",
-        "de": "Aktualisierte Pakete\nEvent debouncing konfigurierbar machen",
-        "ru": "Обновленные пакеты\nСделать событие дебунксинг конфигурируемым",
-        "pt": "Pacotes atualizados\nTornar o evento configurável",
-        "nl": "Verouderde pakket\nLaat het event ontploffen",
-        "fr": "Forfaits mis à jour\nFaire l'événement debouncing configurable",
-        "it": "Pacchetti aggiornati\nRendere l'evento debouncing configurabile",
-        "es": "Paquetes actualizados\nHaz que el evento repita configurable",
-        "pl": "Package Update\nCzynnik zdarzeń rozbieżnych",
-        "uk": "Оновлені пакети\nЗбережіть налаштування подій",
-        "zh-cn": "最新包装\nD. 减少布局活动"
       }
     },
     "platform": "Javascript/Node.js",
@@ -170,7 +170,7 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "6.1.0"
+    "version": "6.2.0"
   },
   "instanceObjects": [
     {
