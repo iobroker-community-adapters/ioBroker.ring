@@ -24,6 +24,7 @@ import {
   CHANNEL_NAME_HISTORY,
   CHANNEL_NAME_INFO,
   CHANNEL_NAME_LIGHT,
+  CHANNEL_NAME_SIREN,
   CHANNEL_NAME_LIVESTREAM,
   CHANNEL_NAME_SNAPSHOT,
   COMMON_DEBUG_REQUEST,
@@ -55,6 +56,7 @@ import {
   COMMON_INFO_WIFI_NAME,
   COMMON_LIGHT_STATE,
   COMMON_LIGHT_SWITCH,
+  COMMON_SIREN_SWITCH,
   COMMON_LIVESTREAM_AUTO,
   COMMON_LIVESTREAM_DURATION,
   COMMON_LIVESTREAM_FILE,
@@ -71,6 +73,7 @@ import {
   STATE_ID_DEBUG_REQUEST,
   STATE_ID_HDSNAPSHOT_REQUEST,
   STATE_ID_LIGHT_SWITCH,
+  STATE_ID_SIREN_SWITCH,
   STATE_ID_LIVESTREAM_DURATION,
   STATE_ID_LIVESTREAM_REQUEST,
   STATE_ID_SNAPSHOT_REQUEST,
@@ -97,6 +100,7 @@ export class OwnRingCamera extends OwnRingDevice {
   private readonly infoChannelId: string;
   private readonly historyChannelId: string;
   private readonly lightChannelId: string;
+  private readonly sirenChannelId: string;
   private readonly eventsChannelId: string;
   private readonly snapshotChannelId: string;
   private readonly HDsnapshotChannelId: string;
@@ -148,6 +152,7 @@ export class OwnRingCamera extends OwnRingDevice {
     this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
     this.historyChannelId = `${this.fullId}.${CHANNEL_NAME_HISTORY}`;
     this.lightChannelId = `${this.fullId}.${CHANNEL_NAME_LIGHT}`;
+    this.sirenChannelId = `${this.fullId}.${CHANNEL_NAME_SIREN}`;
     this.snapshotChannelId = `${this.fullId}.${CHANNEL_NAME_SNAPSHOT}`;
     this.HDsnapshotChannelId = `${this.fullId}.${CHANNEL_NAME_HDSNAPSHOT}`;
     this.liveStreamChannelId = `${this.fullId}.${CHANNEL_NAME_LIVESTREAM}`;
@@ -348,25 +353,25 @@ export class OwnRingCamera extends OwnRingDevice {
   }
 
   public async toggleSiren(state: boolean): Promise<void> {
-    if (this._ringDevice.hasSiren) {
-      this.debug(`Toggling siren state for ${this.shortId} to ${state}`);
-      await this._ringDevice.setSiren(state).then(() => {
-        this._adapter.upsertState(`${this.fullId}.Siren.state`, {
-          type: "boolean",
-          role: "switch",
-          read: true,
-          write: true,
-          name: "Control the siren",
-          desc: "Activate or deactivate the camera's siren"
-        }, state, true);
-        this.debug(`Siren state set to ${state} successfully.`);
-      }).catch((err: any) => {
-        this.catcher(`Couldn't toggle siren state for ${this.shortId}.`, err);
-      });
-    } else {
+    if (!this._ringDevice.hasSiren) {
       this.warn(`Device ${this.shortId} does not support siren capabilities.`);
+      return;
+    }
+    this.debug(`Toggling siren state for ${this.shortId} to ${state}`);
+    try {
+      await this._ringDevice.setSiren(state);
+      this._adapter.upsertState(
+        `${this.sirenChannelId}.${STATE_ID_SIREN_SWITCH}`,
+        COMMON_SIREN_SWITCH,
+        state,
+        true
+      );
+      this.debug(`Siren state set to ${state} successfully.`);
+    } catch (err) {
+      this.catcher(`Couldn't toggle siren state for ${this.shortId}.`, err);
     }
   }
+
 
   public async takeSnapshot(uuid?: string, eventBased: boolean = false): Promise<void> {
     this.silly(`${this.shortId}.takeSnapshot()`);
@@ -501,17 +506,22 @@ export class OwnRingCamera extends OwnRingDevice {
         return;
 
       case "Siren":
-        if (stateID === "state") {
+        if (!this._ringDevice.hasSiren) {
+          return;
+        }
+        if (stateID === STATE_ID_SIREN_SWITCH) {
           const targetVal: boolean = state.val as boolean;
           this.debug(`Set siren for ${this.shortId} to value ${targetVal}`);
-          await this.toggleSiren(!!targetVal).catch((reason: any) => {
-            this.catcher("Couldn't toggle Siren.", reason);
+          this._ringDevice.setSiren(targetVal).then((success: boolean): void => {
+            if (success) {
+              this._adapter.upsertState(`${this.sirenChannelId}.${STATE_ID_SIREN_SWITCH}`, COMMON_SIREN_SWITCH, targetVal, true);
+            }
           });
-        }
-        else {
+        } else {
           this.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
         }
         break;
+
 
       case "Light":
         if (!this._ringDevice.hasLight) {
@@ -598,16 +608,18 @@ export class OwnRingCamera extends OwnRingDevice {
 
     if (this._ringDevice.hasSiren) {
       this.debug(`Device with Siren Capabilities detected`);
-      this._adapter.createChannel(this.fullId, "Siren", { name: `Siren ${this.shortId}` });
-      await this._adapter.upsertState(`${this.fullId}.Siren.state`, {
-        type: "boolean",
-        role: "switch",
-        read: true,
-        write: true,
-        name: "Control the siren",
-        desc: "Activate or deactivate the camera's siren"
-      }, false, true, true);
+      this._adapter.createChannel(this.fullId, CHANNEL_NAME_SIREN, {
+        name: `Siren ${this.shortId}`,
+      });
+      await this._adapter.upsertState(
+        `${this.sirenChannelId}.${STATE_ID_SIREN_SWITCH}`,
+        COMMON_SIREN_SWITCH,
+        false,
+        true,
+        true
+      );
     }
+
 
     if (this._ringDevice.hasLight) {
       this.debug(`Device with Light Capabilities detected`);
