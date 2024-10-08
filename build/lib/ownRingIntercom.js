@@ -74,13 +74,29 @@ class OwnRingIntercom extends ownRingDevice_1.OwnRingDevice {
     }
     async recreateDeviceObjectTree() {
         this.silly(`Recreate DeviceObjectTree`);
-        this._adapter.createDevice(this.fullId, {
-            name: `Device ${this.shortId} ("${this._ringIntercom.data.description}")`,
+        // Ersetzen von createDevice durch setObjectNotExistsAsync
+        await this._adapter.setObjectNotExistsAsync(this.fullId, {
+            type: "device",
+            common: {
+                name: `Device ${this.shortId} ("${this._ringIntercom.data.description}")`,
+            },
+            native: {},
         });
-        this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_INFO, {
-            name: `Info ${this.shortId}`,
+        // Ersetzen von createChannel durch setObjectNotExistsAsync
+        await this._adapter.setObjectNotExistsAsync(`${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`, {
+            type: "channel",
+            common: {
+                name: `Info ${this.shortId}`,
+            },
+            native: {},
         });
-        this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_EVENTS);
+        await this._adapter.setObjectNotExistsAsync(`${this.fullId}.${constants_1.CHANNEL_NAME_EVENTS}`, {
+            type: "channel",
+            common: {
+                name: `Events`,
+            },
+            native: {},
+        });
         // Create states in the Info channel
         await this._adapter.upsertState(`${this.infoChannelId}.id`, constants_1.COMMON_INFO_ID, this._ringIntercom.data.device_id);
         await this._adapter.upsertState(`${this.infoChannelId}.kind`, constants_1.COMMON_INFO_KIND, this._ringIntercom.data.kind);

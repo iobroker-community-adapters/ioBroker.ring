@@ -216,9 +216,9 @@ class RingAdapter extends adapter_core_1.Adapter {
             }
             await file_service_1.FileService.prepareFolder(config_path[index]);
         }
-        const objectDevices = this.getDevicesAsync();
-        for (const objectDevice in objectDevices) {
-            this.deleteDevice(objectDevice);
+        const objectDevices = await this.getDevicesAsync();
+        for (const objectDevice of objectDevices) {
+            await this.delObjectAsync(objectDevice._id, { recursive: true });
         }
         this.log.info(`Initializing Api Client`);
         await this.apiClient.init();
@@ -270,7 +270,12 @@ class RingAdapter extends adapter_core_1.Adapter {
                 return;
             }
             const { device, channel, stateName } = RingAdapter.getSplitIds(id);
-            await this.createStateAsync(device, channel, stateName, common);
+            const objectId = [device, channel, stateName].filter((part) => part !== "").join(".");
+            await this.setObjectNotExistsAsync(objectId, {
+                type: "state",
+                common: common,
+                native: {},
+            });
             this.states[id] = value;
             await this.setStateAsync(id, value, ack);
             if (subscribe) {

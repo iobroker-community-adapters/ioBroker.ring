@@ -70,8 +70,12 @@ export class OwnRingLocation {
 
   private async recreateDeviceObjectTree(): Promise<void> {
     this.silly(`Recreate LocationObjectTree`);
-    this._adapter.createDevice(this._fullId, {
-      name: `Location ${this.id} ("${this.name}")`,
+    await this._adapter.setObjectNotExistsAsync(this._fullId, {
+      type: "device",
+      common: {
+        name: `Location ${this.id} ("${this.name}")`,
+      },
+      native: {},
     });
     await this._adapter.upsertState(
       `${this._fullId}.${STATE_ID_DEBUG_REQUEST}`,
@@ -81,6 +85,7 @@ export class OwnRingLocation {
       true
     );
   }
+
 
   private silly(message: string): void {
     this._adapter.log.silly(`Location ${this.id} ("${this.name}"): ${message}`);
