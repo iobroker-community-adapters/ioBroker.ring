@@ -100,6 +100,7 @@ doorbell recorded video.
 ### WORK IN PROGRESS
 
 * (Speedbreaker12) Added siren trigger functionality to cameras
+* (Speedbreaker12) Add battery status support for Ring Intercom
 
 ### 6.1.0 (2024-09-20)
 
