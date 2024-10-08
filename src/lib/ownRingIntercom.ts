@@ -241,7 +241,7 @@ export class OwnRingIntercom extends OwnRingDevice {
   }
 
   private updateBatteryInfo(): void {
-    const batteryLevel = this._ringIntercom.batteryLevel;
+    const batteryLevel: number | null = this._ringIntercom.batteryLevel;
     let batteryPercentage: number = -1;
     if (batteryLevel !== null && batteryLevel !== undefined) {
       batteryPercentage = batteryLevel;
