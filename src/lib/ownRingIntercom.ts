@@ -75,7 +75,7 @@ export class OwnRingIntercom extends OwnRingDevice {
 
     // Subscribe to battery level changes
     this._ringIntercom.onBatteryLevel.subscribe({
-      next: (batteryLevel: number | null): void => {
+      next: (): void => {
         this.updateBatteryInfo();
       },
       error: (err: Error): void => {
@@ -167,10 +167,11 @@ export class OwnRingIntercom extends OwnRingDevice {
       COMMON_INFO_DESCRIPTION,
       this._ringIntercom.data.description
     );
+    // Firmware version might be available under 'firmware_version'
     await this._adapter.upsertState(
       `${this.infoChannelId}.firmware`,
       COMMON_INFO_FIRMWARE,
-      this._ringIntercom.data.firmware
+      this._ringIntercom.data.firmware_version
     );
 
     // Create battery data points
@@ -218,23 +219,24 @@ export class OwnRingIntercom extends OwnRingDevice {
   private updateDeviceInfoObject(data: IntercomHandsetAudioData): void {
     this._adapter.upsertState(
       `${this.infoChannelId}.id`,
-      null,
+      COMMON_INFO_ID,
       data.device_id
     );
     this._adapter.upsertState(
       `${this.infoChannelId}.kind`,
-      null,
+      COMMON_INFO_KIND,
       data.kind as string
     );
     this._adapter.upsertState(
       `${this.infoChannelId}.description`,
-      null,
+      COMMON_INFO_DESCRIPTION,
       data.description
     );
+    // Update firmware version if available
     this._adapter.upsertState(
       `${this.infoChannelId}.firmware`,
-      null,
-      data.firmware
+      COMMON_INFO_FIRMWARE,
+      data.firmware_version
     );
   }
 
@@ -248,7 +250,7 @@ export class OwnRingIntercom extends OwnRingDevice {
     // Update battery percentage state
     this._adapter.upsertState(
       `${this.infoChannelId}.battery_percentage`,
-      null,
+      COMMON_INFO_BATTERY_PERCENTAGE,
       batteryPercentage
     );
 
@@ -267,7 +269,7 @@ export class OwnRingIntercom extends OwnRingDevice {
     // Update battery category state
     this._adapter.upsertState(
       `${this.infoChannelId}.battery_percentage_category`,
-      null,
+      COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY,
       batteryCategory
     );
   }
@@ -300,13 +302,13 @@ export class OwnRingIntercom extends OwnRingDevice {
     this.debug(`Received Ding Event`);
     this._adapter.upsertState(
       `${this.eventsChannelId}.ding`,
-      null,
+      COMMON_EVENTS_INTERCOM_DING,
       true
     );
     setTimeout((): void => {
       this._adapter.upsertState(
         `${this.eventsChannelId}.ding`,
-        null,
+        COMMON_EVENTS_INTERCOM_DING,
         false
       );
     }, 1000);
