@@ -107,8 +107,14 @@ export const COMMON_LIGHT_STATE: Partial<ioBroker.StateCommon> = {
   read: true,
   write: false
 };
-
-
+export const COMMON_SIREN_SWITCH: Partial<ioBroker.StateCommon> = {
+  type: "boolean",
+  role: "switch",
+  name: "Control the siren",
+  read: true,
+  write: true,
+  desc: "Activate or deactivate the camera's siren",
+};
 export const COMMON_HISTORY_URL: Partial<ioBroker.StateCommon> = {
   type: "string",
   role: "url",
@@ -341,7 +347,9 @@ export const CHANNEL_NAME_SNAPSHOT: string = "Snapshot";
 export const CHANNEL_NAME_HDSNAPSHOT: string = "HD Snapshot";
 export const CHANNEL_NAME_LIVESTREAM: string = "Livestream";
 export const CHANNEL_NAME_EVENTS: string = "Events";
+export const CHANNEL_NAME_SIREN: string = "Siren";
 
+export const STATE_ID_SIREN_SWITCH: string = "siren_switch";
 export const STATE_ID_LIGHT_SWITCH: string = "light_switch";
 export const STATE_ID_SNAPSHOT_REQUEST: string = "request";
 export const STATE_ID_HDSNAPSHOT_REQUEST: string = "request";

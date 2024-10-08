@@ -72,6 +72,7 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this.infoChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_INFO}`;
         this.historyChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HISTORY}`;
         this.lightChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIGHT}`;
+        this.sirenChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_SIREN}`;
         this.snapshotChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_SNAPSHOT}`;
         this.HDsnapshotChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_HDSNAPSHOT}`;
         this.liveStreamChannelId = `${this.fullId}.${constants_1.CHANNEL_NAME_LIVESTREAM}`;
@@ -233,6 +234,21 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         await this.updateHDSnapshotObject();
         this.debug(`Done creating HDSnapshot to ${visPath}`);
     }
+    async toggleSiren(state) {
+        if (!this._ringDevice.hasSiren) {
+            this.warn(`Device ${this.shortId} does not support siren capabilities.`);
+            return;
+        }
+        this.debug(`Toggling siren state for ${this.shortId} to ${state}`);
+        try {
+            await this._ringDevice.setSiren(state);
+            this._adapter.upsertState(`${this.sirenChannelId}.${constants_1.STATE_ID_SIREN_SWITCH}`, constants_1.COMMON_SIREN_SWITCH, state, true);
+            this.debug(`Siren state set to ${state} successfully.`);
+        }
+        catch (err) {
+            this.catcher(`Couldn't toggle siren state for ${this.shortId}.`, err);
+        }
+    }
     async takeSnapshot(uuid, eventBased = false) {
         this.silly(`${this.shortId}.takeSnapshot()`);
         const { visURL, visPath } = await file_service_1.FileService.getVisUrl(this._adapter, this.fullId, "Snapshot.jpg");
@@ -340,6 +356,23 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
                     this._adapter.upsertState(`${this.fullId}.${constants_1.STATE_ID_DEBUG_REQUEST}`, constants_1.COMMON_DEBUG_REQUEST, false);
                 }
                 return;
+            case "Siren":
+                if (!this._ringDevice.hasSiren) {
+                    return;
+                }
+                if (stateID === constants_1.STATE_ID_SIREN_SWITCH) {
+                    const targetVal = state.val;
+                    this.debug(`Set siren for ${this.shortId} to value ${targetVal}`);
+                    this._ringDevice.setSiren(targetVal).then((success) => {
+                        if (success) {
+                            this._adapter.upsertState(`${this.sirenChannelId}.${constants_1.STATE_ID_SIREN_SWITCH}`, constants_1.COMMON_SIREN_SWITCH, targetVal, true);
+                        }
+                    });
+                }
+                else {
+                    this.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
+                }
+                break;
             case "Light":
                 if (!this._ringDevice.hasLight) {
                     return;
@@ -423,6 +456,13 @@ class OwnRingCamera extends ownRingDevice_1.OwnRingDevice {
         this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_LIVESTREAM, { name: `Livestream ${this.shortId}` });
         this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_HISTORY);
         this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_EVENTS);
+        if (this._ringDevice.hasSiren) {
+            this.debug(`Device with Siren Capabilities detected`);
+            this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_SIREN, {
+                name: `Siren ${this.shortId}`,
+            });
+            await this._adapter.upsertState(`${this.sirenChannelId}.${constants_1.STATE_ID_SIREN_SWITCH}`, constants_1.COMMON_SIREN_SWITCH, false, true, true);
+        }
         if (this._ringDevice.hasLight) {
             this.debug(`Device with Light Capabilities detected`);
             this._adapter.createChannel(this.fullId, constants_1.CHANNEL_NAME_LIGHT, { name: `Light ${this.shortId}` });
