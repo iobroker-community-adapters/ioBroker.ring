@@ -1,4 +1,7 @@
-import { IntercomHandsetAudioData, RingIntercom } from "ring-client-api";
+import {
+  IntercomHandsetAudioData,
+  RingIntercom,
+} from "ring-client-api";
 import util from "util";
 
 import { OwnRingDevice } from "./ownRingDevice";
@@ -14,6 +17,9 @@ import {
   COMMON_INFO_DESCRIPTION,
   COMMON_INFO_ID,
   COMMON_INFO_KIND,
+  COMMON_INFO_BATTERY_PERCENTAGE,
+  COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY,
+  COMMON_INFO_FIRMWARE,
   COMMON_INTERCOM_UNLOCK_REQUEST,
   STATE_ID_DEBUG_REQUEST,
   STATE_ID_INTERCOM_UNLOCK,
@@ -25,15 +31,25 @@ export class OwnRingIntercom extends OwnRingDevice {
   private _ringIntercom: RingIntercom;
   private _dingEventBlocker: EventBlocker;
 
-  public constructor(ringDevice: RingIntercom, location: OwnRingLocation, adapter: RingAdapter, apiClient: RingApiClient) {
+  public constructor(
+    ringDevice: RingIntercom,
+    location: OwnRingLocation,
+    adapter: RingAdapter,
+    apiClient: RingApiClient
+  ) {
     super(
       location,
       adapter,
       apiClient,
-      OwnRingDevice.evaluateKind(ringDevice.deviceType as string, adapter, ringDevice),
+      OwnRingDevice.evaluateKind(
+        ringDevice.deviceType as string,
+        adapter,
+        ringDevice
+      ),
       `${ringDevice.id}`,
       ringDevice.data.description
     );
+    // Initialize event blocker to manage ding events
     this._dingEventBlocker = new EventBlocker(
       this._adapter.config.ignore_events_Doorbell,
       this._adapter.config.keep_ignoring_if_retriggered
@@ -41,22 +57,55 @@ export class OwnRingIntercom extends OwnRingDevice {
     this._ringIntercom = ringDevice;
     this.infoChannelId = `${this.fullId}.${CHANNEL_NAME_INFO}`;
     this.eventsChannelId = `${this.fullId}.${CHANNEL_NAME_EVENTS}`;
+
+    // Create the device object tree in ioBroker
     this.recreateDeviceObjectTree();
+    // Subscribe to events from the intercom
     this.subscribeToEvents();
+
+    // Subscribe to data changes from the intercom
+    this._ringIntercom.onData.subscribe({
+      next: (data: IntercomHandsetAudioData): void => {
+        this.update(data);
+      },
+      error: (err: Error): void => {
+        this.catcher(`Data Observer received error`, err);
+      },
+    });
+
+    // Subscribe to battery level changes
+    this._ringIntercom.onBatteryLevel.subscribe({
+      next: (batteryLevel: number | null): void => {
+        this.updateBatteryInfo();
+      },
+      error: (err: Error): void => {
+        this.catcher(`Battery Level Observer received error`, err);
+      },
+    });
   }
 
-  public processUserInput(channelID: string, stateID: string, state: ioBroker.State): void {
+  public processUserInput(
+    channelID: string,
+    stateID: string,
+    state: ioBroker.State
+  ): void {
     switch (channelID) {
       case "":
         const targetBoolVal: boolean = state.val as boolean;
         switch (stateID) {
           case STATE_ID_DEBUG_REQUEST:
             if (targetBoolVal) {
-              this.info(`Device Debug Data for ${this.shortId}: ${util.inspect(this._ringIntercom, false, 1)}`);
+              this.info(
+                `Device Debug Data for ${this.shortId}: ${util.inspect(
+                  this._ringIntercom,
+                  false,
+                  1
+                )}`
+              );
               this._adapter.upsertState(
                 `${this.fullId}.${STATE_ID_DEBUG_REQUEST}`,
                 COMMON_DEBUG_REQUEST,
-                false,
+                false
               );
             }
             break;
@@ -68,15 +117,21 @@ export class OwnRingIntercom extends OwnRingDevice {
               });
               this._adapter.upsertState(
                 `${this.fullId}.${STATE_ID_INTERCOM_UNLOCK}`,
-                COMMON_DEBUG_REQUEST,
-                false,
+                COMMON_INTERCOM_UNLOCK_REQUEST,
+                false
               );
             }
             break;
+          default:
+            this.error(
+              `Unknown State/Switch with channel "${channelID}" and state "${stateID}"`
+            );
         }
         return;
       default:
-        this.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
+        this.error(
+          `Unknown State/Switch with channel "${channelID}" and state "${stateID}"`
+        );
     }
   }
 
@@ -89,81 +144,169 @@ export class OwnRingIntercom extends OwnRingDevice {
   protected async recreateDeviceObjectTree(): Promise<void> {
     this.silly(`Recreate DeviceObjectTree`);
     this._adapter.createDevice(this.fullId, {
-      name: `Device ${this.shortId} ("${this._ringIntercom.data.description}")`
+      name: `Device ${this.shortId} ("${this._ringIntercom.data.description}")`,
     });
-    this._adapter.createChannel(this.fullId, CHANNEL_NAME_INFO, {name: `Info ${this.shortId}`});
+    this._adapter.createChannel(this.fullId, CHANNEL_NAME_INFO, {
+      name: `Info ${this.shortId}`,
+    });
     this._adapter.createChannel(this.fullId, CHANNEL_NAME_EVENTS);
-    this._adapter.upsertState(
+
+    // Create states in the Info channel
+    await this._adapter.upsertState(
+      `${this.infoChannelId}.id`,
+      COMMON_INFO_ID,
+      this._ringIntercom.data.device_id
+    );
+    await this._adapter.upsertState(
+      `${this.infoChannelId}.kind`,
+      COMMON_INFO_KIND,
+      this._ringIntercom.data.kind as string
+    );
+    await this._adapter.upsertState(
+      `${this.infoChannelId}.description`,
+      COMMON_INFO_DESCRIPTION,
+      this._ringIntercom.data.description
+    );
+    await this._adapter.upsertState(
+      `${this.infoChannelId}.firmware`,
+      COMMON_INFO_FIRMWARE,
+      this._ringIntercom.data.firmware
+    );
+
+    // Create battery data points
+    await this._adapter.upsertState(
+      `${this.infoChannelId}.battery_percentage`,
+      COMMON_INFO_BATTERY_PERCENTAGE,
+      null
+    );
+    await this._adapter.upsertState(
+      `${this.infoChannelId}.battery_percentage_category`,
+      COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY,
+      null
+    );
+
+    // Create states in the Events channel
+    await this._adapter.upsertState(
+      `${this.eventsChannelId}.ding`,
+      COMMON_EVENTS_INTERCOM_DING,
+      false
+    );
+
+    // Create states for debug and unlock requests
+    await this._adapter.upsertState(
       `${this.fullId}.${STATE_ID_DEBUG_REQUEST}`,
       COMMON_DEBUG_REQUEST,
       false,
       true,
-      true,
+      true
     );
-    this._adapter.upsertState(
+    await this._adapter.upsertState(
       `${this.fullId}.${STATE_ID_INTERCOM_UNLOCK}`,
       COMMON_INTERCOM_UNLOCK_REQUEST,
       false,
       true,
-      true,
+      true
     );
   }
 
   private update(data: IntercomHandsetAudioData): void {
     this.debug(`Received Update`);
     this.updateDeviceInfoObject(data);
-  }
-
-  private async subscribeToEvents(): Promise<void> {
-    this.silly(`Start device subscriptions`);
-    await this._ringIntercom.subscribeToDingEvents().catch((r: any): void => {
-      this.catcher(`Failed subscribing to Ding Events for ${this._ringIntercom.name}`, r);
-    });
-    this._ringIntercom.onDing.subscribe(
-      {
-        next: (): void => {
-          this.onDing();
-        },
-        error: (err: Error): void => {
-          this.catcher(`Ding Observer received error`, err);
-        },
-      }
-    );
+    this.updateBatteryInfo();
   }
 
   private updateDeviceInfoObject(data: IntercomHandsetAudioData): void {
     this._adapter.upsertState(
       `${this.infoChannelId}.id`,
-      COMMON_INFO_ID,
+      null,
       data.device_id
     );
     this._adapter.upsertState(
       `${this.infoChannelId}.kind`,
-      COMMON_INFO_KIND,
+      null,
       data.kind as string
     );
     this._adapter.upsertState(
       `${this.infoChannelId}.description`,
-      COMMON_INFO_DESCRIPTION,
+      null,
       data.description
     );
+    this._adapter.upsertState(
+      `${this.infoChannelId}.firmware`,
+      null,
+      data.firmware
+    );
+  }
+
+  private updateBatteryInfo(): void {
+    const batteryLevel = this._ringIntercom.batteryLevel;
+    let batteryPercentage: number = -1;
+    if (batteryLevel !== null && batteryLevel !== undefined) {
+      batteryPercentage = batteryLevel;
+    }
+
+    // Update battery percentage state
+    this._adapter.upsertState(
+      `${this.infoChannelId}.battery_percentage`,
+      null,
+      batteryPercentage
+    );
+
+    // Determine battery category based on percentage
+    let batteryCategory: string = "Unknown";
+    if (batteryPercentage >= 75) {
+      batteryCategory = "Full";
+    } else if (batteryPercentage >= 50) {
+      batteryCategory = "High";
+    } else if (batteryPercentage >= 25) {
+      batteryCategory = "Medium";
+    } else if (batteryPercentage >= 0) {
+      batteryCategory = "Low";
+    }
+
+    // Update battery category state
+    this._adapter.upsertState(
+      `${this.infoChannelId}.battery_percentage_category`,
+      null,
+      batteryCategory
+    );
+  }
+
+  private async subscribeToEvents(): Promise<void> {
+    this.silly(`Start device subscriptions`);
+    await this._ringIntercom
+      .subscribeToDingEvents()
+      .catch((r: any): void => {
+        this.catcher(
+          `Failed subscribing to Ding Events for ${this._ringIntercom.name}`,
+          r
+        );
+      });
+    this._ringIntercom.onDing.subscribe({
+      next: (): void => {
+        this.onDing();
+      },
+      error: (err: Error): void => {
+        this.catcher(`Ding Observer received error`, err);
+      },
+    });
   }
 
   private onDing(): void {
     if (this._dingEventBlocker.checkBlock()) {
-      this.debug(`ignore Ding event...`);
+      this.debug(`Ignore Ding event...`);
       return;
     }
     this.debug(`Received Ding Event`);
     this._adapter.upsertState(
       `${this.eventsChannelId}.ding`,
-      COMMON_EVENTS_INTERCOM_DING,
+      null,
       true
     );
     setTimeout((): void => {
       this._adapter.upsertState(
         `${this.eventsChannelId}.ding`,
-        COMMON_EVENTS_INTERCOM_DING,
+        null,
         false
       );
     }, 1000);
