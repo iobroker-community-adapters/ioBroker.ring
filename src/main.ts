@@ -211,10 +211,10 @@ export class RingAdapter extends Adapter {
       await FileService.prepareFolder(config_path[index]);
     }
 
-    const objectDevices: ioBroker.DeviceObject[] = await this.getDevicesAsync();
-    for (const objectDevice of objectDevices) {
-      await this.delObjectAsync(objectDevice._id, { recursive: true });
-    }
+    // const objectDevices: ioBroker.DeviceObject[] = await this.getDevicesAsync();
+    // for (const objectDevice of objectDevices) {
+    //   await this.delObjectAsync(objectDevice._id, { recursive: true });
+    // }
 
     this.log.info(`Initializing Api Client`);
     await this.apiClient.init();
