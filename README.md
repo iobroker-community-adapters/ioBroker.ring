@@ -97,7 +97,7 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 6.2.1 (2024-10-09)
 
 * (Speedbreaker12) js-controller7 compatibility #707
 

@@ -61,6 +61,19 @@
     "mode": "daemon",
     "name": "ring",
     "news": {
+      "6.2.1": {
+        "en": "js-controller7 compatibility #707",
+        "de": "js-controller7 kompatibilität #707",
+        "ru": "js-controller7 совместимость #707",
+        "pt": "compatibilidade js-controller7 #707",
+        "nl": "js-controller7 compatibiliteit #707",
+        "fr": "js-controller7 compatibilité #707",
+        "it": "compatibilità js-controller7 #707",
+        "es": "js-controller7 compatibilidad #707",
+        "pl": "js- controller7 kompatybilność # 707",
+        "uk": "js-controller7 сумісність #707",
+        "zh-cn": "js 控制器7 兼容性 # 707"
+      },
       "6.2.0": {
         "en": "Added siren trigger functionality to cameras\nAdd battery status support for Ring Intercom\nSome minor package updates",
         "de": "Hinzugefügt Siren Trigger Funktionalität für Kameras\nBatteriestatusunterstützung für Ring Intercom hinzufügen\nEinige kleinere Paket-Updates",
@@ -138,19 +151,6 @@
         "pl": "#614 Enforce @homebridge/camera-utils wersja 2.2.0",
         "uk": "#614 Армування @homebridge/camera-utils version 2.2.0",
         "zh-cn": "#614 警察部队@homebridge/camera- use 2。"
-      },
-      "5.0.7": {
-        "en": "Updated Packages\nInclude missing build artifacts",
-        "de": "Aktualisierte Pakete\nInklusive fehlender Bauartefakte",
-        "ru": "Обновленные пакеты\nВключает недостающие строительные артефакты",
-        "pt": "Pacotes atualizados\nIncluir artefatos de construção em falta",
-        "nl": "Verouderde pakket\nInclusief ontbrekende bouw van artefacten",
-        "fr": "Forfaits mis à jour\nInclure des objets de construction manquants",
-        "it": "Pacchetti aggiornati\nInclude artefatti di costruzione mancanti",
-        "es": "Paquetes actualizados\nIncluye objetos de construcción desaparecidos",
-        "pl": "Package Update\nBrakuje zbiorów artefaktów",
-        "uk": "Оновлені пакети\nУ комплекті відсутніх конструкційних артефактів",
-        "zh-cn": "最新包装\n包括缺乏建筑艺术材料"
       }
     },
     "platform": "Javascript/Node.js",
@@ -170,7 +170,7 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "6.2.0"
+    "version": "6.2.1"
   },
   "instanceObjects": [
     {
