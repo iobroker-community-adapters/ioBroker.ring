@@ -97,6 +97,10 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+
+* (Speedbreaker12) js-controller7 compatibility #707
+
 ### 6.2.0 (2024-10-08)
 
 * (Speedbreaker12) Added siren trigger functionality to cameras
