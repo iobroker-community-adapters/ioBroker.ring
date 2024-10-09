@@ -651,8 +651,13 @@ export class OwnRingCamera extends OwnRingDevice {
 
     if (this._ringDevice.hasSiren) {
       this.debug(`Device with Siren Capabilities detected`);
-      this._adapter.createChannel(this.fullId, CHANNEL_NAME_SIREN, {
-        name: `Siren ${this.shortId}`,
+      // Ersetzen von createChannel durch setObjectNotExistsAsync
+      await this._adapter.setObjectNotExistsAsync(`${this.fullId}.${CHANNEL_NAME_SIREN}`, {
+        type: "channel",
+        common: {
+          name: `Siren ${this.shortId}`,
+        },
+        native: {},
       });
       await this._adapter.upsertState(
         `${this.sirenChannelId}.${STATE_ID_SIREN_SWITCH}`,
@@ -663,11 +668,23 @@ export class OwnRingCamera extends OwnRingDevice {
       );
     }
 
-
     if (this._ringDevice.hasLight) {
       this.debug(`Device with Light Capabilities detected`);
-      this._adapter.createChannel(this.fullId, CHANNEL_NAME_LIGHT, {name: `Light ${this.shortId}`});
-      await this._adapter.upsertState( `${this.lightChannelId}.${STATE_ID_LIGHT_SWITCH}`, COMMON_LIGHT_SWITCH, false, true, true);
+      // Ersetzen von createChannel durch setObjectNotExistsAsync
+      await this._adapter.setObjectNotExistsAsync(`${this.fullId}.${CHANNEL_NAME_LIGHT}`, {
+        type: "channel",
+        common: {
+          name: `Light ${this.shortId}`,
+        },
+        native: {},
+      });
+      await this._adapter.upsertState(
+        `${this.lightChannelId}.${STATE_ID_LIGHT_SWITCH}`,
+        COMMON_LIGHT_SWITCH,
+        false,
+        true,
+        true
+      );
     }
 
     this._lastSnapShotDir = await this._adapter.tryGetStringState(`${this.snapshotChannelId}.file`);
