@@ -97,6 +97,11 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+* (theimo1221) Update pipelines to stop using node 18.x
+
 ### 6.2.1 (2024-10-09)
 
 * (Speedbreaker12) js-controller7 compatibility #707
