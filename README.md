@@ -101,6 +101,7 @@ doorbell recorded video.
 ### **WORK IN PROGRESS**
 
 * (theimo1221) Update pipelines to stop using node 18.x
+* (theimo1221) #746 Fix license information in io-package.json
 
 ### 6.2.1 (2024-10-09)
 

@@ -54,7 +54,10 @@
       "Camera",
       "Doorbell"
     ],
-    "license": "MIT",
+    "licenseInformation": {
+      "link": "https://github.com/iobroker-community-adapters/ioBroker.ring/blob/master/LICENSE",
+      "tier": "free"
+    },
     "loglevel": "info",
     "main": "build/main.js",
     "materializeTab": true,
