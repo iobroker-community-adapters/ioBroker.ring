@@ -59,7 +59,6 @@
       "type": "free"
     },
     "loglevel": "info",
-    "main": "build/main.js",
     "mode": "daemon",
     "name": "ring",
     "news": {
