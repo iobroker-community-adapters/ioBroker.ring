@@ -60,7 +60,6 @@
     },
     "loglevel": "info",
     "main": "build/main.js",
-    "materializeTab": true,
     "mode": "daemon",
     "name": "ring",
     "news": {

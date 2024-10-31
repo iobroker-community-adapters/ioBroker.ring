@@ -103,6 +103,7 @@ doorbell recorded video.
 * (theimo1221) Update pipelines to stop using node 18.x
 * (theimo1221) #746 Fix license information in io-package.json
 * (theimo1221) #746 Add tier in io-package.json
+* (theimo1221) #746 Remove deprecated property 'materializeTab' in io-package.json
 
 ### 6.2.1 (2024-10-09)
 
