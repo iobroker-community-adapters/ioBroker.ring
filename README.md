@@ -105,6 +105,7 @@ doorbell recorded video.
 * (theimo1221) #746 Add tier in io-package.json
 * (theimo1221) #746 Remove deprecated property 'materializeTab' in io-package.json
 * (theimo1221) #746 Remove deprecated property 'main' in io-package.json
+* (theimo1221) #746 Bump minimum js-controller in io-package.json
 
 ### 6.2.1 (2024-10-09)
 
