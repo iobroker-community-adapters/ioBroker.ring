@@ -63,6 +63,19 @@
     "mode": "daemon",
     "name": "ring",
     "news": {
+      "6.2.3": {
+        "en": "Fix License-Info object in io-package.json\nUpdate iobroker test package\nUpdate some test packages regarding mocha",
+        "de": "Lizenz-Info Objekt in io-package.json reparieren\nUpdate iobroker Testpaket\nAktualisieren Sie einige Testpakete bezüglich Mocha",
+        "ru": "Fix License-Info объект в io-package.json\nОбновить тест-пакет iobroker\nОбновить некоторые тестовые пакеты для mocha",
+        "pt": "Corrigir objeto License-Info no io-package.json\nAtualizar pacote de teste iobroker\nAtualizar alguns pacotes de teste sobre mocha",
+        "nl": "Fix License-Info object in io-package.json\nIobroker testpakket bijwerken\nUpdate enkele test pakketten betreffende mokka",
+        "fr": "Correction de license-Info objet dans io-package.json\nMettre à jour le paquet d'essai iobroker\nMettre à jour certains paquets de test concernant moka",
+        "it": "Fix License-Info oggetto in io-package.json\nPacchetto di prova dello iobroker di aggiornamento\nAggiornare alcuni pacchetti di prova per quanto riguarda mocha",
+        "es": "Fijar objeto License-Info en io-package.json\nPaquete de prueba de iobroker de actualización\nActualizar algunos paquetes de prueba con mocha",
+        "pl": "Napraw obiekt License- Info w jo- package.json\nAktualizuj pakiet testowy iobrokera\nAktualizacja niektórych pakietów testowych dotyczących mocha",
+        "uk": "Виправлення об'єкта ліцензії-Info в io-package.json\nUpdate iobroker тест-пакет\nОновлення деяких тестових пакетів для моча",
+        "zh-cn": "在 io-package.json 中修复许可证-信息对象\n更新 iobroster 测试软件包\n更新一些关于摩卡的测试包"
+      },
       "6.2.2": {
         "en": "Update pipelines to stop using node 18.x\n#746 Fix license information in io-package.json\n#746 Add tier in io-package.json\n#746 Remove deprecated property 'materializeTab' in io-package.json\n#746 Remove deprecated property 'main' in io-package.json\n#746 Bump minimum js-controller in io-package.json\n#746 Remove specific version reference to camera utils\n#746 Add @alcalzone/release-script-plugin-manual-review",
         "de": "Pipelines aktualisieren, um den Knoten 18.x zu stoppen\n#746 Lizenzinformationen in io-package reparieren. Json\n#746 Fügen Sie Tier in io-package. Json\n#746 Entfernen Sie deprecated property 'materializeTab' in io-package. Json\n#746 Entfernen Sie deprecated property 'main' in io-package. Json\n#746 Stoßminimum js-controller in io-package. Json\n#746 Entfernen Sie spezifische Version Bezug zu Kamera-utils\n#746 Add @alcalzone/release-script-plugin-manual-review",
@@ -140,19 +153,6 @@
         "pl": "(SFGJK) # 710 Wzmocnienie funkcji posiadacza nazwy pliku\n(theimo1221) Aktualizacja pakietów",
         "uk": "(SFGJK) #710 Підвищення функції розміщення файлів\n(тімо1221) Оновлені пакети",
         "zh-cn": "(SFGJK) # 710 文件名占位符特性增强\n(theimo1221号) 更新软件包"
-      },
-      "5.0.10": {
-        "en": "#614 Enforce @homebridge/camera-utils version 2.2.4",
-        "de": "#614 Enforce @homebridge/camera-utils version 2.2.4",
-        "ru": "#614 Enforce @homebridge/camera-utils версия 2.2.4",
-        "pt": "#614 Enforce @homebridge/camera-utils versão 2.2.4",
-        "nl": "Vertaling:",
-        "fr": "#614 Enforce @homebridge/camera-utils version 2.2.4",
-        "it": "#614 Enforce @homebridge/camera-utils versione 2.2.4",
-        "es": "#614 Enforce @homebridge/camera-utils versión 2.2.4",
-        "pl": "#614 Enforce @homebridge/camera-utils wersja 2.2.4",
-        "uk": "#614 Армування @homebridge/camera-utils версія 2.2.4",
-        "zh-cn": "#614 警察部队@homebridge/camera-use版本2.4"
       }
     },
     "platform": "Javascript/Node.js",
@@ -173,7 +173,7 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "6.2.2"
+    "version": "6.2.3"
   },
   "instanceObjects": [
     {

@@ -97,8 +97,7 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 6.2.3 (2024-10-31)
 
 * (theimo1221) Fix License-Info object in io-package.json
 * (theimo1221) Update iobroker test package
