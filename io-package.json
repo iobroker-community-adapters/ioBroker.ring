@@ -63,6 +63,19 @@
     "mode": "daemon",
     "name": "ring",
     "news": {
+      "6.2.4": {
+        "en": "Settings for responsive Design\nUpdate some developer packages",
+        "de": "Einstellungen für ansprechendes Design\nEinige Entwicklerpakete aktualisieren",
+        "ru": "Настройки для отзывчивого дизайна\nОбновить пакеты для разработчиков",
+        "pt": "Configurações para Design responsivo\nAtualizar alguns pacotes de desenvolvedor",
+        "nl": "Instellingen voor responsief ontwerp\nEen aantal ontwikkelaarspakketten bijwerken",
+        "fr": "Paramètres pour un design réactif\nMettre à jour certains paquets développeur",
+        "it": "Impostazioni per design reattivo\nAggiornare alcuni pacchetti di sviluppatori",
+        "es": "Ajustes para un diseño sensible\nActualizar algunos paquetes de desarrolladores",
+        "pl": "Ustawienia dla Responsive Design\nAktualizacja niektórych pakietów deweloperskich",
+        "uk": "Налаштування адаптивного дизайну\nОновлення деяких пакетів розробника",
+        "zh-cn": "响应设计设置\n更新一些开发者软件包"
+      },
       "6.2.3": {
         "en": "Fix License-Info object in io-package.json\\nUpdate iobroker test package\\nUpdate some test packages regarding mocha\\nUpdate pipelines to stop using node 18.x\\n#746 Fix license information in io-package.json\\n#746 Add tier in io-package.json\\n#746 Remove deprecated property 'materializeTab' in io-package.json\\n#746 Remove deprecated property 'main' in io-package.json\\n#746 Bump minimum js-controller in io-package.json\\n#746 Remove specific version reference to camera utils\\n#746 Add @alcalzone/release-script-plugin-manual-review",
         "de": "Fix License-Info object in io-package.json\\nUpdate iobroker test package\\nUpdate some test packages regarding mocha\\nUpdate pipelines to stop using node 18.x\\n#746 Fix license information in io-package.json\\n#746 Add tier in io-package.json\\n#746 Veraltete Eigenschaft 'materializeTab' in io-package.json entfernen\\n#746 Veraltete Eigenschaft 'main' in io-package.json entfernen\\n#746 Bump minimum js-controller in io-package.json\\n#746 Spezifischen Versionsverweis auf camera utils entfernen\\n#746 @alcalzone/release-script-plugin-manual-review hinzufügen",
@@ -160,7 +173,7 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "6.2.3"
+    "version": "6.2.4"
   },
   "instanceObjects": [
     {
