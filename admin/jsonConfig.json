@@ -11,7 +11,12 @@
           "type": "staticLink",
           "href": "https://github.com/iobroker-community-adapters/ioBroker.ring#install--configuration",
           "text": "ring-description",
-          "sm": 12
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+
         },
         "refreshtoken": {
           "newLine": true,
@@ -19,18 +24,22 @@
           "minRows": 2,
           "maxRows": 20,
           "label": "Refreshtoken (Two Face Auth)",
+          "xs": 12,
           "sm": 12,
           "md": 8,
-          "lg": 6
+          "lg": 6,
+          "xl": 6
         },
         "_staticText0": {
           "newLine": true,
           "style": {"fontSize": "130%", "fontWeight": "bold"},
           "type": "staticText",
           "text": "Renew registration",
+          "xs": 12,
           "sm": 12,
           "md": 6,
-          "lg": 3
+          "lg": 3,
+          "xl": 3
         },
         "renew_registration": {
           "newLine": true,
@@ -58,9 +67,11 @@
               "label": "1 day"
             }
           ],
+          "xs": 12,
           "sm": 12,
           "md": 6,
-          "lg": 3
+          "lg": 3,
+          "xl": 3
         }
       }
     },
@@ -74,24 +85,32 @@
           "style": {"fontSize": "130%", "fontWeight": "bold"},
           "type": "staticText",
           "text": "General",
+          "xs": 12,
           "sm": 12,
           "md": 6,
-          "lg": 3
+          "lg": 3,
+          "xl": 3
         },
         "keep_ignoring_if_retriggered": {
           "newLine": true,
           "type": "checkbox",
           "label": "Extend ignore duration on retrigger",
-          "sm": 12
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "_staticText1": {
           "newLine": true,
           "style": {"fontSize": "130%", "fontWeight": "bold"},
           "type": "staticText",
           "text": "Motion",
+          "xs": 12,
           "sm": 12,
           "md": 6,
-          "lg": 3
+          "lg": 3,
+          "xl": 3
         },
         "ignore_events_Motion": {
           "newLine": true,
@@ -127,18 +146,22 @@
               "label": "3 minutes"
             }
           ],
+          "xs": 12,
           "sm": 12,
           "md": 6,
-          "lg": 3
+          "lg": 3,
+          "xl": 3
         },
         "_staticText2": {
           "newLine": true,
           "style": {"fontSize": "130%", "fontWeight": "bold"},
           "type": "staticText",
           "text": "Doorbell",
+          "xs": 12,
           "sm": 12,
           "md": 6,
-          "lg": 3
+          "lg": 3,
+          "xl": 3
         },
         "ignore_events_Doorbell": {
           "newLine": true,
@@ -174,9 +197,11 @@
               "label": "3 minutes"
             }
           ],
+          "xs": 12,
           "sm": 12,
           "md": 6,
-          "lg": 3
+          "lg": 3,
+          "xl": 3
         }
       }
     },
@@ -188,14 +213,22 @@
         "auto_snapshot": {
           "type": "checkbox",
           "label": "Auto event",
-          "sm": 12
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "_staticText": {
           "newLine": true,
           "style": {"color": "red"},
           "type": "staticText",
           "text": "NoSub",
-          "sm": 12
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "save_snapshot": {
           "newLine": true,
@@ -235,40 +268,50 @@
               "label": "1 day"
             }
           ],
+          "xs": 12,
           "sm": 12,
           "md": 6,
-          "lg": 3
+          "lg": 3,
+          "xl": 3
         },
         "path_snapshot": {
           "newLine": true,
           "type": "text",
           "label": "Path",
+          "xs": 12,
           "sm": 12,
           "md": 8,
-          "lg": 6
+          "lg": 6,
+          "xl": 6
         },
         "filename_snapshot": {
           "newLine": true,
           "type": "text",
           "label": "Filename",
+          "xs": 12,
           "sm": 12,
           "md": 8,
-          "lg": 6
+          "lg": 6,
+          "xl": 6
         },
         "del_old_snapshot": {
           "newLine": true,
           "type": "checkbox",
           "label": "Delete old one",
+          "xs": 12,
           "sm": 12,
           "md": 4,
-          "lg": 3
+          "lg": 3,
+          "xl": 3
         },
         "overlay_snapshot": {
           "type": "checkbox",
           "label": "Overlay",
+          "xs": 12,
           "sm": 12,
           "md": 4,
-          "lg": 3
+          "lg": 3,
+          "xl": 3
         }
       }
     },
@@ -281,19 +324,31 @@
           "style": {"color": "orange", "fontWeight": "bold"},
           "type": "staticText",
           "text": "HDInfo",
-          "sm": 12
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "auto_HDsnapshot": {
           "type": "checkbox",
           "label": "Auto event",
-          "sm": 12
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "_staticText": {
           "newLine": true,
           "style": {"color": "red"},
           "type": "staticText",
           "text": "NoSub",
-          "sm": 12
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "save_HDsnapshot": {
           "newLine": true,
@@ -333,46 +388,60 @@
               "label": "1 day"
             }
           ],
+          "xs": 12,
           "sm": 12,
           "md": 6,
-          "lg": 3
+          "lg": 3,
+          "xl": 3
         },
         "path_HDsnapshot": {
           "newLine": true,
           "type": "text",
           "label": "Path",
+          "xs": 12,
           "sm": 12,
           "md": 8,
-          "lg": 6
+          "lg": 6,
+          "xl": 6
         },
         "filename_HDsnapshot": {
           "newLine": true,
           "type": "text",
           "label": "Filename",
+          "xs": 12,
           "sm": 12,
           "md": 8,
-          "lg": 6
+          "lg": 6,
+          "xl": 6
         },
         "del_old_HDsnapshot": {
           "newLine": true,
           "type": "checkbox",
           "label": "Delete old one",
+          "xs": 12,
           "sm": 12,
           "md": 4,
-          "lg": 3
+          "lg": 3,
+          "xl": 3
         },
         "overlay_HDsnapshot": {
           "type": "checkbox",
           "label": "Overlay",
+          "xs": 12,
           "sm": 12,
           "md": 4,
-          "lg": 3
+          "lg": 3,
+          "xl": 3
         },
         "_info_tip": {
           "style": {"color": "blue"},
           "type": "staticText",
           "text": "HDInfoTip",
-          "sm": 12
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "sharpen_HDsnapshot": {
           "newLine": true,
@@ -400,16 +469,20 @@
               "label": "most"
             }
           ],
+          "xs": 12,
           "sm": 6,
           "md": 6,
-          "lg": 2
+          "lg": 2,
+          "xl": 2
         },
         "night_sharpen_HDsnapshot": {
           "type": "checkbox",
           "label": "only at Night",
+          "xs": 12,
           "sm": 6,
           "md": 6,
           "lg": 2,
+          "xl": 2,
           "hidden": "!data.sharpen_HDsnapshot"
         },
         "contrast_HDsnapshot": {
@@ -430,16 +503,20 @@
               "label": "most"
             }
           ],
+          "xs": 12,
           "sm": 6,
           "md": 6,
-          "lg": 2
+          "lg": 2,
+          "xl": 2
         },
         "night_contrast_HDsnapshot": {
           "type": "checkbox",
           "label": "only at Night",
+          "xs": 12,
           "sm": 6,
           "md": 6,
           "lg": 2,
+          "xl": 2,
           "hidden": "!data.contrast_HDsnapshot"
         }
       }
@@ -452,14 +529,22 @@
         "auto_livestream": {
           "type": "checkbox",
           "label": "Auto event",
-          "sm": 12
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "_staticText": {
           "newLine": true,
           "style": {"color": "red"},
           "type": "staticText",
           "text": "NoSub",
-          "sm": 12
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "save_livestream": {
           "newLine": true,
@@ -499,58 +584,72 @@
               "label": "1 day"
             }
           ],
+          "xs": 12,
           "sm": 12,
           "md": 7,
-          "lg": 4
+          "lg": 4,
+          "xl": 4
         },
         "recordtime_auto_livestream": {
           "type": "number",
           "min": 5,
           "max": 60,
           "label": "Automatic recording time in seconds",
+          "xs": 12,
           "sm": 12,
           "md": 6,
-          "lg": 4
+          "lg": 4,
+          "xl": 4
         },
         "recordtime_livestream": {
           "type": "number",
           "min": 5,
           "max": 60,
           "label": "Recording time in seconds",
+          "xs": 12,
           "sm": 12,
           "md": 6,
-          "lg": 4
+          "lg": 4,
+          "xl": 4
         },
         "path_livestream": {
           "newLine": true,
           "type": "text",
           "label": "Path",
+          "xs": 12,
           "sm": 12,
           "md": 8,
-          "lg": 6
+          "lg": 6,
+          "xl": 6
         },
         "filename_livestream": {
           "newLine": true,
           "type": "text",
           "label": "Filename",
+          "xs": 12,
           "sm": 12,
           "md": 8,
-          "lg": 6
+          "lg": 6,
+          "xl": 6
         },
         "del_old_livestream": {
           "newLine": true,
           "type": "checkbox",
           "label": "Delete old one",
+          "xs": 12,
           "sm": 12,
           "md": 4,
-          "lg": 3
+          "lg": 3,
+          "xl": 3
         },
         "overlay_Livestream": {
           "type": "checkbox",
           "label": "Overlay",
+          "xs": 12,
           "sm": 12,
           "md": 4,
-          "lg": 3
+          "lg": 3,
+          "xl": 3
         }
       }
     }
