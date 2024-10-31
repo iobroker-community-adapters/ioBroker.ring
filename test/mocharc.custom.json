@@ -1,6 +1,9 @@
 {
+	"extensions": [
+		"ts"
+	],
 	"require": [
-		"test/mocha.setup.js",
+		"test/mocha.setup.mjs",
 		"ts-node/register",
 		"source-map-support/register"
 	],
