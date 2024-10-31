@@ -62,6 +62,19 @@
     "mode": "daemon",
     "name": "ring",
     "news": {
+      "6.2.2": {
+        "en": "Update pipelines to stop using node 18.x\n#746 Fix license information in io-package.json\n#746 Add tier in io-package.json\n#746 Remove deprecated property 'materializeTab' in io-package.json\n#746 Remove deprecated property 'main' in io-package.json\n#746 Bump minimum js-controller in io-package.json\n#746 Remove specific version reference to camera utils\n#746 Add @alcalzone/release-script-plugin-manual-review",
+        "de": "Pipelines aktualisieren, um den Knoten 18.x zu stoppen\n#746 Lizenzinformationen in io-package reparieren. Json\n#746 Fügen Sie Tier in io-package. Json\n#746 Entfernen Sie deprecated property 'materializeTab' in io-package. Json\n#746 Entfernen Sie deprecated property 'main' in io-package. Json\n#746 Stoßminimum js-controller in io-package. Json\n#746 Entfernen Sie spezifische Version Bezug zu Kamera-utils\n#746 Add @alcalzone/release-script-plugin-manual-review",
+        "ru": "Обновить трубопроводы, чтобы прекратить использование узла 18.x\n#746 Исправить лицензионную информацию в io-package. json\n#746 Добавить уровень в io-package. json\n#746 Удалить очищенное имущество «материализуй Таба» в io-package. json\n#746 Удалить амортизированную собственность «основной» в io-package. json\n#746 Минимальный джи-контроллер в io-package. json\n#746 Удалить ссылку на использование камеры\n#746 Добавить @alcalzone/release-script-plugin-manual-review",
+        "pt": "Atualize pipelines para parar de usar o nó 18.x\n#746 Corrigir informações de licença no io-package. O que foi\n#746 Adicionar nível em io-package. O que foi\n#746 Remova a propriedade deprecated 'materializeTab' no io-package. O que foi\n#746 Remova a propriedade deprecated 'main' no io-package. O que foi\n#746 Bump mínimo js-controller em io-package. O que foi\n#746 Remover referência de versão específica para utils da câmera\nAdicionar ao cesto @alcalzone/release-script-plugin-manual-review",
+        "nl": "Update pijpleidingen om te stoppen met het gebruik van knooppunt 18.x\n#746 Fix licentie informatie in io-package. json\n#746 Voeg niveau in io-package. json\n#746 Verwijder verouderde eigenschap 'materializeTab' in io-package. json\n#746 Verwijder verouderde eigenschap 'main' in io-package. json\n#746 Bump minimum js-controller in io-package. json\n#746 Verwijder specifieke versie verwijzing naar camera utils\n#746 Toevoegen @alcalzone/release-script-plugin-handleiding-review",
+        "fr": "Mettre à jour les pipelines pour arrêter d'utiliser le noeud 18.x\n#746 Correction des informations de licence dans io-package. Json\n#746 Ajouter le niveau dans io-package. Json\n#746 Supprimer la propriété obsolète 'matérializeTab' dans io-package. Json\n#746 Supprimer la propriété obsolète 'main' dans io-package. Json\n#746 Bump minimum js-controller dans io-package. Json\n#746 Supprimer la référence de version spécifique aux outils de la caméra\n#746 Ajouter @alcalzone/release-script-plugin-manuel-review",
+        "it": "Aggiornare le tubazioni per smettere di usare nodo 18.x\n#746 Fissa le informazioni sulla licenza in io-package. J\n#746 # Aggiungere il livello in io-package. J\n#746 # Rimuovere la proprietà deprecata 'materializeTab' in io-package. J\n#746 # Rimuovere la proprietà deprecata 'main' in io-package. J\n#746 # Minimo js-controller in io-package. J\n#746 # Rimuovere la versione specifica di riferimento alla fotocamera utils\n#746 Add @alcalzone/release-script-plugin-manual-review",
+        "es": "Actualizar tuberías para dejar de utilizar nodo 18.x\n#746 Fijar información de licencia en io-package. json\n#746 Añadir el tier en io-paquete. json\n#746 Eliminar la propiedad deprecated 'materializeTab' en el paquete io. json\n#746 Eliminar la propiedad deprecatada 'mantenimiento' en io-paquete. json\n#746 Bump mínimo js-controller en io-package. json\n#746 Eliminar la referencia de la versión específica a los servicios de cámara\n#746 Add @alcalzone/release-script-plugin-manual-review",
+        "pl": "Aktualizuj rurociągi, aby zatrzymać za pomocą węzła 18.x\n# 746 Popraw informacje licencyjne w pakiecie jo-. json\n# 746 Dodaj poziom w pakiecie jo-. json\n# 746 Usuń zdeprecjonowaną właściwość 'materializaTab' w pakiecie jo-. json\n# 746 Usuń zdeprecjonowaną właściwość 'main' w pakiecie jo-. json\n# 746 Bump minimum js- kontroler w pakiecie jo-. json\n# 746 Usuń specyficzne odniesienie wersji do filtrów\n# 746 Dodaj @ alcalzone / release- script- plugin- manual- review",
+        "uk": "Оновлення трубопроводів для зупинки за допомогою вузла 18.x\n#746 Фіксувати інформацію про ліцензію в io-package. свінгери\n#746 Додати ярус в io-package. свінгери\n#746 Видаліть відхилену властивість 'materializeTab' в io-package. свінгери\n#746 Видаліть відхилену властивість 'основ' в io-package. свінгери\n#746 Bump мінімальний js-controller в io-package. свінгери\n#746 Видалити конкретну версію посилання на камери utils\n#746 Додати @alcalzone/Випуск-script-plugin-manual-review",
+        "zh-cn": "更新管道以停止使用节点18x\n#746 Fix 许可证信息在io-package. 贾森\n746号 在io-package中加入分级. 贾森\n746号 删除 io- package 中“ 物质化 Tab ” 的贬值属性 。 贾森\n746号 删除 io- package 中已贬值的属性“ main ” 。 贾森\n746号 电磁波最小控制器 贾森\n746号 删除相机 utils 的特定版本引用\n# 746 添加 @alcalzone/release-script-plugin-manual-review (中文(简体) )"
+      },
       "6.2.1": {
         "en": "js-controller7 compatibility #707",
         "de": "js-controller7 kompatibilität #707",
@@ -139,19 +152,6 @@
         "pl": "#614 Enforce @homebridge/camera-utils wersja 2.2.4",
         "uk": "#614 Армування @homebridge/camera-utils версія 2.2.4",
         "zh-cn": "#614 警察部队@homebridge/camera-use版本2.4"
-      },
-      "5.0.9": {
-        "en": "#614 Enforce @homebridge/camera-utils version 2.2.0",
-        "de": "#614 Enforce @homebridge/camera-utils version 2.2.0",
-        "ru": "#614 Enforce @homebridge/camera-utils версия 2.2.0",
-        "pt": "#614 Enforce @homebridge/camera-utils versão 2.2.0",
-        "nl": "Vertaling:",
-        "fr": "#614 Enforce @homebridge/camera-utils version 2.2.0",
-        "it": "#614 Enforce @homebridge/camera-utils versione 2.2.0",
-        "es": "#614 Enforce @homebridge/camera-utils versión 2.2.0",
-        "pl": "#614 Enforce @homebridge/camera-utils wersja 2.2.0",
-        "uk": "#614 Армування @homebridge/camera-utils version 2.2.0",
-        "zh-cn": "#614 警察部队@homebridge/camera- use 2。"
       }
     },
     "platform": "Javascript/Node.js",
@@ -172,7 +172,7 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "6.2.1"
+    "version": "6.2.2"
   },
   "instanceObjects": [
     {

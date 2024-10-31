@@ -97,8 +97,7 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 6.2.2 (2024-10-31)
 
 * (theimo1221) Update pipelines to stop using node 18.x
 * (theimo1221) #746 Fix license information in io-package.json
