@@ -159,6 +159,7 @@
     "platform": "Javascript/Node.js",
     "readme": "https://github.com/iobroker-community-adapters/ioBroker.ring/blob/master/README.md",
     "supportCustoms": false,
+    "tier": 2,
     "titleLang": {
       "en": "ring",
       "de": "ring",
