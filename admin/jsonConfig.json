@@ -1,5 +1,8 @@
 {
   "type": "tabs",
+  "tabsStyle": {
+    "width": "calc(100% - 100px)"
+  },
   "i18n": true,
   "items": {
     "_login": {
@@ -16,7 +19,6 @@
           "md": 12,
           "lg": 12,
           "xl": 12
-
         },
         "refreshtoken": {
           "newLine": true,
@@ -32,7 +34,10 @@
         },
         "_staticText0": {
           "newLine": true,
-          "style": {"fontSize": "130%", "fontWeight": "bold"},
+          "style": {
+            "fontSize": "130%",
+            "fontWeight": "bold"
+          },
           "type": "staticText",
           "text": "Renew registration",
           "xs": 12,
@@ -82,7 +87,10 @@
       "items": {
         "_staticText0": {
           "newLine": true,
-          "style": {"fontSize": "130%", "fontWeight": "bold"},
+          "style": {
+            "fontSize": "130%",
+            "fontWeight": "bold"
+          },
           "type": "staticText",
           "text": "General",
           "xs": 12,
@@ -103,7 +111,10 @@
         },
         "_staticText1": {
           "newLine": true,
-          "style": {"fontSize": "130%", "fontWeight": "bold"},
+          "style": {
+            "fontSize": "130%",
+            "fontWeight": "bold"
+          },
           "type": "staticText",
           "text": "Motion",
           "xs": 12,
@@ -154,7 +165,10 @@
         },
         "_staticText2": {
           "newLine": true,
-          "style": {"fontSize": "130%", "fontWeight": "bold"},
+          "style": {
+            "fontSize": "130%",
+            "fontWeight": "bold"
+          },
           "type": "staticText",
           "text": "Doorbell",
           "xs": 12,
@@ -221,7 +235,9 @@
         },
         "_staticText": {
           "newLine": true,
-          "style": {"color": "red"},
+          "style": {
+            "color": "red"
+          },
           "type": "staticText",
           "text": "NoSub",
           "xs": 12,
@@ -321,7 +337,10 @@
       "type": "panel",
       "items": {
         "_info": {
-          "style": {"color": "orange", "fontWeight": "bold"},
+          "style": {
+            "color": "orange",
+            "fontWeight": "bold"
+          },
           "type": "staticText",
           "text": "HDInfo",
           "xs": 12,
@@ -341,7 +360,9 @@
         },
         "_staticText": {
           "newLine": true,
-          "style": {"color": "red"},
+          "style": {
+            "color": "red"
+          },
           "type": "staticText",
           "text": "NoSub",
           "xs": 12,
@@ -434,7 +455,9 @@
           "xl": 3
         },
         "_info_tip": {
-          "style": {"color": "blue"},
+          "style": {
+            "color": "blue"
+          },
           "type": "staticText",
           "text": "HDInfoTip",
           "xs": 12,
@@ -537,7 +560,9 @@
         },
         "_staticText": {
           "newLine": true,
-          "style": {"color": "red"},
+          "style": {
+            "color": "red"
+          },
           "type": "staticText",
           "text": "NoSub",
           "xs": 12,
