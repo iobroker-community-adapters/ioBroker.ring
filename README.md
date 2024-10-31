@@ -106,6 +106,7 @@ doorbell recorded video.
 * (theimo1221) #746 Remove deprecated property 'materializeTab' in io-package.json
 * (theimo1221) #746 Remove deprecated property 'main' in io-package.json
 * (theimo1221) #746 Bump minimum js-controller in io-package.json
+* (theimo1221) #746 Remove specific version reference to camera utils
 
 ### 6.2.1 (2024-10-09)
 
