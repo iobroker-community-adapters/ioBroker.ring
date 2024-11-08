@@ -102,6 +102,7 @@ doorbell recorded video.
 
 * (theimo1221) #768 Add df_doorbell_clownfish
 * (theimo1221) #738 Add stickup_cam_medusa
+* (theimo1221) #685 Add cocoa_doorbell_v3
 ### 6.2.4 (2024-10-31)
 
 * (simatec) Settings for responsive Design
