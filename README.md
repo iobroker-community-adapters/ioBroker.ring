@@ -97,6 +97,10 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+* (theimo1221) #768 Add df_doorbell_clownfish
 ### 6.2.4 (2024-10-31)
 
 * (simatec) Settings for responsive Design

@@ -49,22 +49,23 @@ export abstract class OwnRingDevice {
       case RingCameraKind.doorbell_v3:
       case RingCameraKind.doorbell_v4:
       case RingCameraKind.doorbell_v5:
-      case RingCameraKind.doorbell_graham_cracker:
+      case RingCameraKind.doorbell_oyster:
       case RingCameraKind.doorbell_portal:
       case RingCameraKind.doorbell_scallop:
       case RingCameraKind.doorbell_scallop_lite:
+      case RingCameraKind.doorbell_graham_cracker:
       case RingCameraKind.hp_cam_v1:
       case RingCameraKind.hp_cam_v2:
       case RingCameraKind.lpd_v1:
       case RingCameraKind.lpd_v2:
+      case RingCameraKind.lpd_v4:
       case RingCameraKind.floodlight_v1:
       case RingCameraKind.floodlight_v2:
       case RingCameraKind.floodlight_pro:
       case RingCameraKind.spotlightw_v2:
       case RingCameraKind.jbox_v1:
-      case "doorbell_oyster":
+      case "df_doorbell_clownfish":
       case "lpd_v3":
-      case "lpd_v4":
         return `doorbell`;
       case RingCameraKind.cocoa_camera:
       case RingCameraKind.cocoa_doorbell:
