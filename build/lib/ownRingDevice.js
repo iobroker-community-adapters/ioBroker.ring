@@ -29,26 +29,28 @@ class OwnRingDevice {
             case ring_client_api_1.RingCameraKind.doorbell_v3:
             case ring_client_api_1.RingCameraKind.doorbell_v4:
             case ring_client_api_1.RingCameraKind.doorbell_v5:
-            case ring_client_api_1.RingCameraKind.doorbell_graham_cracker:
+            case ring_client_api_1.RingCameraKind.doorbell_oyster:
             case ring_client_api_1.RingCameraKind.doorbell_portal:
             case ring_client_api_1.RingCameraKind.doorbell_scallop:
             case ring_client_api_1.RingCameraKind.doorbell_scallop_lite:
+            case ring_client_api_1.RingCameraKind.doorbell_graham_cracker:
             case ring_client_api_1.RingCameraKind.hp_cam_v1:
             case ring_client_api_1.RingCameraKind.hp_cam_v2:
             case ring_client_api_1.RingCameraKind.lpd_v1:
             case ring_client_api_1.RingCameraKind.lpd_v2:
+            case ring_client_api_1.RingCameraKind.lpd_v4:
             case ring_client_api_1.RingCameraKind.floodlight_v1:
             case ring_client_api_1.RingCameraKind.floodlight_v2:
             case ring_client_api_1.RingCameraKind.floodlight_pro:
             case ring_client_api_1.RingCameraKind.spotlightw_v2:
             case ring_client_api_1.RingCameraKind.jbox_v1:
-            case "doorbell_oyster":
+            case "df_doorbell_clownfish":
             case "lpd_v3":
-            case "lpd_v4":
                 return `doorbell`;
             case ring_client_api_1.RingCameraKind.cocoa_camera:
             case ring_client_api_1.RingCameraKind.cocoa_doorbell:
             case "cocoa_doorbell_v2":
+            case "cocoa_doorbell_v3":
             case ring_client_api_1.RingCameraKind.cocoa_floodlight:
                 return `cocoa`;
             case ring_client_api_1.RingCameraKind.stickup_cam:
@@ -59,6 +61,7 @@ class OwnRingDevice {
             case ring_client_api_1.RingCameraKind.stickup_cam_elite:
             case ring_client_api_1.RingCameraKind.stickup_cam_longfin:
             case "stickup_cam_mini_v2":
+            case "stickup_cam_medusa":
                 return `stickup`;
             case ring_client_api_1.RingDeviceType.IntercomHandsetAudio:
                 return `intercom`;
