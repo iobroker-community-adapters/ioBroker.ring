@@ -101,6 +101,7 @@ doorbell recorded video.
 ### **WORK IN PROGRESS**
 
 * (theimo1221) #768 Add df_doorbell_clownfish
+* (theimo1221) #738 Add stickup_cam_medusa
 ### 6.2.4 (2024-10-31)
 
 * (simatec) Settings for responsive Design
