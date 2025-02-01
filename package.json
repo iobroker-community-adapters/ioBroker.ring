@@ -35,7 +35,7 @@
   "dependencies": {
     "@homebridge/camera-utils": "^2.2.6",
     "@iobroker/adapter-core": "^3.2.2",
-    "@iobroker/types": "^6.0.11",
+    "@iobroker/types": "^7.0.6",
     "@types/suncalc": "^1.9.2",
     "ffmpeg-static": "^5.2.0",
     "node-schedule": "^2.1.1",
