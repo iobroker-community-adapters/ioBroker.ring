@@ -97,6 +97,10 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+* (theimo1221) #820 Support Node-JS 22
 ### 6.3.0 (2024-11-08)
 
 * (theimo1221) #768 Add df_doorbell_clownfish
