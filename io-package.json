@@ -63,6 +63,19 @@
     "mode": "daemon",
     "name": "ring",
     "news": {
+      "6.4.0": {
+        "en": "#820 Support Node-JS 22",
+        "de": "#820 Support Node-JS 22",
+        "ru": "#820 Поддержка Node-JS 22",
+        "pt": "#820 Suporte Node-JS 22",
+        "nl": "#820 Ondersteuning Node-JS 22",
+        "fr": "#820 Node de soutien-JS 22",
+        "it": "#820 Supporto Node-JS 22",
+        "es": "#820 Support Node-JS 22",
+        "pl": "# 820 Node-JS 22",
+        "uk": "#820 Підтримка Node-JS 22",
+        "zh-cn": "#820 支持节点-JS 22"
+      },
       "6.3.0": {
         "en": "#768 Add df_doorbell_clownfish\n#738 Add stickup_cam_medusa\n#685 Add cocoa_doorbell_v3",
         "de": "#768 Add Df_doorbell_clownfish\n#738 Add Ich bin hier\n#685 Add Kakao_Türbell_v3",
@@ -140,19 +153,6 @@
         "pl": "Niektóre aktualizacje pakietów\n# 749 Bump minimalny węzeł wersja do 20",
         "uk": "Деякі оновлення пакета\n#749 Бам мінімальний Node версія до 20",
         "zh-cn": "一些软件包更新\n# 749 泵最小节点版本为 20"
-      },
-      "6.0.0": {
-        "en": "Multiple fixes\nUpdate Ring-Api to V13",
-        "de": "Mehrere Fixes\nAktualisieren von Ring-Api auf V13",
-        "ru": "Несколько исправлений\nОбновление Ring-Api к V13",
-        "pt": "Várias correções\nAtualizar Ring-Api para V13",
-        "nl": "Meerdere correcties\nUpdate Ring-Api naar V13",
-        "fr": "Corrections multiples\nMettre à jour Ring-Api vers V13",
-        "it": "Correzioni multiple\nAggiornamento Ring-Api a V13",
-        "es": "Múltiples correcciones\nActualizar Ring-Api a V13",
-        "pl": "Wiele poprawek\nAktualizacja Ring- Api do V13",
-        "uk": "Кілька фіксаторів\nОновлення Ring-Api до V13",
-        "zh-cn": "多个修正\n将 Ring- Api 更新到 V13"
       }
     },
     "platform": "Javascript/Node.js",
@@ -173,7 +173,7 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "6.3.0"
+    "version": "6.4.0"
   },
   "instanceObjects": [
     {
