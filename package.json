@@ -41,7 +41,7 @@
     "node-schedule": "^2.1.1",
     "ring-client-api": "^14.0.1",
     "rxjs": "^7.8.2",
-    "sharp": "^0.34.2",
+    "sharp": "^0.34.3",
     "strftime": "^0.10.3",
     "suncalc": "^1.9.0"
   },
