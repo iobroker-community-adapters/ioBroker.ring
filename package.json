@@ -54,7 +54,7 @@
     "@types/chai": "^4.3.20",
     "@types/chai-as-promised": "^8.0.2",
     "@types/ffmpeg-static": "^5.1.0",
-    "@types/gulp": "^4.0.17",
+    "@types/gulp": "^4.0.18",
     "@types/mocha": "^10.0.10",
     "@types/node": "^24.1.0",
     "@types/node-schedule": "^2.1.8",
