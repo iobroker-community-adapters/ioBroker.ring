@@ -2,19 +2,11 @@
   "name": "iobroker.ring",
   "version": "6.4.0",
   "description": "Ring",
-  "author": {
-    "name": "Thiemo Hoffmann",
-    "email": "thiemo.hoffmann@web.de"
-  },
+  "author": "Thiemo Hoffmann <thiemo.hoffmann@web.de>",
   "contributors": [
-    {
-      "name": "Thorsten Stueben",
-      "email": "thorsten@stueben.de"
-    },
-    {
-      "name": "Thiemo Hoffmann",
-      "email": "thiemo.hoffmann@web.de"
-    }
+    "Thorsten Stueben <thorsten@stueben.de>",
+    "Thiemo Hoffmann <thiemo.hoffmann@web.de>",
+    "iobroker-community-adapters <iobroker-community-adapters@gmx.de>"
   ],
   "homepage": "https://github.com/iobroker-community-adapters/ioBroker.ring",
   "license": "MIT",

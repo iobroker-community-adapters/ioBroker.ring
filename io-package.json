@@ -23,14 +23,15 @@
       "fa-icon": "info"
     },
     "authors": [
-      "Thorsten Stueben <thorsten@stueben.de>"
+      "Thorsten Stueben <thorsten@stueben.de>",
+      "iobroker-community-adapters <iobroker-community-adapters@gmx.de>"
     ],
     "compact": true,
     "connectionType": "cloud",
     "dataSource": "push",
     "dependencies": [
       {
-        "js-controller": ">=5.0.19"
+        "js-controller": ">=6.0.11"
       }
     ],
     "desc": {
@@ -173,7 +174,12 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "6.4.0"
+    "version": "6.4.0",
+    "globalDependencies": [
+      {
+        "admin": ">=7.6.17"
+      }
+    ]
   },
   "instanceObjects": [
     {
