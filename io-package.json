@@ -19,8 +19,7 @@
         "uk": "Кільковий адаптер",
         "zh-cn": "导 言"
       },
-      "link": "/adapter/ring/tab_m.html?noFooter=true&instance=0",
-      "fa-icon": "info"
+      "link": "/adapter/ring/tab_m.html?noFooter=true&instance=0"
     },
     "authors": [
       "Thorsten Stueben <thorsten@stueben.de>",
