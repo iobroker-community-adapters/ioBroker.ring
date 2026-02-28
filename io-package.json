@@ -177,7 +177,7 @@
     "version": "6.4.0",
     "globalDependencies": [
       {
-        "admin": ">=7.6.17"
+        "admin": ">=7.7.22"
       }
     ]
   },
