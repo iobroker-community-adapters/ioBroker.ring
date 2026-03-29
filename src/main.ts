@@ -6,7 +6,7 @@
 // you need to create an adapter
 import * as utils from "@iobroker/adapter-core";
 import { Adapter } from "@iobroker/adapter-core";
-import path from "path";
+import path from "node:path";
 import schedule from "node-schedule";
 import suncalc, { GetTimesResult } from "suncalc";
 

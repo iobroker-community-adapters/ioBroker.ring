@@ -1,4 +1,4 @@
-import util from "util";
+import util from "node:util";
 import { RingCamera, RingCameraKind, RingDeviceType, RingIntercom } from "ring-client-api";
 
 import { RingAdapter } from "../main";
