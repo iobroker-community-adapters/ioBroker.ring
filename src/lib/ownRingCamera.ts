@@ -8,8 +8,8 @@ import {
   RingCamera
 } from "ring-client-api";
 import * as rxjs from "rxjs";
-import * as fs from "fs";
-import * as util from "util";
+import * as fs from "node:fs";
+import * as util from "node:util";
 import Sharp from "sharp";
 import strftime from "strftime";
 import schedule from "node-schedule";

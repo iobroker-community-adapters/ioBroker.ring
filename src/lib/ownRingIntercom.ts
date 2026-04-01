@@ -2,7 +2,7 @@ import {
   IntercomHandsetAudioData,
   RingIntercom,
 } from "ring-client-api";
-import util from "util";
+import util from "node:util";
 
 import { OwnRingDevice } from "./ownRingDevice";
 import { OwnRingLocation } from "./ownRingLocation";
