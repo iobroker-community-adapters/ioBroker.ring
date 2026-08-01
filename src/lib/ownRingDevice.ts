@@ -1,4 +1,3 @@
-import util from "node:util";
 import { RingCamera, RingCameraKind, RingDeviceType, RingIntercom } from "ring-client-api";
 
 import { RingAdapter } from "../main";
@@ -64,6 +63,7 @@ export abstract class OwnRingDevice {
       case RingCameraKind.floodlight_pro:
       case RingCameraKind.spotlightw_v2:
       case RingCameraKind.jbox_v1:
+      case "doorbell_sunray":
       case "df_doorbell_clownfish":
       case "lpd_v3":
         return `doorbell`;
@@ -80,6 +80,7 @@ export abstract class OwnRingDevice {
       case RingCameraKind.stickup_cam_lunar:
       case RingCameraKind.stickup_cam_elite:
       case RingCameraKind.stickup_cam_longfin:
+      case "stickup_cam_mini_ptz_v1":
       case "stickup_cam_mini_v2":
       case "stickup_cam_medusa":
         return `stickup`;
@@ -89,7 +90,11 @@ export abstract class OwnRingDevice {
         adapter.log.error(
           `Device with Type ${deviceType} not yet supported, please inform dev Team via Github`
         );
-        adapter.log.info(`Unsupported Device Info: ${util.inspect(device, false, 1)}`);
+        adapter.log.info(
+          `Unsupported Device Info: id=${device?.id}, type=${deviceType}, ` +
+          `model=${device?.model ?? "unknown"}, ` +
+          `description=${device?.initialData?.description ?? "unknown"}`
+        );
     }
     return "unknown";
   }
