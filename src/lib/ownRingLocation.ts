@@ -1,12 +1,12 @@
 import util from "node:util";
-import {
+import type {
   Location,
   LocationMode,
   LocationModeInput,
   LocationModeResponse,
   RingDevice,
   SocketIoMessage
-} from "ring-client-api";
+} from "ring-client-api" with { "resolution-mode": "import" };
 
 import { RingAdapter } from "../main";
 import { RingApiClient } from "./ringApiClient";
@@ -17,7 +17,7 @@ import {
   STATE_ID_DEBUG_REQUEST,
   STATE_ID_LOCATIONMODE,
 } from "./constants";
-import { ExtendedResponse } from "ring-client-api/lib/rest-client";
+import type { ExtendedResponse } from "ring-client-api/rest-client" with { "resolution-mode": "import" };
 
 export class OwnRingLocation {
   private _currentLocationMode: LocationMode = "unset";
@@ -55,8 +55,8 @@ export class OwnRingLocation {
       this.debug(`Received Location Connection Status Change to ${connected}`);
       if(!connected && !apiClient.refreshing) {
         this.warn(`Lost connection to Location ${this._loc.name}... Will try a reconnect in 5s`);
-        setTimeout((): void => {
-          this._client.refreshAll();
+        this._adapter.setTimeout((): void => {
+          void this._client.refreshAll();
         }, 5000);
       }
     });

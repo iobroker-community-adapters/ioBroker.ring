@@ -1,20 +1,20 @@
-import {
+import type {
   AnyCameraData,
   CameraData,
   CameraEvent,
   CameraEventResponse,
   CameraHealth,
   DingKind,
+  PushNotificationDingV2,
   RingCamera
-} from "ring-client-api";
+} from "ring-client-api" with { "resolution-mode": "import" };
 import * as rxjs from "rxjs";
 import * as fs from "node:fs";
 import * as util from "node:util";
 import Sharp from "sharp";
 import strftime from "strftime";
 import schedule from "node-schedule";
-import { PushNotificationDingV2 } from "ring-client-api/lib/ring-types";
-import { ExtendedResponse } from "ring-client-api/lib/rest-client";
+import type { ExtendedResponse } from "ring-client-api/rest-client" with { "resolution-mode": "import" };
 
 import { RingAdapter } from "../main";
 import { RingApiClient } from "./ringApiClient";
@@ -83,7 +83,7 @@ import { FileService } from "./services/file-service";
 import { OwnRingLocation } from "./ownRingLocation";
 import { OwnRingDevice } from "./ownRingDevice";
 import { FileInfo } from "./services/file-info";
-import { StreamingSession } from "ring-client-api/lib/streaming/streaming-session";
+import type { StreamingSession } from "ring-client-api/streaming/streaming-session" with { "resolution-mode": "import" };
 import { PathInfo } from "./services/path-info";
 import { EventBlocker } from "./services/event-blocker";
 import { ImageService } from "./services/image-service";
@@ -136,14 +136,17 @@ export class OwnRingCamera extends OwnRingDevice {
       ringDevice.data.description,
     );
     this._motionEventBlocker = new EventBlocker(
+      this._adapter,
       this._adapter.config.ignore_events_Motion,
       this._adapter.config.keep_ignoring_if_retriggered
     );
     this._notifyEventBlocker = new EventBlocker(
+      this._adapter,
       this._adapter.config.ignore_events_Motion,
       this._adapter.config.keep_ignoring_if_retriggered
     );
     this._doorbellEventBlocker = new EventBlocker(
+      this._adapter,
       this._adapter.config.ignore_events_Doorbell,
       this._adapter.config.keep_ignoring_if_retriggered
     );
@@ -535,7 +538,7 @@ export class OwnRingCamera extends OwnRingDevice {
             if (success) {
               this._adapter.upsertState(`${this.lightChannelId}.light_state`, COMMON_LIGHT_STATE, targetVal);
               this._adapter.upsertState(`${this.lightChannelId}.light_switch`, COMMON_LIGHT_SWITCH, targetVal, true);
-              setTimeout((): () => void => this.updateHealth.bind(this), 65000);
+              this._adapter.setTimeout((): () => void => this.updateHealth.bind(this), 65000);
             }
           });
         } else {
@@ -1042,7 +1045,7 @@ export class OwnRingCamera extends OwnRingDevice {
         return;
       }
       this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, COMMON_EVENTS_DOORBELL, true);
-      setTimeout((): void => {
+      this._adapter.setTimeout((): void => {
         this._adapter.upsertState(`${this.eventsChannelId}.doorbell`, COMMON_EVENTS_DOORBELL, false);
       }, 1000);
     }
@@ -1053,7 +1056,7 @@ export class OwnRingCamera extends OwnRingDevice {
     while (this._state !== EventState.Idle) {
       this.debug(`delayed notify recording for ${del_cnt}s`);
       del_cnt++;
-      await new Promise((resolve: (value: unknown) => void) => setTimeout(resolve, 1000));
+      await this._adapter.delay(1000);
     }
 
     this.silly(`Start recording for Event "${EventState[state]}"...`);
@@ -1070,7 +1073,7 @@ export class OwnRingCamera extends OwnRingDevice {
       this._adapter.config.auto_HDsnapshot && await this.takeHDSnapshot();
       this._adapter.config.auto_livestream && await this.startLivestream(this._adapter.config.recordtime_auto_livestream);
       // give some time to evaluate motion state, e.g. for node-red
-      setTimeout(() => {
+      this._adapter.setTimeout((): void => {
         this._adapter.upsertState(`${this.eventsChannelId}.motion`, COMMON_MOTION, false);
       }, 200);
       this.debug("Recording of event finished.");

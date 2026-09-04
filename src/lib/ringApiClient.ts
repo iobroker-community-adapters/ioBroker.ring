@@ -1,4 +1,4 @@
-import { Location, ProfileResponse, RingApi, RingCamera, RingDevice, RingIntercom } from "ring-client-api";
+import type { Location, ProfileResponse, RingApi, RingCamera, RingDevice, RingIntercom } from "ring-client-api" with { "resolution-mode": "import" };
 import pathToFfmpeg from "ffmpeg-static";
 
 import { RingAdapter } from "../main";
@@ -7,14 +7,14 @@ import { COMMON_NEW_TOKEN, COMMON_OLD_TOKEN } from "./constants";
 import { OwnRingLocation } from "./ownRingLocation";
 import { OwnRingDevice } from "./ownRingDevice";
 import { OwnRingIntercom } from "./ownRingIntercom";
-import { ExtendedResponse } from "ring-client-api/lib/rest-client";
+import type { ExtendedResponse } from "ring-client-api/rest-client" with { "resolution-mode": "import" };
 
 export class RingApiClient {
   public refreshing: boolean = false;
   private cameras: { [id: string]: OwnRingCamera } = {};
   private intercoms: { [id: string]: OwnRingIntercom } = {};
-  private _refreshInterval: NodeJS.Timeout | null = null;
-  private _retryTimeout: NodeJS.Timeout | null = null;
+  private _refreshInterval: ioBroker.Interval = null;
+  private _retryTimeout: ioBroker.Timeout = null;
 
   public get locations(): { [id: string]: OwnRingLocation } {
     return this._locations;
@@ -43,7 +43,9 @@ export class RingApiClient {
     if (!this.adapter.config.refreshtoken) {
       throw (`Refresh Token needed.`);
     }
-    this._api = new RingApi({
+    // "ring-client-api" is ESM only and cannot be require()d from this CommonJS build
+    const { RingApi: RingApiCtor } = await import("ring-client-api");
+    this._api = new RingApiCtor({
       controlCenterDisplayName: "iobroker.ring",
       refreshToken: await this.adapter.getRefreshToken(),
       systemId: `${this.adapter.host}.ring_v${this.adapter.version}_${Math.random() * Math.pow(10, 6)}`,
@@ -89,7 +91,10 @@ export class RingApiClient {
   public async init(): Promise<void> {
     await this.refreshAll(true);
     if (this.adapter.config.renew_registration > 0) {
-      this._refreshInterval = setInterval(this.refreshAll.bind(this), this.adapter.config.renew_registration * 3600 * 1000);
+      this._refreshInterval = this.adapter.setInterval(
+        this.refreshAll.bind(this),
+        this.adapter.config.renew_registration * 3600 * 1000,
+      ) ?? null;
     }
   }
 
@@ -107,14 +112,14 @@ export class RingApiClient {
         this.adapter.terminate(`Failed to retrieve any locations for your ring Account.`);
       }
       if (this._retryTimeout !== null) {
-        clearTimeout(this._retryTimeout);
+        this.adapter.clearTimeout(this._retryTimeout);
         this._retryTimeout = null;
       }
       this.warn(`Couldn't load data from Ring Server on reconnect, will retry in 5 Minutes...`);
-      this._retryTimeout = setTimeout(this.refreshAll.bind(this), 5 * 60 * 1000);
+      this._retryTimeout = this.adapter.setTimeout(this.refreshAll.bind(this), 5 * 60 * 1000) ?? null;
     } else {
       if (this._retryTimeout !== null) {
-        clearTimeout(this._retryTimeout);
+        this.adapter.clearTimeout(this._retryTimeout);
         this._retryTimeout = null;
       }
     }
@@ -155,11 +160,11 @@ export class RingApiClient {
 
   public unload(): void {
     if (this._refreshInterval) {
-      clearInterval(this._refreshInterval);
+      this.adapter.clearInterval(this._refreshInterval);
       this._refreshInterval = null;
     }
     if (this._retryTimeout !== null) {
-      clearTimeout(this._retryTimeout);
+      this.adapter.clearTimeout(this._retryTimeout);
       this._retryTimeout = null;
     }
   }

@@ -1,4 +1,4 @@
-import { RingCamera, RingCameraKind, RingDeviceType, RingIntercom } from "ring-client-api";
+import type { RingCamera, RingIntercom } from "ring-client-api" with { "resolution-mode": "import" };
 
 import { RingAdapter } from "../main";
 import { RingApiClient } from "./ringApiClient";
@@ -41,50 +41,56 @@ export abstract class OwnRingDevice {
     return `${this.evaluateKind(device.deviceType as string, adapter, device)}_${device.id}`;
   }
 
+  /**
+   * The device types below are spelled out as string literals on purpose: "ring-client-api" is
+   * ESM only, so its `RingCameraKind` / `RingDeviceType` constants cannot be require()d from
+   * this synchronous static method. The literals are the exact values of those constants, plus
+   * the kinds Ring ships before the library knows about them.
+   */
   public static evaluateKind(deviceType: string, adapter: RingAdapter, device: any): string {
     switch (deviceType) {
-      case RingCameraKind.doorbot:
-      case RingCameraKind.doorbell:
-      case RingCameraKind.doorbell_v3:
-      case RingCameraKind.doorbell_v4:
-      case RingCameraKind.doorbell_v5:
-      case RingCameraKind.doorbell_oyster:
-      case RingCameraKind.doorbell_portal:
-      case RingCameraKind.doorbell_scallop:
-      case RingCameraKind.doorbell_scallop_lite:
-      case RingCameraKind.doorbell_graham_cracker:
-      case RingCameraKind.hp_cam_v1:
-      case RingCameraKind.hp_cam_v2:
-      case RingCameraKind.lpd_v1:
-      case RingCameraKind.lpd_v2:
-      case RingCameraKind.lpd_v4:
-      case RingCameraKind.floodlight_v1:
-      case RingCameraKind.floodlight_v2:
-      case RingCameraKind.floodlight_pro:
-      case RingCameraKind.spotlightw_v2:
-      case RingCameraKind.jbox_v1:
+      case "doorbot":
+      case "doorbell":
+      case "doorbell_v3":
+      case "doorbell_v4":
+      case "doorbell_v5":
+      case "doorbell_oyster":
+      case "doorbell_portal":
+      case "doorbell_scallop":
+      case "doorbell_scallop_lite":
+      case "doorbell_graham_cracker":
+      case "hp_cam_v1":
+      case "hp_cam_v2":
+      case "lpd_v1":
+      case "lpd_v2":
+      case "lpd_v4":
+      case "floodlight_v1":
+      case "floodlight_v2":
+      case "floodlight_pro":
+      case "spotlightw_v2":
+      case "jbox_v1":
       case "doorbell_sunray":
       case "df_doorbell_clownfish":
       case "lpd_v3":
         return `doorbell`;
-      case RingCameraKind.cocoa_camera:
-      case RingCameraKind.cocoa_doorbell:
+      case "cocoa_camera":
+      case "cocoa_doorbell":
       case "cocoa_doorbell_v2":
       case "cocoa_doorbell_v3":
-      case RingCameraKind.cocoa_floodlight:
+      case "cocoa_floodlight":
         return `cocoa`;
-      case RingCameraKind.stickup_cam:
-      case RingCameraKind.stickup_cam_v3:
-      case RingCameraKind.stickup_cam_v4:
-      case RingCameraKind.stickup_cam_mini:
-      case RingCameraKind.stickup_cam_lunar:
-      case RingCameraKind.stickup_cam_elite:
-      case RingCameraKind.stickup_cam_longfin:
+      case "stickup_cam":
+      case "stickup_cam_v3":
+      case "stickup_cam_v4":
+      case "stickup_cam_mini":
+      case "stickup_cam_lunar":
+      case "stickup_cam_elite":
+      case "stickup_cam_longfin":
       case "stickup_cam_mini_ptz_v1":
       case "stickup_cam_mini_v2":
       case "stickup_cam_medusa":
         return `stickup`;
-      case RingDeviceType.IntercomHandsetAudio:
+      case "intercom_handset_audio":
         return `intercom`;
       default:
         adapter.log.error(

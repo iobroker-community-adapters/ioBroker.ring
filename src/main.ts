@@ -83,11 +83,7 @@ export class RingAdapter extends Adapter {
    */
   private onUnload(callback: () => void): void {
     try {
-      // Here you must clear all timeouts or intervals that may still be active
-      // clearTimeout(timeout1);
-      // clearTimeout(timeout2);
-      // ...
-      // clearInterval(interval1);
+      // Timers created via this.setTimeout()/this.setInterval() are cleared by adapter-core
       if (this.apiClient) {
         this.apiClient.unload();
       }

@@ -1,10 +1,14 @@
+import { RingAdapter } from "../../main";
+
 export class EventBlocker {
   private _blockActive: boolean = false;
-  private _blockTimeout: NodeJS.Timeout | null = null;
+  private _blockTimeout: ioBroker.Timeout = null;
   private _blockDuration: number = 0;
   private _extendIfActive: boolean = false;
+  private readonly _adapter: RingAdapter;
 
-  public constructor(blockDuration: number, extendIfActive: boolean) {
+  public constructor(adapter: RingAdapter, blockDuration: number, extendIfActive: boolean) {
+    this._adapter = adapter;
     this._blockDuration = blockDuration;
     this._extendIfActive = extendIfActive;
   }
@@ -26,11 +30,11 @@ export class EventBlocker {
 
   private setUnblockTimeout(): void {
     if (this._blockTimeout) {
-      clearTimeout(this._blockTimeout);
+      this._adapter.clearTimeout(this._blockTimeout);
     }
-    this._blockTimeout = setTimeout(() => {
+    this._blockTimeout = this._adapter.setTimeout((): void => {
       this._blockActive = false;
       this._blockTimeout = null;
-    }, this._blockDuration * 1000);
+    }, this._blockDuration * 1000) ?? null;
   }
 }

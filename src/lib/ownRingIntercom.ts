@@ -1,7 +1,7 @@
-import {
-  IntercomHandsetAudioData,
+import type {
+  IntercomHandsetData,
   RingIntercom,
-} from "ring-client-api";
+} from "ring-client-api" with { "resolution-mode": "import" };
 import util from "node:util";
 
 import { OwnRingDevice } from "./ownRingDevice";
@@ -51,6 +51,7 @@ export class OwnRingIntercom extends OwnRingDevice {
     );
     // Initialize event blocker to manage ding events
     this._dingEventBlocker = new EventBlocker(
+      this._adapter,
       this._adapter.config.ignore_events_Doorbell,
       this._adapter.config.keep_ignoring_if_retriggered
     );
@@ -65,7 +66,7 @@ export class OwnRingIntercom extends OwnRingDevice {
 
     // Subscribe to data changes from the intercom
     this._ringIntercom.onData.subscribe({
-      next: (data: IntercomHandsetAudioData): void => {
+      next: (data: IntercomHandsetData): void => {
         this.update(data);
       },
       error: (err: Error): void => {
@@ -228,13 +229,13 @@ export class OwnRingIntercom extends OwnRingDevice {
     );
   }
 
-  private update(data: IntercomHandsetAudioData): void {
+  private update(data: IntercomHandsetData): void {
     this.debug(`Received Update`);
     this.updateDeviceInfoObject(data);
     this.updateBatteryInfo();
   }
 
-  private updateDeviceInfoObject(data: IntercomHandsetAudioData): void {
+  private updateDeviceInfoObject(data: IntercomHandsetData): void {
     this._adapter.upsertState(
       `${this.infoChannelId}.id`,
       COMMON_INFO_ID,
@@ -323,7 +324,7 @@ export class OwnRingIntercom extends OwnRingDevice {
       COMMON_EVENTS_INTERCOM_DING,
       true
     );
-    setTimeout((): void => {
+    this._adapter.setTimeout((): void => {
       this._adapter.upsertState(
         `${this.eventsChannelId}.ding`,
         COMMON_EVENTS_INTERCOM_DING,
