@@ -1,33 +1,33 @@
 {
-  "name": "ring-tab",
-  "version": "6.4.0",
-  "private": true,
-  "type": "module",
-  "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
-    "@iobroker/gui-components": "^10.2.3",
-    "@mui/icons-material": "^9.4.0",
-    "@mui/material": "^9.4.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8"
-  },
-  "devDependencies": {
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4",
-    "@vitejs/plugin-react": "^6.1.1",
-    "typescript": "~6.0.3",
-    "vite": "^8.2.2"
-  },
-  "scripts": {
-    "start": "vite --host",
-    "build": "vite build",
-    "check": "tsc --noEmit"
-  },
-  "homepage": ".",
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not op_mini all"
-  ]
+    "name": "ring-tab",
+    "version": "7.0.0",
+    "private": true,
+    "type": "module",
+    "dependencies": {
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.1",
+        "@iobroker/gui-components": "^10.2.3",
+        "@mui/icons-material": "^9.4.0",
+        "@mui/material": "^9.4.0",
+        "react": "^19.2.8",
+        "react-dom": "^19.2.8"
+    },
+    "devDependencies": {
+        "@types/react": "^19.2.18",
+        "@types/react-dom": "^19.2.4",
+        "@vitejs/plugin-react": "^6.1.1",
+        "typescript": "~6.0.3",
+        "vite": "^8.2.2"
+    },
+    "scripts": {
+        "start": "vite --host",
+        "build": "vite build",
+        "check": "tsc --noEmit"
+    },
+    "homepage": ".",
+    "browserslist": [
+        ">0.2%",
+        "not dead",
+        "not op_mini all"
+    ]
 }
