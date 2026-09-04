@@ -4,12 +4,17 @@
 
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
-import * as utils from '@iobroker/adapter-core';
-import { Adapter } from '@iobroker/adapter-core';
+import {
+    Adapter,
+    type AdapterOptions,
+    getAbsoluteInstanceDataDir,
+    getAbsoluteDefaultDataDir,
+} from '@iobroker/adapter-core';
 import path from 'node:path';
 import schedule from 'node-schedule';
-import type { GetTimesResult } from 'suncalc';
-import suncalc from 'suncalc';
+import type { SunTimes } from 'suncalc' with {
+    'resolution-mode': 'import',
+};
 
 import { RingApiClient } from './lib/ringApiClient';
 import { FileService } from './lib/services/file-service';
@@ -23,10 +28,10 @@ export class RingAdapter extends Adapter {
     private sunset: number = 0;
 
     public get absoluteInstanceDir(): string {
-        return utils.getAbsoluteInstanceDataDir(this);
+        return getAbsoluteInstanceDataDir(this);
     }
     public get absoluteDefaultDir(): string {
-        return utils.getAbsoluteDefaultDataDir();
+        return getAbsoluteDefaultDataDir();
     }
     public get Sunrise(): number {
         return this.sunrise;
@@ -35,7 +40,7 @@ export class RingAdapter extends Adapter {
         return this.sunset;
     }
 
-    public constructor(options: Partial<utils.AdapterOptions> = {}) {
+    public constructor(options: Partial<AdapterOptions> = {}) {
         options.systemConfig = true;
         super({
             ...options,
@@ -90,9 +95,7 @@ export class RingAdapter extends Adapter {
             while (this.scheduledJobs.length) {
                 this.scheduledJobs.pop()?.cancel();
             }
-            if (this.apiClient) {
-                this.apiClient.unload();
-            }
+            this.apiClient?.unload();
             callback();
         } catch {
             callback();
@@ -149,21 +152,32 @@ export class RingAdapter extends Adapter {
         return this.config.refreshtoken;
     }
 
-    private CalcSunData(): void {
+    private async CalcSunData(): Promise<void> {
         try {
             this.log.debug('Run CalcSunData');
             if (this.latitude && this.longitude) {
+                // "suncalc" is ESM only and cannot be require()d from this CommonJS build
+                const { getTimes } = await import('suncalc');
                 const today: Date = new Date();
-                const sunData: GetTimesResult = suncalc.getTimes(
+                const sunData: SunTimes = getTimes(
                     today,
                     typeof this.latitude === 'string' ? parseFloat(this.latitude) : this.latitude,
                     typeof this.longitude === 'string' ? parseFloat(this.longitude) : this.longitude,
                 );
-                this.sunset = sunData.night.getTime(); // night is really dark, sunset is too early
-                this.sunrise = sunData.nightEnd.getTime(); // same here vice versa
-                this.log.debug(
-                    `Sunset: ${new Date(this.sunset).toLocaleString()}, Sunrise: ${new Date(this.sunrise).toLocaleString()}`,
-                );
+                // night is really dark, sunset is too early - and vice versa for nightEnd.
+                // Both are null inside the polar circles, where there is no astronomical night.
+                // The night detection in OwnRingCamera treats 0 as "unknown" and is skipped then.
+                if (sunData.night && sunData.nightEnd) {
+                    this.sunset = sunData.night.getTime();
+                    this.sunrise = sunData.nightEnd.getTime();
+                    this.log.debug(
+                        `Sunset: ${new Date(this.sunset).toLocaleString()}, Sunrise: ${new Date(this.sunrise).toLocaleString()}`,
+                    );
+                } else {
+                    this.sunset = 0;
+                    this.sunrise = 0;
+                    this.log.debug('No astronomical night at this location today, night detection is disabled');
+                }
             } else {
                 this.log.error('Latitude or Longitude not defined in System');
             }
@@ -198,28 +212,28 @@ export class RingAdapter extends Adapter {
     await FileService.prepareFolder(this.config.path);
     */
 
-        const config_path: string[] = [this.config.path_snapshot, this.config.path_livestream];
-        for (const index in config_path) {
-            this.log.debug(`Configured Path: "${config_path[index]}"`);
+        const configPath: string[] = [this.config.path_snapshot, this.config.path_livestream];
+        for (let index = 0; index < configPath.length; index++) {
+            this.log.debug(`Configured Path: "${configPath[index]}"`);
             const dataDir: any = this.systemConfig ? this.systemConfig.dataDir : '';
             this.log.silly(`DataDir: ${dataDir}`);
-            if (!config_path[index]) {
-                config_path[index] = path.join(this.absoluteDefaultDir, 'files', this.namespace);
-                if (index == '0') {
-                    this.config.path_snapshot = config_path[index];
+            if (!configPath[index]) {
+                configPath[index] = path.join(this.absoluteDefaultDir, 'files', this.namespace);
+                if (!index) {
+                    this.config.path_snapshot = configPath[index];
                 } else {
-                    this.config.path_livestream = config_path[index];
+                    this.config.path_livestream = configPath[index];
                 }
-                this.log.debug(`New Config Path: "${config_path[index]}"`);
+                this.log.debug(`New Config Path: "${configPath[index]}"`);
             }
-            await FileService.prepareFolder(config_path[index]);
+            await FileService.prepareFolder(configPath[index]);
         }
 
         this.log.info(`Initializing Api Client`);
         await this.apiClient.init();
 
         this.log.info(`Get sunset and sunrise`);
-        this.CalcSunData();
+        await this.CalcSunData();
 
         // Daily schedule sometime from 00:00:20 to 00:00:40
         const scheduleSeconds: number = Math.round(Math.random() * 20 + 20);
@@ -227,10 +241,14 @@ export class RingAdapter extends Adapter {
         this.registerScheduledJob(
             // the job name has to carry the namespace, node-schedule keeps named jobs in one
             // process-wide registry and a second instance would otherwise replace this job
-            schedule.scheduleJob(`SunData_${this.namespace}`, `${scheduleSeconds} 0 0 * * *`, (): void => {
-                this.log.info(`Cronjob 'Sun parameter calculation' starts`);
-                this.CalcSunData();
-            }),
+            schedule.scheduleJob(
+                `SunData_${this.namespace}`,
+                `${scheduleSeconds} 0 0 * * *`,
+                async (): Promise<void> => {
+                    this.log.info(`Cronjob 'Sun parameter calculation' starts`);
+                    await this.CalcSunData();
+                },
+            ),
         );
     }
 
@@ -312,7 +330,7 @@ export class RingAdapter extends Adapter {
 
 if (require.main !== module) {
     // Export the constructor in compact mode
-    module.exports = (options: Partial<utils.AdapterOptions> | undefined): RingAdapter => new RingAdapter(options);
+    module.exports = (options: Partial<AdapterOptions> | undefined): RingAdapter => new RingAdapter(options);
 } else {
     // otherwise start the instance directly
     ((): RingAdapter => new RingAdapter())();
