@@ -97,7 +97,7 @@ doorbell recorded video.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### 7.0.0 (2026-09-04)
+### **WORK IN PROGRESS**
 - (bluefox) The admin tab was rewritten in React (`src-tab/`), replacing the materialize page - doorbell cameras are listed now, they were silently skipped before
 - (bluefox) The tab no longer assumes the web adapter runs on port 8082; it derives host, port and protocol from the URL states
 - (bluefox) The adapter was refactored: TypeScript 6, @iobroker/eslint-config, gulp removed
