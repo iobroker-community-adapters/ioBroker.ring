@@ -1,6 +1,6 @@
 {
   "name": "iobroker.ring",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "description": "Ring",
   "author": "Thiemo Hoffmann <thiemo.hoffmann@web.de>",
   "contributors": [
