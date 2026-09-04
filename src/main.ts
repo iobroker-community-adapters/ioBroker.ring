@@ -89,7 +89,7 @@ export class RingAdapter extends Adapter {
                 this.apiClient.unload();
             }
             callback();
-        } catch (e) {
+        } catch {
             callback();
         }
     }

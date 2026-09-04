@@ -511,7 +511,7 @@ export class OwnRingCamera extends OwnRingDevice {
 
     public override async processUserInput(channelID: string, stateID: string, state: ioBroker.State): Promise<void> {
         switch (channelID) {
-            case '':
+            case '': {
                 if (stateID !== STATE_ID_DEBUG_REQUEST) {
                     return;
                 }
@@ -521,6 +521,7 @@ export class OwnRingCamera extends OwnRingDevice {
                     this._adapter.upsertState(`${this.fullId}.${STATE_ID_DEBUG_REQUEST}`, COMMON_DEBUG_REQUEST, false);
                 }
                 return;
+            }
 
             case 'Siren':
                 if (!this._ringDevice.hasSiren) {

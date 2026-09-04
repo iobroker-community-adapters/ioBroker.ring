@@ -129,7 +129,7 @@ export class OwnRingLocation {
 
     private async performLocationModeChange(state: ioBroker.State): Promise<void> {
         const parsedNumber: number = parseInt(state.val as string, 10);
-        let desiredState: string | LocationMode;
+        let desiredState: string;
         if (typeof state.val == 'number') {
             desiredState = LOCATION_MODE_OPTIONS[state.val];
         } else if (!isNaN(parsedNumber)) {

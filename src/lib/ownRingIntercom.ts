@@ -80,7 +80,7 @@ export class OwnRingIntercom extends OwnRingDevice {
 
     public processUserInput(channelID: string, stateID: string, state: ioBroker.State): void {
         switch (channelID) {
-            case '':
+            case '': {
                 const targetBoolVal: boolean = state.val as boolean;
                 switch (stateID) {
                     case STATE_ID_DEBUG_REQUEST:
@@ -112,6 +112,7 @@ export class OwnRingIntercom extends OwnRingDevice {
                         this.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
                 }
                 return;
+            }
             default:
                 this.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
         }
