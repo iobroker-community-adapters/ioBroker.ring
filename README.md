@@ -91,6 +91,13 @@ If you press the `livestream request` button you get new SIP Information for bui
 If you are using the [ring.com](https://ring.com) cloud, you find under history a http link to your last motion /
 doorbell recorded video.
 
+## Installation
+
+Install this adapter using ioBroker repositories.
+
+>[!NOTE]
+> This adapter does not support installation from GitHub.
+
 ## Changelog
 
 <!--
