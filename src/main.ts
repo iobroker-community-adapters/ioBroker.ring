@@ -18,6 +18,7 @@ export class RingAdapter extends Adapter {
     private apiClient: RingApiClient | undefined;
     public static isWindows: boolean = process.platform.startsWith('win');
     private states: { [id: string]: ioBroker.StateValue } = {};
+    private readonly scheduledJobs: schedule.Job[] = [];
     private sunrise: number = 0;
     private sunset: number = 0;
 
@@ -84,7 +85,11 @@ export class RingAdapter extends Adapter {
      */
     private onUnload(callback: () => void): void {
         try {
-            // Timers created via this.setTimeout()/this.setInterval() are cleared by adapter-core
+            // Timers created via this.setTimeout()/this.setInterval() are cleared by adapter-core,
+            // node-schedule jobs are not - and in compact mode they would outlive the instance.
+            while (this.scheduledJobs.length) {
+                this.scheduledJobs.pop()?.cancel();
+            }
             if (this.apiClient) {
                 this.apiClient.unload();
             }
@@ -144,7 +149,7 @@ export class RingAdapter extends Adapter {
         return this.config.refreshtoken;
     }
 
-    private async CalcSunData(): Promise<void> {
+    private CalcSunData(): void {
         try {
             this.log.debug('Run CalcSunData');
             if (this.latitude && this.longitude) {
@@ -214,15 +219,19 @@ export class RingAdapter extends Adapter {
         await this.apiClient.init();
 
         this.log.info(`Get sunset and sunrise`);
-        await this.CalcSunData();
+        this.CalcSunData();
 
         // Daily schedule sometime from 00:00:20 to 00:00:40
         const scheduleSeconds: number = Math.round(Math.random() * 20 + 20);
         this.log.info(`Daily sun parameter calculation scheduled for 00:00:${scheduleSeconds}`);
-        schedule.scheduleJob('SunData', `${scheduleSeconds} 0 0 * * *`, async (): Promise<void> => {
-            this.log.info(`Cronjob 'Sun parameter calculation' starts`);
-            await this.CalcSunData();
-        });
+        this.registerScheduledJob(
+            // the job name has to carry the namespace, node-schedule keeps named jobs in one
+            // process-wide registry and a second instance would otherwise replace this job
+            schedule.scheduleJob(`SunData_${this.namespace}`, `${scheduleSeconds} 0 0 * * *`, (): void => {
+                this.log.info(`Cronjob 'Sun parameter calculation' starts`);
+                this.CalcSunData();
+            }),
+        );
     }
 
     /**
@@ -251,6 +260,13 @@ export class RingAdapter extends Adapter {
         }
 
         this.apiClient.processUserInput(targetId, channelID, stateID, state);
+    }
+
+    /** Remember a node-schedule job so that onUnload() can cancel it again */
+    public registerScheduledJob(job: schedule.Job | null): void {
+        if (job) {
+            this.scheduledJobs.push(job);
+        }
     }
 
     public logCatch(message: string, reason: any): void {

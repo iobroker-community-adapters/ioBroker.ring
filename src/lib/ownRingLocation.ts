@@ -48,7 +48,7 @@ export class OwnRingLocation {
         this._adapter = adapter;
         this._client = apiClient;
         this._loc.onDataUpdate.subscribe((message: SocketIoMessage): void => {
-            this.debug(`Received Location Update Event: "${message}"`);
+            this.debug(`Received Location Update Event: "${JSON.stringify(message)}"`);
         });
         this._loc.onConnected.subscribe((connected: boolean): void => {
             this.debug(`Received Location Connection Status Change to ${connected}`);
@@ -146,7 +146,7 @@ export class OwnRingLocation {
             return;
         }
         this.debug(`Change Location Mode to ${desiredState}`);
-        this._loc
+        await this._loc
             .setLocationMode(desiredState as LocationModeInput)
             .then((r: LocationModeResponse & ExtendedResponse): Promise<void> => this.updateModeObject(r.mode))
             .catch((reason: any): void => {
@@ -163,7 +163,7 @@ export class OwnRingLocation {
     }
 
     private async getLocationMode(): Promise<void> {
-        this._loc
+        await this._loc
             .getLocationMode()
             .then((r: LocationModeResponse & ExtendedResponse): Promise<void> => this.updateModeObject(r.mode))
             .catch((reason: any): void => this._adapter.logCatch("Couldn't retrieve Location Mode", reason));

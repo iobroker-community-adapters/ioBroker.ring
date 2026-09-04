@@ -487,7 +487,7 @@ export class OwnRingCamera extends OwnRingDevice {
 
     public async updateHistory(): Promise<void> {
         this.silly(`Update History`);
-        this._ringDevice.getEvents({ limit: 50 }).then(async (r: CameraEventResponse): Promise<void> => {
+        await this._ringDevice.getEvents({ limit: 50 }).then(async (r: CameraEventResponse): Promise<void> => {
             this.silly(`Received Event History`);
             const lastAction: CameraEvent | undefined = r.events.find((event: CameraEvent): boolean => {
                 const kind: DingKind = event.kind;
@@ -566,7 +566,7 @@ export class OwnRingCamera extends OwnRingDevice {
                                 targetVal,
                                 true,
                             );
-                            this._adapter.setTimeout((): (() => void) => this.updateHealth.bind(this), 65000);
+                            this._adapter.setTimeout((): void => void this.updateHealth(), 65000);
                         }
                     });
                 } else {
@@ -803,39 +803,29 @@ export class OwnRingCamera extends OwnRingDevice {
                     return { visURL: '', visPath: '' };
                 },
             );
-        return new Promise<FileInfo>(
-            async (
-                resolve: (value: PromiseLike<FileInfo> | FileInfo) => void,
-                reject: (reason?: any) => void,
-            ): Promise<void> => {
-                if (!visURL || !visPath) {
-                    reject('Vis not available');
-                }
+        if (!visURL || !visPath) {
+            throw new Error('Vis not available');
+        }
 
-                const { fullPath, dirname }: PathInfo = FileService.getPath(
-                    this._adapter.config.path_livestream,
-                    this._adapter.config.filename_livestream,
-                    ++this._liveStreamCount,
-                    this.shortId,
-                    this.fullId,
-                    this.kind,
-                );
-
-                const folderPrepared: boolean = await FileService.prepareFolder(dirname).catch(
-                    (reason: any): boolean => {
-                        this.catcher("Couldn't prepare folder.", reason);
-                        return false;
-                    },
-                );
-                if (!folderPrepared) {
-                    this.warn(`Failed to prepare Livestream folder ("${fullPath}")`);
-                    reject('Failed to prepare Livestream folder');
-                    return;
-                }
-                FileService.deleteFileIfExistSync(fullPath, this._adapter);
-                resolve({ visURL: visURL, visPath: visPath, fullPath: fullPath });
-            },
+        const { fullPath, dirname }: PathInfo = FileService.getPath(
+            this._adapter.config.path_livestream,
+            this._adapter.config.filename_livestream,
+            ++this._liveStreamCount,
+            this.shortId,
+            this.fullId,
+            this.kind,
         );
+
+        const folderPrepared: boolean = await FileService.prepareFolder(dirname).catch((reason: any): boolean => {
+            this.catcher("Couldn't prepare folder.", reason);
+            return false;
+        });
+        if (!folderPrepared) {
+            this.warn(`Failed to prepare Livestream folder ("${fullPath}")`);
+            throw new Error('Failed to prepare Livestream folder');
+        }
+        FileService.deleteFileIfExistSync(fullPath, this._adapter);
+        return { visURL: visURL, visPath: visPath, fullPath: fullPath };
     }
 
     private getActiveNightImageOptions(): { night_contrast: boolean; night_sharpen: boolean } {
@@ -932,21 +922,23 @@ export class OwnRingCamera extends OwnRingDevice {
                 }
                 const t = `${schedSec} ${schedMin} ${schedHour} ${schedDay} * *`;
                 this.info(`Create scheduled Job for ${m.name} at "${t}"`);
-                schedule.scheduleJob(
-                    `Auto save ${m.name}_${this._adapter.name}_${this._adapter.instance}`,
-                    t,
-                    async (): Promise<void> => {
-                        const recAct: any = await this._adapter.getStateAsync(`${this.eventsChannelId}.ondemand`);
-                        if (!recAct || !recAct.val) {
-                            this.info(`Cronjob Auto save ${m.name} starts`);
-                            this._adapter.upsertState(`${this.eventsChannelId}.ondemand`, COMMON_ON_DEMAND, true);
-                            m.fct(this._adapter.config.recordtime_auto_livestream);
-                        } else {
-                            this.warn(
-                                `Cronjob ${m.name} not executed because another job is already running. Please adapt timer and/or duration time!`,
-                            );
-                        }
-                    },
+                this._adapter.registerScheduledJob(
+                    schedule.scheduleJob(
+                        `Auto save ${m.name}_${this._adapter.name}_${this._adapter.instance}`,
+                        t,
+                        async (): Promise<void> => {
+                            const recAct: any = await this._adapter.getStateAsync(`${this.eventsChannelId}.ondemand`);
+                            if (!recAct || !recAct.val) {
+                                this.info(`Cronjob Auto save ${m.name} starts`);
+                                this._adapter.upsertState(`${this.eventsChannelId}.ondemand`, COMMON_ON_DEMAND, true);
+                                m.fct(this._adapter.config.recordtime_auto_livestream);
+                            } else {
+                                this.warn(
+                                    `Cronjob ${m.name} not executed because another job is already running. Please adapt timer and/or duration time!`,
+                                );
+                            }
+                        },
+                    ),
                 );
             }
         }
@@ -1016,9 +1008,9 @@ export class OwnRingCamera extends OwnRingDevice {
     }
 
     private async updateSnapshotRequest(ack: boolean = true): Promise<void> {
-        this._adapter.upsertState(`${this.eventsChannelId}.ondemand`, COMMON_ON_DEMAND, false);
+        await this._adapter.upsertState(`${this.eventsChannelId}.ondemand`, COMMON_ON_DEMAND, false);
         // subscribe to true, because user request doesn't change value via upsertState
-        this._adapter.upsertState(
+        await this._adapter.upsertState(
             `${this.snapshotChannelId}.${STATE_ID_SNAPSHOT_REQUEST}`,
             COMMON_SNAPSHOT_REQUEST,
             false,
@@ -1028,9 +1020,9 @@ export class OwnRingCamera extends OwnRingDevice {
     }
 
     private async updateHDSnapshotRequest(ack: boolean = true): Promise<void> {
-        this._adapter.upsertState(`${this.eventsChannelId}.ondemand`, COMMON_ON_DEMAND, false);
+        await this._adapter.upsertState(`${this.eventsChannelId}.ondemand`, COMMON_ON_DEMAND, false);
         // subscribe to true, because user request doesn't change value via upsertState
-        this._adapter.upsertState(
+        await this._adapter.upsertState(
             `${this.HDsnapshotChannelId}.${STATE_ID_HDSNAPSHOT_REQUEST}`,
             COMMON_HDSNAPSHOT_REQUEST,
             false,
@@ -1040,9 +1032,9 @@ export class OwnRingCamera extends OwnRingDevice {
     }
 
     private async updateLivestreamRequest(ack: boolean = true): Promise<void> {
-        this._adapter.upsertState(`${this.eventsChannelId}.ondemand`, COMMON_ON_DEMAND, false);
+        await this._adapter.upsertState(`${this.eventsChannelId}.ondemand`, COMMON_ON_DEMAND, false);
         // subscribe to true, because user request doesn't change value via upsertState
-        this._adapter.upsertState(
+        await this._adapter.upsertState(
             `${this.liveStreamChannelId}.${STATE_ID_LIVESTREAM_REQUEST}`,
             COMMON_LIVESTREAM_REQUEST,
             false,

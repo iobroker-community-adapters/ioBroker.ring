@@ -43,7 +43,7 @@ export class RingApiClient {
             return this._api;
         }
         if (!this.adapter.config.refreshtoken) {
-            throw `Refresh Token needed.`;
+            throw new Error('Refresh Token needed.');
         }
         // "ring-client-api" is ESM only and cannot be require()d from this CommonJS build
         const { RingApi: RingApiCtor } = await import('ring-client-api');
@@ -167,9 +167,9 @@ export class RingApiClient {
 
     private async retrieveLocations(): Promise<boolean> {
         this.debug(`Retrieve Locations`);
-        return new Promise<boolean>(async (res: (value: PromiseLike<boolean> | boolean) => void): Promise<void> => {
-            (await this.getApi())
-                .getLocations()
+        const api: RingApi = await this.getApi();
+        return new Promise<boolean>((res: (value: PromiseLike<boolean> | boolean) => void): void => {
+            api.getLocations()
                 .catch((reason: any): void => {
                     this.handleApiError(reason);
                     res(false);
