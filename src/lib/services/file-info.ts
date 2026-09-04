@@ -1,5 +1,5 @@
 export interface FileInfo {
-  fullPath: string;
-  visURL: string;
-  visPath: string;
+    fullPath: string;
+    visURL: string;
+    visPath: string;
 }

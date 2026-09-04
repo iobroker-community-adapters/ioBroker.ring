@@ -1,5 +1,5 @@
 export interface PathInfo {
-  fullPath: string;
-  dirname: string;
-  filename: string;
+    fullPath: string;
+    dirname: string;
+    filename: string;
 }
