@@ -40,8 +40,6 @@
   "2 minutes": "2 minuten",
   "3 minutes": "3 minuten",
   "1 hour": "1 uur",
-  "2 hour": "2 uur",
-  "3 hour": "3 uur",
   "1 day": "1 dag",
   "-": "-",
   "HDInfo": "<br>Belangrijke informatie!<br>De setting \"Vertaling:, \"Picture scherp\" en \"In tegenstelling tot\" het is tijd voor een paar seconden.<br>Als een snelle tijd belangrijk is, zet ze dan allemaal uit.",
@@ -50,5 +48,9 @@
   "Motion": "Motion",
   "Doorbell": "Doorbell",
   "General": "Algemeen",
-  "Extend ignore duration on retrigger": "Verleng de duur van het negeren opnieuw"
+  "Extend ignore duration on retrigger": "Verleng de duur van het negeren opnieuw",
+  "Events": "Gebeurtenissen",
+  "30 minutes": "30 minuten",
+  "2 hours": "2 uur",
+  "3 hours": "3 uur"
 }

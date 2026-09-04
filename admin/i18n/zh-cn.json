@@ -50,5 +50,7 @@
   "Motion": "运动",
   "Doorbell": "门铃",
   "General": "一般",
-  "Extend ignore duration on retrigger": "在重新触发时延长忽略持续时间"
+  "Extend ignore duration on retrigger": "在重新触发时延长忽略持续时间",
+  "Events": "事件",
+  "30 minutes": "30 分钟"
 }

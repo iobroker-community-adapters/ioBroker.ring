@@ -50,5 +50,7 @@
   "Motion": "Mouvement",
   "Doorbell": "Sonnette",
   "General": "Général",
-  "Extend ignore duration on retrigger": "Prolonger la durée d'ignorance sur le retrigger"
+  "Extend ignore duration on retrigger": "Prolonger la durée d'ignorance sur le retrigger",
+  "Events": "Événements",
+  "30 minutes": "30 minutes"
 }

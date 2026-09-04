@@ -50,5 +50,7 @@
   "Motion": "Motion",
   "Doorbell": "Doorbell",
   "General": "General",
-  "Extend ignore duration on retrigger": "Extend ignore duration on retrigger"
+  "Extend ignore duration on retrigger": "Extend ignore duration on retrigger",
+  "Events": "Events",
+  "30 minutes": "30 minutes"
 }

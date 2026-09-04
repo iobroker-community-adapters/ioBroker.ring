@@ -50,5 +50,7 @@
   "Motion": "Рух",
   "Doorbell": "Дверний дзвінок",
   "General": "Загальні",
-  "Extend ignore duration on retrigger": "Продовжити ігнорування тривалості на повторне спрацювання"
+  "Extend ignore duration on retrigger": "Продовжити ігнорування тривалості на повторне спрацювання",
+  "Events": "Події",
+  "30 minutes": "30 хвилин"
 }

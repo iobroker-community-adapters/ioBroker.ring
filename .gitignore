@@ -2,6 +2,8 @@
 .idea
 *.code-workspace
 node_modules
+build
+*.tsbuildinfo
 nbproject
 
 # npm package files
