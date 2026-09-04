@@ -25,7 +25,7 @@ npx -p ring-client-api ring-auth-cli
 
 or
 
-```
+```bash
 # Unix 
 cd /opt/iobroker/node_modules/iobroker.ring/
 npm i ring-client-api
@@ -63,7 +63,7 @@ the fault of this adapter.
 
 1. Some datapoints got renamed to be more consistent (e.g. `livestream_request` got reduced to `request` as it already
    is in channel `livestream`).
-2. You can now configure wether you want to react on events (with recording, snapshot, ...) or not.
+2. You can now configure whether you want to react on events (with recording, snapshot, ...) or not.
 3. Binary states got removed.
 
 ### V3 Rewrite Breaking Changes
@@ -98,6 +98,10 @@ doorbell recorded video.
 	### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
+- (Speedbreaker12) #993 Add doorbell_sunray (Battery Video Doorbell 2K) as doorbell
+- (Speedbreaker12) #993 #854 Add stickup_cam_mini_ptz_v1 (Pan-Tilt Indoor Cam) as stickup cam
+- (Speedbreaker12) #993 Unsupported device logging no longer dumps the whole device object (could expose the Ring refresh token in the log)
+- (GermanBluefox) Devices previously created below `unknown_<id>` are recreated below `doorbell_<id>` / `stickup_<id>`; the old objects stay behind and have to be deleted manually
 - (copilot) Adapter requires node.js >= 22 now
 - (copilot) Adapter requires admin >= 7.7.22 now
 - (copilot) Adapter requires js-controller >= 6.0.11 now
