@@ -105,7 +105,7 @@ export abstract class OwnRingDevice {
         return 'unknown';
     }
 
-    public abstract processUserInput(channelID: string, stateID: string, state: ioBroker.State): void;
+    public abstract processUserInput(channelID: string, stateID: string, state: ioBroker.State): Promise<void>;
 
     protected abstract recreateDeviceObjectTree(): Promise<void>;
 

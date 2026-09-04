@@ -1,4 +1,4 @@
-import type { Location, ProfileResponse, RingApi, RingCamera, RingDevice, RingIntercom } from 'ring-client-api' with {
+import type { ProfileResponse, RingApi, RingCamera, RingDevice, RingIntercom } from 'ring-client-api' with {
     'resolution-mode': 'import',
 };
 import pathToFfmpeg from 'ffmpeg-static';
@@ -62,8 +62,16 @@ export class RingApiClient {
                 this.adapter.log.info(
                     `Received new Refresh Token. Will use the new one until the token in config gets changed`,
                 );
-                this.adapter.upsertState('next_refresh_token', COMMON_NEW_TOKEN, data.newRefreshToken);
-                this.adapter.upsertState('old_user_refresh_token', COMMON_OLD_TOKEN, this.adapter.config.refreshtoken);
+                this.adapter
+                    .upsertState('next_refresh_token', COMMON_NEW_TOKEN, data.newRefreshToken)
+                    .catch((e: any): void => {
+                        this.adapter.log.error(`Failed to store new refresh token: ${e}`);
+                    });
+                this.adapter
+                    .upsertState('old_user_refresh_token', COMMON_OLD_TOKEN, this.adapter.config.refreshtoken)
+                    .catch((e: any): void => {
+                        this.adapter.log.error(`Failed to store old refresh token: ${e}`);
+                    });
             },
         );
         const profile: (ProfileResponse & ExtendedResponse) | void = await this._api
@@ -140,7 +148,7 @@ export class RingApiClient {
     }
 
     public processUserInput(targetId: string, channelID: string, stateID: string, state: ioBroker.State): void {
-        const targetDevice: OwnRingCamera = this.cameras[targetId] ?? this.intercoms[targetId];
+        const targetDevice: OwnRingDevice = this.cameras[targetId] ?? this.intercoms[targetId];
         const targetLocation: OwnRingLocation = this._locations[targetId];
         if (!targetDevice && !targetLocation) {
             this.adapter.log.error(
@@ -148,7 +156,9 @@ export class RingApiClient {
             );
             return;
         } else if (targetDevice) {
-            targetDevice.processUserInput(channelID, stateID, state);
+            targetDevice.processUserInput(channelID, stateID, state).catch((e: any): void => {
+                this.adapter.log.error(`Failed to process user input for device ${channelID} stateID ${stateID}: ${e}`);
+            });
         } else if (targetLocation) {
             targetLocation.processUserInput(channelID, stateID, state);
         }
@@ -167,28 +177,26 @@ export class RingApiClient {
 
     private async retrieveLocations(): Promise<boolean> {
         this.debug(`Retrieve Locations`);
-        const api: RingApi = await this.getApi();
-        return new Promise<boolean>((res: (value: PromiseLike<boolean> | boolean) => void): void => {
-            api.getLocations()
-                .catch((reason: any): void => {
-                    this.handleApiError(reason);
-                    res(false);
-                })
-                .then((locs: Location[] | void): void => {
-                    if (typeof locs != 'object' || (locs?.length ?? 0) == 0) {
-                        this.debug('getLocations was successful, but received no array');
-                        res(false);
-                        return;
-                    }
-                    this.debug(`Received ${locs?.length} Locations`);
-                    this._locations = {};
-                    for (const loc of locs) {
-                        const newLoc: OwnRingLocation = new OwnRingLocation(loc, this.adapter, this);
-                        this._locations[newLoc.fullId] = newLoc;
-                    }
-                    res(true);
-                });
-        });
+        try {
+            // getApi() belongs inside the try: it throws on a missing refresh token, and
+            // refreshAll() is built around this method returning false, not rejecting.
+            const api: RingApi = await this.getApi();
+            const locs = await api.getLocations();
+            if (!locs.length) {
+                this.debug('getLocations was successful, but received no locations');
+                return false;
+            }
+            this.debug(`Received ${locs.length} Locations`);
+            this._locations = {};
+            for (const loc of locs) {
+                const newLoc: OwnRingLocation = new OwnRingLocation(loc, this.adapter, this);
+                this._locations[newLoc.fullId] = newLoc;
+            }
+            return true;
+        } catch (reason: any) {
+            this.handleApiError(reason);
+            return false;
+        }
     }
 
     private handleApiError(reason: any): void {

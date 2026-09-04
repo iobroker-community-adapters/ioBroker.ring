@@ -53,14 +53,16 @@ export class OwnRingIntercom extends OwnRingDevice {
         this.eventsChannelId = `${this.fullId}.${CHANNEL_NAME_EVENTS}`;
 
         // Create the device object tree in ioBroker
-        this.recreateDeviceObjectTree();
+        this.recreateDeviceObjectTree().catch(e => this._adapter.log.error(e));
         // Subscribe to events from the intercom
-        this.subscribeToEvents();
+        this.subscribeToEvents().catch(e => this._adapter.log.error(e));
 
         // Subscribe to data changes from the intercom
         this._ringIntercom.onData.subscribe({
             next: (data: IntercomHandsetData): void => {
-                this.update(data);
+                this.update(data).catch(e =>
+                    this._adapter.log.error(`Failed to update device info for ${this.shortId}: ${e}`),
+                );
             },
             error: (err: Error): void => {
                 this.catcher(`Data Observer received error`, err);
@@ -70,7 +72,9 @@ export class OwnRingIntercom extends OwnRingDevice {
         // Subscribe to battery level changes
         this._ringIntercom.onBatteryLevel.subscribe({
             next: (): void => {
-                this.updateBatteryInfo();
+                this.updateBatteryInfo().catch(e =>
+                    this._adapter.log.error(`Failed to update battery info for ${this.shortId}: ${e}`),
+                );
             },
             error: (err: Error): void => {
                 this.catcher(`Battery Level Observer received error`, err);
@@ -78,7 +82,7 @@ export class OwnRingIntercom extends OwnRingDevice {
         });
     }
 
-    public processUserInput(channelID: string, stateID: string, state: ioBroker.State): void {
+    public async processUserInput(channelID: string, stateID: string, state: ioBroker.State): Promise<void> {
         switch (channelID) {
             case '': {
                 const targetBoolVal: boolean = state.val as boolean;
@@ -88,7 +92,7 @@ export class OwnRingIntercom extends OwnRingDevice {
                             this.info(
                                 `Device Debug Data for ${this.shortId}: ${util.inspect(this._ringIntercom, false, 1)}`,
                             );
-                            this._adapter.upsertState(
+                            await this._adapter.upsertState(
                                 `${this.fullId}.${STATE_ID_DEBUG_REQUEST}`,
                                 COMMON_DEBUG_REQUEST,
                                 false,
@@ -101,7 +105,7 @@ export class OwnRingIntercom extends OwnRingDevice {
                             this._ringIntercom.unlock().catch((reason: any): void => {
                                 this.catcher("Couldn't unlock door.", reason);
                             });
-                            this._adapter.upsertState(
+                            await this._adapter.upsertState(
                                 `${this.fullId}.${STATE_ID_INTERCOM_UNLOCK}`,
                                 COMMON_INTERCOM_UNLOCK_REQUEST,
                                 false,
@@ -120,8 +124,10 @@ export class OwnRingIntercom extends OwnRingDevice {
 
     public updateByDevice(intercom: RingIntercom): void {
         this._ringIntercom = intercom;
-        this.subscribeToEvents();
-        this.update(intercom.data);
+        this.subscribeToEvents().catch(e => this._adapter.log.error(e));
+        this.update(intercom.data).catch(e =>
+            this._adapter.log.error(`Failed to update device info for ${this.shortId}: ${e}`),
+        );
     }
 
     protected async recreateDeviceObjectTree(): Promise<void> {
@@ -199,21 +205,21 @@ export class OwnRingIntercom extends OwnRingDevice {
         );
     }
 
-    private update(data: IntercomHandsetData): void {
+    private async update(data: IntercomHandsetData): Promise<void> {
         this.debug(`Received Update`);
-        this.updateDeviceInfoObject(data);
-        this.updateBatteryInfo();
+        await this.updateDeviceInfoObject(data);
+        await this.updateBatteryInfo();
     }
 
-    private updateDeviceInfoObject(data: IntercomHandsetData): void {
-        this._adapter.upsertState(`${this.infoChannelId}.id`, COMMON_INFO_ID, data.device_id);
-        this._adapter.upsertState(`${this.infoChannelId}.kind`, COMMON_INFO_KIND, data.kind);
-        this._adapter.upsertState(`${this.infoChannelId}.description`, COMMON_INFO_DESCRIPTION, data.description);
+    private async updateDeviceInfoObject(data: IntercomHandsetData): Promise<void> {
+        await this._adapter.upsertState(`${this.infoChannelId}.id`, COMMON_INFO_ID, data.device_id);
+        await this._adapter.upsertState(`${this.infoChannelId}.kind`, COMMON_INFO_KIND, data.kind);
+        await this._adapter.upsertState(`${this.infoChannelId}.description`, COMMON_INFO_DESCRIPTION, data.description);
         // Update firmware version if available
-        this._adapter.upsertState(`${this.infoChannelId}.firmware`, COMMON_INFO_FIRMWARE, data.firmware_version);
+        await this._adapter.upsertState(`${this.infoChannelId}.firmware`, COMMON_INFO_FIRMWARE, data.firmware_version);
     }
 
-    private updateBatteryInfo(): void {
+    private async updateBatteryInfo(): Promise<void> {
         const batteryLevel: number | null = this._ringIntercom.batteryLevel;
         let batteryPercentage = -1;
         if (batteryLevel !== null && batteryLevel !== undefined) {
@@ -221,7 +227,7 @@ export class OwnRingIntercom extends OwnRingDevice {
         }
 
         // Update battery percentage state
-        this._adapter.upsertState(
+        await this._adapter.upsertState(
             `${this.infoChannelId}.battery_percentage`,
             COMMON_INFO_BATTERY_PERCENTAGE,
             batteryPercentage,
@@ -240,7 +246,7 @@ export class OwnRingIntercom extends OwnRingDevice {
         }
 
         // Update battery category state
-        this._adapter.upsertState(
+        await this._adapter.upsertState(
             `${this.infoChannelId}.battery_percentage_category`,
             COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY,
             batteryCategory,
@@ -254,7 +260,9 @@ export class OwnRingIntercom extends OwnRingDevice {
         });
         this._ringIntercom.onDing.subscribe({
             next: (): void => {
-                this.onDing();
+                this.onDing().catch(e =>
+                    this._adapter.log.error(`Failed to handle Ding event for ${this.shortId}: ${e}`),
+                );
             },
             error: (err: Error): void => {
                 this.catcher(`Ding Observer received error`, err);
@@ -262,15 +270,17 @@ export class OwnRingIntercom extends OwnRingDevice {
         });
     }
 
-    private onDing(): void {
+    private async onDing(): Promise<void> {
         if (this._dingEventBlocker.checkBlock()) {
             this.debug(`Ignore Ding event...`);
             return;
         }
         this.debug(`Received Ding Event`);
-        this._adapter.upsertState(`${this.eventsChannelId}.ding`, COMMON_EVENTS_INTERCOM_DING, true);
+        await this._adapter.upsertState(`${this.eventsChannelId}.ding`, COMMON_EVENTS_INTERCOM_DING, true);
         this._adapter.setTimeout((): void => {
-            this._adapter.upsertState(`${this.eventsChannelId}.ding`, COMMON_EVENTS_INTERCOM_DING, false);
+            this._adapter
+                .upsertState(`${this.eventsChannelId}.ding`, COMMON_EVENTS_INTERCOM_DING, false)
+                .catch(e => this._adapter.log.error(e));
         }, 1000);
     }
 }

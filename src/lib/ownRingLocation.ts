@@ -60,11 +60,15 @@ export class OwnRingLocation {
             }
         });
         this._loc.onLocationMode.subscribe((newMode: 'home' | 'away' | 'disarmed' | 'disabled' | 'unset'): void => {
-            this.updateModeObject(newMode);
+            this.updateModeObject(newMode).catch(e =>
+                this._adapter.log.error(`Failed to update Location Mode for ${this.id}: ${e}`),
+            );
         });
         this.silly(`Location Debug Data: ${util.inspect(this._loc, false, 2)}`);
-        this.recreateDeviceObjectTree();
-        this.getLocationMode();
+        this.recreateDeviceObjectTree().catch(e =>
+            this._adapter.log.error(`Failed to recreate Location Object Tree for ${this.id}: ${e}`),
+        );
+        this.getLocationMode().catch(e => this._adapter.log.error(`Failed to get Location Mode for ${this.id}: ${e}`));
     }
 
     private async recreateDeviceObjectTree(): Promise<void> {
@@ -109,7 +113,11 @@ export class OwnRingLocation {
                     return;
                 }
                 if (stateID === STATE_ID_LOCATIONMODE) {
-                    this.performLocationModeChange(state);
+                    this.performLocationModeChange(state).catch(e =>
+                        this._adapter.log.error(
+                            `Failed to perform Location Mode Change for ${this.id} with input "${state.val}": ${e}`,
+                        ),
+                    );
                     return;
                 }
                 this._adapter.log.error(`Unknown State/Switch with channel "${channelID}" and state "${stateID}"`);
@@ -123,7 +131,13 @@ export class OwnRingLocation {
         const targetVal: boolean = state.val as boolean;
         if (targetVal) {
             this._adapter.log.info(`Location Debug Data for ${this.id}: ${util.inspect(this._loc, false, 1)}`);
-            this._adapter.upsertState(`${this._fullId}.${STATE_ID_DEBUG_REQUEST}`, COMMON_DEBUG_REQUEST, false);
+            this._adapter
+                .upsertState(`${this._fullId}.${STATE_ID_DEBUG_REQUEST}`, COMMON_DEBUG_REQUEST, false)
+                .catch(e =>
+                    this._adapter.log.error(
+                        `Failed to reset Debug Request State for ${this.id} after user request: ${e}`,
+                    ),
+                );
         }
     }
 
@@ -141,7 +155,9 @@ export class OwnRingLocation {
             return;
         }
         if (['home', 'away', 'disarmed'].indexOf(desiredState) === -1) {
-            this.updateModeObject(this._currentLocationMode, true);
+            this.updateModeObject(this._currentLocationMode, true).catch(e =>
+                this._adapter.log.error(`Failed to update mode object for ${this.id}: ${e}`),
+            );
             this.warn(`Invalid input "${desiredState}"... Only "home","away" and "disarmed" are choose-able by user.`);
             return;
         }
