@@ -180,6 +180,12 @@
     ],
     "nogit": true
   },
+  "protectedNative": [
+    "refreshtoken"
+  ],
+  "encryptedNative": [
+    "refreshtoken"
+  ],
   "instanceObjects": [
     {
       "_id": "",
