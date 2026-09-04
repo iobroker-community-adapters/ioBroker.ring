@@ -56,7 +56,6 @@
     ],
     "licenseInformation": {
       "license": "MIT",
-      "link": "https://github.com/iobroker-community-adapters/ioBroker.ring/blob/master/LICENSE",
       "type": "free"
     },
     "loglevel": "info",
