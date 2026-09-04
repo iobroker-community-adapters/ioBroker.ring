@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "module": "esnext",
+        "moduleResolution": "Bundler",
+        "target": "es2022",
+        "lib": ["es2022", "DOM"],
+        "jsx": "react-jsx",
+        "allowJs": false,
+        "checkJs": false,
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "verbatimModuleSyntax": true,
+        "strict": true,
+        "strictNullChecks": true,
+        "noImplicitAny": true,
+        "useUnknownInCatchVariables": false,
+        "skipLibCheck": true,
+        "rootDir": "./src",
+        "sourceMap": true,
+        "types": ["vite/client", "@iobroker/types"],
+        "noEmit": true
+    },
+    "include": ["./src/**/*.ts", "./src/**/*.tsx", "./src/**/*.d.ts", "./src/**/*.json"],
+    "exclude": ["**/node_modules", "**/build"]
+}

@@ -1,0 +1,13 @@
+{
+    "ring-adapter": "Adattatore Ring",
+    "ring-access": "Accedi alle tue telecamere e ai campanelli Ring",
+    "ChooseDate": "Scegli una data",
+    "Snapshot": "Istantanea",
+    "HDSnapshot": "Istantanea HD",
+    "Livestream": "Diretta streaming",
+    "Latest recording": "Ultima registrazione",
+    "No cameras found": "Nessuna telecamera trovata",
+    "The adapter has not created any camera objects yet": "L’adattatore non ha ancora creato oggetti telecamera",
+    "Open in full screen": "Apri a schermo intero",
+    "Could not read the media files": "Impossibile leggere i file multimediali"
+}

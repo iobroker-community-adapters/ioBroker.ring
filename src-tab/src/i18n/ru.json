@@ -1,0 +1,13 @@
+{
+    "ring-adapter": "Ring Адаптер",
+    "ring-access": "Доступ к вашим камерам и дверным звонкам Ring",
+    "ChooseDate": "Выберите дату",
+    "Snapshot": "Снимок",
+    "HDSnapshot": "HD-снимок",
+    "Livestream": "Прямая трансляция",
+    "Latest recording": "Последняя запись",
+    "No cameras found": "Камеры не найдены",
+    "The adapter has not created any camera objects yet": "Адаптер ещё не создал объекты камер",
+    "Open in full screen": "Открыть во весь экран",
+    "Could not read the media files": "Не удалось прочитать медиафайлы"
+}

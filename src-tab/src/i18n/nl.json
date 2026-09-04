@@ -1,0 +1,13 @@
+{
+    "ring-adapter": "Ring Adapter",
+    "ring-access": "Toegang tot uw Ring-camera’s en deurbel",
+    "ChooseDate": "Kies een datum",
+    "Snapshot": "Momentopname",
+    "HDSnapshot": "HD-momentopname",
+    "Livestream": "Livestream",
+    "Latest recording": "Nieuwste opname",
+    "No cameras found": "Geen camera’s gevonden",
+    "The adapter has not created any camera objects yet": "De adapter heeft nog geen cameraobjecten aangemaakt",
+    "Open in full screen": "Op volledig scherm openen",
+    "Could not read the media files": "Kon de mediabestanden niet lezen"
+}

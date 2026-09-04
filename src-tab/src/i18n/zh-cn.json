@@ -1,0 +1,13 @@
+{
+    "ring-adapter": "Ring 适配器",
+    "ring-access": "访问您的 Ring 摄像头和门铃",
+    "ChooseDate": "请选择日期",
+    "Snapshot": "快照",
+    "HDSnapshot": "高清快照",
+    "Livestream": "实时视频",
+    "Latest recording": "最新录制",
+    "No cameras found": "未找到摄像头",
+    "The adapter has not created any camera objects yet": "适配器尚未创建任何摄像头对象",
+    "Open in full screen": "全屏打开",
+    "Could not read the media files": "无法读取媒体文件"
+}

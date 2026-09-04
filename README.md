@@ -98,6 +98,8 @@ doorbell recorded video.
 	### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
+- (bluefox) The admin tab was rewritten in React (`src-tab/`), replacing the materialize page - doorbell cameras are listed now, they were silently skipped before
+- (bluefox) The tab no longer assumes the web adapter runs on port 8082; it derives host, port and protocol from the URL states
 - (bluefox) The adapter was refactored: TypeScript 6, @iobroker/eslint-config, gulp removed
 - (bluefox) **BREAKING:** `build/` is no longer committed and `common.nogit` is set - the adapter can only be installed from npm, no longer directly from GitHub
 - (bluefox) `ring-client-api` is ESM only and is loaded dynamically now, which fixes `ERR_REQUIRE_ESM` on Node.js 22.0 - 22.11

@@ -1,0 +1,11 @@
+// tasks.ts runs through tsx and is not part of the adapter build, but it still gets type checked
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "noEmit": true,
+        "rootDir": ".",
+        "types": ["node"]
+    },
+    "include": ["tasks.ts"],
+    "exclude": ["node_modules/**", "src/**", "src-tab/**", "test/**", "build/**"]
+}

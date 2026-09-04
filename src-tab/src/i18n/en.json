@@ -1,0 +1,13 @@
+{
+    "ring-adapter": "Ring Adapter",
+    "ring-access": "Access your Ring cameras and doorbell",
+    "ChooseDate": "Please choose a date",
+    "Snapshot": "Snapshot",
+    "HDSnapshot": "HD snapshot",
+    "Livestream": "Live stream",
+    "Latest recording": "Latest recording",
+    "No cameras found": "No cameras found",
+    "The adapter has not created any camera objects yet": "The adapter has not created any camera objects yet",
+    "Open in full screen": "Open in full screen",
+    "Could not read the media files": "Could not read the media files"
+}

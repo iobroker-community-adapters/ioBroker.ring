@@ -5,19 +5,18 @@ export default [
     {
         languageOptions: {
             parserOptions: {
-                projectService: { allowDefaultProject: ['*.mjs', 'tasks.ts'] },
+                projectService: { allowDefaultProject: ['*.mjs'] },
                 tsconfigRootDir: import.meta.dirname,
             },
         },
     },
     {
-        ignores: ['admin/**/*', 'src-tab/**/*', 'node_modules/**/*', 'test/**/*', 'build/**/*', 'tmp/**/*', '.**/*'],
+        ignores: ['build/**/*', 'node_modules/**/*', '.**/*'],
     },
     {
         rules: {
             'jsdoc/require-jsdoc': 'off',
             'jsdoc/require-param': 'off',
-            '@typescript-eslint/no-require-imports': 'off',
         },
     },
 ];

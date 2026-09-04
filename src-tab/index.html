@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+        <title>Ring Adapter</title>
+        <script>
+            // In the admin this is replaced by tasks.ts with a plain <script src> tag pointing at
+            // the socket.io the admin itself serves. During `npm start` (port 3000) there is no
+            // admin around it, so pull socket.io from a running admin on 8081 instead.
+            const script = document.createElement('script');
+            window.registerSocketOnLoad = function (cb) {
+                window.socketLoadedHandler = cb;
+            };
+            script.onload = function () {
+                typeof window.socketLoadedHandler === 'function' && window.socketLoadedHandler();
+            };
+            script.src =
+                window.location.port === '3000'
+                    ? `${window.location.protocol}//${window.location.hostname}:8081/lib/js/socket.io.js`
+                    : './../../lib/js/socket.io.js';
+            document.head.appendChild(script);
+        </script>
+    </head>
+    <body style="margin: 0">
+        <noscript>You need to enable JavaScript to run this app.</noscript>
+        <div id="root"></div>
+        <script
+            type="module"
+            src="/src/index.tsx"
+        ></script>
+    </body>
+</html>
