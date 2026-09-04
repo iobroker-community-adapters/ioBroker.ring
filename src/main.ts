@@ -152,9 +152,9 @@ export class RingAdapter extends Adapter {
         return this.config.refreshtoken;
     }
 
-    private async CalcSunData(): Promise<void> {
+    private async calcSunData(): Promise<void> {
         try {
-            this.log.debug('Run CalcSunData');
+            this.log.debug('Run calcSunData');
             if (this.latitude && this.longitude) {
                 // "suncalc" is ESM only and cannot be require()d from this CommonJS build
                 const { getTimes } = await import('suncalc');
@@ -233,7 +233,7 @@ export class RingAdapter extends Adapter {
         await this.apiClient.init();
 
         this.log.info(`Get sunset and sunrise`);
-        await this.CalcSunData();
+        await this.calcSunData();
 
         // Daily schedule sometime from 00:00:20 to 00:00:40
         const scheduleSeconds: number = Math.round(Math.random() * 20 + 20);
@@ -246,7 +246,7 @@ export class RingAdapter extends Adapter {
                 `${scheduleSeconds} 0 0 * * *`,
                 async (): Promise<void> => {
                     this.log.info(`Cronjob 'Sun parameter calculation' starts`);
-                    await this.CalcSunData();
+                    await this.calcSunData();
                 },
             ),
         );

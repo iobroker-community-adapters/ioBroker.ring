@@ -1,5 +1,5 @@
 export class TextService {
-    public static getdetectionType(type: string, desiredLang: string | undefined): string {
+    public static getDetectionType(type: string, desiredLang: string | undefined): string {
         const dt: string[] = [
             'null',
             'human',
@@ -34,15 +34,15 @@ export class TextService {
             'Paketabholung',
         ];
         const ru: string[] = [
-            'не указан',
+            'не указано',
             'человек',
-            'слоняться вокруг',
-            'Движение',
+            'слоняется вокруг',
+            'движение',
             'транспортное средство',
-            'закрывать',
+            'близко',
             'другое движение',
-            'Доставка посылки',
-            'Получение посылки',
+            'доставка посылки',
+            'получение посылки',
         ];
         const pt: string[] = [
             'não especificado',

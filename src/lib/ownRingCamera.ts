@@ -1203,12 +1203,12 @@ export class OwnRingCamera extends OwnRingDevice {
             await this._adapter.upsertState(
                 `${this.eventsChannelId}.type`,
                 COMMON_EVENTS_TYPE,
-                TextService.getdetectionType(subType, this._adapter.language),
+                TextService.getDetectionType(subType, this._adapter.language),
             );
             await this._adapter.upsertState(
                 `${this.eventsChannelId}.detectionType`,
                 COMMON_EVENTS_DETECTIONTYPE,
-                TextService.getdetectionType(value.data.event.ding.detection_type ?? subType, this._adapter.language),
+                TextService.getDetectionType(value.data.event.ding.detection_type ?? subType, this._adapter.language),
             );
             await this._adapter.upsertState(`${this.eventsChannelId}.created_at`, COMMON_EVENTS_MOMENT, Date.now());
             await this._adapter.upsertState(

@@ -3,8 +3,8 @@ import type { RingAdapter } from '../../main';
 export class EventBlocker {
     private _blockActive: boolean = false;
     private _blockTimeout: ioBroker.Timeout = null;
-    private _blockDuration: number = 0;
-    private _extendIfActive: boolean = false;
+    private readonly _blockDuration: number;
+    private readonly _extendIfActive: boolean;
     private readonly _adapter: RingAdapter;
 
     public constructor(adapter: RingAdapter, blockDuration: number, extendIfActive: boolean) {
