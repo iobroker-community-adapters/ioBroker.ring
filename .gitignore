@@ -21,7 +21,6 @@ coverage
 
 # i18n intermediate files
 .DS_Store
-.vscode/
 
 #ignore .commitinfo created by ioBroker release script
 .commitinfo
