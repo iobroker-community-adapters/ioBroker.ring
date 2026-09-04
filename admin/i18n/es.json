@@ -10,7 +10,6 @@
   "ring-adapter": "Adaptador de anillos",
   "Livestream": "Transmisión en vivo",
   "Snapshot": "Captura",
-  "HDSnapshot": "HD Snapshot",
   "ChooseDate": "Por favor elija una fecha",
   "Filename": "Nombre de archivo",
   "Automatic recording time in seconds": "Tiempo de grabación automático en segundos",
@@ -51,5 +50,7 @@
   "Motion": "Movimiento",
   "Doorbell": "Timbre de la puerta",
   "General": "General",
-  "Extend ignore duration on retrigger": "Extender la duración de ignorar en retrigger"
+  "Extend ignore duration on retrigger": "Extender la duración de ignorar en retrigger",
+  "Events": "Eventos",
+  "30 minutes": "30 minutos"
 }

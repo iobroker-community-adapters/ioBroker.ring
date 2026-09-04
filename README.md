@@ -98,6 +98,16 @@ doorbell recorded video.
 	### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
+- (bluefox) The adapter was refactored: TypeScript 6, @iobroker/eslint-config, gulp removed
+- (bluefox) **BREAKING:** `build/` is no longer committed and `common.nogit` is set - the adapter can only be installed from npm, no longer directly from GitHub
+- (bluefox) `ring-client-api` is ESM only and is loaded dynamically now, which fixes `ERR_REQUIRE_ESM` on Node.js 22.0 - 22.11
+- (bluefox) All backend timers are managed by js-controller now and are stopped when the instance unloads
+- (bluefox) Scheduled jobs (daily sun calculation, auto save) are cancelled on unload and no longer collide between instances
+- (bluefox) Fixed: the health state was never refreshed after switching a camera light
+- (bluefox) Fixed: a failing livestream target preparation still deleted the target file and never reported the error to the caller
+- (bluefox) Fixed: several `async` methods returned before the work they started was finished
+- (bluefox) Removed the unused config values `email`, `password`, `pollsec`, `sentry_enable`, `timeout` and `twofaceauth`; `renew_registration` has a default now
+- (bluefox) Removed the leftover `admin/index_m.html` - the configuration dialog has been JsonConfig for a while
 - (Speedbreaker12) #993 Add doorbell_sunray (Battery Video Doorbell 2K) as doorbell
 - (Speedbreaker12) #993 #854 Add stickup_cam_mini_ptz_v1 (Pan-Tilt Indoor Cam) as stickup cam
 - (Speedbreaker12) #993 Unsupported device logging no longer dumps the whole device object (could expose the Ring refresh token in the log)

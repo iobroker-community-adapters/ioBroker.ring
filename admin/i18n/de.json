@@ -50,5 +50,7 @@
   "Motion": "Bewegung",
   "Doorbell": "Türklingel",
   "General": "Allgemein",
-  "Extend ignore duration on retrigger": "Sperrzeit bei erneutem Auslösen verlängern."
+  "Extend ignore duration on retrigger": "Sperrzeit bei erneutem Auslösen verlängern.",
+  "Events": "Ereignisse",
+  "30 minutes": "30 Minuten"
 }

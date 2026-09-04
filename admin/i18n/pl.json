@@ -50,5 +50,7 @@
   "Motion": "Ruch",
   "Doorbell": "Dzwonek do drzwi",
   "General": "General",
-  "Extend ignore duration on retrigger": "Rozszerz czas ignorowania na retrigger"
+  "Extend ignore duration on retrigger": "Rozszerz czas ignorowania na retrigger",
+  "Events": "Zdarzenia",
+  "30 minutes": "30 minut"
 }

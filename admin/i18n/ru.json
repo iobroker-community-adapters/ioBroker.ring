@@ -50,5 +50,7 @@
   "Motion": "Движение",
   "Doorbell": "Дверной звонок",
   "General": "Общий",
-  "Extend ignore duration on retrigger": "Продлить игнорировать длительность на повторное срабатывание"
+  "Extend ignore duration on retrigger": "Продлить игнорировать длительность на повторное срабатывание",
+  "Events": "События",
+  "30 minutes": "30 минут"
 }

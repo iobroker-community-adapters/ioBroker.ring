@@ -50,5 +50,7 @@
   "Motion": "Movimento",
   "Doorbell": "Campanello di casa",
   "General": "Generale",
-  "Extend ignore duration on retrigger": "Estendi la durata dell'ignorare su retrigger"
+  "Extend ignore duration on retrigger": "Estendi la durata dell'ignorare su retrigger",
+  "Events": "Eventi",
+  "30 minutes": "30 minuti"
 }
