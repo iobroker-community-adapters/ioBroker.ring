@@ -91,9 +91,10 @@ export abstract class OwnRingDevice {
           `Device with Type ${deviceType} not yet supported, please inform dev Team via Github`
         );
         adapter.log.info(
-          `Unsupported Device Info: id=${device?.id}, type=${deviceType}, ` +
+          `Unsupported Device Info: id=${device?.id}, ` +
           `model=${device?.model ?? "unknown"}, ` +
-          `description=${device?.initialData?.description ?? "unknown"}`
+          `description=${device?.data?.description ?? "unknown"}, ` +
+          `hasSiren=${device?.hasSiren ?? "unknown"}, hasLight=${device?.hasLight ?? "unknown"}`
         );
     }
     return "unknown";
