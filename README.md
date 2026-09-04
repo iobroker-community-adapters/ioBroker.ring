@@ -26,7 +26,7 @@ npx -p ring-client-api ring-auth-cli
 or
 
 ```bash
-# Unix 
+## Unix 
 cd /opt/iobroker/node_modules/iobroker.ring/
 npm i ring-client-api
 
