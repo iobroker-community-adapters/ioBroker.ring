@@ -62,6 +62,19 @@
     "mode": "daemon",
     "name": "ring",
     "news": {
+      "7.0.2": {
+        "en": "dependencies have been corrected",
+        "de": "Abhängigkeiten wurden korrigiert",
+        "ru": "зависимости были исправлены",
+        "pt": "dependências foram corrigidas",
+        "nl": "afhankelijkheden zijn gecorrigeerd",
+        "fr": "les dépendances ont été corrigées",
+        "it": "le dipendenze sono corrette",
+        "es": "se han corregido las dependencias",
+        "pl": "zależności zostały skorygowane",
+        "uk": "Залежності виправлені",
+        "zh-cn": "依赖关系已得到纠正"
+      },
       "7.0.1": {
         "en": "**BREAKING:** enhanced security (added encryption) requires that you enter the access refreshtoken one more time \nThe admin tab was rewritten in React (`src-tab/`), replacing the materialize page - doorbell cameras are listed now, they were silently skipped before\nThe tab no longer assumes the web adapter runs on port 8082; it derives host, port and protocol from the URL states\nThe adapter was refactored: TypeScript 6, @iobroker/eslint-config, gulp removed\n**BREAKING:** `build/` is no longer committed and `common.nogit` is set - the adapter can only be installed from npm, no longer directly from GitHub\n`ring-client-api` is ESM only and is loaded dynamically now, which fixes `ERR_REQUIRE_ESM` on Node.js 22.0 - 22.11\nAll backend timers are managed by js-controller now and are stopped when the instance unloads\nScheduled jobs (daily sun calculation, auto save) are cancelled on unload and no longer collide between instances\nFixed: the health state was never refreshed after switching a camera light\nFixed: a failing livestream target preparation still deleted the target file and never reported the error to the caller\nFixed: several `async` methods returned before the work they started was finished\nRemoved the unused config values `email`, `password`, `pollsec`, `sentry_enable`, `timeout` and `twofaceauth`; `renew_registration` has a default now\nRemoved the leftover `admin/index_m.html` - the configuration dialog has been JsonConfig for a while\n#993 Add doorbell_sunray (Battery Video Doorbell 2K) as doorbell\n#993 #854 Add stickup_cam_mini_ptz_v1 (Pan-Tilt Indoor Cam) as stickup cam\n#993 Unsupported device logging no longer dumps the whole device object (could expose the Ring refresh token in the log)\nDevices previously created below `unknown_<id>` are recreated below `doorbell_<id>` / `stickup_<id>`; the old objects stay behind and have to be deleted manually\nAdapter requires node.js >= 22 now\nAdapter requires admin >= 7.7.22 now\nAdapter requires js-controller >= 6.0.11 now\nAdapter requires admin >= 7.6.17 now\n\n**CI/CD**: Updated ioBroker Copilot Instructions template from v0.4.0 to v0.4.2",
         "de": "**BREAKING: ** Mehr Sicherheit (Verschlüsselung) erfordert eine nochmalige Eingabe des Zugriffstokens \nDer Admin-Tab wurde in React (`src-tab/`) umgeschrieben und ersetzte die Materialize-Seite. Türklingelkameras wurden zuvor ignoriert\nDer Tab geht nicht mehr davon aus, dass der Webadapter auf Port 8082 läuft; Host und Protokoll\nDer Adapter wurde überarbeitet: TypeScript 6, @iobroker /eslint-config, gulp entfernt\n**BREAKING: ** `build/` ist nicht mehr fest und `common.nogit` gesetzt — der Adapter kann nur von npm installiert werden, nicht mehr direkt von GitHub\n`ring-client-api` ist nur ESM und wird jetzt dynamisch geladen, was `ERR_REQUIRE_ESM` auf Node.js 22.0 — 22.11 behebt\nJS-Controller verwaltet jetzt alle Backend-Timer und stoppt beim Entladen\nGeplante Jobs (Tagesberechnung, Autosave) werden beim Entladen storniert und kollidieren nicht mehr\nBehoben: Der Zustand wurde nach dem Umschalten der Kamera nie aktualisiert\nBehoben: Ein Fehlschlag beim Livestream-Ziel löschte die Zieldatei und meldete den Fehler nie an den Anrufer\nBehoben: mehrere `async`-Methoden kamen, bevor die Arbeit beendet war\nUnbenutzte Konfigurationswerte `email`, `password`, `pollsec`, `sentry_enable`, `timeout` und `twofaceauth` entfernt; `renew_registration` hat jetzt einen Standard\nDas übrig gebliebene `admin/index_m.html` entfernt — der Konfigurationsdialog ist lange JSONConfig\n#993 Fügen Sie doorbell_sunray (Akkuvideo 2K) als Klingel hinzu\n#993 #854 Fügen Sie Stickup_Cam_Mini_Ptz_V1 als Cam hinzu\n#993 Ununterstütztes Gerätelogging gibt nicht mehr das ganze Geräteobjekt aus (könnte das Ring-Refresh-Token im Log anzeigen)\nGeräte, die zuvor unter „unbekannt“ erstellt wurden, <id>werden unter „Türklingel“<id>/„Stickup“ neu erstellt<id>; die alten Objekte bleiben zurück und müssen manuell gelöscht werden\nAdapter benötigt jetzt node.js >= 22\nAdapter benötigt jetzt admin >= 7.7.22\nAdapter benötigt jetzt JS-Controller >= 6.0.11\nAdapter benötigt jetzt admin >= 7.6.17\n\n**CI/CD**: Vorlage ioBroker Copilot Instructions von v0.4.0 auf v0.4.2 aktualisiert",
@@ -139,19 +152,6 @@
         "pl": "Naprawiono obiekt License-Info w io-package.json\\nZaktualizowano pakiet testowy iobroker\\nZaktualizowano niektóre pakiety testowe dotyczące mocha\\nZaktualizowano potoki, aby przestały używać węzła 18.x\\n#746 Naprawiono informacje o licencji w io-package.json\\n#746 Dodano warstwę w io-package.json\\n#746 Usunięcie przestarzałej właściwości 'materializeTab' w io-package.json\\n#746 Usunięcie przestarzałej właściwości 'main' w io-package.json\\n#746 Ulepszenie minimalnego kontrolera js-controller w io-package.json\\n#746 Usunięcie odniesienia do konkretnej wersji narzędzi kamery\\n#746 Dodanie @alcalzone/release-script-plugin-manual-review",
         "uk": "Виправлено об'єкт License-Info у io-package.json\\nОновлено тестовий пакет iobroker\\nОновлено деякі тестові пакети щодо mocha\\nОновлено конвеєри для припинення використання node 18.x\\n#746 Виправлено інформацію про ліцензії у io-package.json\\n#746 Додано рівень у io-package.json\\n#746 Видалено застарілу властивість 'materializeTab' у io-package.json\\n#746 Видалено застарілу властивість 'main' у io-package.json\\n#746 Збільшено мінімальний js-контролер у io-package.json\\n#746 Видалено специфічне посилання на версію для utils камери\\n#746 Додано @alcalzone/release-script-plugin-manual-review",
         "zh-cn": "Fix License-Info object in io-package.json\\nUpdate iobroker test package\\nUpdate some test packages regarding mocha\\nUpdate pipelines to stop using node 18.x\\n#746 Fix license information in io-package.json\\n#746 Add tier in io-package.json\\n#746 Remove deprecated property 'materializeTab' in io-package.json\\n#746 Remove deprecated property 'main' in io-package.json\\n#746 Bump minimum js-controller in io-package.json\\n#746 Remove specific version reference to camera utils\\n#746 Add @alcalzone/release-script-plugin-manual-review"
-      },
-      "6.2.1": {
-        "en": "js-controller7 compatibility #707",
-        "de": "js-controller7 kompatibilität #707",
-        "ru": "js-controller7 совместимость #707",
-        "pt": "compatibilidade js-controller7 #707",
-        "nl": "js-controller7 compatibiliteit #707",
-        "fr": "js-controller7 compatibilité #707",
-        "it": "compatibilità js-controller7 #707",
-        "es": "js-controller7 compatibilidad #707",
-        "pl": "js- controller7 kompatybilność # 707",
-        "uk": "js-controller7 сумісність #707",
-        "zh-cn": "js 控制器7 兼容性 # 707"
       }
     },
     "platform": "Javascript/Node.js",
@@ -172,7 +172,7 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "7.0.1",
+    "version": "7.0.2",
     "globalDependencies": [
       {
         "admin": ">=7.7.22"

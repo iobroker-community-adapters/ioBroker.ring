@@ -20,17 +20,8 @@ For getting the token, please do following on your shell.
 ```shell
 npx -p ring-client-api ring-auth-cli
 ```
-
-or
-
-```bash
-## Unix 
-cd /opt/iobroker/node_modules/iobroker.ring/
-npm i ring-client-api
-
-cd /opt/iobroker/node_modules/iobroker.ring/node_modules/ring-client-api
-node ring-auth-cli
-```
+>[!IMPORTANT]
+>current ring-auth-cli seems to required node.js 24. Please update to node.js 24.
 
 You can use special variables for your livestream and snapshot path and filename. These variables will be replaced with
 a counter, timestamp, ring id or kind of ring.
@@ -102,6 +93,9 @@ Install this adapter using ioBroker repositories.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### 7.0.2 (2026-09-20)
+- (mcm1957) dependencies have been corrected
+
 ### 7.0.1 (2026-09-04)
 - (mcm1957) **BREAKING:** enhanced security (added encryption) requires that you enter the access refreshtoken one more time 
 - (bluefox) The admin tab was rewritten in React (`src-tab/`), replacing the materialize page - doorbell cameras are listed now, they were silently skipped before
@@ -141,13 +135,6 @@ Install this adapter using ioBroker repositories.
 
 * (simatec) Settings for responsive Design
 * (theimo1221) Update some developer packages
-
-### 6.2.3 (2024-10-31)
-
-* (theimo1221) Fix License-Info object in io-package.json
-* (theimo1221) Update iobroker test package
-* (theimo1221) Update some test packages regarding mocha
-
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 
