@@ -91,6 +91,7 @@ Install this adapter using ioBroker repositories.
 
 ### **WORK IN PROGRESS**
 - (copilot) Adapter requires node.js >= 22.19.0 now
+- (ToxSox) Ring Wired Video Doorbell (2026 model, device type `doorbell_tahoe`) is now recognized as doorbell
 
 <!--
 	Placeholder for the next version (at the beginning of the line):
