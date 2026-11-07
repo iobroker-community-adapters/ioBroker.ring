@@ -71,6 +71,7 @@ export abstract class OwnRingDevice {
             case 'doorbell_sunray':
             case 'df_doorbell_clownfish':
             case 'lpd_v3':
+            case 'doorbell_tahoe':
                 return `doorbell`;
             case 'cocoa_camera':
             case 'cocoa_doorbell':
