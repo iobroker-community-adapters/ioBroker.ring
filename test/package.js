@@ -17,7 +17,7 @@ describe('FCM push notifications (#1056)', () => {
         const receiverPackage = JSON.parse(
             fs.readFileSync(path.join(path.dirname(receiverEntry), '..', 'package.json'), 'utf8'),
         );
-        const parsedVersion = /^(\\d+)\\.(\\d+)\\.(\\d+)/.exec(receiverPackage.version);
+        const parsedVersion = /^(\d+)\.(\d+)\.(\d+)/.exec(receiverPackage.version);
         assert.ok(parsedVersion, 'Unable to parse installed push receiver version');
 
         const [major, minor, patch] = parsedVersion.slice(1).map(Number);
