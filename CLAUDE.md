@@ -27,7 +27,6 @@ npm run 0-clean; npm run 1-npm; npm run 2-build; npm run 3-copy; npm run 4-patch
 cd src-tab && npm start               # vite dev server on :3000, needs an admin on :8081
 
 npm run test:package                  # validates package.json / io-package.json / admin JSON (fast)
-npm run test:unit                     # @iobroker/testing unit tests
 npm run test:integration              # starts a real js-controller + adapter instance
 npm run translate                     # translate-adapter -b admin/i18n/en.json
 npm run release-patch                 # moves the README changelog into io-package news, builds, tags
@@ -68,6 +67,8 @@ The package has `"type": "module"`, this build is CommonJS. That has three conse
 - **Values** must be loaded with `await import('ring-client-api')`. There is exactly one such place: `RingApiClient.getApi()`. Never turn it into a static import — that emits `require()` and dies with `ERR_REQUIRE_ESM` on Node.js before 22.12.
 - `module`/`moduleResolution` are `Node16` for that reason. Switching them to `commonjs` would silently rewrite the dynamic `import()` back into `require()`.
 - Only the subpaths the package actually exports resolve: `ring-client-api`, `.../rest-client`, `.../streaming/streaming-session`, `.../ffmpeg`, `.../util`. `ring-client-api/lib/...` does not.
+
+`sharp` (native) is the other dynamic `import()`: `OwnRingCamera.loadSharp()` loads it on first use, because a platform where its binary does not load would otherwise crash the adapter on start. It is only needed to sharpen HD snapshots — keep it out of the static imports.
 
 `OwnRingDevice.evaluateKind()` spells the device kinds out as string literals instead of using `RingCameraKind` / `RingDeviceType`, because it is static and synchronous and cannot await the module. The literals are the identical values.
 
