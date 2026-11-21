@@ -90,6 +90,7 @@ Install this adapter using ioBroker repositories.
 ## Changelog
 
 ### **WORK IN PROGRESS**
+- (Speedbreaker12) Live events (motion, doorbell, intercom ding) work again: since the end of October 2026 `@eneris/push-receiver` 4.3.0 could not decrypt Ring's push notifications. `ring-client-api` was updated to 15.0.0-beta.0, which brings `@eneris/push-receiver` 4.4.0
 - (bluefox) Ring devices `cocoa_doorbell_v4w` (Wired Doorbell 2K Plus), `cocoa_doorbell_v5` and `cocoa_spotlight` are recognized as `cocoa`, `intercom_handset_video` (Intercom Video) as `intercom`. **Note:** these devices were created below `unknown_<id>` before and move to `cocoa_<id>` / `intercom_<id>` now - adjust your scripts and delete the old `unknown_<id>` branch
 - (bluefox) `Events.motion` and, for doorbells, `Events.doorbell` are created on start now; before they only appeared with the first push event
 - (bluefox) The adapter no longer crashes on start when the image library `sharp` cannot be loaded on the system; HD snapshots are just not sharpened then
