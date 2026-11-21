@@ -92,6 +92,10 @@ Install this adapter using ioBroker repositories.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+- (bluefox) `ring-client-api` is required as `^15.0.0-beta.0` now instead of exactly `15.0.0-beta.0`, so the stable 15.x is used as soon as it is released
+- (bluefox) Dependencies have been updated (suncalc 2.1; in the admin tab React 19.3, MUI 9.5, gui-components 10.4)
+
 ### 7.1.0 (2026-11-21)
 - (Speedbreaker12) Live events (motion, doorbell, intercom ding) work again: since the end of October 2026 `@eneris/push-receiver` 4.3.0 could not decrypt Ring's push notifications. `ring-client-api` was updated to 15.0.0-beta.0, which brings `@eneris/push-receiver` 4.4.0
 - (bluefox) Ring devices `cocoa_doorbell_v4w` (Wired Doorbell 2K Plus), `cocoa_doorbell_v5` and `cocoa_spotlight` are recognized as `cocoa`, `intercom_handset_video` (Intercom Video) as `intercom`. **Note:** these devices were created below `unknown_<id>` before and move to `cocoa_<id>` / `intercom_<id>` now - adjust your scripts and delete the old `unknown_<id>` branch
