@@ -76,7 +76,10 @@ export abstract class OwnRingDevice {
             case 'cocoa_doorbell':
             case 'cocoa_doorbell_v2':
             case 'cocoa_doorbell_v3':
+            case 'cocoa_doorbell_v4w':
+            case 'cocoa_doorbell_v5':
             case 'cocoa_floodlight':
+            case 'cocoa_spotlight':
                 return `cocoa`;
             case 'stickup_cam':
             case 'stickup_cam_v3':
@@ -90,6 +93,7 @@ export abstract class OwnRingDevice {
             case 'stickup_cam_medusa':
                 return `stickup`;
             case 'intercom_handset_audio':
+            case 'intercom_handset_video':
                 return `intercom`;
             default:
                 adapter.log.error(

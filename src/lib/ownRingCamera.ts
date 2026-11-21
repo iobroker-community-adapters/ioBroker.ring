@@ -11,7 +11,7 @@ import type {
 import * as rxjs from 'rxjs';
 import * as fs from 'node:fs';
 import * as util from 'node:util';
-import Sharp from 'sharp';
+import type Sharp from 'sharp';
 import strftime from 'strftime';
 import schedule from 'node-schedule';
 import type { ExtendedResponse } from 'ring-client-api/rest-client' with { 'resolution-mode': 'import' };
@@ -99,6 +99,29 @@ enum EventState {
 }
 
 export class OwnRingCamera extends OwnRingDevice {
+    /** "sharp" is loaded on first use, see loadSharp() */
+    private static _sharp: Promise<typeof Sharp | null> | undefined;
+
+    /**
+     * "sharp" is a native module. Where its binary cannot be loaded, a static import would crash the
+     * whole adapter on start (#1024) - but it is only needed to sharpen HD snapshots. So it is loaded
+     * on demand, once for all cameras; if that fails, HD snapshots are stored unsharpened.
+     */
+    private static loadSharp(adapter: RingAdapter): Promise<typeof Sharp | null> {
+        OwnRingCamera._sharp ??= import('sharp')
+            .then((module): typeof Sharp => module.default)
+            .catch((reason: any): null => {
+                adapter.log.warn(
+                    `Image library "sharp" could not be loaded, HD snapshots will not be sharpened: ${reason?.message ?? reason}`,
+                );
+                if (reason?.stack !== undefined) {
+                    adapter.log.debug(`Error Stack: ${reason.stack}`);
+                }
+                return null;
+            });
+        return OwnRingCamera._sharp;
+    }
+
     private readonly infoChannelId: string;
     private readonly historyChannelId: string;
     private readonly lightChannelId: string;
@@ -341,14 +364,17 @@ export class OwnRingCamera extends OwnRingDevice {
                 this._adapter.config.sharpen_HDsnapshot == 1
                     ? undefined
                     : { sigma: this._adapter.config.sharpen_HDsnapshot - 1 };
-            jpg =
-                (await Sharp(jpg)
-                    .sharpen(sharpen)
-                    .toBuffer()
-                    .catch((reason: any): null => {
-                        this.catcher("Couldn't sharpen HD Snapshot.", reason);
-                        return null;
-                    })) ?? jpg;
+            const sharp: typeof Sharp | null = await OwnRingCamera.loadSharp(this._adapter);
+            if (sharp) {
+                jpg =
+                    (await sharp(jpg)
+                        .sharpen(sharpen)
+                        .toBuffer()
+                        .catch((reason: any): null => {
+                            this.catcher("Couldn't sharpen HD Snapshot.", reason);
+                            return null;
+                        })) ?? jpg;
+            }
         }
 
         // clean up
@@ -779,6 +805,13 @@ export class OwnRingCamera extends OwnRingDevice {
         );
 
         await this._adapter.upsertState(`${this.eventsChannelId}.ondemand`, COMMON_ON_DEMAND, false);
+
+        // Created on start and not only with the first push event: without a working push connection
+        // they would never appear, and scripts could not subscribe to them before the first event.
+        await this._adapter.initEventState(`${this.eventsChannelId}.motion`, COMMON_MOTION);
+        if (this._ringDevice.isDoorbot || String(this._ringDevice.deviceType).includes('doorbell')) {
+            await this._adapter.initEventState(`${this.eventsChannelId}.doorbell`, COMMON_EVENTS_DOORBELL);
+        }
 
         await this._adapter.upsertState(
             `${this.snapshotChannelId}.auto`,

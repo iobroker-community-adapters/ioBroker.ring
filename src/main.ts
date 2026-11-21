@@ -86,6 +86,31 @@ export class RingAdapter extends Adapter {
     }
 
     /**
+     * Creates a boolean event state (doorbell, motion) on start instead of only with the first push event,
+     * so it exists for scripts even before anything happened. An event that is still "true" from before a
+     * restart is reset; a state that is already "false" is left alone and keeps its timestamp.
+     */
+    public async initEventState(id: string, common: Partial<ioBroker.StateCommon>): Promise<void> {
+        try {
+            const { device, channel, stateName }: { device: string; channel: string; stateName: string } =
+                RingAdapter.getSplitIds(id);
+            const objectId: string = [device, channel, stateName].filter((part: string) => part !== '').join('.');
+            await this.setObjectNotExistsAsync(objectId, {
+                type: 'state',
+                common: common as ioBroker.StateCommon,
+                native: {},
+            });
+            const state: ioBroker.State | null | undefined = await this.getStateAsync(id);
+            if (state?.val !== false) {
+                await this.setStateAsync(id, false, true);
+            }
+            this.states[id] = false;
+        } catch (e: any) {
+            this.log.warn(`Error initializing State ${id}: ${e?.message ?? e}`);
+        }
+    }
+
+    /**
      * Is called when adapter shuts down - callback has to be called under any circumstances!
      */
     private onUnload(callback: () => void): void {

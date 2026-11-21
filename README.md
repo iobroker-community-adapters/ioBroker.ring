@@ -90,6 +90,9 @@ Install this adapter using ioBroker repositories.
 ## Changelog
 
 ### **WORK IN PROGRESS**
+- (bluefox) Ring devices `cocoa_doorbell_v4w` (Wired Doorbell 2K Plus), `cocoa_doorbell_v5` and `cocoa_spotlight` are recognized as `cocoa`, `intercom_handset_video` (Intercom Video) as `intercom`. **Note:** these devices were created below `unknown_<id>` before and move to `cocoa_<id>` / `intercom_<id>` now - adjust your scripts and delete the old `unknown_<id>` branch
+- (bluefox) `Events.motion` and, for doorbells, `Events.doorbell` are created on start now; before they only appeared with the first push event
+- (bluefox) The adapter no longer crashes on start when the image library `sharp` cannot be loaded on the system; HD snapshots are just not sharpened then
 - (copilot) Adapter requires node.js >= 22.19.0 now
 
 <!--
