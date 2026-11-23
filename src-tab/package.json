@@ -17,7 +17,7 @@
         "@types/react-dom": "^19.3.0",
         "@vitejs/plugin-react": "^6.1.2",
         "typescript": "~6.0.3",
-        "vite": "^8.3.5"
+        "vite": "^8.3.8"
     },
     "scripts": {
         "start": "vite --host",
