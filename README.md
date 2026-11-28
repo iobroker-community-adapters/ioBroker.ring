@@ -100,6 +100,9 @@ Install this adapter using ioBroker repositories.
 - (bluefox) "Delete old one" works now when the ioBroker files are stored in Redis (#671)
 - (l-naumann) `Location_<id>.locationMode` follows the mode of a Ring Alarm system again (#879)
 - (bluefox) The `%n` counters of snapshots and HD snapshots were swapped
+- (bluefox) The adapter really starts now when the image library `sharp` cannot be loaded on the system: 7.1.0 still loaded it on start for the text overlay of snapshots. Without `sharp` snapshots get no text overlay and HD snapshots are not sharpened (#1024, #797)
+- (bluefox) A failed text overlay stored the error instead of the snapshot; it stores the snapshot without text now. An empty HD snapshot is reported instead of being passed to `sharp` (#615)
+- (bluefox) Cameras with two battery slots (e.g. Spotlight Cam Battery) get `Info.second_battery_percentage` and `Info.second_battery_percentage_category`; `Info.battery_percentage` is the first slot only (#150)
 
 ### 7.1.0 (2026-11-21)
 - (Speedbreaker12) Live events (motion, doorbell, intercom ding) work again: since the end of October 2026 `@eneris/push-receiver` 4.3.0 could not decrypt Ring's push notifications. `ring-client-api` was updated to 15.0.0-beta.0, which brings `@eneris/push-receiver` 4.4.0

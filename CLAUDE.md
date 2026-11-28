@@ -68,7 +68,7 @@ The package has `"type": "module"`, this build is CommonJS. That has three conse
 - `module`/`moduleResolution` are `Node16` for that reason. Switching them to `commonjs` would silently rewrite the dynamic `import()` back into `require()`.
 - Only the subpaths the package actually exports resolve: `ring-client-api`, `.../rest-client`, `.../streaming/streaming-session`, `.../ffmpeg`, `.../util`. `ring-client-api/lib/...` does not.
 
-`sharp` (native) is the other dynamic `import()`: `OwnRingCamera.loadSharp()` loads it on first use, because a platform where its binary does not load would otherwise crash the adapter on start. It is only needed to sharpen HD snapshots — keep it out of the static imports.
+`sharp` (native) is the other dynamic `import()`: `ImageService.loadSharp()` loads it on first use, because a platform where its binary does not load would otherwise crash the adapter on start (#1024 — 7.1.0 still crashed, because `image-service.ts` imported it statically for the text overlay). It is only needed for the snapshot text overlay and to sharpen HD snapshots; without it both are skipped. Keep it out of the static imports (`import type` is fine) — `test/package.js` fails on a static import in `src/`.
 
 `OwnRingDevice.evaluateKind()` spells the device kinds out as string literals instead of using `RingCameraKind` / `RingDeviceType`, because it is static and synchronous and cannot await the module. The literals are the identical values.
 

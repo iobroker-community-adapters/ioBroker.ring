@@ -1,7 +1,32 @@
-import Sharp from 'sharp';
+import type Sharp from 'sharp';
+import type { RingAdapter } from '../../main';
 import { TextService } from './text-service';
 
 export class ImageService {
+    /** "sharp" is loaded on first use, see loadSharp() */
+    private static _sharp: Promise<typeof Sharp | null> | undefined;
+
+    /**
+     * "sharp" is a native module. Where its binary cannot be loaded, a static import crashes the whole
+     * adapter on start (#1024, #797) - but it is only needed for the text overlay of snapshots and to
+     * sharpen HD snapshots. So it is loaded on demand, once for all cameras; if that fails, the images
+     * are stored without overlay and unsharpened. Never import it statically, test/package.js checks that.
+     */
+    public static loadSharp(adapter: RingAdapter): Promise<typeof Sharp | null> {
+        ImageService._sharp ??= import('sharp')
+            .then((module): typeof Sharp => module.default)
+            .catch((reason: any): null => {
+                adapter.log.warn(
+                    `Image library "sharp" could not be loaded, snapshots get no text overlay and HD snapshots are not sharpened: ${reason?.message ?? reason}`,
+                );
+                if (reason?.stack !== undefined) {
+                    adapter.log.debug(`Error Stack: ${reason.stack}`);
+                }
+                return null;
+            });
+        return ImageService._sharp;
+    }
+
     public static videoFilter(
         overlay: boolean,
         dateFormat: string,
@@ -36,7 +61,17 @@ export class ImageService {
                 : [];
     }
 
-    public static async addTextToJpgBuffer(jpg: Buffer, mainText: string, secondaryText: string): Promise<Buffer> {
+    /** @returns the image with the texts, or the unchanged image if "sharp" is not available */
+    public static async addTextToJpgBuffer(
+        adapter: RingAdapter,
+        jpg: Buffer,
+        mainText: string,
+        secondaryText: string,
+    ): Promise<Buffer> {
+        const sharp: typeof Sharp | null = await ImageService.loadSharp(adapter);
+        if (!sharp) {
+            return jpg;
+        }
         const width = 640;
         const height = 360;
         const font_size = 15;
@@ -53,7 +88,7 @@ export class ImageService {
 
         const svgBuffer: Buffer = Buffer.from(svgText);
 
-        return Sharp(jpg)
+        return sharp(jpg)
             .composite([{ input: svgBuffer, left: 0, top: 0 }])
             .toBuffer();
     }

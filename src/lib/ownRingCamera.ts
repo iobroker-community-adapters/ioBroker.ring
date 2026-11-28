@@ -43,6 +43,8 @@ import {
     COMMON_HISTORY_URL,
     COMMON_INFO_BATTERY_PERCENTAGE,
     COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY,
+    COMMON_INFO_SECOND_BATTERY_PERCENTAGE,
+    COMMON_INFO_SECOND_BATTERY_PERCENTAGE_CATEGORY,
     COMMON_INFO_DESCRIPTION,
     COMMON_INFO_EXTERNAL_CONNECTION,
     COMMON_INFO_FIRMWARE,
@@ -109,29 +111,6 @@ enum EventState {
 }
 
 export class OwnRingCamera extends OwnRingDevice {
-    /** "sharp" is loaded on first use, see loadSharp() */
-    private static _sharp: Promise<typeof Sharp | null> | undefined;
-
-    /**
-     * "sharp" is a native module. Where its binary cannot be loaded, a static import would crash the
-     * whole adapter on start (#1024) - but it is only needed to sharpen HD snapshots. So it is loaded
-     * on demand, once for all cameras; if that fails, HD snapshots are stored unsharpened.
-     */
-    private static loadSharp(adapter: RingAdapter): Promise<typeof Sharp | null> {
-        OwnRingCamera._sharp ??= import('sharp')
-            .then((module): typeof Sharp => module.default)
-            .catch((reason: any): null => {
-                adapter.log.warn(
-                    `Image library "sharp" could not be loaded, HD snapshots will not be sharpened: ${reason?.message ?? reason}`,
-                );
-                if (reason?.stack !== undefined) {
-                    adapter.log.debug(`Error Stack: ${reason.stack}`);
-                }
-                return null;
-            });
-        return OwnRingCamera._sharp;
-    }
-
     private readonly infoChannelId: string;
     private readonly historyChannelId: string;
     private readonly lightChannelId: string;
@@ -161,6 +140,8 @@ export class OwnRingCamera extends OwnRingDevice {
     private _doorbellEventBlocker: EventBlocker;
     /** Kept across updateByDevice(), a reconnect is exactly when repeated notifications arrive */
     private readonly _notificationFilter: DuplicateFilter = new DuplicateFilter(REPEATED_NOTIFICATION_MEMORY_MS);
+    /** undefined until known whether the second battery states exist, see updateSecondBatteryObject() */
+    private _hasSecondBattery: boolean | undefined;
     private _state: EventState = EventState.Idle;
 
     public constructor(
@@ -370,22 +351,30 @@ export class OwnRingCamera extends OwnRingDevice {
         this.silly('HD Snapshot from livestream created.');
 
         let jpg: Buffer = fs.readFileSync(tempPath);
+        if (!jpg.length) {
+            // ffmpeg can end without a frame; "sharp" would throw "Input Buffer is empty" on it (#615)
+            this.warn(`Couldn't create HD Snapshot (empty image in ${tempPath}).`);
+            fs.unlink(tempPath, (err: NodeJS.ErrnoException | null): void => {
+                if (err) {
+                    this.catcher(`Couldn't delete temp file ${tempPath}`, err);
+                }
+            });
+            await this.updateHDSnapshotRequest(false);
+            return;
+        }
 
         if (night_sharpen && this._adapter.config.sharpen_HDsnapshot && this._adapter.config.sharpen_HDsnapshot > 0) {
             const sharpen: undefined | { sigma: number } =
                 this._adapter.config.sharpen_HDsnapshot == 1
                     ? undefined
                     : { sigma: this._adapter.config.sharpen_HDsnapshot - 1 };
-            const sharp: typeof Sharp | null = await OwnRingCamera.loadSharp(this._adapter);
+            const sharp: typeof Sharp | null = await ImageService.loadSharp(this._adapter);
             if (sharp) {
-                jpg =
-                    (await sharp(jpg)
-                        .sharpen(sharpen)
-                        .toBuffer()
-                        .catch((reason: any): null => {
-                            this.catcher("Couldn't sharpen HD Snapshot.", reason);
-                            return null;
-                        })) ?? jpg;
+                try {
+                    jpg = await sharp(jpg).sharpen(sharpen).toBuffer();
+                } catch (reason: any) {
+                    this.catcher("Couldn't sharpen HD Snapshot.", reason);
+                }
             }
         }
 
@@ -497,14 +486,16 @@ export class OwnRingCamera extends OwnRingDevice {
         let image_txt: Buffer = image;
         if (this._adapter.config.overlay_snapshot) {
             image_txt = await ImageService.addTextToJpgBuffer(
+                this._adapter,
                 image,
                 this._ringDevice.data.description,
                 strftime(
                     `${TextService.getTodayName(this._adapter.language)}, ${TextService.getDateFormat(this._adapter.dateFormat)} %T`,
                 ),
-            ).catch((reason: any): any => {
+            ).catch((reason: any): Buffer => {
+                // store the snapshot without text - the error itself used to be written as the image
                 this.catcher("Couldn't add text to Snapshot.", reason);
-                return reason;
+                return image;
             });
         }
 
@@ -1079,6 +1070,38 @@ export class OwnRingCamera extends OwnRingDevice {
             COMMON_INFO_HAS_SIREN,
             this._ringDevice.hasSiren,
         );
+        await this.updateSecondBatteryObject(data);
+    }
+
+    /**
+     * Cameras with two battery slots (e.g. Spotlight Cam Battery) report the second one only in the
+     * device data - battery_percentage from the health check is the first slot alone (#150).
+     * The states are created once a second battery was seen and show -1 while its slot is empty.
+     */
+    private async updateSecondBatteryObject(data: CameraData): Promise<void> {
+        const percentageId = `${this.infoChannelId}.second_battery_percentage`;
+        const level: number | null =
+            OwnRingCamera.parseBatteryLevel(data.battery_life_2) ??
+            OwnRingCamera.parseBatteryLevel(data.health?.second_battery_percentage);
+        this._hasSecondBattery ??= !!(await this._adapter.getObjectAsync(percentageId));
+        if (level === null && !this._hasSecondBattery) {
+            return;
+        }
+        this._hasSecondBattery = true;
+        await this._adapter.upsertState(percentageId, COMMON_INFO_SECOND_BATTERY_PERCENTAGE, level ?? -1);
+        await this._adapter.upsertState(
+            `${this.infoChannelId}.second_battery_percentage_category`,
+            COMMON_INFO_SECOND_BATTERY_PERCENTAGE_CATEGORY,
+            data.health?.second_battery_percentage_category ?? 'unknown',
+        );
+    }
+
+    private static parseBatteryLevel(value: number | string | null | undefined): number | null {
+        if (value === null || value === undefined || value === '') {
+            return null;
+        }
+        const level: number = typeof value === 'number' ? value : parseFloat(value);
+        return isNaN(level) ? null : level;
     }
 
     private async updateHistoryObject(lastAction: LastAction): Promise<void> {

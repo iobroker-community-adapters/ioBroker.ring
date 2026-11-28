@@ -43,6 +43,21 @@ export const COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY: Partial<ioBroker.StateComm
     read: true,
     write: false,
 };
+export const COMMON_INFO_SECOND_BATTERY_PERCENTAGE: Partial<ioBroker.StateCommon> = {
+    type: 'number',
+    role: 'value.battery',
+    name: 'Second Battery',
+    read: true,
+    write: false,
+    unit: '%',
+};
+export const COMMON_INFO_SECOND_BATTERY_PERCENTAGE_CATEGORY: Partial<ioBroker.StateCommon> = {
+    type: 'string',
+    role: 'state',
+    name: 'Second Battery Category',
+    read: true,
+    write: false,
+};
 export const COMMON_INFO_WIFI_NAME: Partial<ioBroker.StateCommon> = {
     type: 'string',
     role: 'text',
