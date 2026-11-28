@@ -62,6 +62,19 @@
     "mode": "daemon",
     "name": "ring",
     "news": {
+      "7.2.0": {
+        "en": "* Repeated push notifications from Ring are ignored now: Events.doorbell and Events.motion no longer flap after a single event, and no additional snapshots or recordings are taken\n* The adapter really starts now when the image library sharp cannot be loaded (7.1.0 still crashed); snapshots then get no text overlay and HD snapshots are not sharpened\n* Livestreams without text overlay are no longer re-encoded, which saves a lot of CPU and avoids artifacts on weak systems\n* Auto save: \"1 hour\" did not work and \"1 day\" ran every minute. The former \"1 day\" option is shown as \"12 hours\" now, \"1 day\" is a new option\n* Old files are deleted now also when the ioBroker files are stored in Redis\n* locationMode follows the mode of a Ring Alarm system\n* Cameras with two batteries get Info.second_battery_percentage and Info.second_battery_percentage_category\n* Dependencies have been updated",
+        "de": "* Wiederholte Push-Nachrichten von Ring werden jetzt ignoriert: Events.doorbell und Events.motion flattern nach einem einzelnen Ereignis nicht mehr, und es entstehen keine zusätzlichen Snapshots oder Aufnahmen\n* Der Adapter startet jetzt wirklich, wenn die Bildbibliothek sharp nicht geladen werden kann (7.1.0 stürzte noch ab); Snapshots bekommen dann keinen Text und HD-Snapshots werden nicht nachgeschärft\n* Livestreams ohne Textüberlagerung werden nicht mehr neu kodiert - das spart viel CPU und vermeidet Bildfehler auf schwachen Systemen\n* Automatisches Speichern: \"1 Stunde\" funktionierte nicht und \"1 Tag\" lief jede Minute. Die bisherige Option \"1 Tag\" heißt jetzt \"12 Stunden\", \"1 Tag\" ist neu\n* Alte Dateien werden jetzt auch gelöscht, wenn die ioBroker-Dateien in Redis liegen\n* locationMode folgt dem Modus einer Ring-Alarmanlage\n* Kameras mit zwei Akkus erhalten Info.second_battery_percentage und Info.second_battery_percentage_category\n* Abhängigkeiten wurden aktualisiert",
+        "ru": "* Повторные push-уведомления Ring теперь игнорируются: Events.doorbell и Events.motion больше не срабатывают многократно после одного события, и лишние снимки и записи не создаются\n* Адаптер теперь действительно запускается, если библиотеку изображений sharp не удаётся загрузить (7.1.0 ещё падал); снимки тогда сохраняются без текста, а резкость HD-снимков не повышается\n* Прямые трансляции без наложения текста больше не перекодируются - это сильно экономит ресурсы процессора и устраняет артефакты на слабых системах\n* Автосохранение: \"1 час\" не работал, а \"1 день\" срабатывал каждую минуту. Прежний вариант \"1 день\" теперь называется \"12 часов\", \"1 день\" добавлен как новый вариант\n* Старые файлы теперь удаляются и тогда, когда файлы ioBroker хранятся в Redis\n* locationMode следует режиму охранной системы Ring Alarm\n* Камеры с двумя аккумуляторами получают Info.second_battery_percentage и Info.second_battery_percentage_category\n* Зависимости обновлены",
+        "pt": "* Notificações push repetidas da Ring agora são ignoradas: Events.doorbell e Events.motion não oscilam mais após um único evento, e não são feitos snapshots ou gravações adicionais\n* O adaptador agora realmente inicia quando a biblioteca de imagens sharp não pode ser carregada (a 7.1.0 ainda travava); nesse caso, os snapshots ficam sem texto e não é aplicada nitidez aos snapshots HD\n* Transmissões ao vivo sem sobreposição de texto não são mais recodificadas, o que economiza muita CPU e evita artefatos em sistemas fracos\n* Salvamento automático: \"1 hora\" não funcionava e \"1 dia\" era executado a cada minuto. A antiga opção \"1 dia\" agora aparece como \"12 horas\", e \"1 dia\" é uma nova opção\n* Arquivos antigos agora também são excluídos quando os arquivos do ioBroker estão armazenados no Redis\n* locationMode acompanha o modo de um sistema Ring Alarm\n* Câmeras com duas baterias recebem Info.second_battery_percentage e Info.second_battery_percentage_category\n* As dependências foram atualizadas",
+        "nl": "* Herhaalde pushmeldingen van Ring worden nu genegeerd: Events.doorbell en Events.motion schakelen na één gebeurtenis niet meer herhaaldelijk, en er worden geen extra snapshots of opnames gemaakt\n* De adapter start nu echt als de beeldbibliotheek sharp niet kan worden geladen (7.1.0 crashte nog); snapshots krijgen dan geen tekst en HD-snapshots worden niet verscherpt\n* Livestreams zonder tekstoverlay worden niet meer opnieuw gecodeerd, wat veel CPU bespaart en artefacten op zwakke systemen voorkomt\n* Automatisch opslaan: \"1 uur\" werkte niet en \"1 dag\" liep elke minuut. De vroegere optie \"1 dag\" heet nu \"12 uur\", \"1 dag\" is een nieuwe optie\n* Oude bestanden worden nu ook verwijderd als de ioBroker-bestanden in Redis zijn opgeslagen\n* locationMode volgt de modus van een Ring Alarm-systeem\n* Camera's met twee accu's krijgen Info.second_battery_percentage en Info.second_battery_percentage_category\n* Afhankelijkheden zijn bijgewerkt",
+        "fr": "* Les notifications push répétées de Ring sont désormais ignorées : Events.doorbell et Events.motion ne basculent plus plusieurs fois après un seul événement, et aucun instantané ou enregistrement supplémentaire n'est effectué\n* L'adaptateur démarre désormais vraiment lorsque la bibliothèque d'images sharp ne peut pas être chargée (la 7.1.0 plantait encore) ; les instantanés n'ont alors pas de texte et les instantanés HD ne sont pas accentués\n* Les flux en direct sans texte superposé ne sont plus réencodés, ce qui économise beaucoup de CPU et évite les artefacts sur les systèmes peu puissants\n* Sauvegarde automatique : \"1 heure\" ne fonctionnait pas et \"Un jour\" s'exécutait chaque minute. L'ancienne option \"Un jour\" s'affiche désormais comme \"12 heures\", \"Un jour\" est une nouvelle option\n* Les anciens fichiers sont désormais également supprimés lorsque les fichiers ioBroker sont stockés dans Redis\n* locationMode suit le mode d'un système Ring Alarm\n* Les caméras à deux batteries reçoivent Info.second_battery_percentage et Info.second_battery_percentage_category\n* Les dépendances ont été mises à jour",
+        "it": "* Le notifiche push ripetute di Ring vengono ora ignorate: Events.doorbell ed Events.motion non oscillano più dopo un singolo evento e non vengono scattate istantanee o registrazioni aggiuntive\n* L'adattatore ora si avvia davvero se la libreria di immagini sharp non può essere caricata (la 7.1.0 si bloccava ancora); le istantanee restano allora senza testo e le istantanee HD non vengono rese più nitide\n* I livestream senza testo sovrapposto non vengono più ricodificati, il che fa risparmiare molta CPU ed evita artefatti sui sistemi poco potenti\n* Salvataggio automatico: \"1 ora\" non funzionava e \"1 giorno\" veniva eseguito ogni minuto. La precedente opzione \"1 giorno\" ora si chiama \"12 ore\", \"1 giorno\" è una nuova opzione\n* I file vecchi vengono ora eliminati anche quando i file di ioBroker sono memorizzati in Redis\n* locationMode segue la modalità di un sistema Ring Alarm\n* Le telecamere con due batterie ricevono Info.second_battery_percentage e Info.second_battery_percentage_category\n* Le dipendenze sono state aggiornate",
+        "es": "* Las notificaciones push repetidas de Ring ahora se ignoran: Events.doorbell y Events.motion ya no oscilan tras un único evento y no se toman instantáneas ni grabaciones adicionales\n* El adaptador ahora sí se inicia cuando no se puede cargar la biblioteca de imágenes sharp (la 7.1.0 todavía fallaba); en ese caso, las instantáneas quedan sin texto y no se aplica nitidez a las instantáneas HD\n* Las transmisiones en vivo sin texto superpuesto ya no se recodifican, lo que ahorra mucha CPU y evita artefactos en sistemas poco potentes\n* Guardado automático: \"1 hora\" no funcionaba y \"1 día\" se ejecutaba cada minuto. La antigua opción \"1 día\" se muestra ahora como \"12 horas\" y \"1 día\" es una opción nueva\n* Los archivos antiguos ahora también se eliminan cuando los archivos de ioBroker se guardan en Redis\n* locationMode sigue el modo de un sistema Ring Alarm\n* Las cámaras con dos baterías reciben Info.second_battery_percentage e Info.second_battery_percentage_category\n* Se han actualizado las dependencias",
+        "pl": "* Powtarzające się powiadomienia push od Ring są teraz ignorowane: Events.doorbell i Events.motion nie przełączają się już wielokrotnie po pojedynczym zdarzeniu i nie są wykonywane dodatkowe zdjęcia ani nagrania\n* Adapter teraz faktycznie uruchamia się, gdy nie można załadować biblioteki obrazów sharp (wersja 7.1.0 wciąż ulegała awarii); zdjęcia nie mają wtedy tekstu, a zdjęcia HD nie są wyostrzane\n* Transmisje na żywo bez nakładki tekstowej nie są już ponownie kodowane, co oszczędza dużo mocy procesora i zapobiega artefaktom na słabych systemach\n* Automatyczny zapis: \"1 godzina\" nie działała, a \"1 dzień\" uruchamiał się co minutę. Dotychczasowa opcja \"1 dzień\" nazywa się teraz \"12 godzin\", \"1 dzień\" to nowa opcja\n* Stare pliki są teraz usuwane także wtedy, gdy pliki ioBroker są przechowywane w Redis\n* locationMode podąża za trybem systemu Ring Alarm\n* Kamery z dwoma akumulatorami otrzymują Info.second_battery_percentage i Info.second_battery_percentage_category\n* Zaktualizowano zależności",
+        "uk": "* Повторні push-сповіщення Ring тепер ігноруються: Events.doorbell і Events.motion більше не спрацьовують багаторазово після однієї події, і зайві знімки та записи не створюються\n* Адаптер тепер справді запускається, якщо бібліотеку зображень sharp не вдається завантажити (7.1.0 ще падав); знімки тоді зберігаються без тексту, а різкість HD-знімків не підвищується\n* Прямі трансляції без накладеного тексту більше не перекодовуються - це суттєво заощаджує ресурси процесора й усуває артефакти на слабких системах\n* Автозбереження: \"1 година\" не працювала, а \"1 день\" спрацьовував щохвилини. Колишній варіант \"1 день\" тепер називається \"12 годин\", \"1 день\" - новий варіант\n* Старі файли тепер видаляються й тоді, коли файли ioBroker зберігаються в Redis\n* locationMode відповідає режиму охоронної системи Ring Alarm\n* Камери з двома акумуляторами отримують Info.second_battery_percentage та Info.second_battery_percentage_category\n* Залежності оновлено",
+        "zh-cn": "* 现在会忽略 Ring 重复发送的推送通知：单次事件后 Events.doorbell 和 Events.motion 不再反复跳变，也不会再额外拍摄快照或录像\n* 无法加载图像库 sharp 时，适配器现在确实可以启动（7.1.0 仍会崩溃）；此时快照不添加文字，HD 快照也不进行锐化\n* 不带文字叠加的直播录像不再重新编码，可大幅节省 CPU，并避免在性能较弱的系统上出现画面伪影\n* 自动保存：\"1小时\"此前无效，\"1天\"每分钟都会执行。原来的\"1天\"选项现在显示为\"12小时\"，\"1天\"为新增选项\n* 当 ioBroker 文件存储在 Redis 中时，现在也会删除旧文件\n* locationMode 会跟随 Ring Alarm 报警系统的模式\n* 带两块电池的摄像头新增 Info.second_battery_percentage 和 Info.second_battery_percentage_category\n* 依赖项已更新"
+      },
       "7.1.0": {
         "en": "* Live events (motion, doorbell, intercom ding) work again: since the end of October 2026, @eneris/push-receiver 4.3.0 could not decrypt Ring's push notifications. ring-client-api was updated to 15.0.0-beta.0, which brings @eneris/push-receiver 4.4.0\n* New device types: cocoa_doorbell_v4w, cocoa_doorbell_v5 and cocoa_spotlight (as cocoa), doorbell_tahoe (as doorbell), intercom_handset_video (as intercom). These devices were created below unknown_... before and move to the new prefix - adjust your scripts and delete the old unknown_... branch\n* Events.motion and, for doorbells, Events.doorbell are created on start now\n* The adapter no longer crashes on start when the image library sharp cannot be loaded; HD snapshots are just not sharpened then\n* Adapter requires Node.js >= 22.19.0 now",
         "de": "* Live-Events (Bewegung, Klingel, Intercom-Ding) funktionieren wieder: Seit Ende Oktober 2026 konnte @eneris/push-receiver 4.3.0 die Push-Nachrichten von Ring nicht entschlüsseln. ring-client-api wurde auf 15.0.0-beta.0 aktualisiert, das @eneris/push-receiver 4.4.0 mitbringt\n* Neue Gerätetypen: cocoa_doorbell_v4w, cocoa_doorbell_v5 und cocoa_spotlight (als cocoa), doorbell_tahoe (als doorbell), intercom_handset_video (als intercom). Diese Geräte wurden bisher unter unknown_... angelegt und ziehen auf das neue Präfix um - Skripte anpassen und den alten Zweig unknown_... löschen\n* Events.motion und bei Türklingeln Events.doorbell werden jetzt beim Start angelegt\n* Der Adapter stürzt beim Start nicht mehr ab, wenn die Bildbibliothek sharp nicht geladen werden kann; HD-Snapshots werden dann nur nicht nachgeschärft\n* Der Adapter benötigt jetzt Node.js >= 22.19.0",
@@ -116,42 +129,29 @@
       },
       "6.4.0": {
         "en": "#820 Support Node-JS 22",
-        "de": "#820 Support Node-JS 22",
-        "ru": "#820 Поддержка Node-JS 22",
-        "pt": "#820 Suporte Node-JS 22",
-        "nl": "#820 Ondersteuning Node-JS 22",
-        "fr": "#820 Node de soutien-JS 22",
-        "it": "#820 Supporto Node-JS 22",
-        "es": "#820 Support Node-JS 22",
-        "pl": "# 820 Node-JS 22",
-        "uk": "#820 Підтримка Node-JS 22",
-        "zh-cn": "#820 支持节点-JS 22"
+        "de": "#820 Unterstützung für Node.js 22",
+        "ru": "#820 Поддержка Node.js 22",
+        "pt": "#820 Suporte ao Node.js 22",
+        "nl": "#820 Ondersteuning voor Node.js 22",
+        "fr": "#820 Prise en charge de Node.js 22",
+        "it": "#820 Supporto per Node.js 22",
+        "es": "#820 Compatibilidad con Node.js 22",
+        "pl": "#820 Obsługa Node.js 22",
+        "uk": "#820 Підтримка Node.js 22",
+        "zh-cn": "#820 支持 Node.js 22"
       },
       "6.3.0": {
         "en": "#768 Add df_doorbell_clownfish\n#738 Add stickup_cam_medusa\n#685 Add cocoa_doorbell_v3",
-        "de": "#768 Add Df_doorbell_clownfish\n#738 Add Ich bin hier\n#685 Add Kakao_Türbell_v3",
-        "ru": "#768 Добавить df_doorbell_clownfish\n#738 Добавить stick_cam_medusa\n#685 Добавить какао_doorbell_v3",
-        "pt": "#768 Adicionar Df_doorbell_clownfish\nAdicionar ao cesto Página inicial\n#685 Adicionar Jogos de Vestir",
-        "nl": "#768 Toevoegen df_doorbell_clownfish\n#738 Toevoegen stickup_cam_medusa\n#685 Toevoegen cacao_doorbell_v3",
-        "fr": "#768 Ajouter Df_doorbell_clownfish\n#738 Ajouter stickup_cam_medusa\n#685 Ajouter cacao_porte_v3",
-        "it": "#768 Add df_doorbell_clownfish\n#738 Add stickup_cam_medusa\n#685 Aggiungere cacao_doorbell_v3",
-        "es": "#768 Add df_doorbell_clownfish\n#738 Add stickup_cam_medusa\n#685 Add cocoa_doorbell_v3",
-        "pl": "# 768 Dodaj df _ doorbell _ claunnfish\n# 738 Dodaj stickup _ cam _ medusa\n# 685 Dodaj kakao _ dzwonek _ v3",
-        "uk": "#768 Додати df_doorbell_clownfish\n#738 Додати Огляд - Gitea\n#685 Додати Бодибилдерши",
-        "zh-cn": "#768 添加 df_门铃_小丑鱼\n#738 添加 抢劫_摄像头_medusa\n# 685 添加 可可_ 门铃_ v3"
-      },
-      "6.2.4": {
-        "en": "Settings for responsive Design\nUpdate some developer packages",
-        "de": "Einstellungen für ansprechendes Design\nEinige Entwicklerpakete aktualisieren",
-        "ru": "Настройки для отзывчивого дизайна\nОбновить пакеты для разработчиков",
-        "pt": "Configurações para Design responsivo\nAtualizar alguns pacotes de desenvolvedor",
-        "nl": "Instellingen voor responsief ontwerp\nEen aantal ontwikkelaarspakketten bijwerken",
-        "fr": "Paramètres pour un design réactif\nMettre à jour certains paquets développeur",
-        "it": "Impostazioni per design reattivo\nAggiornare alcuni pacchetti di sviluppatori",
-        "es": "Ajustes para un diseño sensible\nActualizar algunos paquetes de desarrolladores",
-        "pl": "Ustawienia dla Responsive Design\nAktualizacja niektórych pakietów deweloperskich",
-        "uk": "Налаштування адаптивного дизайну\nОновлення деяких пакетів розробника",
-        "zh-cn": "响应设计设置\n更新一些开发者软件包"
+        "de": "#768 df_doorbell_clownfish hinzugefügt\n#738 stickup_cam_medusa hinzugefügt\n#685 cocoa_doorbell_v3 hinzugefügt",
+        "ru": "#768 Добавлен df_doorbell_clownfish\n#738 Добавлен stickup_cam_medusa\n#685 Добавлен cocoa_doorbell_v3",
+        "pt": "#768 Adicionado df_doorbell_clownfish\n#738 Adicionado stickup_cam_medusa\n#685 Adicionado cocoa_doorbell_v3",
+        "nl": "#768 df_doorbell_clownfish toegevoegd\n#738 stickup_cam_medusa toegevoegd\n#685 cocoa_doorbell_v3 toegevoegd",
+        "fr": "#768 Ajout de df_doorbell_clownfish\n#738 Ajout de stickup_cam_medusa\n#685 Ajout de cocoa_doorbell_v3",
+        "it": "#768 Aggiunto df_doorbell_clownfish\n#738 Aggiunto stickup_cam_medusa\n#685 Aggiunto cocoa_doorbell_v3",
+        "es": "#768 Se añadió df_doorbell_clownfish\n#738 Se añadió stickup_cam_medusa\n#685 Se añadió cocoa_doorbell_v3",
+        "pl": "#768 Dodano df_doorbell_clownfish\n#738 Dodano stickup_cam_medusa\n#685 Dodano cocoa_doorbell_v3",
+        "uk": "#768 Додано df_doorbell_clownfish\n#738 Додано stickup_cam_medusa\n#685 Додано cocoa_doorbell_v3",
+        "zh-cn": "#768 新增 df_doorbell_clownfish\n#738 新增 stickup_cam_medusa\n#685 新增 cocoa_doorbell_v3"
       }
     },
     "platform": "Javascript/Node.js",
@@ -172,7 +172,7 @@
       "zh-cn": "环 圈"
     },
     "type": "hardware",
-    "version": "7.1.0",
+    "version": "7.2.0",
     "globalDependencies": [
       {
         "admin": ">=7.7.22"

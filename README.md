@@ -92,7 +92,7 @@ Install this adapter using ioBroker repositories.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 7.2.0 (2026-11-28)
 - (bluefox) `ring-client-api` is required as `^15.0.0-beta.0` now instead of exactly `15.0.0-beta.0`, so the stable 15.x is used as soon as it is released
 - (bluefox) Dependencies have been updated (suncalc 2.1; in the admin tab React 19.3, MUI 9.5, gui-components 10.4)
 - (bluefox) Ring delivers the same push notification several times, sometimes over 20 minutes and more. These repeats are recognized by their ding id and ignored now, so `Events.doorbell` and `Events.motion` no longer flap after a single event and no additional snapshots or recordings are taken (#548, #711, #632)
