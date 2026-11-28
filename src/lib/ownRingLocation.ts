@@ -19,6 +19,15 @@ import {
 } from './constants';
 import type { ExtendedResponse } from 'ring-client-api/rest-client' with { 'resolution-mode': 'import' };
 
+/** Followed by the alarm mode: "all", "some" or "none" */
+const ALARM_MODE_IMPULSE_PREFIX = 'security-panel.mode-switched.';
+/** The alarm modes in the terms of the location mode, the same mapping the Ring app uses */
+const ALARM_MODE_TO_LOCATION_MODE: ReadonlyMap<string, LocationMode> = new Map<string, LocationMode>([
+    ['all', 'away'],
+    ['some', 'home'],
+    ['none', 'disarmed'],
+]);
+
 export class OwnRingLocation {
     private _currentLocationMode: LocationMode = 'unset';
     public get loc(): Location {
@@ -49,6 +58,7 @@ export class OwnRingLocation {
         this._client = apiClient;
         this._loc.onDataUpdate.subscribe((message: SocketIoMessage): void => {
             this.debug(`Received Location Update Event: "${JSON.stringify(message)}"`);
+            this.processAlarmModeImpulses(message);
         });
         this._loc.onConnected.subscribe((connected: boolean): void => {
             this.debug(`Received Location Connection Status Change to ${connected}`);
@@ -168,6 +178,32 @@ export class OwnRingLocation {
             .catch((reason: any): void => {
                 this._adapter.logCatch(`Failed setting location mode`, reason);
             });
+    }
+
+    /**
+     * With a Ring Alarm base station ring-client-api neither polls the location mode nor reports its
+     * changes via onLocationMode - the security panel announces them as impulses instead (#879, #378).
+     */
+    private processAlarmModeImpulses(message: SocketIoMessage): void {
+        const impulses: unknown = message?.body?.[0]?.impulse?.v1;
+        if (!Array.isArray(impulses)) {
+            return;
+        }
+        for (const impulse of impulses) {
+            const impulseType: unknown = impulse?.impulseType;
+            if (typeof impulseType !== 'string' || !impulseType.startsWith(ALARM_MODE_IMPULSE_PREFIX)) {
+                continue;
+            }
+            const alarmMode: string = impulseType.substring(ALARM_MODE_IMPULSE_PREFIX.length);
+            const newMode: LocationMode | undefined = ALARM_MODE_TO_LOCATION_MODE.get(alarmMode);
+            if (newMode === undefined) {
+                this.debug(`Ignoring unknown alarm mode "${alarmMode}"`);
+                continue;
+            }
+            this.updateModeObject(newMode).catch(e =>
+                this._adapter.log.error(`Failed to update Location Mode for ${this.id}: ${e}`),
+            );
+        }
     }
 
     private async updateModeObject(newMode: LocationMode, preventLog: boolean = false): Promise<void> {

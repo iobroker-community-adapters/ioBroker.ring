@@ -42,6 +42,7 @@
   "1 hour": "1 heure",
   "2 hours": "1 heures",
   "3 hours": "1 heures",
+  "12 hours": "12 heures",
   "1 day": "Un jour",
   "-": "-",
   "HDInfo": "<br>Informations importantes !<br>Les paramètres \"Remplacer le texte\", \"Aiguillage de la photo\" et \"Contraste visuel\" consomme du temps (jusqu'à quelques secondes).<br>Si un temps d'affichage rapide est important, veuillez les éteindre.",

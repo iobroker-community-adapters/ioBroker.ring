@@ -43,6 +43,8 @@ import {
     COMMON_HISTORY_URL,
     COMMON_INFO_BATTERY_PERCENTAGE,
     COMMON_INFO_BATTERY_PERCENTAGE_CATEGORY,
+    COMMON_INFO_SECOND_BATTERY_PERCENTAGE,
+    COMMON_INFO_SECOND_BATTERY_PERCENTAGE_CATEGORY,
     COMMON_INFO_DESCRIPTION,
     COMMON_INFO_EXTERNAL_CONNECTION,
     COMMON_INFO_FIRMWARE,
@@ -88,8 +90,18 @@ import type { StreamingSession } from 'ring-client-api/streaming/streaming-sessi
 };
 import type { PathInfo } from './services/path-info';
 import { EventBlocker } from './services/event-blocker';
+import { DuplicateFilter } from './services/duplicate-filter';
 import { ImageService } from './services/image-service';
 import { TextService } from './services/text-service';
+
+/**
+ * Values of ring-client-api's `PushNotificationAction.Motion` / `.Ding`. Spelled out because the
+ * module is ESM only and its values are not available synchronously in this CommonJS build.
+ */
+const PUSH_CATEGORY_MOTION = 'com.ring.pn.live-event.motion';
+const PUSH_CATEGORY_DING = 'com.ring.pn.live-event.ding';
+/** Ring repeats a notification for 25 minutes and longer (#711), an hour covers that with margin */
+const REPEATED_NOTIFICATION_MEMORY_MS = 60 * 60 * 1000;
 
 enum EventState {
     Idle,
@@ -99,29 +111,6 @@ enum EventState {
 }
 
 export class OwnRingCamera extends OwnRingDevice {
-    /** "sharp" is loaded on first use, see loadSharp() */
-    private static _sharp: Promise<typeof Sharp | null> | undefined;
-
-    /**
-     * "sharp" is a native module. Where its binary cannot be loaded, a static import would crash the
-     * whole adapter on start (#1024) - but it is only needed to sharpen HD snapshots. So it is loaded
-     * on demand, once for all cameras; if that fails, HD snapshots are stored unsharpened.
-     */
-    private static loadSharp(adapter: RingAdapter): Promise<typeof Sharp | null> {
-        OwnRingCamera._sharp ??= import('sharp')
-            .then((module): typeof Sharp => module.default)
-            .catch((reason: any): null => {
-                adapter.log.warn(
-                    `Image library "sharp" could not be loaded, HD snapshots will not be sharpened: ${reason?.message ?? reason}`,
-                );
-                if (reason?.stack !== undefined) {
-                    adapter.log.debug(`Error Stack: ${reason.stack}`);
-                }
-                return null;
-            });
-        return OwnRingCamera._sharp;
-    }
-
     private readonly infoChannelId: string;
     private readonly historyChannelId: string;
     private readonly lightChannelId: string;
@@ -149,6 +138,10 @@ export class OwnRingCamera extends OwnRingDevice {
     private _motionEventBlocker: EventBlocker;
     private _notifyEventBlocker: EventBlocker;
     private _doorbellEventBlocker: EventBlocker;
+    /** Kept across updateByDevice(), a reconnect is exactly when repeated notifications arrive */
+    private readonly _notificationFilter: DuplicateFilter = new DuplicateFilter(REPEATED_NOTIFICATION_MEMORY_MS);
+    /** undefined until known whether the second battery states exist, see updateSecondBatteryObject() */
+    private _hasSecondBattery: boolean | undefined;
     private _state: EventState = EventState.Idle;
 
     public constructor(
@@ -219,14 +212,25 @@ export class OwnRingCamera extends OwnRingDevice {
             return;
         }
         const tempPath = `${await FileService.getTempDir(this._adapter)}/temp_${this.shortId}_livestream.mp4`;
+        // Without overlay the H.264 stream of the camera is copied. An empty list must not be passed:
+        // ring-client-api only falls back to "-vcodec copy" for a missing value, so [] made ffmpeg
+        // re-encode every recording - which on weak CPUs falls behind and shows artifacts (#674).
+        // The overlay needs re-encoding; "ultrafast" keeps that close to real time.
+        const videoOptions: string[] = this._adapter.config.overlay_Livestream
+            ? [
+                  ...ImageService.videoFilter(
+                      true,
+                      this._adapter.dateFormat,
+                      this._adapter.language,
+                      this._ringDevice.data.description,
+                  ),
+                  '-preset',
+                  'ultrafast',
+              ]
+            : ['-vcodec', 'copy'];
         const liveCall: StreamingSession | null = await this._ringDevice
             .streamVideo({
-                video: ImageService.videoFilter(
-                    this._adapter.config.overlay_Livestream,
-                    this._adapter.dateFormat,
-                    this._adapter.language,
-                    this._ringDevice.data.description,
-                ),
+                video: videoOptions,
                 output: ['-t', duration.toString(), tempPath],
             })
             .catch((reason: any): null => {
@@ -263,7 +267,7 @@ export class OwnRingCamera extends OwnRingDevice {
             }
         });
         if (this._lastLiveStreamDir !== '' && this._adapter.config.del_old_livestream) {
-            FileService.deleteFileIfExistSync(this._lastLiveStreamDir, this._adapter);
+            await FileService.deleteFileIfExist(this._lastLiveStreamDir, this._adapter);
         }
 
         if (visPath) {
@@ -299,7 +303,7 @@ export class OwnRingCamera extends OwnRingDevice {
         const { fullPath, dirname }: PathInfo = FileService.getPath(
             this._adapter.config.path_snapshot,
             `HD${this._adapter.config.filename_snapshot}`,
-            ++this._snapshotCount,
+            ++this._HDsnapshotCount,
             this.shortId,
             this.fullId,
             this.kind,
@@ -310,7 +314,7 @@ export class OwnRingCamera extends OwnRingDevice {
             await this.updateHDSnapshotRequest(false);
             return;
         }
-        FileService.deleteFileIfExistSync(fullPath, this._adapter);
+        await FileService.deleteFileIfExist(fullPath, this._adapter);
         if (this._ringDevice.isOffline) {
             this.info("Is offline --> won't take HD Snapshot");
             await this.updateHDSnapshotRequest(false);
@@ -358,22 +362,30 @@ export class OwnRingCamera extends OwnRingDevice {
         this.silly('HD Snapshot from livestream created.');
 
         let jpg: Buffer = fs.readFileSync(tempPath);
+        if (!jpg.length) {
+            // ffmpeg can end without a frame; "sharp" would throw "Input Buffer is empty" on it (#615)
+            this.warn(`Couldn't create HD Snapshot (empty image in ${tempPath}).`);
+            fs.unlink(tempPath, (err: NodeJS.ErrnoException | null): void => {
+                if (err) {
+                    this.catcher(`Couldn't delete temp file ${tempPath}`, err);
+                }
+            });
+            await this.updateHDSnapshotRequest(false);
+            return;
+        }
 
         if (night_sharpen && this._adapter.config.sharpen_HDsnapshot && this._adapter.config.sharpen_HDsnapshot > 0) {
             const sharpen: undefined | { sigma: number } =
                 this._adapter.config.sharpen_HDsnapshot == 1
                     ? undefined
                     : { sigma: this._adapter.config.sharpen_HDsnapshot - 1 };
-            const sharp: typeof Sharp | null = await OwnRingCamera.loadSharp(this._adapter);
+            const sharp: typeof Sharp | null = await ImageService.loadSharp(this._adapter);
             if (sharp) {
-                jpg =
-                    (await sharp(jpg)
-                        .sharpen(sharpen)
-                        .toBuffer()
-                        .catch((reason: any): null => {
-                            this.catcher("Couldn't sharpen HD Snapshot.", reason);
-                            return null;
-                        })) ?? jpg;
+                try {
+                    jpg = await sharp(jpg).sharpen(sharpen).toBuffer();
+                } catch (reason: any) {
+                    this.catcher("Couldn't sharpen HD Snapshot.", reason);
+                }
             }
         }
 
@@ -384,7 +396,7 @@ export class OwnRingCamera extends OwnRingDevice {
             }
         });
         if (this._lastHDSnapShotDir !== '' && this._adapter.config.del_old_HDsnapshot) {
-            FileService.deleteFileIfExistSync(this._lastHDSnapShotDir, this._adapter);
+            await FileService.deleteFileIfExist(this._lastHDSnapShotDir, this._adapter);
         }
 
         if (visPath) {
@@ -435,7 +447,7 @@ export class OwnRingCamera extends OwnRingDevice {
         const { fullPath, dirname }: PathInfo = FileService.getPath(
             this._adapter.config.path_snapshot,
             this._adapter.config.filename_snapshot,
-            ++this._HDsnapshotCount,
+            ++this._snapshotCount,
             this.shortId,
             this.fullId,
             this.kind,
@@ -446,7 +458,7 @@ export class OwnRingCamera extends OwnRingDevice {
             await this.updateSnapshotRequest(false);
             return;
         }
-        FileService.deleteFileIfExistSync(fullPath, this._adapter);
+        await FileService.deleteFileIfExist(fullPath, this._adapter);
 
         if (this._ringDevice.isOffline) {
             this.info(`is offline --> won't take Snapshot`);
@@ -485,19 +497,21 @@ export class OwnRingCamera extends OwnRingDevice {
         let image_txt: Buffer = image;
         if (this._adapter.config.overlay_snapshot) {
             image_txt = await ImageService.addTextToJpgBuffer(
+                this._adapter,
                 image,
                 this._ringDevice.data.description,
                 strftime(
                     `${TextService.getTodayName(this._adapter.language)}, ${TextService.getDateFormat(this._adapter.dateFormat)} %T`,
                 ),
-            ).catch((reason: any): any => {
+            ).catch((reason: any): Buffer => {
+                // store the snapshot without text - the error itself used to be written as the image
                 this.catcher("Couldn't add text to Snapshot.", reason);
-                return reason;
+                return image;
             });
         }
 
         if (this._lastSnapShotDir !== '' && this._adapter.config.del_old_snapshot) {
-            FileService.deleteFileIfExistSync(this._lastSnapShotDir, this._adapter);
+            await FileService.deleteFileIfExist(this._lastSnapShotDir, this._adapter);
         }
         this._lastSnapShotUrl = visURL;
         this._lastSnapShotDir = fullPath;
@@ -867,7 +881,7 @@ export class OwnRingCamera extends OwnRingDevice {
             this.warn(`Failed to prepare Livestream folder ("${fullPath}")`);
             throw new Error('Failed to prepare Livestream folder');
         }
-        FileService.deleteFileIfExistSync(fullPath, this._adapter);
+        await FileService.deleteFileIfExist(fullPath, this._adapter);
         return { visURL: visURL, visPath: visPath, fullPath: fullPath };
     }
 
@@ -927,6 +941,25 @@ export class OwnRingCamera extends OwnRingDevice {
             .catch(e => this.catcher("Couldn't update Health.", e));
     }
 
+    /**
+     * Cron rule (with seconds) for "every `intervalSeconds`", started at second `offsetSeconds` of the
+     * minute so that snapshot, HD snapshot and livestream do not all start at the same moment.
+     * The finer fields have to be fixed: a daily rule with "*" for minute and hour runs every minute (#828).
+     */
+    public static getAutoSaveCron(intervalSeconds: number, offsetSeconds: number): string {
+        const every = (unit: number): number => Math.max(1, Math.round(intervalSeconds / unit));
+        if (intervalSeconds < 60) {
+            return `*/${every(1)} * * * * *`;
+        }
+        if (intervalSeconds < 3600) {
+            return `${offsetSeconds} */${every(60)} * * * *`;
+        }
+        if (intervalSeconds < 86400) {
+            return `${offsetSeconds} 0 */${every(3600)} * * *`;
+        }
+        return `${offsetSeconds} 0 0 */${every(86400)} * *`;
+    }
+
     private autoSched(): void {
         const media: { val: number; fct: (rec?: number) => void; name: string; start: number }[] = [
             {
@@ -959,24 +992,11 @@ export class OwnRingCamera extends OwnRingDevice {
 
         for (const m of media) {
             if (m.val > 0) {
-                let schedSec: string = m.start.toString();
-                let schedMin = '*';
-                let schedHour = '*';
-                let schedDay = '*';
-                if (m.val < 60) {
-                    schedSec = `*/${m.val.toString()}`;
-                } else if (m.val < 3600) {
-                    schedMin = `*/${(m.val / 60).toString()}`;
-                } else if (m.val < 43.2) {
-                    schedHour = `*/${(m.val / 3600).toString()}`;
-                } else {
-                    schedDay = `*/${(m.val / 43200).toString()}`;
-                }
-                const t = `${schedSec} ${schedMin} ${schedHour} ${schedDay} * *`;
+                const t: string = OwnRingCamera.getAutoSaveCron(m.val, m.start);
                 this.info(`Create scheduled Job for ${m.name} at "${t}"`);
                 this._adapter.registerScheduledJob(
                     schedule.scheduleJob(
-                        `Auto save ${m.name}_${this._adapter.name}_${this._adapter.instance}`,
+                        `Auto save ${m.name}_${this._adapter.namespace}_${this.shortId}`,
                         t,
                         async (): Promise<void> => {
                             const recAct: any = await this._adapter.getStateAsync(`${this.eventsChannelId}.ondemand`);
@@ -1009,30 +1029,32 @@ export class OwnRingCamera extends OwnRingDevice {
             this.catcher(`Failed subscribing to Motion Events for ${this._ringDevice.name}`, r);
         });
         this._ringDevice.onData.subscribe(this.update.bind(this));
-        this._ringDevice.onMotionDetected.subscribe({
-            next: (motion: boolean): void => {
-                this.onMotion(motion).catch(e => this.catcher('Cannot react on motion', e));
-            },
-            error: (err: Error): void => {
-                this.catcher(`Motion Observer received error`, err);
-            },
-        });
-        this._ringDevice.onDoorbellPressed.subscribe({
-            next: (ding: PushNotificationDingV2): void => {
-                this.onDoorbell(ding).catch(e => this.catcher('Cannot react on doorbell', e));
-            },
-            error: (err: Error): void => {
-                this.catcher(`Doorbell Observer received error`, err);
-            },
-        });
+        // Motion and doorbell are derived from the notifications themselves and not taken from
+        // onMotionDetected / onDoorbellPressed: those pass repeated notifications on as new events.
         this._ringDevice.onNewNotification.subscribe({
             next: (ding: PushNotificationDingV2): void => {
-                this.onNotify(ding).catch(e => this.catcher('Cannot react on notification', e));
+                this.onPushNotification(ding);
             },
             error: (err: Error): void => {
                 this.catcher(`Notify Observer received error`, err);
             },
         });
+    }
+
+    private onPushNotification(ding: PushNotificationDingV2): void {
+        const dingId: string | undefined = ding?.data?.event?.ding?.id;
+        if (this._notificationFilter.isDuplicate(dingId)) {
+            this.debug(`Ignoring repeated push notification for ding ${dingId}`);
+            return;
+        }
+        // Same order as ring-client-api emitted them before: motion, doorbell, notification
+        const category: string | undefined = ding?.android_config?.category;
+        if (category === PUSH_CATEGORY_MOTION) {
+            this.onMotion(true).catch(e => this.catcher('Cannot react on motion', e));
+        } else if (category === PUSH_CATEGORY_DING) {
+            this.onDoorbell(ding).catch(e => this.catcher('Cannot react on doorbell', e));
+        }
+        this.onNotify(ding).catch(e => this.catcher('Cannot react on notification', e));
     }
 
     private async updateDeviceInfoObject(data: CameraData): Promise<void> {
@@ -1059,6 +1081,38 @@ export class OwnRingCamera extends OwnRingDevice {
             COMMON_INFO_HAS_SIREN,
             this._ringDevice.hasSiren,
         );
+        await this.updateSecondBatteryObject(data);
+    }
+
+    /**
+     * Cameras with two battery slots (e.g. Spotlight Cam Battery) report the second one only in the
+     * device data - battery_percentage from the health check is the first slot alone (#150).
+     * The states are created once a second battery was seen and show -1 while its slot is empty.
+     */
+    private async updateSecondBatteryObject(data: CameraData): Promise<void> {
+        const percentageId = `${this.infoChannelId}.second_battery_percentage`;
+        const level: number | null =
+            OwnRingCamera.parseBatteryLevel(data.battery_life_2) ??
+            OwnRingCamera.parseBatteryLevel(data.health?.second_battery_percentage);
+        this._hasSecondBattery ??= !!(await this._adapter.getObjectAsync(percentageId));
+        if (level === null && !this._hasSecondBattery) {
+            return;
+        }
+        this._hasSecondBattery = true;
+        await this._adapter.upsertState(percentageId, COMMON_INFO_SECOND_BATTERY_PERCENTAGE, level ?? -1);
+        await this._adapter.upsertState(
+            `${this.infoChannelId}.second_battery_percentage_category`,
+            COMMON_INFO_SECOND_BATTERY_PERCENTAGE_CATEGORY,
+            data.health?.second_battery_percentage_category ?? 'unknown',
+        );
+    }
+
+    private static parseBatteryLevel(value: number | string | null | undefined): number | null {
+        if (value === null || value === undefined || value === '') {
+            return null;
+        }
+        const level: number = typeof value === 'number' ? value : parseFloat(value);
+        return isNaN(level) ? null : level;
     }
 
     private async updateHistoryObject(lastAction: LastAction): Promise<void> {
