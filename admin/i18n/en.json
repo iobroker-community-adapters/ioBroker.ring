@@ -42,6 +42,7 @@
   "1 hour": "1 hour",
   "2 hours": "2 hours",
   "3 hours": "3 hours",
+  "12 hours": "12 hours",
   "1 day": "1 day",
   "-": "-",
   "HDInfo": "<br>Important information!<br>The settings \"Overlaying text\", \"Picture sharpening\" and \"Picture contrast\" are time consuming (up to a few Seconds).<br>If a fast display time is important, please turn them all off.",

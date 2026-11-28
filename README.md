@@ -95,6 +95,11 @@ Install this adapter using ioBroker repositories.
 ### **WORK IN PROGRESS**
 - (bluefox) `ring-client-api` is required as `^15.0.0-beta.0` now instead of exactly `15.0.0-beta.0`, so the stable 15.x is used as soon as it is released
 - (bluefox) Dependencies have been updated (suncalc 2.1; in the admin tab React 19.3, MUI 9.5, gui-components 10.4)
+- (bluefox) Ring delivers the same push notification several times, sometimes over 20 minutes and more. These repeats are recognized by their ding id and ignored now, so `Events.doorbell` and `Events.motion` no longer flap after a single event and no additional snapshots or recordings are taken (#548, #711, #632)
+- (bluefox) Auto save: "1 hour" did not create a job at all and "1 day" ran every minute. Both work now. The former "1 day" option was in fact 12 hours and is shown as "12 hours" now, "1 day" is a new option (#828)
+- (bluefox) "Delete old one" works now when the ioBroker files are stored in Redis (#671)
+- (l-naumann) `Location_<id>.locationMode` follows the mode of a Ring Alarm system again (#879)
+- (bluefox) The `%n` counters of snapshots and HD snapshots were swapped
 
 ### 7.1.0 (2026-11-21)
 - (Speedbreaker12) Live events (motion, doorbell, intercom ding) work again: since the end of October 2026 `@eneris/push-receiver` 4.3.0 could not decrypt Ring's push notifications. `ring-client-api` was updated to 15.0.0-beta.0, which brings `@eneris/push-receiver` 4.4.0

@@ -42,6 +42,7 @@
   "1 hour": "1 ora",
   "2 hours": "1 ore",
   "3 hours": "1 ore",
+  "12 hours": "12 ore",
   "1 day": "1 giorno",
   "-": "-",
   "HDInfo": "<br>Informazioni importanti!<br>Le impostazioni \"Testo di sovrapposizione\", \"Immagine affilare\" e \"Contrasto immagine\" consumano tempo (fino a pochi secondi).<br>Se un tempo di visualizzazione veloce è importante, si prega di spegnerli tutti.",

@@ -62,23 +62,23 @@ export class FileService {
         });
     }
 
-    public static deleteFileIfExistSync(fullPath: string, adapter: RingAdapter): void {
-        if (!fs.existsSync(fullPath)) {
-            return;
-        }
+    public static async deleteFileIfExist(fullPath: string, adapter: RingAdapter): Promise<void> {
         if (this.IOBROKER_FILES_REGEX.test(fullPath)) {
-            adapter.delFile(
-                adapter.namespace,
-                this.reducePath(fullPath, adapter),
-                (r: NodeJS.ErrnoException | null | undefined): void => {
-                    if (r) {
-                        adapter.logCatch(`Failed to delete File '${fullPath}'`, r.message);
-                    }
-                },
-            );
+            // Lives in the ioBroker file storage, which is not necessarily the local disk: with Redis
+            // the file is not below iobroker-data/files at all, so fs.existsSync() must not be asked (#671)
+            const relativePath: string = this.reducePath(fullPath, adapter);
+            try {
+                if (await adapter.fileExistsAsync(adapter.namespace, relativePath)) {
+                    await adapter.delFileAsync(adapter.namespace, relativePath);
+                }
+            } catch (e: any) {
+                adapter.logCatch(`Failed to delete File '${fullPath}'`, e?.message ?? e);
+            }
             return;
         }
-        fs.unlinkSync(fullPath);
+        if (fs.existsSync(fullPath)) {
+            fs.unlinkSync(fullPath);
+        }
     }
 
     public static async getVisUrl(

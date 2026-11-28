@@ -88,8 +88,18 @@ import type { StreamingSession } from 'ring-client-api/streaming/streaming-sessi
 };
 import type { PathInfo } from './services/path-info';
 import { EventBlocker } from './services/event-blocker';
+import { DuplicateFilter } from './services/duplicate-filter';
 import { ImageService } from './services/image-service';
 import { TextService } from './services/text-service';
+
+/**
+ * Values of ring-client-api's `PushNotificationAction.Motion` / `.Ding`. Spelled out because the
+ * module is ESM only and its values are not available synchronously in this CommonJS build.
+ */
+const PUSH_CATEGORY_MOTION = 'com.ring.pn.live-event.motion';
+const PUSH_CATEGORY_DING = 'com.ring.pn.live-event.ding';
+/** Ring repeats a notification for 25 minutes and longer (#711), an hour covers that with margin */
+const REPEATED_NOTIFICATION_MEMORY_MS = 60 * 60 * 1000;
 
 enum EventState {
     Idle,
@@ -149,6 +159,8 @@ export class OwnRingCamera extends OwnRingDevice {
     private _motionEventBlocker: EventBlocker;
     private _notifyEventBlocker: EventBlocker;
     private _doorbellEventBlocker: EventBlocker;
+    /** Kept across updateByDevice(), a reconnect is exactly when repeated notifications arrive */
+    private readonly _notificationFilter: DuplicateFilter = new DuplicateFilter(REPEATED_NOTIFICATION_MEMORY_MS);
     private _state: EventState = EventState.Idle;
 
     public constructor(
@@ -263,7 +275,7 @@ export class OwnRingCamera extends OwnRingDevice {
             }
         });
         if (this._lastLiveStreamDir !== '' && this._adapter.config.del_old_livestream) {
-            FileService.deleteFileIfExistSync(this._lastLiveStreamDir, this._adapter);
+            await FileService.deleteFileIfExist(this._lastLiveStreamDir, this._adapter);
         }
 
         if (visPath) {
@@ -299,7 +311,7 @@ export class OwnRingCamera extends OwnRingDevice {
         const { fullPath, dirname }: PathInfo = FileService.getPath(
             this._adapter.config.path_snapshot,
             `HD${this._adapter.config.filename_snapshot}`,
-            ++this._snapshotCount,
+            ++this._HDsnapshotCount,
             this.shortId,
             this.fullId,
             this.kind,
@@ -310,7 +322,7 @@ export class OwnRingCamera extends OwnRingDevice {
             await this.updateHDSnapshotRequest(false);
             return;
         }
-        FileService.deleteFileIfExistSync(fullPath, this._adapter);
+        await FileService.deleteFileIfExist(fullPath, this._adapter);
         if (this._ringDevice.isOffline) {
             this.info("Is offline --> won't take HD Snapshot");
             await this.updateHDSnapshotRequest(false);
@@ -384,7 +396,7 @@ export class OwnRingCamera extends OwnRingDevice {
             }
         });
         if (this._lastHDSnapShotDir !== '' && this._adapter.config.del_old_HDsnapshot) {
-            FileService.deleteFileIfExistSync(this._lastHDSnapShotDir, this._adapter);
+            await FileService.deleteFileIfExist(this._lastHDSnapShotDir, this._adapter);
         }
 
         if (visPath) {
@@ -435,7 +447,7 @@ export class OwnRingCamera extends OwnRingDevice {
         const { fullPath, dirname }: PathInfo = FileService.getPath(
             this._adapter.config.path_snapshot,
             this._adapter.config.filename_snapshot,
-            ++this._HDsnapshotCount,
+            ++this._snapshotCount,
             this.shortId,
             this.fullId,
             this.kind,
@@ -446,7 +458,7 @@ export class OwnRingCamera extends OwnRingDevice {
             await this.updateSnapshotRequest(false);
             return;
         }
-        FileService.deleteFileIfExistSync(fullPath, this._adapter);
+        await FileService.deleteFileIfExist(fullPath, this._adapter);
 
         if (this._ringDevice.isOffline) {
             this.info(`is offline --> won't take Snapshot`);
@@ -497,7 +509,7 @@ export class OwnRingCamera extends OwnRingDevice {
         }
 
         if (this._lastSnapShotDir !== '' && this._adapter.config.del_old_snapshot) {
-            FileService.deleteFileIfExistSync(this._lastSnapShotDir, this._adapter);
+            await FileService.deleteFileIfExist(this._lastSnapShotDir, this._adapter);
         }
         this._lastSnapShotUrl = visURL;
         this._lastSnapShotDir = fullPath;
@@ -867,7 +879,7 @@ export class OwnRingCamera extends OwnRingDevice {
             this.warn(`Failed to prepare Livestream folder ("${fullPath}")`);
             throw new Error('Failed to prepare Livestream folder');
         }
-        FileService.deleteFileIfExistSync(fullPath, this._adapter);
+        await FileService.deleteFileIfExist(fullPath, this._adapter);
         return { visURL: visURL, visPath: visPath, fullPath: fullPath };
     }
 
@@ -927,6 +939,25 @@ export class OwnRingCamera extends OwnRingDevice {
             .catch(e => this.catcher("Couldn't update Health.", e));
     }
 
+    /**
+     * Cron rule (with seconds) for "every `intervalSeconds`", started at second `offsetSeconds` of the
+     * minute so that snapshot, HD snapshot and livestream do not all start at the same moment.
+     * The finer fields have to be fixed: a daily rule with "*" for minute and hour runs every minute (#828).
+     */
+    public static getAutoSaveCron(intervalSeconds: number, offsetSeconds: number): string {
+        const every = (unit: number): number => Math.max(1, Math.round(intervalSeconds / unit));
+        if (intervalSeconds < 60) {
+            return `*/${every(1)} * * * * *`;
+        }
+        if (intervalSeconds < 3600) {
+            return `${offsetSeconds} */${every(60)} * * * *`;
+        }
+        if (intervalSeconds < 86400) {
+            return `${offsetSeconds} 0 */${every(3600)} * * *`;
+        }
+        return `${offsetSeconds} 0 0 */${every(86400)} * *`;
+    }
+
     private autoSched(): void {
         const media: { val: number; fct: (rec?: number) => void; name: string; start: number }[] = [
             {
@@ -959,24 +990,11 @@ export class OwnRingCamera extends OwnRingDevice {
 
         for (const m of media) {
             if (m.val > 0) {
-                let schedSec: string = m.start.toString();
-                let schedMin = '*';
-                let schedHour = '*';
-                let schedDay = '*';
-                if (m.val < 60) {
-                    schedSec = `*/${m.val.toString()}`;
-                } else if (m.val < 3600) {
-                    schedMin = `*/${(m.val / 60).toString()}`;
-                } else if (m.val < 43.2) {
-                    schedHour = `*/${(m.val / 3600).toString()}`;
-                } else {
-                    schedDay = `*/${(m.val / 43200).toString()}`;
-                }
-                const t = `${schedSec} ${schedMin} ${schedHour} ${schedDay} * *`;
+                const t: string = OwnRingCamera.getAutoSaveCron(m.val, m.start);
                 this.info(`Create scheduled Job for ${m.name} at "${t}"`);
                 this._adapter.registerScheduledJob(
                     schedule.scheduleJob(
-                        `Auto save ${m.name}_${this._adapter.name}_${this._adapter.instance}`,
+                        `Auto save ${m.name}_${this._adapter.namespace}_${this.shortId}`,
                         t,
                         async (): Promise<void> => {
                             const recAct: any = await this._adapter.getStateAsync(`${this.eventsChannelId}.ondemand`);
@@ -1009,30 +1027,32 @@ export class OwnRingCamera extends OwnRingDevice {
             this.catcher(`Failed subscribing to Motion Events for ${this._ringDevice.name}`, r);
         });
         this._ringDevice.onData.subscribe(this.update.bind(this));
-        this._ringDevice.onMotionDetected.subscribe({
-            next: (motion: boolean): void => {
-                this.onMotion(motion).catch(e => this.catcher('Cannot react on motion', e));
-            },
-            error: (err: Error): void => {
-                this.catcher(`Motion Observer received error`, err);
-            },
-        });
-        this._ringDevice.onDoorbellPressed.subscribe({
-            next: (ding: PushNotificationDingV2): void => {
-                this.onDoorbell(ding).catch(e => this.catcher('Cannot react on doorbell', e));
-            },
-            error: (err: Error): void => {
-                this.catcher(`Doorbell Observer received error`, err);
-            },
-        });
+        // Motion and doorbell are derived from the notifications themselves and not taken from
+        // onMotionDetected / onDoorbellPressed: those pass repeated notifications on as new events.
         this._ringDevice.onNewNotification.subscribe({
             next: (ding: PushNotificationDingV2): void => {
-                this.onNotify(ding).catch(e => this.catcher('Cannot react on notification', e));
+                this.onPushNotification(ding);
             },
             error: (err: Error): void => {
                 this.catcher(`Notify Observer received error`, err);
             },
         });
+    }
+
+    private onPushNotification(ding: PushNotificationDingV2): void {
+        const dingId: string | undefined = ding?.data?.event?.ding?.id;
+        if (this._notificationFilter.isDuplicate(dingId)) {
+            this.debug(`Ignoring repeated push notification for ding ${dingId}`);
+            return;
+        }
+        // Same order as ring-client-api emitted them before: motion, doorbell, notification
+        const category: string | undefined = ding?.android_config?.category;
+        if (category === PUSH_CATEGORY_MOTION) {
+            this.onMotion(true).catch(e => this.catcher('Cannot react on motion', e));
+        } else if (category === PUSH_CATEGORY_DING) {
+            this.onDoorbell(ding).catch(e => this.catcher('Cannot react on doorbell', e));
+        }
+        this.onNotify(ding).catch(e => this.catcher('Cannot react on notification', e));
     }
 
     private async updateDeviceInfoObject(data: CameraData): Promise<void> {
