@@ -216,7 +216,7 @@ export class OwnRingCamera extends OwnRingDevice {
         // ring-client-api only falls back to "-vcodec copy" for a missing value, so [] made ffmpeg
         // re-encode every recording - which on weak CPUs falls behind and shows artifacts (#674).
         // The overlay needs re-encoding; "ultrafast" keeps that close to real time.
-        const video: string[] = this._adapter.config.overlay_Livestream
+        const videoOptions: string[] = this._adapter.config.overlay_Livestream
             ? [
                   ...ImageService.videoFilter(
                       true,
@@ -230,7 +230,7 @@ export class OwnRingCamera extends OwnRingDevice {
             : ['-vcodec', 'copy'];
         const liveCall: StreamingSession | null = await this._ringDevice
             .streamVideo({
-                video,
+                video: videoOptions,
                 output: ['-t', duration.toString(), tempPath],
             })
             .catch((reason: any): null => {
